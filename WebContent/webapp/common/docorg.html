@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../style/docorg.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/docorg.min.js"></script>
+    <script type="text/javascript">
+
+    </script>
+
+    <style type="text/css">
+        .panel-header-noborder {
+            border-bottom: none;
+        }
+    </style>
+
+
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div data-options="region:'west',border:false,split:true,collapsible:false"
+     style="width: 280px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+    <table id="foldergrid" lass="easyui-treegrid"
+           data-options="
+           border:false,
+           lines: true,
+           idField: 'fdrid',
+           rownumbers: true,
+           fitColumns: true,
+           showHeader:false,
+           treeField: 'fdrname'">
+        <thead>
+        <tr>
+            <th data-options="field:'fdrname',hide:true" width="90%"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div data-options="region:'center',border:false">
+    <div id="filediv" class="easyui-panel" title="文件列表" style="padding:10px;"
+         data-options="closable:false,fit:true,border:false,tools:'#tt'">
+        <div class='mouseSelect'></div>
+    </div>
+</div>
+
+<div id="tt">
+    <a href="javascript:void(0)" class="icon-add" onclick="javascript:alert('add')"></a>
+    <a href="javascript:void(0)" class="icon-edit" onclick="javascript:alert('edit')"></a>
+    <a href="javascript:void(0)" class="icon-cut" onclick="javascript:alert('cut')"></a>
+    <a href="javascript:void(0)" class="icon-help" onclick="javascript:alert('help')"></a>
+</div>
+
+<!--权限弹出窗-->
+
+<div id="wfolderalc" class="easyui-window"
+     data-options="iconCls:'icon-folder',title:'文件权限',closed:true,minimizable:false,collapsible:false,modal:true"
+     style="width:400px;height:500px;padding:5px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <div id="folder_alc_path"
+                 style="height: 25px;font-size: 12px;font-weight: 700;color: #0e2d5f">
+            </div>
+            <div style="padding:0px;height: 25px;line-height: 25px;background-color: #EEF4FF;font-size: 12px;font-weight: 700;color: #0e2d5f">
+                <span style="padding: 5px">已授权限</span>
+
+                <div style="float: right;padding-right: 5px">
+                    <a id="btnadd" href="#" onclick="$('#waddalc').window('open')" class="easyui-linkbutton"
+                       style="height: 20px" data-options="">添加</a>
+                    <a id="btndel" href="#" onclick="delacl()" class="easyui-linkbutton" style="height: 20px"
+                       data-options="">删除</a>
+                </div>
+            </div>
+            <div style="padding: 5px">
+                <table id="grid_shwfdracl" class="easyui-datagrid" style="width:100%;min-height: 100px"
+                       data-options="fitColumns:true,singleSelect:false,border:false">
+                </table>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:center;padding:5px 0 0;">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)"
+               onclick="$('#wfolderalc').window('close')" style="width:80px">确定</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="waddalc" class="easyui-window"
+     data-options="iconCls:'icon-folder',title:'新建授权',closed:true,minimizable:false,collapsible:false,modal:true"
+     style="width:300px;height:170px;padding:5px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table style="width: 100%">
+                <tr>
+                    <td>对象</td>
+                    <td>
+                        <input id="tree_orguser" class="easyui-combotree" data-options="" style="width:205px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>权限</td>
+                    <td>
+                        <input id="cbx_access" class="easyui-textbox" style="height:20px;width: 205px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>有效期</td>
+                    <td>
+                        <input id="dt_statime" data-options="formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str"
+                               class="easyui-datebox" style="width: 100px">
+                        <input id="dt_endtime" data-options="formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str"
+                               class="easyui-datebox" style="width: 100px;">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)"
+               onclick="addacl()" style="width:80px">确定</a>
+        </div>
+    </div>
+</div>
+
+<div id="foldermenu" class="easyui-menu" style="width:120px;"></div>
+
+<!--文件属性弹出窗-->
+<div id="wfolderattr" class="easyui-window"
+     data-options="iconCls:'icon-folder',title:'文件属性',closed:true,minimizable:false,collapsible:false,modal:true"
+     style="width:400px;height:400px;padding:5px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <div id="folder_attr_path"
+                 style="height: 25px;font-size: 12px;font-weight: 700;color: #0e2d5f">
+            </div>
+            <div style="padding:0px;width: 95%">
+                <span class="attr_grp_title">基本属性</span>
+
+                <div style="width: 100%;text-align: center">
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">包含文件夹</div>
+                        <div id="attr_childfoldercount" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">包含文件</div>
+                        <div id="attr_childfilecount" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">包含文件大小</div>
+                        <div id="attr_size" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="height: 10px"></div>
+            <div style="padding:0px;width: 95%">
+                <span class="attr_grp_title">扩展属性</span>
+
+                <div style="width: 100%;text-align: center">
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">创建时间</div>
+                        <div id="attr_createtime" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">创建人</div>
+                        <div id="attr_creator" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">最后修改时间</div>
+                        <div id="attr_updatetime" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="attr_line_item">
+                        <div class="attr_line_item_title">最后修改人</div>
+                        <div id="attr_updator" class="attr_line_item_value"></div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div data-options="region:'south',border:false" style="text-align:center;padding:5px 0 0;">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)"
+               onclick="$('#wfolderattr').window('close')" style="width:80px">确定</a>
+        </div>
+    </div>
+</div>
+
+<div id="common_divs_id">
+    <div id="pw_uploadfile" class="easyui-window" title="上传文件"
+         data-options="modal:true,closed:true,iconCls:'icon-save'"
+         style="width:400px;height:400px;padding:0px;">
+        <iframe frameborder="0" style="width: 100%;height: 95%"></iframe>
+    </div>
+    <div id="html_temp_file_item">
+        <div class="file_item_div" pfid="{{pfid}}" type="{{type}}">
+            <div class="{{file_ico}} file_item_div_ico"></div>
+            <div class="file_item_div_txt">{{displayfname}}</div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

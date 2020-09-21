@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>Title</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic711",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=711",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic870",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=870",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+
+        function zeroretunrempt(value, row) {
+            var v = parseFloat(value);
+            if (!isNaN(v)) {
+                if (v == 0)
+                    return "";
+                else return v;
+            } else return "";
+        }
+
+
+        var listGridColumns = [
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'orgname', title: '部门', width: 200},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'rwnature', title: '激励性质', width: 100, formatter: comUrl_dic711.formator},
+            {field: 'rwtype', title: '激励类型', width: 100, formatter: comUrl_dic870.formator},
+            {field: 'rwamount', title: '激励金额', width: 100, formatter: zeroretunrempt},
+            {field: 'rwscore', title: '激励绩效系数', width: 120, formatter: zeroretunrempt},
+            {field: 'rwnote', title: '激励情况描述', width: 200},
+            {field: 'rwfile', title: '激励支持文件', width: 120},
+            {field: 'rwfilenum', title: '激励文件字号', width: 120},
+            {field: 'rewardtime', title: '激励生效日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee_reward",
+            JPAIdField: "emprw_id",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '900px',
+            windowHeight: '370px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            findUrl: _serUrl + "/web/hr/employee/getrewardlist.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onCreate: function () {//创建对象前  mainline不可用
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+                parms.order = ' rewardtime desc ';
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'rwnature') {
+                    resetrwtype();
+                }
+                if (fdname == 'rwscore') {
+                    resetrwamount();
+                }
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+        function resetrwamount() {
+            var rwscore = mainline.getFieldValue("rwscore");
+            var lv_num = mainline.getFieldValue("lv_num");
+            var rwnature = mainline.getFieldValue("rwnature");
+            var rewardtime = mainline.getFieldValue("rewardtime");
+            if (rwnature == 1 && rwscore < 0) {
+                mainline.setFieldValue("rwscore", undefined);
+                mainline.setFieldValue("rwamount", undefined);
+                alert("正激励绩效系数不能为负数");
+                return;
+            }
+            if (rwnature == 2 && rwscore > 0) {
+                mainline.setFieldValue("rwscore", undefined);
+                mainline.setFieldValue("rwamount", undefined);
+                alert("负激励绩效系数不能为正数");
+                return;
+            }
+
+            rwscore = parseFloat(rwscore);
+            lv_num = parseFloat(lv_num);
+            if (isNaN(rwscore)) return;//不是数字
+            mainline.setFieldValue("rwamount", (lv_num < 4 ? 2000 : 500) * rwscore);
+
+        }
+
+        function resetrwtype() {
+            var rwnature = mainline.getFieldValue("rwnature");
+            mainline.setFieldValue("rwscore", undefined);
+            mainline.setFieldValue("rwamount", undefined);
+            rwnature = parseInt(rwnature);
+            if (isNaN(rwnature)) return;//不是数字
+            var rwtype = mainline.getField("rwtype");
+            switch (rwnature) {
+                case 1://正激励
+                    rwtype.combobox($getNewComboxParmsByComUrl(comUrl_dic870, [1, 2, 2, 3, 4, 5]));
+                    break;
+                case 2://负激励
+                    rwtype.combobox($getNewComboxParmsByComUrl(comUrl_dic870, [11, 12, 13, 14, 15, 16, 17]));
+                    break;
+            }
+        }
+
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co?includelv=true";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+
+                        mainline.setFieldValue("orgname", row.orgname);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue("hg_name", row.hg_name);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+
+
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url//,
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/employee/imprewardlistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',buttonIcon:'icon-search',onClickButton:onFindemployee"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'rwnature'">激励性质</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwnature',editable:false,comidx:'dic711'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rwtype'">激励类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwtype',editable:false,comidx:'dic870'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                   style="height:20px;width: 310px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',readonly:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'rewardtime'">生效日期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'rewardtime',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rreason'">激励事由</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rreason'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'rwamount'">激励金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwamount',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rwscore'">激励绩效系数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwscore',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rwfile'">激励支持文件</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwfile'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rwfilenum'">激励文件字号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwfilenum'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'rwnote'">激励情况描述</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'rwnote'"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+    </tr>
+</table>
+</body>
+</html>

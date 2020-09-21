@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>消息中心</title>
+    <script type="text/javascript">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+
+        //页面准备好之后触发事件
+        function $OnCorsairReady() {
+            $(".menus_ui li").click(function () {
+                var url = $(this).attr("url");
+                if ($isEmpty(url)) {
+                    alert("没有设置路径");
+                    return;
+                }
+                if (!window.top.PerDeskClick) {
+                    alert("首页链接不能调用");
+                    return;
+                }
+                window.top.PerDeskClick($(this).html(), url, 0, 0, 0);
+            });
+        }
+
+        function doclickbt() {
+            var tps = "";
+            $(".menus_uiempinfo input").each(function () {
+                if ($(this).prop('checked')) {
+                    tps = tps + $(this).attr('tp') + ",";
+                }
+            });
+            onFindemployee(tps);
+        }
+
+        function doselectall(tp) {
+            if (tp == 1) {
+                $(".menus_uiempinfo input").each(function () {
+                    this.checked = true;
+                });
+            }
+            if (tp == 2) {
+                $(".menus_uiempinfo input").each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(tp) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ]
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 20) {
+                        $.messager.alert('错误', '不显示超过20个的员工信息!', 'error');
+                        return;
+                    }
+                    var empinfos = [];
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        var row = rows[i];
+                        empinfos.push({
+                            er_id: row.er_id,
+                            employee_name: row.employee_name,
+                            orgname: row.orgname
+                        });
+                    }
+                    /*
+                     if (empinfos.length > 0) {
+                     var url = _serUrl + "/webapp/hr_perm/rpt_employeeinfo_ex.html?empinfos=" + encodeURIComponent(JSON.stringify(empinfos));
+                     var win = window.open(url, "人事信息", "location=no,directories=no,scrollbars=yes,toolbar=yes,fullscreen=yes,directories=false");
+                     //win._empinfos = empinfos;
+                     win._tp = tp;
+                     }*/
+
+                    if (empinfos.length > 0) {
+                        var url = _serUrl + "/webapp/hr_perm/rpt_employeeinfo_ex.html?empinfos=" + encodeURIComponent(JSON.stringify(empinfos)) + "&_tp=" + tp;
+                        var win = window.open(url, "about:blank", "人事信息", "location=no,directories=no,scrollbars=yes,toolbar=yes,fullscreen=yes,directories=no,resizable =yes");
+                        win.moveTo(0, 0);
+                        win.resizeTo(screen.width + 20, screen.height);
+                        win.focus();
+                    }
+
+                }
+            });
+            select_employee_pw.show();
+        }
+    </script>
+    <style type="text/css">
+        #body table td {
+            padding: 2px 5px 2px 5px;
+            margin: 2px;
+            border: 0px;
+        }
+
+        .spec {
+            height: 5px;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .bunderdiv {
+            background-color: white;
+            background: none;
+            border: none;
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .bunderdiv1 {
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .fontct {
+            font-weight: 700;
+        }
+
+        .menus_ui {
+            width: 95%;
+        }
+
+        .menus_ui li {
+            width: 250px;
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            float: left;
+            padding: 1px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        .menus_uiempinfo {
+            width: 95%;
+        }
+
+        .menus_uiempinfo li {
+            width: 250px;
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            float: left;
+            padding: 1px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        .menus_uiempinfo input {
+            vertical-align: text-bottom;
+            margin-bottom: 2px;
+            *margin-bottom: -2px;
+        }
+
+    </style>
+</head>
+<body style="margin: 0 auto">
+
+<div class="panel-header panel-header-noborder bunderdiv" style="">
+    <div class="panel-title panel-with-icon">我的统计</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+
+<div style="width: 100%;height: auto;padding: 0px">
+    <ul class="menus_ui">
+        <li url="hr_perm/rpt_employeeanalysis.html?menutag=7">员工结构</li>
+        <li url="hr_perm/rpt_employeeanalysis.html?menutag=6">职类结构</li>
+        <li url="hr_perm/rpt_employeeanalysis.html?menutag=1">学历结构</li>
+        <li url="hr_perm/rpt_employeeanalysis.html?menutag=2">年龄结构</li>
+        <li url="hr_perm/rpt_employeeanalysis.html?menutag=3">性别结构</li>
+    </ul>
+    <div style="clear:both"></div>
+</div>
+
+<div class="panel-header panel-header-noborder bunderdiv bunderdiv" style="">
+    <div class="panel-title panel-with-icon">员工信息查询</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+<div style="width: 100%;height: auto;padding: 0px">
+    <ul class="menus_uiempinfo">
+        <!--    <li tp="1">员工基本信息</li>-->
+        <li><input id="ck2" tp="2" type="checkbox"/><label for="ck2">工作经历信息</label></li>
+        <li><input id="ck3" tp="3" type="checkbox"/><label for="ck3">家庭成员信息</label></li>
+        <li><input id="ck4" tp="4" type="checkbox"/><label for="ck4">关联关系信息</label></li>
+        <li><input id="ck5" tp="5" type="checkbox"/><label for="ck5">员工合同信息</label></li>
+        <li><input id="ck6" tp="6" type="checkbox"/><label for="ck6">教育经历信息</label></li>
+        <li><input id="ck7" tp="7" type="checkbox"/><label for="ck7">培训经历信息</label></li>
+        <li><input id="ck8" tp="8" type="checkbox"/><label for="ck8">在职培训信息</label></li>
+        <li><input id="ck9" tp="9" type="checkbox"/><label for="ck9">激励信息</label></li>
+        <li><input id="ck10" tp="10" type="checkbox"/><label for="ck10">调动信息</label></li>
+        <li><input id="ck11" tp="11" type="checkbox"/><label for="ck11">兼职信息</label></li>
+        <li><input id="ck12" tp="12" type="checkbox"/><label for="ck12">绩效信息</label></li>
+        <li><input id="ck13" tp="13" type="checkbox"/><label for="ck13">离职信息</label></li>
+        <li><input id="ck14" tp="14" type="checkbox"/><label for="ck14">黑名单信息</label></li>
+    </ul>
+    <div style="clear:both"></div>
+    <div style="height: 20px;padding:5px;padding-left: 50px">
+        <a href="#" onclick="doclickbt()" class="easyui-linkbutton" style="width: 100px" data-options="iconCls:'icon-search'">点击查询</a>
+        <a href="#" onclick="doselectall(1)" class="easyui-linkbutton" style="width: 100px" data-options="">全选</a>
+        <a href="#" onclick="doselectall(2)" class="easyui-linkbutton" style="width: 100px" data-options="">全不选</a>
+    </div>
+</div>
+
+<div class="panel-header panel-header-noborder bunderdiv bunderdiv" style="padding-top: 10px">
+    <div class="panel-title panel-with-icon">综合信息查询</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+
+<div style="width: 100%;height: auto;padding: 0px">
+    <ul class="menus_ui">
+        <li url="hr_perm/hr_employee_induction.html">入职查询</li>
+        <li url="hr_perm/hr_employee_transfer.html">调动查询</li>
+        <li url="hr_perm/hr_emptransferbatch.html">批量调动查询</li>
+        <li url="hr_perm/hr_entry_prob.html">入职转正查询</li>
+        <li url="hr_perm/hr_entrybatch_prob.html">批量转正查询</li>
+        <li url="hr_perm/Hr_transfer_prob.html">调动转正查询</li>
+        <li url="hr_perm/hr_employee_reward_list.html">激励记录查询</li>
+        <li url="hr_perm/hr_emploanbatch.html">借调查询</li>
+        <li url="hr_perm/Hr_empptjob_app.html">兼职查询</li>
+        <li url="hr_perm/hr_leavejob.html">离职查询</li>
+        <li url="hr_perm/hr_leavejobbatch.html">批量离职查询</li>
+        <li url="hr_perm/hr_black_add.html">加封黑名单查询</li>
+        <li url="hr_perm/hr_black_del.html">解封黑名单查询</li>
+        <li url="hr_base/hrrl_declare_nb.html">关联关系查询（内部）</li>
+        <li url="hr_base/hrrl_declare_wb.html">关联关系查询（客户/供应商）</li>
+    </ul>
+    <div style="clear:both"></div>
+</div>
+
+</body>
+</html>

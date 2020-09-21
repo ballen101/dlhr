@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var _setedclos = [];
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var listGridColumns = [
+            {field: 'yearmonth', title: '年月', notnull: true, relOptions: relOptions, width: 64, formatter: $fieldDateFormatorYYYY_MM},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'card_number', title: '卡号', width: 64},
+            {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'orgname', title: '部门', width: 150},
+            {field: 'lv_num', title: '职级', width: 30}
+        ];
+        var _findym = undefined, _findmxday = undefined;
+
+        frmOptions = {
+            findUrl: _serUrl + "/web/hrkq/sched/findwhmlist.co",
+            JPAClass: "com.hr.attd.entity.Hrkq_workschmonthlist",
+            JPAIdField: "wklistid",
+            allow_new: false,
+            allowAtt: false,
+            allowWF: false,
+            allow_expt_list: true,
+            autoFind: false,
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '900px',//窗体宽度  htMLPop有效
+            windowHeight: '500px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+            ],
+            onCreate: function () {//创建对象前
+
+            },
+            OnReady: function () {   //都准备好后\
+                //alert(JSON.stringify(_scdformators[1]));
+                initSckFormator();
+                initInputClick();
+            },
+            onFind: function (parms) {
+                var ps = parms.parms, ym = undefined;
+                for (var i = 0; i < ps.length; i++) {
+                    var p = ps[i];
+                    if (p.parmname == 'yearmonth') {
+                        ym = p.parmvalue;
+                        break;
+                    }
+                }
+                if (!ym) {
+                    alert("年月必填");
+                    return;
+                }
+                getMonthRL(ym);//获取月度法定假期
+                _findym = ym;
+            },
+            afterShowListData: function (jsdata) {//显示完数据后
+                if (_setedclos)
+                    reSetRowTitleColor(_setedclos);
+            },
+            afterFindDetail: function (jsdata) {//加载界面数据后执行方法
+                //设置字段名 颜色 及是否显示
+                setEditFieldInfo(jsdata);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            onExport: function (parms) {//返回值作为导出数据的列，没有返回值用默认listGridColumns
+                parms.cols = _exportfields;
+                return true;
+            }
+        };
+
+        var _weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+        function getMonthRL(ym) {
+            var y = parseInt(ym.substr(0, 4));
+            var m = parseInt(ym.substr(5, 6));
+            var url = _serUrl + "/web/hrkq/ohyear/findMonthHolidays.co?ohmonth=" + ym;
+            $ajaxjsonget(url, function (jsondata) {
+                rebuidDays(ym, jsondata);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function getChdre(hmdays, dt) {
+            if (dt == undefined) return undefined;
+            for (var i = 0; i < hmdays.length; i++) {
+                var row = hmdays[i];
+                if (row.ohdate == dt) {
+                    return row;
+                }
+            }
+        }
+
+
+        var _exportfields = [];
+        function rebuidDays(ym, hmdays) {
+            var y = parseInt(ym.substr(0, 4));
+            var m = parseInt(ym.substr(5, 6));
+            var dm = (new Date(y, m, 0)).getDate();
+            _findmxday = dm;
+            var gdlcols = [];
+            gdlcols = gdlcols.concat(listGridColumns[0]);
+            _exportfields = [].concat(listGridColumns[0]);
+            for (var i = 1; i <= dm; i++) {
+                var dt = new Date(y, m - 1, i);
+                var hd = getChdre(hmdays, $dateformattostrrYYYY_MM_DD(dt));
+                var d = (dt).getDay();
+                var t = "<span>" + i + "(" + _weekdays[d] + ")</span>";
+                var iswork = ((d != 0) && (d != 6)) ? 1 : 2;
+                if (hd) {
+                    t = t + "<br><span>" + hd.daydis + "</span>";
+                    iswork = parseInt(hd.iswork);
+                } else {
+
+                }
+                var et = i + "(" + _weekdays[d] + ")";
+                if (hd) {
+                    et = et + hd.daydis;
+                }
+                var row = {
+                    field: 'scdname' + i,
+                    title: t,
+                    halign: 'center',
+                    iswork: iswork,
+                    width: 50,
+                    formatter: _scdformators[i]
+                };// {field: '', halign: 'center', title: '1', width: 64},
+                _exportfields.push({field: 'scdname' + i, title: et, iswork: iswork,});
+                gdlcols.push(row);
+            }
+            _setedclos = gdlcols;
+            $("#dg_datalist_id").datagrid({
+                columns: [gdlcols]
+            });
+            //reSetRowTitleColor(gdlcols);
+        }
+
+        var _scdformators = [];
+        function initSckFormator() {
+            _scdformators = [];
+            for (var i = 1; i < 32; i++) {
+                var fs = "var backcolor = row['backcolor" + i + "'];if (backcolor) {"
+                        + "return \"<span style='background-color: \" + backcolor + \"'>\" + value + \"</span>\";"
+                        + "} else return value;";
+                _scdformators[i] = new Function("value", "row", "index", fs);
+            }
+        }
+
+        function initInputClick() {
+            for (var i = 1; i <= 31; i++) {
+                var fdname = "scdname" + i;
+                var ipt = mainline.getInput(fdname);
+                if (ipt) {
+                    $(ipt).textbox({
+                        iconWidth: 15,
+                        icons: [{
+                            iconCls: 'icon-search',
+                            handler: function (e) {
+                                onSelectSched(e);
+                            }
+                        }],
+                        editable: false
+                    });
+                }
+            }
+        }
+
+        function reSetRowTitleColor(gdlcols) {
+            var p = $("#dg_datalist_id").datagrid("getPanel").find(".datagrid-view2").find(".datagrid-header-row");
+            for (var i = 0; i < gdlcols.length; i++) {
+                var row = gdlcols[i];
+                if (row.iswork == 2) {
+                    p.find("td[field='" + row.field + "']").css("background-color", "#EBFECE");
+                } else {
+                    p.find("td[field='" + row.field + "']").css("background-color", "");
+                }
+            }
+        }
+        //_findym
+        function setEditFieldInfo(jsdata) {
+            var md = _findmxday;
+            if (md == undefined) {
+                alert("月度最大日期错误");
+                return;
+            }
+            for (var i = 1; i <= 31; i++) {
+                mainline.setFieldHide("scdname" + i);
+            }
+            //alert(md);
+            for (var i = 0; i < _exportfields.length; i++) {
+                var fd = _exportfields[i];
+                if (fd.field.substring(0, 7) == "scdname") {
+                    var dd = fd.field.substring(7, fd.field.length);
+                    //alert(dd);
+                    dd = parseInt(dd);
+                    if (dd <= md) {
+                        var leb = mainline.getLabel(fd.field);
+                        if (leb) {
+                            $(leb).html(fd.title);
+                            if (fd.iswork == 2) {
+                                $(leb).css("background-color", "#EBFECE");
+                            } else {
+                                $(leb).css("background-color", "");
+                            }
+                            mainline.setFieldShow("scdname" + dd);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        var select_sched_pw = undefined;
+        function onSelectSched(event) {
+            //$(event.data.target).textbox('setValue', "滚..滚出这个星球");
+            var fdname = $(event.data.target).textbox("options").fdname;
+            var dd = fdname.substring(7, fdname.length);
+            dd = parseInt(dd);
+            var er_id = mainline.getFieldValue("er_id");
+            var url = _serUrl + "/web/hrkq/sched/findsched.co?tid=" + er_id + "&ttype=3";
+            var wo = {
+                id: "select_sched_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'scid',
+                autoFind: false,//是否自动查询
+                width: "500px",//
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'scdname', title: '班制', width: 100},
+                    {field: 'slinfo', title: '班次详情', width: 350}
+                ]
+            };
+            if (!select_sched_pw) {
+                select_sched_pw = new TSearchForm(wo);
+            }
+            select_sched_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("scdname" + dd, row.scdname);
+                        mainline.setFieldValue("scid" + dd, row.scid);
+                        mainline.setFieldValue("backcolor" + dd, row.backcolor);
+                    }
+                }
+            });
+            select_sched_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'yearmonth'">年月</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yearmonth',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_number',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ljdate'">离职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'ljdate',formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'scdname1'">班制名称1</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname1'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname2'">班制名称2</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname2'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname3'">班制名称3</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname3'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname4'">班制名称4</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname4'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname5'">班制名称5</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname5'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname6'">班制名称6</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname6'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname7'">班制名称7</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname7'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname8'">班制名称8</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname8'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname9'">班制名称9</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname9'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname10'">班制名称10</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname10'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname11'">班制名称11</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname11'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname12'">班制名称12</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname12'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname13'">班制名称13</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname13'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname14'">班制名称14</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname14'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname15'">班制名称15</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname15'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname16'">班制名称16</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname16'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname17'">班制名称17</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname17'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname18'">班制名称18</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname18'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname19'">班制名称19</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname19'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname20'">班制名称20</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname20'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname21'">班制名称21</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname21'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname22'">班制名称22</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname22'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname23'">班制名称23</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname23'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname24'">班制名称24</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname24'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname25'">班制名称25</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname25'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname26'">班制名称26</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname26'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname27'">班制名称27</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname27'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname28'">班制名称28</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname28'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname29'">班制名称29</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname29'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname30'">班制名称30</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname30'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname31'">班制名称31</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname31'" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

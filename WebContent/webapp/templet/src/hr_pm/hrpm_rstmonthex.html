@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_pm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>Title</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic1289",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1289",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'pmyear', title: '年', width: 64},
+            {field: 'pmonth', title: '月', width: 64},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'pmtype', title: '类别', width: 80, formatter: comUrl_dic1289.formator},
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'qrst', title: '绩效', width: 64},
+            {field: 'createtime', title: '创建时间', width: 150},
+            {field: 'remark', title: '备注', width: 200}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.pm.entity.Hrpm_rstmonthex",
+            JPAIdField: "pmmrid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '550px',
+            windowHeight: '250px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onCreate: function () {//创建对象前  mainline不可用
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url//,
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/perm/imppmmexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+    <head>
+
+    </head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'pmyear'">年</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pmyear'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'pmonth'">月</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pmonth'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'qrst'">绩效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'qrst'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',buttonIcon:'icon-search',onClickButton:onFindemployee"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'pmtype'">职位类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pmtype'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100%"/></td>
+    </tr>
+</table>
+</body>
+</html>

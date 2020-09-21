@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            getwfcounts();
+        }
+
+        function getwfcounts() {
+            $ajaxjsonget($C.cos.getWfCount(), function (data) {
+                $("#cur_work_wfnums").html("<a href='#' onclick='toMywork()'>当前共有流程(<label>" + data[0].ct + "</label>)个</a>");
+            }, function () {
+                alert("获取流程数量错误！");
+            });
+        }
+
+        function toMywork() {
+            this.top.toMywork();
+        }
+    </script>
+</head>
+<body style="font-size: 12px;margin: 0px auto;height: 100%">
+<div class="easyui-panel" title="当前工作" data-options="iconCls:'icon-task',border:false,fit:true">
+    <div id="cur_work_wfnums" style="padding: 5px">
+        <a href="#">当前共有流程(<label>0</label>)个</a>
+    </div>
+</div>
+</body>
+</html>

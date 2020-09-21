@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_card">
+<head lang="cn">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../jshr/hr.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1263",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1263",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'card_sn', title: '卡序列号', width: 100},
+            {field: 'card_number', title: '卡号', width: 80},
+            {field: 'finger_mark_no', title: '指纹登记号', width: 100},
+            {field: 'card_stat', title: '卡状态', width: 80, formatter: comUrl_dic1263.formator},
+            {field: 'effective_date', title: '生效时间', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'disable_date', title: '失效时间', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'orgcode', title: '机构编码', width: 100},
+            {field: 'orgname', title: '机构名称', width: 200},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'hwc_namezl', title: '职类', width: 80},
+            {field: 'hwc_namezq', title: '职群', width: 80},
+            {field: 'hwc_namezz', title: '职种', width: 80},
+            {field: 'hg_name', title: '职等', width: 80},
+            {field: 'lv_num', title: '职级', width: 60},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'creator', title: '创建人', width: 64},
+            {field: 'createtime', title: '创建时间', width: 64},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 64}
+        ];
+
+
+        var gdLinesColumns = [];
+        frmOptions = {
+            JPAClass: "com.hr.card.entity.Hr_ykt_card",
+            JPAIdField: "card_id",
+            allowAtt: false,
+            allowWF: false,
+            datainfo_pw_title: "卡档案",
+            allow_expt_list: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_void: false,
+            allow_new: false,
+            allow_del: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata) {
+                alert("不允许新建");
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+        function onReadCardSN() {
+            var cardsn = $readcardsn(); //检查卡机上是否有卡
+            if (cardsn == undefined) {
+                alert("没卡");
+                return;
+            }
+            var cardinfo = $ReadCardInfo();
+            var card_number = mainline.getFieldValue("card_number");
+            if ($isEmpty(card_number)) {
+                alert("无卡号");
+                return;
+            }
+
+            if (cardinfo.cardno != card_number) {
+                alert("卡号校验失败，请换卡重试");
+                return;
+            }
+            mainline.setFieldValue('card_sn', cardsn);
+        }
+
+    </script>
+</head>
+<body>
+<div style="display:none">
+    <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C"
+            codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0">
+    </object>
+</div>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'card_sn'">卡序列号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_sn',buttonIcon:'icon-search',onClickButton:onReadCardSN" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_number',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'finger_mark_no'">指纹登记号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'finger_mark_no'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_stat'">卡状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_stat',crequired:true,comidx:'dic1263',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'effective_date'">生效时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'effective_date',formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'disable_date'">失效时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'disable_date',formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">部门编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgcode',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">部门名称</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hwc_namezq'">职群</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezz'">职种</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',editable:false,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',editable:false,formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',editable:false,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,editable:false,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

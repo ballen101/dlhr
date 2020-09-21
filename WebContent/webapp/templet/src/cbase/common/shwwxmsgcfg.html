@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title>微信自动消息设置</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1375",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1375",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1381",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1381",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1378",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1378",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'wxappid', title: '微信appid', width: 150},
+            {field: 'acaption', title: '微信标题', width: 150},
+            {field: 'usable', title: '可用', width: 80, formatter: comUrl_dic5.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'create_time', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'update_time', title: '更新时间', width: 150}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'idx', title: '序号', width: 64},
+            {field: 'msgkey', title: '关键字', width: 150},
+            {field: 'cptype', title: '匹配方式 ', width: 100, formatter: comUrl_dic1375.formator},
+            {field: 'text_atrep_tp', title: '内容类型', width: 150, formatter: comUrl_dic1378.formator},
+            {field: 'usable', title: '可用', width: 80, formatter: comUrl_dic5.formator}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.weixin.entity.Shwwxmsgcfg",
+            JPAIdField: "mcid",
+            allowAtt: false,
+            allowWF: false,
+            gdLinesColumns: gdLinesColumns,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesName: 'shwwxmsgcfg_keys',   //行Grid ID对应到json 明细行属性 名
+            datainfo_line_title: "关键字规则（无匹配的规则发送默认回复）",
+            allow_expt_list: true,
+            autoFind: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            lineHeight: '400px',  //行grid高度  defwwwault 200
+            onCreate: function () {//创建对象前
+
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+                jsondata.text_atrep = 1;
+                jsondata.subscribe_atrep = 1;
+                jsondata.text_atrep_key = 1;
+                jsondata.text_atrep_tp = 1;
+                jsondata.subscribe_atrep_tp = 1;
+                jsondata.text_atrep_key_type = 2;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == "text_atrep_tp") {
+                    ontext_atrep_tpchg(newValue);
+                }
+                if (fdname == "subscribe_atrep_tp") {
+                    onsubscribe_atrep_tpchg(newValue);
+                }
+            },
+            onAddLine: function (append) {//点击添加明细行
+                showOptionInfo($C.action.New);
+            },
+            onLineGridDBClickRow: function (row) {
+                showOptionInfo($C.action.Edit, row);
+                return false; //false 将不调用edit方法
+            }
+        };
+
+
+        function ontext_atrep_tpchg(newValue) {
+
+        }
+
+        function onsubscribe_atrep_tpchg(newValue) {
+
+        }
+
+        var select_wxapp_pw = undefined;
+        function onFindWXAPP(acaption) {
+            var wo = {
+                id: "select_wxapp_pw",
+                JPAClass: "com.corsair.server.weixin.entity.Shwwxapp",  //对应后台JPAClass名  默认查询需要，自定义可能不需要
+                orderStr: " appid asc ",
+                multiRow: false,
+                idField: 'appid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'wxappid', title: '微信APPID', width: 150},
+                    {field: 'acaption', title: '微信名称', width: 200}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('appid', row.appid);
+                        mainline.setFieldValue('wxappid', row.wxappid);
+                        mainline.setFieldValue('acaption', row.acaption);
+                    }
+                }
+            };
+            if (!select_wxapp_pw) {
+                select_wxapp_pw = new TSearchForm(wo);
+            }
+            var extParms = [];
+            if (acaption) {
+                extParms.push({parmname: 'acaption', reloper: 'like', parmvalue: acaption});
+                select_wxapp_pw.extendOptions({
+                    autoFind: true,
+                    extParms: extParms
+                });
+            } else {
+                select_wxapp_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extParms
+                });
+            }
+            select_wxapp_pw.show();
+        }
+
+        var select_wxnews1_pw = undefined;
+        function onFindWXNews1(text_newstitle) {
+            var wo = {
+                id: "select_wxnews1_pw",
+                JPAClass: "com.corsair.server.weixin.entity.Wx_news",  //对应后台JPAClass名  默认查询需要，自定义可能不需要
+                orderStr: " newsid asc ",
+                multiRow: false,
+                idField: 'newsid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'newscode', title: '消息编码', width: 100},
+                    {field: 'newstitle', title: '消息标题', width: 300}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('text_newsid', row.newsid);
+                        mainline.setFieldValue('text_newstitle', row.newstitle);
+                    }
+                }
+            };
+            if (!select_wxnews1_pw) {
+                select_wxnews1_pw = new TSearchForm(wo);
+            }
+            var extParms = [];
+            if (text_newstitle) {
+                extParms.push({parmname: 'text_newstitle', reloper: 'like', parmvalue: text_newstitle});
+                select_wxnews1_pw.extendOptions({
+                    autoFind: true,
+                    extParms: extParms
+                });
+            } else {
+                select_wxnews1_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extParms
+                });
+            }
+            select_wxnews1_pw.show();
+        }
+
+        var select_wxnews2_pw = undefined;
+        function onFindWXNews2(text_newstitle) {
+            var wo = {
+                id: "select_wxnews2_pw",
+                JPAClass: "com.corsair.server.weixin.entity.Wx_news",  //对应后台JPAClass名  默认查询需要，自定义可能不需要
+                orderStr: " newsid asc ",
+                multiRow: false,
+                idField: 'newsid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'newscode', title: '消息编码', width: 100},
+                    {field: 'newstitle', title: '消息标题', width: 300}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('subscribe_newsid', row.newsid);
+                        mainline.setFieldValue('subscribe_newstitle', row.newstitle);
+                    }
+                }
+            };
+            if (!select_wxnews2_pw) {
+                select_wxnews2_pw = new TSearchForm(wo);
+            }
+            var extParms = [];
+            if (text_newstitle) {
+                extParms.push({parmname: 'text_newstitle', reloper: 'like', parmvalue: text_newstitle});
+                select_wxnews2_pw.extendOptions({
+                    autoFind: true,
+                    extParms: extParms
+                });
+            } else {
+                select_wxnews2_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extParms
+                });
+            }
+            select_wxnews2_pw.show();
+        }
+
+        var select_wxnews3_pw = undefined;
+        function onFindWXNews3(text_newstitle) {
+            var wo = {
+                id: "select_wxnews3_pw",
+                JPAClass: "com.corsair.server.weixin.entity.Wx_news",  //对应后台JPAClass名  默认查询需要，自定义可能不需要
+                orderStr: " newsid asc ",
+                multiRow: false,
+                idField: 'newsid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'newscode', title: '消息编码', width: 100},
+                    {field: 'newstitle', title: '消息标题', width: 300}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        OptionInfoWindow.setFieldValue('text_newsid', row.newsid);
+                        OptionInfoWindow.setFieldValue('text_newstitle', row.newstitle);
+                    }
+                }
+            };
+            if (!select_wxnews3_pw) {
+                select_wxnews3_pw = new TSearchForm(wo);
+            }
+            var extParms = [];
+            if (text_newstitle) {
+                extParms.push({parmname: 'text_newstitle', reloper: 'like', parmvalue: text_newstitle});
+                select_wxnews3_pw.extendOptions({
+                    autoFind: true,
+                    extParms: extParms
+                });
+            } else {
+                select_wxnews3_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extParms
+                });
+            }
+            select_wxnews3_pw.show();
+        }
+
+
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+                    cptype: 2,
+                    text_atrep_tp: 1,
+                    usable: 1,
+                    idx: 0
+                };
+                isnew = true;
+            } else {
+                var row = mainline.getSelectedLine();
+                if (tp == $C.action.Del) {//删除
+                    $.messager.confirm('提示', '确认删除?', function (r) {
+                        if (r) {
+                            mainline.removeSelectLine();
+                        }
+                    });
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#schedlinepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        mainline.addLineData(undefined, jsondata);
+                    } else {
+                        mainline.updateLineData(undefined, jsondata);
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            else
+                OptionInfoWindow.extendOptions({
+                    isNew: isnew,
+                    jsonData: jsondata
+                });
+            OptionInfoWindow.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <style type="text/css">
+        #maindata_id td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+
+        .uploada {
+            color: red;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">基本信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'acaption'">微信</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'acaption',buttonIcon:'icon-search',onClickButton:onFindWXAPP"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'usable'">可用</td>
+        <td colspan="2">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5',editable:false"
+                   style="height:20px;width: 120px"/>
+            (禁用后不会回复任何信息)
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">默认消息自动回复设置</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'text_atrep'">启用</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'text_atrep_tp'">回复内容</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_tp',multiple:true,crequired:true,comidx:'dic1378',editable:false"
+                style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'text_newstitle'">图文消息</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'text_newstitle',buttonIcon:'icon-search',onClickButton:onFindWXNews1"
+                style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'text_resend_openids'">文本消息转发</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'text_resend_openids'"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'text_atrep_msg'">文本消息</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_msg',multiline:true"
+                               style="height: 100px;width: 100%"/>
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">关注后回复设置</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'subscribe_atrep'">启用</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'subscribe_atrep',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'subscribe_atrep_tp'">回复内容</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'subscribe_atrep_tp',multiple:true,crequired:true,comidx:'dic1378',editable:false"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'subscribe_newstitle'">图文消息</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'subscribe_newstitle',buttonIcon:'icon-search',onClickButton:onFindWXNews2"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'subscribe_atrep_msg'">文本消息</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'subscribe_atrep_msg',multiline:true"
+                               style="height:100px;width: 100%"/></td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">关键字消息自动回复配置</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'text_atrep_key'">启用</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_key',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 120px"/>
+        <td cjoptions="fdname:'text_atrep_key_type'">检索方式</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_key_type',crequired:true,comidx:'dic1375',editable:false"
+                style="height:20px;width: 120px"/></td>
+        </td>
+    </tr>
+</table>
+
+<div id="schedlinepw" class="easyui-window" title="关键字设置" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 600px;height: 250px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table>
+                <tr>
+                    <td cjoptions="fdname:'msgkey'">关键字</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'msgkey',crequired:true"
+                               style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'cptype'">匹配方式</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'cptype',crequired:true,comidx:'dic1381',editable:false"
+                            style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'idx'">序号</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'idx'" style="height:20px;width: 120px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'text_atrep_tp'">回复内容</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_tp',multiple:true,crequired:true,comidx:'dic1378',editable:false"
+                            style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'text_newstitle'">图文消息</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'text_newstitle',buttonIcon:'icon-search',onClickButton:onFindWXNews3"
+                            style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'usable'">可用</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5',editable:false"
+                            style="height:20px;width: 120px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'text_atrep_msg'">文本消息</td>
+                    <td colspan="5"><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'text_atrep_msg',multiline:true"
+                            style="height:60px;width: 100%"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:60px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:60px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

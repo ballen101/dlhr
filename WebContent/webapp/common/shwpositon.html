@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/shwpostion.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function positionNameFormatter(val, row) {
+            return "<span class='icon-user_group' style='height: 100%;width: 16px;margin-left: 2px;padding-right: 10px;display: inline-block;'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>" + val;
+        }
+    </script>
+</head>
+<body>
+<table id="tb_positions" class="easyui-datagrid" style=""
+       data-options="fit:true,border:false,toolbar:'#toolbarPosi',singleSelect: true">
+    <thead>
+    <tr>
+        <th data-options="field:'positiondesc',width:200,formatter:positionNameFormatter">岗位名</th>
+    </tr>
+    </thead>
+</table>
+
+<div id="toolbarPosi" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onclick="toolbarAction($C.action.Edit)">编辑</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="toolbarAction($C.action.Append)">添加</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="toolbarAction($C.action.Del)">删除</a>
+</div>
+
+
+<div id="positionInfoWindow" class="easyui-window" title="岗位信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:350px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="tabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px">
+                    <table id="shwpositionform" border="0" style="width: 99%;height: 99%">
+                        <tr>
+                            <td>岗位描述</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'positiondesc'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>上级岗位</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'superposition'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>下级岗位</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'lowerposition'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>性别</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'sex',dicgpid:81"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>年龄</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'age'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>学历</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'degree',dicgpid:84"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>语言</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'lang'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>职责</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'duty'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>可用</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'isvisible',dicgpid:2"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>必要技能</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'mustreq'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>推荐技能</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'specialreq'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="包含用户" style="padding:0px;">
+                    <table id="position_users" class="easyui-datagrid" style=""
+                           data-options="fit:true,
+                       border:false,
+                       singleSelect: true
+                       ">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'username',width:200">登录名</th>
+                            <th data-options="field:'displayname',width:100">姓名</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

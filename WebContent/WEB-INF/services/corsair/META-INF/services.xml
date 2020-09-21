@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceGroup>
+    <service name="CorsairCommon" scope="transportsession">
+        <description>CorsairCommon</description>
+        <parameter name="ServiceClass" locked="false">
+             com.corsair.server.base.BasePublish
+        </parameter>
+        <operation name="rpc_proc0">
+            <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+    </service>
+      
+</serviceGroup>

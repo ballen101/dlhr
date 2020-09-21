@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Corsair Workflow temple procecure</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title></title>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic16",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=16",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic53",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=53",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic245",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=245",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic2",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=2",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic201",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=201",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic474",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=474",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+
+    <script type="text/javascript">
+        var els_all, els_readonly, els_lables;
+        var procdata, jpainfoJSON;
+        var selectJAPProterys = undefined;//jpa属性选择框
+        var selectUserTree = undefined;//选择用户名
+        var selectoptionstree = undefined;//岗位选择框
+
+
+        var jsonbanding = new TJSONBandingFrm();
+
+        function $OnCorsairReady() {
+            procdata = parent.curNdWinfo.getData();
+            jpainfoJSON = parent.jpainfoJSON;
+            if ((jpainfoJSON == null) || (jpainfoJSON == undefined)) {
+                $.messager.alert('错误', '没有选择JPA类', 'error');
+                return;
+            }
+            // $("#nodeInfotabmain").c_initDictionary();
+            initselcts();
+            initGrids();
+        }
+
+
+        var findorgEditor = {
+            type: 'combobox',
+            options: {
+                valueField: 'id', textField: 'value',
+                data: jpainfoJSON
+            }
+        };
+
+        var findorgFormator = function (value, row) {
+            for (var i = 0; i < jpainfoJSON.length; i++) {
+                var r = jpainfoJSON[i];
+                if (r.id == value) {
+                    return r.value;
+                }
+            }
+            return value;
+        };
+
+
+        comUrl_dic16.editor.options.onChange = function (newValue, oldValue) {
+            var dg = $("#shwwftempprocusers");
+            var row = dg.datagrid('getSelected');
+            var rindex = dg.datagrid('getRowIndex', row);
+
+
+            var isposition = parseInt(row.isposition);
+            if (isposition == 2) {
+                newValue = undefined;
+                row.userfindorgid = undefined;
+                row.userfindtype = undefined;
+                return;
+            }
+
+            var ed = dg.datagrid('getEditor', {
+                index: rindex,
+                field: 'userfindorgid'
+            });
+            ed = $(ed.target);
+            if (newValue == 3) {
+                ed.combobox("loadData", jpainfoJSON);
+            } else
+                ed.combobox("loadData", []);
+            ed.combobox("setValue", "");
+        };
+
+        function initGrids() {
+            $("#shwwftempprocusers").datagrid({
+                columns: [
+                    [
+                        {field: 'displayname', title: '用户名/岗位名', width: 200},
+                        {
+                            field: 'jointype',
+                            title: '参与类型',
+                            width: 100,
+                            formatter: comUrl_dic245.formator
+                        },
+                        {
+                            field: 'userfindcdt',
+                            title: '岗位查找类型',
+                            width: 100,
+                            formatter: comUrl_dic16.formator
+                        },
+                        {
+                            field: 'userfindorgid',
+                            title: '表单机构ID',
+                            width: 100,
+                            editor: findorgEditor
+                        },
+                        {
+                            field: 'userfindtype',
+                            title: '岗位查找方式',
+                            width: 100,
+                            formatter: comUrl_dic474.formator
+                        },
+                        {
+                            field: 'recnotify',
+                            title: '通知',
+                            width: 60,
+                            formatter: comUrl_dic5.formator
+                        },
+                        {
+                            field: 'recpress',
+                            title: '催办',
+                            width: 60,
+                            formatter: comUrl_dic5.formator
+                        }
+                    ]
+                ]
+            });
+            $("#shwwftempprocconditions").datagrid({
+                columns: [
+                    [
+                        {field: 'pdidx', title: '序号', width: 64, editor: 'numberbox'},
+                        {
+                            field: 'parmname', title: '参数名', width: 100, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: jpainfoJSON
+                            }
+                        }, formatter: function (value, row) {
+                            for (var i = 0; i < jpainfoJSON.length; i++) {
+                                var r = jpainfoJSON[i];
+                                if (r.id == value) {
+                                    return r.value;
+                                }
+                            }
+                            return value;
+                        }
+                        },
+                        {
+                            field: 'reloper', title: '运算关系', width: 100, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: [
+                                    {id: 'any', value: 'any'},
+                                    {id: '>', value: '>'},
+                                    {id: '>=', value: '>='},
+                                    {id: '<', value: '<'},
+                                    {id: '<=', value: '<='},
+                                    {id: '<>', value: '<>'},
+                                    {id: '=', value: '='}
+                                ]
+                            }
+                        }
+                        },
+                        {field: 'parmvalue', title: '参数值', width: 100, editor: 'text'},
+                        {
+                            field: 'allowedit',
+                            title: '允许编辑',
+                            width: 100,
+                            formatter: comUrl_dic53.formator,
+                            editor: comUrl_dic53.editor
+                        },
+                        {
+                            field: 'visible',
+                            title: '可见',
+                            width: 100,
+                            formatter: comUrl_dic53.formator,
+                            editor: comUrl_dic53.editor
+                        },
+                        {field: 'ppdidx', title: '前置序号', width: 64, editor: 'numberbox'}
+                    ]
+                ]
+            });
+            $("#mrsExtParms_protertys").datagrid({
+                columns: [
+                    [
+                        {field: 'parmname', title: '参数名', width: 100, editor: 'text'},
+                        {field: 'parmvalue', title: '参数值', width: 100, editor: 'text'},
+                        {field: 'color', title: '颜色', width: 100, editor: 'text'}
+                    ]
+                ]
+            });
+            $("#ExtParms_httpcall_protertys").datagrid({
+                columns: [
+                    [
+                        {field: 'parmname', title: '参数名', width: 100, editor: 'text'},
+                        {field: 'parmvalue', title: '参数值', width: 100, editor: 'text'}
+                    ]
+                ]
+            });
+            $("#shwwftemplinklineconditions").datagrid({
+                columns: [
+                    [
+                        {
+                            field: 'parmname', title: '参数名', width: 100, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: jpainfoJSON
+                            }
+                        }, formatter: function (value, row) {
+                            for (var i = 0; i < jpainfoJSON.length; i++) {
+                                var r = jpainfoJSON[i];
+                                if (r.id == value) {
+                                    return r.value;
+                                }
+                            }
+                            return value;
+                        }
+                        },
+                        {
+                            field: 'reloper', title: '运算关系', width: 100, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: [
+                                    {id: 'any', value: 'any'},
+                                    {id: '>', value: '>'},
+                                    {id: '>=', value: '>='},
+                                    {id: '<', value: '<'},
+                                    {id: '<=', value: '<='},
+                                    {id: '<>', value: '<>'},
+                                    {id: '=', value: '='}
+                                ]
+                            }
+                        }
+                        },
+                        {field: 'parmvalue', title: '参数值', width: 100, editor: 'text'},
+                        {
+                            field: 'allowedit',
+                            title: '允许编辑',
+                            width: 100,
+                            formatter: comUrl_dic53.formator,
+                            editor: comUrl_dic53.editor
+                        }
+                    ]
+                ]
+            });
+            var els = jsonbanding.getInputArray("#nodeInfotabmain");
+            els_all = els.els_all;
+            els_readonly = els.els_readonly;
+            els_lables = els.els_lables;
+            setTimeout("showDatas();", 1000);
+        }
+
+        function initselcts() {
+            var poptions = {
+                url: "selectOrgUser.html",
+                title: "选择用户",
+                woptions: "modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'",
+                style: "width:300px;height:400px;padding: 0px",
+                chtch: false
+            };
+            selectUserTree = new $showModalDialog(poptions);
+
+            var poptions = {
+                url: "selectPosition.html",
+                title: "选择岗位",
+                woptions: "modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'",
+                style: "width:300px;height:400px;padding: 0px",
+                chtch: false
+            };
+            selectoptionstree = new $showModalDialog(poptions);
+        }
+
+
+        function showDatas() {
+            jsonbanding.fromJsonData(els_all, procdata);
+            jsonbanding.gridFromJSONdata("#nodeInfotabmain", procdata);
+        }
+
+        var select_user_pw = undefined;
+        function onFindUser(dftdata) {
+            var wo = {
+                id: "select_user_pw",
+                coURL: _serUrl + "/web/user/findOrgUser.co",
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'username', title: '用户名', width: 80},
+                    {field: 'displayname', title: '姓名', width: 80},
+                    {field: 'extorgname', title: '机构', width: 200, notfind: true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var tuser = rows[0];
+                        PW_UserInfo.setFieldValue("isposition", 2);
+                        PW_UserInfo.setFieldValue("userid", tuser.userid);
+                        PW_UserInfo.setFieldValue("displayname", tuser.displayname);
+                        disableAndClearEdits();
+                    }
+                }
+            };
+            if (!select_user_pw) {
+                select_user_pw = new TSearchForm(wo);
+            }
+            select_user_pw.show();
+        }
+
+        /*
+         function nodeUserAdd(apt) {
+         var nddata = procdata;//节点数据
+         var ou = {
+         wftempid: nddata.wftempid,
+         proctempid: nddata.proctempid,
+         stat: 1,
+         jointype: 2,
+         recnotify: 1,
+         recpress: 1,
+         userfindtype: 2,
+         sortindex: $("#shwwftempprocusers").datagrid("getData").rows.length + 1
+         };
+         if (apt == 1) {//用户
+         onFindUser(ou);
+         }
+         if (apt == 2) {//岗位
+         selectoptionstree.show({}, function (op) {
+         if (!checkExcits(op.positionid, 1)) {
+         $C.grid.append("shwwftempprocusers", $.extend({
+         isposition: 1,
+         userid: op.positionid,
+         displayname: op.positiondesc
+         }, ou), true);
+         }
+         return true;
+         }
+         );
+         }
+         if (apt == 3) {//提交人
+         if (!checkExcits(-1, 2)) {
+         $C.grid.append("shwwftempprocusers", $.extend({
+         isposition: 2,
+         userid: -1,
+         displayname: "[提交人]"
+         }, ou), false);
+         }
+         }
+         if (apt == 4) {//流程管理员
+         if (!checkExcits(-2, 2)) {
+         $C.grid.append("shwwftempprocusers", $.extend({
+         isposition: 2,
+         userid: -2,
+         displayname: "[流程管理员]"
+         }, ou), false);
+         }
+         }
+         }
+         */
+        function checkExcits(id, isposition) {
+            var wfus = $("#shwwftempprocusers").datagrid("getData").rows;
+            for (var i = 0; i < wfus.length; i++) {
+                var wfu = wfus[i];
+                if ((parseInt(wfu.isposition) == isposition) && (wfu.userid == id))
+                    return true
+            }
+            return false;
+        }
+
+        function selectAndPudValue(tp, txte) {
+            if (tp == 1) {
+                selectUserTree.pop({
+                    onOk: function (tuser) {
+                        if (tuser.tp != 'usr') {
+                            $.messager.alert('错误', '您选择的不是“用户”', 'error');
+                            return;
+                        }
+                        var key = "<#user[" + tuser.id + "]#>";
+                        var value = $("#" + txte).textbox("getValue");
+                        var lc = value.charAt(value.length - 1);
+                        if ((lc == ",") || (value.length == 0)) {
+                            $("#" + txte).textbox("setValue", value + key);
+                        } else
+                            $("#" + txte).textbox("setValue", value + "," + key);
+                    }
+                });
+            }
+            if (tp == 2) {
+                selectJAPProterys.pop({
+                    data: jpainfoJSON,
+                    onOk: function (rec) {
+                        var nv = "<*" + rec.id + "*/>";
+                        var value = $("#" + txte).textbox("getValue");
+                        var lc = value.charAt(value.length - 1);
+                        if ((lc == ",") || (value.length == 0)) {
+                            $("#" + txte).textbox("setValue", value + nv);
+                        } else
+                            $("#" + txte).textbox("setValue", value + "," + nv);
+                    }
+                });
+            }
+            if (tp == 3) {
+
+            }
+            if (tp == 4) {
+                selectWFbuildinParms.pop({
+                    onOk: function (rec) {
+                        var nv = rec.id;
+                        var value = $("#" + txte).textbox("getValue");
+                        var lc = value.charAt(value.length - 1);
+                        if ((lc == ",") || (value.length == 0)) {
+                            $("#" + txte).textbox("setValue", value + nv);
+                        } else
+                            $("#" + txte).textbox("setValue", value + "," + nv);
+                    }
+                });
+            }
+        }
+
+
+        function OnOKModalDialog() {
+            jsonbanding.acceptAllGrid("#nodeInfotabmain", procdata);
+            procdata = jsonbanding.toJsonData(els_all, procdata, false);
+            return procdata;
+        }
+
+        function OnCancelModalDialog() {
+            return undefined;
+        }
+
+        var PW_UserInfo = undefined;//审批用户弹出窗口
+        //1添加用户 2 添加角色 3 添加提交人 4 添加流程管理员 5 编辑
+        function doShowUserInfoWindow(isnew, jsondata) {
+            if (isnew) {
+                var nddata = procdata;//节点数据
+                var jsondata = {
+                    wftempid: nddata.wftempid,
+                    proctempid: nddata.proctempid,
+                    stat: 1,
+                    jointype: 2,
+                    recnotify: 1,
+                    recpress: 1,
+                    userfindtype: 2,
+                    sortindex: $("#shwwftempprocusers").datagrid("getData").rows.length + 1
+                };
+            }
+            var op = {
+                windowfilter: '#pwuserinfoid',
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        if (!checkExcits(jsondata.userid, jsondata.isposition)) {
+                            $("#shwwftempprocusers").datagrid("appendRow", jsondata);
+                        }
+                    } else {
+                        var srow = $("#shwwftempprocusers").datagrid("getSelected");
+                        if (!srow) {
+                            $.messager.alert('错误', '选择当前行!', 'error');
+                            return;
+                        }
+                        var idx = $("#shwwftempprocusers").datagrid("getRowIndex", srow);
+                        $("#shwwftempprocusers").datagrid("updateRow", {
+                            index: idx,
+                            row: jsondata
+                        });
+                        $("#shwwftempprocusers").datagrid("refreshRow", idx);
+                    }
+                    return true;
+                },
+                onEditChanged: function (fdname, newValue, oldValue) { //事件  字段变化
+                    if (fdname == "userfindcdt") {
+                        var userfindcdt = PW_UserInfo.getFieldValue("userfindcdt");
+                        if (!$isEmpty(userfindcdt)) {
+                            if (parseInt(userfindcdt) == 3)
+                                enableEdits(1);
+                            else
+                                disableAndClearEdits(1);
+                        }
+                    }
+                },
+                onShow: function (isnew, jsondata) {
+                    var fd = PW_UserInfo.getField("userfindorgid");
+                    fd.combobox({
+                        valueField: 'id', textField: 'value',
+                        data: jpainfoJSON
+                    });
+                    if (parseInt(jsondata.isposition) == 1) {
+                        enableEdits();
+                    } else {
+                        disableAndClearEdits();
+                    }
+                    var userfindcdt = PW_UserInfo.getFieldValue("userfindcdt");
+                    if (!$isEmpty(userfindcdt)) {
+                        if (parseInt(userfindcdt) == 3)
+                            enableEdits(1);
+                        else
+                            disableAndClearEdits(1);
+                    }
+                }
+            };
+            if (!PW_UserInfo)
+                PW_UserInfo = new CPopInfoWindow(op);
+            PW_UserInfo.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            PW_UserInfo.show();
+        }
+
+        //1用户 2岗位 3提交人 4管理员
+        function setuser(tp) {
+            if (tp == 1) {
+                var dftdata = PW_UserInfo.getdata();
+                onFindUser(dftdata);
+            }
+            if (tp == 2) {
+                selectoptionstree.show({}, function (op) {
+                    PW_UserInfo.setFieldValue("isposition", 1);
+                    PW_UserInfo.setFieldValue("userid", op.positionid);
+                    PW_UserInfo.setFieldValue("displayname", op.positiondesc);
+                    enableEdits();
+                    return true;
+                });
+            }
+            if (tp == 3) {
+                PW_UserInfo.setFieldValue("isposition", 2);
+                PW_UserInfo.setFieldValue("userid", -1);
+                PW_UserInfo.setFieldValue("displayname", "[提交人]");
+                disableAndClearEdits();
+            }
+            if (tp == 4) {
+                PW_UserInfo.setFieldValue("isposition", 2);
+                PW_UserInfo.setFieldValue("userid", -2);
+                PW_UserInfo.setFieldValue("displayname", "[流程管理员]");
+                disableAndClearEdits();
+            }
+        }
+
+        function disableAndClearEdits(tp) {
+            if (tp != 1)
+                PW_UserInfo.setFieldValue("userfindcdt", undefined);
+            PW_UserInfo.setFieldValue("userfindtype", undefined);
+            PW_UserInfo.setFieldValue("userfindorgid", undefined);
+            if (tp != 1)
+                PW_UserInfo.setFieldReadOnly("userfindcdt", true);
+            PW_UserInfo.setFieldReadOnly("userfindtype", true);
+            PW_UserInfo.setFieldReadOnly("userfindorgid", true);
+        }
+
+        function enableEdits(tp) {
+            if (tp != 1)
+                PW_UserInfo.setFieldReadOnly("userfindcdt", false);
+            PW_UserInfo.setFieldReadOnly("userfindtype", false);
+            PW_UserInfo.setFieldReadOnly("userfindorgid", false);
+        }
+
+    </script>
+
+
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div id="nodeInfotabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+    <div title="常规" style="padding:5px;">
+        <table id="shwwfnodeform" border="0" style="width: auto;height: auto">
+            <tr style="font-weight: 700; background-color: #D3D3D3">
+                <td colspan="8">基本信息</td>
+            </tr>
+            <tr>
+                <td>节点ID</td>
+                <td>
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'proctempid',readonly:true"
+                           style="height:20px;width: 100px"/>
+                </td>
+            </tr>
+            <tr>
+                <td>节点名</td>
+                <td>
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'proctempname'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td>节点类型</td>
+                <td>
+                    <input id="input_proctype"
+                           cjoptions="easyui_class:'easyui-textbox',fdname:'proctype',comidx:'dic201'"
+                           style="height:20px;width: 100px"/><!--data-options="onSelect: onProceTypeChange"-->
+                </td>
+                <td>锁定节点</td>
+                <td>
+                    <input id="input_clockdata"
+                           cjoptions="easyui_class:'easyui-textbox',fdname:'clockdata',comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+            </tr>
+            <tr>
+                <td cjoptions="fdname:'allowemptyuser'">创建流程允许空审批人</td>
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'allowemptyuser',required:true,comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td>节点超时(小时)</td>
+                <td>
+                    <input id="input_timeout"
+                           cjoptions="easyui_class:'easyui-numberbox',fdname:'timeout',min:0,precision:0"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td>超时提醒</td>
+                <td>
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'itmeoutmsg',comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+            </tr>
+            <tr>
+                <td>页面路径</td>
+                <td colspan="5">
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'formurl'"
+                           style="height:20px;width: 100%"/>
+                </td>
+            </tr>
+            <tr style="font-weight: 700; background-color: #D3D3D3">
+                <td colspan="8">流程评审</td>
+            </tr>
+            <tr>
+                <td cjoptions="fdname:'canreject'">允许驳回</td>
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'canreject',required:true,comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td cjoptions="fdname:'canbreak'">允许中断</td>
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'canbreak',required:true,comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td cjoptions="fdname:'canmodify'">允许编辑流程</td>
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'canmodify',required:true,comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+            </tr>
+            <tr>
+                <td>最小通过人数</td>
+                <td>
+                    <input id="input_minperson" cjoptions="easyui_class:'easyui-textbox',fdname:'minperson'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td>编辑明细数据</td>
+                <td>
+                    <input id="input_caneditlinedata"
+                           cjoptions="easyui_class:'easyui-textbox',fdname:'caneditlinedata',comidx:'dic5'"
+                           style="height:20px;width: 100px"/>
+                </td>
+                <td cjoptions="fdname:'selectuser'">选择审批人</td>
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'selectuser',crequired:true,comidx:'dic5'"
+                           style="height:20px;width: 100px"/></td>
+            </tr>
+            <tr style="font-weight: 700; background-color: #D3D3D3">
+                <td colspan="8">其他</td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td colspan="5">
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'checkfunc'"
+                           style="height:20px;width: 100%"/>
+                </td>
+            </tr>
+            <tr>
+                <td>扩展参数</td>
+                <td colspan="5">
+                    <input cjoptions="easyui_class:'easyui-textbox',fdname:'procoption'"
+                           data-options="multiline:true,validType:['length[0,2028]']"
+                           style="height:80px;width: 100%"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div title="执行人" style="padding:0px;">
+        <table id="shwwftempprocusers" class="easyui-datagrid"
+               data-options="singleSelect:true,border:false,toolbar:'#toolbarNodeUser',
+                           onDblClickRow:function(index, row){doShowUserInfoWindow(false,row)}">
+        </table>
+    </div>
+    <div title="执行条件" style="padding:0px;">
+        <table id="shwwftempprocconditions" class="easyui-datagrid"
+               data-options="singleSelect:true,border:false,toolbar:'#toolbarNodeCondtion',
+                           onClickRow:function(){ $C.grid.accept('shwwftempprocconditions');},
+                           onDblClickRow:function(){ $C.grid.edit('shwwftempprocconditions');}">
+        </table>
+    </div>
+</div>
+
+<div id="pwuserinfoid" class="easyui-window" title="审批人信息"
+     data-options="iconCls:'icon-user',collapsible:false,minimizable:false,closed:true,modal:true"
+     style="width: 450px;height: 250px;padding:5px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table border="0" style="width: auto">
+                <tr>
+                    <td colspan="6">
+                        <a class="easyui-linkbutton" data-options="iconCls:'icon-user',plain:false"
+                           onclick="setuser(1)">设置用户</a>
+                        <a class="easyui-linkbutton" data-options="iconCls:'icon-user',plain:false"
+                           onclick="setuser(2)">设置岗位</a>
+                        <a class="easyui-linkbutton" data-options="iconCls:'icon-user',plain:false"
+                           onclick="setuser(3)">设置提交人</a>
+                        <a class="easyui-linkbutton" data-options="iconCls:'icon-user',plain:false"
+                           onclick="setuser(4)">设置流程管理员</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'displayname'">用户名/岗位名</td>
+                    <td colspan="1">
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'displayname',readonly:true" style="height:20px;width: 100%"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'userfindcdt'">岗位查找类型</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'userfindcdt',comidx:'dic16'" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'userfindorgid'">表单机构字段</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'userfindorgid',comidx:'dic5'" style="height:20px;width: 100px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'userfindtype'">岗位查找方式</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'userfindtype',comidx:'dic474'" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'jointype'">参与方式</td>
+                    <td>
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'jointype',crequired:true,comidx:'dic245'" style="height:20px;width: 100px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'recnotify'">通知</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'recnotify',comidx:'dic5'" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'recpress'">催办</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'recpress',comidx:'dic5'" style="height:20px;width: 100px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="toolbarNodeCondtion" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('shwwftempprocconditions', {}, true);">添加条件</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('shwwftempprocconditions');">删除</a>
+</div>
+
+<div id="toolbar_mrsExtParms_protertys" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('mrsExtParms_protertys', {}, true);">添加参数</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('mrsExtParms_protertys');">删除</a>
+</div>
+
+
+<div id="toolbar_ExtParms_httpcall_protertys" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('ExtParms_httpcall_protertys', {}, true);">添加参数</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('ExtParms_httpcall_protertys');">删除</a>
+</div>
+
+<div id="toolbarNodeUser" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="doShowUserInfoWindow(true)">添加</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('shwwftempprocusers');">删除</a>
+</div>
+</body>
+</html>

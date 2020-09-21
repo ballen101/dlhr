@@ -1,0 +1,106 @@
+<html class="panel-fit">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title></title>
+    <script type='text/javascript'>
+        var demodata = {
+            employee_code: "705925",
+            hdays: 2,
+            timebg: "2018-01-01 08:00:00",
+            timeed: "2018-01-03 08:00:00",
+            htid: 2,
+            htreason: "有事",
+            remark: "MCAS请假信息",
+            hrkq_holidayapp_months: [
+                {
+                    yearmonth: "2018-01",
+                    lhdays: 2,
+                    remark: "MCAS请假信息"
+                }
+            ]
+        };
+
+
+        function $OnCorsairReady() {
+
+        }
+
+        function dotest() {
+            var data = $("#inpdata").val();
+            try {
+                data = JSON.parse(data);
+            } catch (err) {
+                alert("JSON格式错误:" + err.message);
+                return;
+            }
+            //var url = _serUrl + "/hr/published1/hrkq_holidayapp_new.co";
+            var url = _serUrl + $("#urlmeth").textbox("getValue");
+
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                //alert(JSON.stringify(jsdata));//成功的返回值
+                $("#outputtxt").val(JSON.stringify(jsdata));
+            }, function (err) {
+                alert(err.errmsg);//错误的返回值
+            });
+//成功后的返回值:
+//{"_jpastat":"RSUPDATED","haid":"8892","hacode":"HA1801120009","er_id":"137959","employee_code":"705925","employee_name":"杜传莉","orgid":"9458","orgcode":"00009495","orgname":"新宝股份-滁州东菱电器有限公司-水壶项目部-生产科-K11","ospid":"18420","ospcode":"OP17041356","sp_name":"装配工","lv_num":"8.0","hdays":"2.0","hdaystrue":"2.0","timebg":"2018-01-01 08:00:00","timeed":"2018-01-03 08:00:00","timeedtrue":"2018-01-03 08:00:00","htid":"2","htname":"公假","htreason":"有事","htconfirm":"1","viodeal":null,"timebk":"","btconfirm":"","orghrlev":"0","iswfagent":"1","emplev":"0","remark":"MCAS请假信息","wfid":"","attid":"","stat":"9","idpath":"idpath","entid":"1","creator":"inteface","createtime":"2018-01-12 11:56:09","updator":"","updatetime":"2018-01-12 11:56:09","attribute1":"","attribute2":"","attribute3":"","attribute4":"","attribute5":"","shw_attachs":[],"hrkq_holidayapp_months":[{"_jpastat":"RSLOAD4DB","hamid":"9791","haid":"8892","yearmonth":"2018-01","lhdays":"2.0","lhdaystrue":"2.0","remark":"MCAS请假信息"}]}
+        }
+
+    </script>
+
+</head>
+<body style="padding: 10px;overflow: auto">
+<table>
+    <tr>
+        <td>
+            测试方法:<input id="urlmeth" class="easyui-textbox" style="width:300px" value="/hr/published1/hrkq_holidayapp_new.co">
+        </td>
+        <td>
+            <div onclick="dotest()" style="height: 20px;background-color: #99cdff;width: 100px;padding: 5px">
+                点击提交数据
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>提交的数据</td>
+        <td>返回结果</td>
+    </tr>
+    <tr>
+        <td>
+  <textarea id="inpdata" name="inpdata" style="width:450px;height:350px;">
+        {
+            "employee_code": "705925",
+            "hdays": 2,
+            "timebg": "2018-01-01 08:00:00",
+            "timeed": "2018-01-03 08:00:00",
+            "htid": 2,
+            "htreason": "有事",
+            "remark": "MCAS请假信息",
+            "hrkq_holidayapp_months": [
+                {
+                    "yearmonth": "2018-01",
+                    "lhdays": 2,
+                    "remark": "MCAS请假信息"
+                }
+            ]
+        }
+    </textarea>
+        </td>
+        <td>
+  <textarea id="outputtxt" style="width:450px;height:350px;">
+
+    </textarea>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

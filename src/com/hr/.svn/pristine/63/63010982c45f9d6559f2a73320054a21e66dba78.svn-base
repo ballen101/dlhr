@@ -1,0 +1,220 @@
+package com.hr.timer;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimerTask;
+
+import org.json.JSONObject;
+
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.generic.Shworg;
+import com.hr.attd.entity.Hrkq_bckqrst;
+import com.hr.attd.entity.Hrkq_parms;
+import com.hr.msg.entity.Hr_kq_day_report;
+import com.hr.msg.entity.Hr_kq_depart_day_report;
+import com.hr.msg.entity.Hr_msg_config;
+import com.hr.msg.entity.Wx_msg_send;
+import com.hr.util.DateUtil;
+import com.hr.util.HRUtil;
+import com.hr.util.wx.SendMsgUtil;
+
+import net.sf.json.JSONArray;
+
+/*
+ * 运算当月无打卡，补签次数
+ */
+public class TaskKqSendWx  extends TimerTask {
+
+	// 亲爱的{{employee_name}}，您好！您{{time}}号考勤漏打卡{{yer_no_card_num}}次（{{yer_no_card_times}}），本月合计漏打卡{{no_card_num}}次，截止目前已补签{{make_up_num}}次，请及时登录系统处理异常，谢谢。
+	// 尊敬的{{employee_name}}，您好！截止{{time}}{{orgname}}应出勤人数{{zz}}人，实际出勤{{cq}}人、调休{{tx}}人、请假{{qj}}人、出差{{cc}}人、未打卡{{wdk}}人，出勤达成率为{{dcl}}，谢知悉！
+
+
+
+
+
+	private void sendWxDepart() {
+		// 获取模板
+		try {
+			String msgTemplate = "";
+			Hrkq_parms msg_template = new Hrkq_parms();
+			CJPALineData<Wx_msg_send> saveMsgList = new CJPALineData<Wx_msg_send>(Hr_msg_config.class);
+			List<Hr_kq_depart_day_report> reportList = new ArrayList<Hr_kq_depart_day_report>();
+			String sqlstr = "select * from hrkq_parms where parmcode='WX_KQ_MSG_DEPART'";
+			msg_template.findBySQL(sqlstr);
+			if (!msg_template.isEmpty()) {
+				// 先获取配置所有订阅的公司
+				msgTemplate = msg_template.parmvalue.getValue();
+				String sql = "select DISTINCT(orgname) as orgname,idpath from Hr_msg_config where usable='1'";
+				CJPALineData<Hr_msg_config> cas = new CJPALineData<Hr_msg_config>(Hr_msg_config.class);
+				cas.findDataBySQL(sql);
+				for (CJPABase jpa : cas) {
+					Hr_msg_config ca = (Hr_msg_config) jpa;
+					Hr_kq_depart_day_report report = new Hr_kq_depart_day_report();
+					report.orgname.setValue(ca.orgname.getValue());
+					getDepartKqRealTime(report, ca.idpath.getValue(), Systemdate.getStrDateyyyy_mm_dd());
+					reportList.add(report);
+				}
+				// 获取订阅关系
+				// 尊敬的{{employee_name}}，您好！截止{{time}}{{orgname}}应出勤人数{{zz}}人，实际出勤{{cq}}人、调休{{tx}}人、请假{{qj}}人、出差{{cc}}人、未打卡{{wdk}}人，出勤达成率为{{cqdcl}}，谢知悉！
+				String sqlconfig = "select * from Hr_msg_config where usable='1'";
+				cas.findDataBySQL(sqlconfig);
+				for (CJPABase jpa : cas) {
+					Hr_msg_config msgConfig = (Hr_msg_config) jpa;
+					for (Hr_kq_depart_day_report report : reportList) {
+						if (report.orgname.getValue().equals(msgConfig.orgname.getValue())) {
+							msgTemplate = msg_template.parmvalue.getValue();
+							msgTemplate = msgTemplate.replace("{{employee_name}}", msgConfig.employee_name.getValue());
+							msgTemplate = msgTemplate.replace("{{orgname}}", msgConfig.orgname.getValue());
+							msgTemplate = msgTemplate.replace("{{time}}", Systemdate.getStrDate());
+							msgTemplate = msgTemplate.replace("{{zz}}", report.zz.getValue());
+							msgTemplate = msgTemplate.replace("{{cq}}", report.cq.getValue());
+							msgTemplate = msgTemplate.replace("{{tx}}", report.tx.getValue());
+							msgTemplate = msgTemplate.replace("{{qj}}", report.qj.getValue());
+							msgTemplate = msgTemplate.replace("{{cc}}", report.cc.getValue());
+							msgTemplate = msgTemplate.replace("{{wdk}}", report.wdk.getValue());
+							msgTemplate = msgTemplate.replace("{{cqdcl}}", report.cqdcl.getValue());
+							String retult = SendMsgUtil.sendText(msgConfig.employee_code.getValue(), msgTemplate);
+							JSONObject jsonObj = new JSONObject(retult);
+							Wx_msg_send msg = new Wx_msg_send();
+							msg.errcode.setValue(jsonObj.get("errcode").toString());
+							msg.errmsg.setValue(jsonObj.get("errmsg").toString());
+							msg.send_time.setValue(Systemdate.getStrDate());
+							msg.content.setValue(msgTemplate);
+							msg.employee_code.setValue(msgConfig.employee_code.getValue());
+							saveMsgList.add(msg);
+						}
+					}
+				}
+				if (saveMsgList.size() > 0) {
+					saveMsgList.saveBatchSimple();
+				}
+
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void getDepartKqRealTime(Hr_kq_depart_day_report report, String idpath, String dqdate) throws Exception {
+		String reportOrgSql = "select a.employee_code,orgname,noclock,emnature,hiredday,t.cq,t2.qj,t3.cc,t4.tx from hr_employee a" +
+				" LEFT JOIN (select  b.empno, '1' as cq from  hrkq_swcdlst b  WHERE  DATE_FORMAT(b.skdate,'%Y-%m-%d')='" + dqdate + "' GROUP BY b.empno) as t on t.empno=a.employee_code" +
+				" LEFT JOIN (select  b.employee_code, '1' as qj from  hrkq_holidayapp b  WHERE  (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='" + dqdate + "' and b.timeed>='" + dqdate + "') or (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='" + dqdate+ "' and b.timeedtrue>='" + dqdate + "') and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t2 on t2.employee_code=a.employee_code" +
+				" LEFT JOIN (select  b.employee_code, '1' as cc from  hrkq_business_trip b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='" + dqdate + "' and b.end_date>='" + dqdate+ "' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t3 on t3.employee_code=a.employee_code" +
+				" LEFT JOIN (select  b.employee_code, '1' as tx from  hrkq_wkoff b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='" + dqdate + "' and b.end_date>='" + dqdate+ "' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t4 on t4.employee_code=a.employee_code" +
+				" where a.idpath like '" + idpath + "%' and a.sp_name<>'项目实习生' and a.empstatid<>'12'  and a.empstatid<>'13' and a.empstatid<>'0' and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%'  and  a.hiredday<='" + dqdate + "'";
+		List<HashMap<String, String>> reportList = report.pool.openSql2List(reportOrgSql);
+		int zz = reportList.size();
+		int cc = 0;
+		int tx = 0;
+		int qj = 0;
+		int mdk = 0;
+		int cq = 0;
+		int tcwdk = 0;// 脱产无打卡
+		int ftcwdk = 0;// 非脱产无打卡
+		int rzdtwdk = 0;// 当天入职无打卡
+		for (HashMap<String, String> entity : reportList) {
+			String scc = "";
+			String stx = "";
+			String sqj = "";
+			String scq = "";
+			if (entity.get("cc") != null) {
+				scc = entity.get("cc");
+			}
+			if (entity.get("tx") != null) {
+				stx = entity.get("tx");
+			}
+			if (entity.get("qj") != null) {
+				sqj = entity.get("qj");
+			}
+			if (entity.get("cq") != null) {
+				scq = entity.get("cq");
+			}
+			if (scc.equals("1") && entity.get("noclock").equals("2")) {
+				cc++;
+			} else if (stx.equals("1") && entity.get("noclock").equals("2")) {
+				tx++;
+			} else if (sqj.equals("1")&& entity.get("noclock").equals("2")) {
+				qj++;
+			} else if (scq.equals("1") && entity.get("noclock").equals("2")) {
+				cq++;
+			} else {
+				// 缺勤
+				if (entity.get("emnature").equals("脱产") && entity.get("noclock").equals("2")) {
+					tcwdk++;
+				} else if (entity.get("emnature").equals("非脱产") && entity.get("noclock").equals("2")) {
+					ftcwdk++;
+				}
+				// 统计当天入职无打卡
+				// System.out.print(entity.get("hiredday"));
+				String hiredday = Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByyyyy_mm_dd(entity.get("hiredday")));
+				if (hiredday.equals(dqdate)) {
+					rzdtwdk++;
+				}
+			}
+			if (entity.get("noclock").equals("1")) {
+				mdk++;
+				cq++;
+			}
+		}
+		report.zz.setValue(zz);
+		report.cc.setValue(cc);
+		report.tx.setValue(tx);
+		report.qj.setValue(qj);
+		report.ftcwdk.setValue(ftcwdk);
+		report.tcwdk.setValue(tcwdk);
+		report.rzdtwdk.setValue(rzdtwdk);
+		report.cq.setValue(cq);
+		report.date.setValue(dqdate);
+		report.wdk.setValue(ftcwdk + tcwdk + rzdtwdk);
+		if (zz > 0) {
+			double sum = cq + cc + tx;
+			sum = sum / zz * 100;
+			BigDecimal bg = new BigDecimal(sum);
+			sum = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			if (sum > 100) {
+				report.cqdcl.setValue("100%");
+			} else {
+				report.cqdcl.setValue(sum + "%");
+			}
+		} else {
+			report.cqdcl.setValue("0%");
+		}
+
+	}
+
+
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		if(HRUtil.RunSendWxflag){
+			HRUtil.RunSendWxflag=false;
+			try{
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				int minute=calendar.get(Calendar.MINUTE);
+				int hour=calendar.get(Calendar.HOUR_OF_DAY);
+				if(hour==15 && minute==15){
+					sendWxDepart();// 推送部门无打卡数据
+				}
+			}catch(Exception e){
+				Logsw.dblog("部门考勤推送结束:"+e.toString());
+			}finally {
+				HRUtil.RunSendWxflag=true;
+			}
+
+		}
+	}
+
+}

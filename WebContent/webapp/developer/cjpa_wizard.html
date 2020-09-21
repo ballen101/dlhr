@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/json2.js"></script>
+    <title>CJPA Tools</title>
+
+
+    <script type="text/javascript">
+        var temFileTreeData = undefined;
+        $(document).ready(function () {
+                    setTimeout("loadiact()", 1000);
+                }
+        );
+
+        function loadiact() {
+            var url = _serUrl + "/web/system/getdblist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#database").combobox("loadData", jsdata);
+            }, function (msg) {
+                alert(msg);
+            });
+        }
+
+        function onsqlchg(newValue, oldValue) {
+            // var jpaclassname = $("#jpaclassname").textbox("getValue");
+            // if ((jpaclassname == null) || (jpaclassname == undefined) || (jpaclassname.length == 0)) {
+            var sqlstr = $("#sqlstr").textbox("getValue");
+            var sqlstrsm = sqlstr.toLowerCase();
+            var li = sqlstrsm.lastIndexOf(" from ");
+            var stem = sqlstr.substr(li + " from ".length, sqlstr.length);
+            stem = stem.replace(/(^\s*)|(\s*$)/g, "");
+            li = stem.indexOf(" ");
+            var classname = (li < 0) ? stem : stem.substr(0, li);
+            var f = classname.substr(0, 1).toUpperCase();
+            classname = f + classname.substr(1, classname.length);
+            $("#jpaclassname").textbox("setValue", classname);
+            //}
+        }
+
+        function createJPAClass() {
+            var jpaclassname = $("#jpaclassname").textbox("getValue");
+            var poolname = $("#database").combobox("getValue");
+            var sqlstr = $("#sqlstr").textbox("getValue");
+
+            if ((poolname == null) || (jpaclassname == null) || (sqlstr == null)) {
+                alert("数据库连接池、JPA类名、SQL不能为空！");
+                return;
+            }
+            var data = {poolname: poolname, jpaclassname: jpaclassname, sqlstr: sqlstr};
+            var url = _serUrl + "/web/dev/createJPAClass.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                $("#jpaclass").textbox("setValue", jsondata.rst);
+
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsondata));
+            })
+
+        }
+
+        function createHTMLS() {
+            var jpaclassname = $("#jpaclassname").textbox("getValue");
+            var poolname = $("#database").combobox("getValue");
+            var sqlstr = $("#sqlstr").textbox("getValue");
+            var cols = $("#htmlcols").textbox("getValue");
+            if ((poolname == null) || (jpaclassname == null) || (sqlstr == null) || (cols == null)) {
+                alert("数据库连接池、JPA类名、SQL不能为空！");
+                return;
+            }
+            var data = {poolname: poolname, jpaclassname: jpaclassname, sqlstr: sqlstr, cols: cols};
+            var url = _serUrl + "/web/dev/createHTMLTemple.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                $("#htmltemple").textbox("setValue", jsondata.rst);
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsondata));
+            })
+        }
+
+        function createHTMLSnew(){
+            var jpaclassname = $("#jpaclassname").textbox("getValue");
+            var poolname = $("#database").combobox("getValue");
+            var sqlstr = $("#sqlstr").textbox("getValue");
+            var cols = $("#htmlcolsnew").textbox("getValue");
+            if ((poolname == null) || (jpaclassname == null) || (sqlstr == null) || (cols == null)) {
+                alert("数据库连接池、JPA类名、SQL不能为空！");
+                return;
+            }
+            var data = {poolname: poolname, jpaclassname: jpaclassname, sqlstr: sqlstr, cols: cols};
+            var url = _serUrl + "/web/dev/createHTMLTemplenew.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                $("#htmltemplenew").textbox("setValue", jsondata.rst);
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsondata));
+            })
+        }
+
+        function createJS() {
+            var jpaclassname = $("#jpaclassname").textbox("getValue");
+            var poolname = $("#database").combobox("getValue");
+            var sqlstr = $("#sqlstr").textbox("getValue");
+
+            if ((poolname == null) || (jpaclassname == null) || (sqlstr == null)) {
+                alert("数据库连接池、JPA类名、SQL不能为空！");
+                return;
+            }
+            var data = {poolname: poolname, jpaclassname: jpaclassname, sqlstr: sqlstr};
+            var url = _serUrl + "/web/dev/createJS.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                $("#jscolumns").textbox("setValue", jsondata.rst);
+
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsondata));
+            })
+        }
+
+
+    </script>
+
+</head>
+<body class="easyui-layout" data-options="fit:true">
+<div data-options="region:'north',border:false" style="height:160px;padding:5px">
+    <div>
+        <label class="label-top">选择数据库连接池:</label>
+        <input id="database" class="easyui-combobox" style="width:200px;"
+               data-options="valueField:'poolname',textField:'poolname'"/>
+    </div>
+    <div>
+        <label class="label-top">SQL语句:</label>
+        <input id="sqlstr" class="easyui-textbox" data-options="multiline:true,onChange:onsqlchg"
+               value=" select * from "
+               style="width:100%;height:100%">
+    </div>
+</div>
+<div data-options="region:'center',border:false" style="padding:5px">
+    <div class="easyui-tabs" data-options="fit:true" style="width:100%;height: 100%">
+        <div title="JPA" style="padding:10px">
+            <div class="easyui-panel" data-options="footer:'#ft1',fit:true,border:false,noheader:true">
+                <input id="jpaclass" class="easyui-textbox" data-options="multiline:true"
+                       style="width:100%;height:100%">
+            </div>
+            <div id="ft1" style="padding:5px;">
+                <label class="label-left">JPA类名:</label>
+                <input id="jpaclassname" class="easyui-textbox" style="width:  200px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="createJPAClass()" style="width:120px;">创建JPA类</a>
+            </div>
+        </div>
+        <div title="HTML 模板" style="padding:10px">
+            <div class="easyui-panel" data-options="footer:'#ft2',fit:true,border:false,noheader:true">
+                <input id="htmltemple" class="easyui-textbox" data-options="multiline:true"
+                       style="width:100%;height:100%">
+            </div>
+            <div id="ft2" style="padding:5px;">
+                <label class="label-left">每行列数:</label>
+                <input id="htmlcols" class="easyui-textbox" value="4" style="width:  200px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="createHTMLS()" style="width:200px;">创建
+                    Table Inputs</a>
+            </div>
+        </div>
+        <div title="HTML 模板New" style="padding:10px">
+            <div class="easyui-panel" data-options="footer:'#ft2new',fit:true,border:false,noheader:true">
+                <input id="htmltemplenew" class="easyui-textbox" data-options="multiline:true"
+                       style="width:100%;height:100%">
+            </div>
+            <div id="ft2new" style="padding:5px;">
+                <label class="label-left">每行列数:</label>
+                <input id="htmlcolsnew" class="easyui-textbox" value="4" style="width:  200px">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="createHTMLSnew()" style="width:200px;">创建
+                    Table Inputs</a>
+            </div>
+        </div>
+        <div title="JS Columns" data-options="iconCls:'icon-help',closable:true" style="padding:10px">
+            <div class="easyui-panel" data-options="footer:'#ft3',fit:true,border:false,noheader:true">
+                <input id="jscolumns" class="easyui-textbox" data-options="multiline:true"
+                       style="width:100%;height:100%">
+            </div>
+            <div id="ft3" style="padding:5px;">
+                <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="createJS()" style="width:200px;">创建Grid
+                    Columns</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

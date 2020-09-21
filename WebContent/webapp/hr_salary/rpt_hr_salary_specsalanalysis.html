@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_salary">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic1433 = {index: 'dic1433',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"6天制","dictvalue":"1"},{"language1":"5.5天制","dictvalue":"2"},{"language1":"5天制","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic1433.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1433; } if (comUrl_dic1433.type == 'combobox') { if (comUrl_dic1433.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1433.valueField]) { rst = rst + jsondata[i][comUrl_dic1433.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1433.valueField]) return jsondata[i][comUrl_dic1433.textField]; } } } if (comUrl_dic1433.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1433.editor= {type: 'combobox', options: {valueField:comUrl_dic1433.valueField, textField:comUrl_dic1433.textField, data: comUrl_dic1433.jsondata}}; var comUrl_dic1437 = {index: 'dic1437',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"P1级","dictvalue":"1"},{"language1":"P2级(经理级)","dictvalue":"2"},{"language1":"P2级(非经理级)","dictvalue":"3"},{"language1":"P3级","dictvalue":"4"},{"language1":"未纳入绩效考核","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1437.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1437; } if (comUrl_dic1437.type == 'combobox') { if (comUrl_dic1437.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1437.valueField]) { rst = rst + jsondata[i][comUrl_dic1437.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1437.valueField]) return jsondata[i][comUrl_dic1437.textField]; } } } if (comUrl_dic1437.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1437.editor= {type: 'combobox', options: {valueField:comUrl_dic1437.valueField, textField:comUrl_dic1437.textField, data: comUrl_dic1437.jsondata}}; var comUrl_dic999 = {index: 'dic999',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"入职定薪","dictvalue":"1"},{"language1":"调动核薪","dictvalue":"2"},{"language1":"转正调薪","dictvalue":"3"},{"language1":"年度调薪","dictvalue":"4"},{"language1":"特殊调薪","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic999.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic999; } if (comUrl_dic999.type == 'combobox') { if (comUrl_dic999.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic999.valueField]) { rst = rst + jsondata[i][comUrl_dic999.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic999.valueField]) return jsondata[i][comUrl_dic999.textField]; } } } if (comUrl_dic999.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic999.editor= {type: 'combobox', options: {valueField:comUrl_dic999.valueField, textField:comUrl_dic999.textField, data: comUrl_dic999.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1433", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1433", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1437", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1437", valueField: 'dictvalue', textField: 'language1' }, { index: "dic999", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=999", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var spfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onFindStationOption(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field:'orgname',title:'单位',width:250},
+                {field:'yearmonth',title:'年月',width:80, formatter: $fieldDateFormatorYYYY_MM},
+                {field:'sp_name',title:'职位',width:120},
+                {field:'nums',title:'特殊调薪人数',width:120},
+                {field:'oldavgs',title:'特殊调薪前平均工资',width:120},
+                {field:'ttchgwages',title:'调整工资总额',width:120},
+                {field:'avgchgs',title:'平均调整额度',width:120},
+                {field:'avgchgrank',title:'平均调整幅度(%)',width:120},
+                {field:'avgwage',title:'特殊调薪后平均工资',width:120},
+                {field: 'remark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+
+        var findColums = [
+            {field: 'orgid', title: '机构',notnull: true,  relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field:'spid',title:'职位',notnull: true, relOptions: relOptions, cjoptions: spfdiptions,width:80},
+            {field: 'yearmonth_begin', title: '开始年月',notnull: true,  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'yearmonth_end', title: '截止年月',notnull: true,  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+           // {field:'includechild',title:'显示子机构',notnull: true,width:80,formatter:comUrl_dic5.formator},
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+          // findExtParms: findColums,
+            findOptionsFilter: "#findOptions7",
+            coURL: _serUrl + "/web/hr/sareport/getSalaryAnalysis.co",
+            extButtons: [//扩展按钮
+            ],
+            onGetFindParms: onGetFindParms,
+            afterInitUI: afterInitUI
+        };
+
+        function afterInitUI() {
+            $parserDatebox2YearMonth($("#yearmonth_begin"));
+            $parserDatebox2YearMonth($("#yearmonth_end"));
+
+        }
+
+        function onGetFindParms() {
+           /* var orgid=undefined;
+            if (!stedorg) {
+                orgid=0;
+            }else{
+                orgid=stedorg.orgid;
+            }*/
+            if (!stedorg) {
+                alert("选择机构");
+                return;
+            }
+            var spid=undefined;
+            if (!stedsp) {
+                spid=0;
+            }else{
+                spid=stedsp.sp_id;
+            }
+            var yearmonth = $("#yearmonth_begin").datebox('getValue');
+            if ($isEmpty(yearmonth)) {
+                alert("选择开始年月");
+                return;
+            }
+
+            var yearmonthend = $("#yearmonth_end").datebox('getValue');
+            if ($isEmpty(yearmonthend)) {
+                alert("选择截止年月");
+                return;
+            }
+
+           /* var empclass = $("input[name='empclass']:checked").val();
+            if ($isEmpty(empclass)) {
+                alert("选择职位性质");
+                return;
+            }*/
+
+          //  var includechild = document.getElementById("includechild").checked;
+            var parms = [];
+            parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg});
+            parms.push({parmname: "spid", reloper: "=", parmvalue: spid});
+            parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth});
+            parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonthend});
+           // parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+            parms.push({parmname: "scatype", reloper: "=", parmvalue: 5});
+            parms.push({parmname: "stype", reloper: "=", parmvalue: 7});
+            return parms;
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/list/impsalarychglgexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+
+        function floatsformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value;
+            }else{
+                dt=znum;
+            }
+            return dt;
+        }
+
+        var stedorg = "";
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    var orgnames = "";
+                    stedorg = "";
+                    if (rows.length > 0) {
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            stedorg = stedorg + row.orgid + ",";
+                            orgnames = orgnames + row.orgname + ",";
+                        }
+                        stedorg = stedorg.substring(0, stedorg.length - 1);
+                        orgnames = orgnames.substring(0, orgnames.length - 1);
+                        $("#idorg").textbox('setValue', orgnames);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        var stedsp = undefined;
+        var sch_standiptions_pw = undefined;
+        function onFindStationOption(event) {
+            var wo = {
+                id: "sch_standiptions_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_standposition",  //对应后台JPAClass名
+                orderStr: " sp_id asc ",
+                multiRow: false,
+                idField: 'hwc_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        stedsp=row;
+                        $("#idsp").textbox('setValue', row.sp_name);
+
+                    }
+                }
+            };
+            if (!sch_standiptions_pw) {
+                sch_standiptions_pw = new TSearchForm(wo);
+            }
+            sch_standiptions_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script> 
+  <script type="text/html" id="findOptions7">
+        <table style="padding: 10px">
+            <tr>
+                <td>选择机构</td>
+                <td>
+                    <input id="idorg" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton: onSelectOrg,editable:false"
+                           style="width:200px;height: 22px">
+                </td>
+            </tr>
+            <tr>
+                <td>选择职位</td>
+                <td>
+                    <input id="idsp" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton: onFindStationOption,editable:false"
+                           style="width:200px">
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    选择开始年月
+                </td>
+                <td>
+                    <input id="yearmonth_begin" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr >
+                <td >
+                    选择截止年月
+                </td>
+                <td>
+                    <input id="yearmonth_end" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+      <!--      <tr>
+                <td>
+                    显示子机构
+                </td>
+                <td>
+                    <input id="includechild" type="checkbox" checked="checked">
+                </td>
+            </tr>-->
+        </table>
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

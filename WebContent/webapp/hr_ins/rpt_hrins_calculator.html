@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ins">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"硕士及以上","dictvalue":"2"},{"language1":"本科","dictvalue":"3"},{"language1":"大专","dictvalue":"4"},{"language1":"高中","dictvalue":"5"},{"language1":"中专","dictvalue":"6"},{"language1":"中技","dictvalue":"7"},{"language1":"初中","dictvalue":"8"},{"language1":"小学","dictvalue":"9"},{"language1":"无","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrl_dic702 = {index: 'dic702',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"本市农村户","dictvalue":"1"},{"language1":"外市农村户","dictvalue":"3"},{"language1":"外市城镇户","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic702.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic702; } if (comUrl_dic702.type == 'combobox') { if (comUrl_dic702.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic702.valueField]) { rst = rst + jsondata[i][comUrl_dic702.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic702.valueField]) return jsondata[i][comUrl_dic702.textField]; } } } if (comUrl_dic702.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic702.editor= {type: 'combobox', options: {valueField:comUrl_dic702.valueField, textField:comUrl_dic702.textField, data: comUrl_dic702.jsondata}}; var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic1220 = {index: 'dic1220',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"全险","dictvalue":"1"},{"language1":"单项保险","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic1220.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1220; } if (comUrl_dic1220.type == 'combobox') { if (comUrl_dic1220.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1220.valueField]) { rst = rst + jsondata[i][comUrl_dic1220.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1220.valueField]) return jsondata[i][comUrl_dic1220.textField]; } } } if (comUrl_dic1220.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1220.editor= {type: 'combobox', options: {valueField:comUrl_dic1220.valueField, textField:comUrl_dic1220.textField, data: comUrl_dic1220.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' }, { index: "dic702", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=702", valueField: 'dictvalue', textField: 'language1' }, { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1220", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1220", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var oinstypeptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onFindInsType(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var ninstypeptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onFindInsType(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field:'buyins_code',title:'购保编码',width:120},
+                {field:'buyday',title:'参保年月',width:64, formatter: $fieldDateFormatorYYYY_MM},
+                {field:'employee_code',title:'工号',width:70},
+                {field:'employee_name',title:'姓名',width:70},
+                {field:'orgname',title:'机构',width:250},
+                {field:'hiredday',title:'入职日期',width:80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'buydday',title:'参保日期',width:80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'ins_type',title:'保险类型',width:64, formatter: comUrl_dic1220.formator},
+                {field:'oitname',title:'购买险种',width:80},
+               // {field:'obase',title:'缴费基数',width:64},
+                {field:'tselfpay',title:'个人缴费',width:64},
+                {field:'tcompay',title:'单位缴费',width:64},
+                {field:'payment',title:'缴费总金额',width:64},
+                {field:'nitname',title:'新购险种',width:100},
+               // {field:'nbase',title:'新购基数',width:64},
+                {field:'nsp',title:'个人缴费',width:64},
+                {field:'ncp',title:'单位缴费',width:64},
+                {field:'npayment',title:'新购总金额',width:80},
+                {field:'spdiff',title:'个人差额',width:80},
+                {field:'cpdiff',title:'单位差额',width:80},
+                {field:'paydiff',title:'总差额',width:80},
+                {field: 'tremark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'buydday', title: '生效日期', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'nitname', title: '新购险种', notnull: true, relOptions: relOptions, cjoptions: ninstypeptions, width: 100},
+            {field: 'oitname', title: '已购险种', notnull: true, relOptions: relOptions, cjoptions: oinstypeptions, width: 100}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrins/insurance/PremiumCalculator.co"
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        var select_instype_pw = undefined;
+        function onFindInsType(event) {
+            // var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_instype_pw",
+                // coURL: url,
+                JPAClass: "com.hr.insurance.entity.Hr_ins_insurancetype",  //对应后台JPAClass名
+                orderStr: " insit_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'insit_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'ins_type', title: '险种类型', width: 100, formatter: comUrl_dic1220.formator},
+                    {field: 'insname', title: '险种名称', width: 150}
+                ]
+            };
+            if (!select_instype_pw) {
+                select_instype_pw = new TSearchForm(wo);
+            }
+            select_instype_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.insname);
+                    }
+                }
+            });
+            select_instype_pw.show(true);
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

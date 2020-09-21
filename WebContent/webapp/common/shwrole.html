@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/shwrole.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function rolenameFormatter(val, row) {
+            return "<span class='icon-user_group' style='height: 100%;width: 16px;margin-left: 2px;padding-right: 10px;display: inline-block;'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>" + val;
+        }
+    </script>
+
+</head>
+<body>
+<table id="tb_roles" class="easyui-datagrid" style=""
+       data-options="fit:true,
+                       border:false,
+                       toolbar:'#toolbarRole',
+                       singleSelect: true
+                       ">
+    <thead>
+    <tr>
+        <th data-options="field:'rolename',width:200,formatter:rolenameFormatter">角色名</th>
+        <th data-options="field:'maxspace',width:100">最大空间</th>
+        <th data-options="field:'maxemailspace',width:100">最大邮件空间</th>
+        <th data-options="field:'maxattachsize',width:100">最大附件空间</th>
+        <th data-options="field:'note ',width:300">备注</th>
+    </tr>
+    </thead>
+</table>
+
+
+<div id="roleInfoWindow" class="easyui-window" title="角色信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:350px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="tabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px;">
+                    <table id="shwroleform" border="0" style="">
+                        <tr>
+                            <td>角色名称</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'rolename'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>最大空间</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'maxspace'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>最大邮件空间</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'maxemailspace'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>最大附件空间</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'maxattachsize'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3"><input class="easyui-textbox" data-options="multiline:true"
+                                                   cjoptions="fdname:'note'"
+                                                   style="height: 50px;width: 350px"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="权限" style="padding:0px;">
+                    <div id="p" class="easyui-panel" data-options="fit:true" style="padding:10px;">
+                        <ul id="menutree" class="easyui-tree"
+                            data-options="animate:true,lines:true,checkbox:true,cascadeCheck:false"></ul>
+                    </div>
+                </div>
+                <div title="包含用户" style="padding:0px;">
+                    <table id="role_users" class="easyui-datagrid" style=""
+                           data-options="fit:true,
+                       border:false,
+                       singleSelect: true
+                       ">
+                        <thead>
+                        <tr>
+                            <th data-options="field:'username',width:100">登录名</th>
+                            <th data-options="field:'displayname',width:100">姓名</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="toolbarRole" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onclick="toolbarAction(3,$C.action.Edit)">编辑</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="toolbarAction(3,$C.action.Append)">添加</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="toolbarAction(3,$C.action.Del)">删除</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [];</script> 
+  <script type="text/javascript">
+        var _setedclos = [];
+        var listGridColumns = function () {
+            return [
+                {field: 'yearmonth', title: '年月', notnull: true, width: 64, formatter: $fieldDateFormatorYYYY_MM},
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'sp_name', title: '职位', width: 64},
+                {field: 'card_number', title: '卡号', width: 64},
+                {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljdate', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'orgname', title: '部门', width: 150},
+                {field: 'lv_num', title: '职级', width: 30}
+            ];
+        };
+
+        var _datas = undefined, _page = undefined, _pageSize = undefined, _url = undefined;
+        var prtOptions = {
+            idField: "wklistid",
+            fitColumns: false,
+            findExtParms: listGridColumns(),
+            gdListColumns: listGridColumns,
+            findheight: "300px",
+            comUrls: comUrls,
+            coURL: _serUrl + "/web/hrkq/rpt1/findschedlist.co",
+            beforeLoadData: function (jsdata, page, pageSize, curl) {//载入数据后
+                _url = curl, _datas = jsdata, _page = page, _pageSize = pageSize;
+                bfloaddata(jsdata);
+                $("#find_window_id").window("close");
+                throw new Error("抛出错误终止加载数据");
+            },
+            onExport: function (parms) {
+                parms.cols = _exportfields;
+                return true;
+            }
+        };
+        function bfloaddata(jsdata) {
+            initSckFormator();
+            if (jsdata.rows.length > 0) {
+                getMonthRL(jsdata.rows[0].yearmonth);
+            } else {
+                $("#dg_datalist_id").datagrid("loadData", []);
+            }
+        }
+
+        var _scdformators = [];
+        function initSckFormator() {
+            _scdformators = [];
+            for (var i = 1; i < 32; i++) {
+                var fs = "var backcolor = row['backcolor" + i + "'];if (backcolor) {"
+                        + "return \"<span style='background-color: \" + backcolor + \"'>\" + value + \"</span>\";"
+                        + "} else return value;";
+                _scdformators[i] = new Function("value", "row", "index", fs);
+            }
+        }
+
+        var _weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+        function getMonthRL(ym) {
+            var y = parseInt(ym.substr(0, 4));
+            var m = parseInt(ym.substr(5, 6));
+            var url = _serUrl + "/web/hrkq/ohyear/findMonthHolidays.co?ohmonth=" + ym;
+            $ajaxjsonget(url, function (jsondata) {
+                rebuidDays(ym, jsondata);
+                if (_setedclos)
+                    reSetRowTitleColor(_setedclos);
+                if (_datas) {
+                    $("#dg_datalist_id").datagrid({pageNumber: _page, pageSize: _pageSize});
+                    creport.setOnListselectPage(_url);
+                    $("#dg_datalist_id").datagrid("loadData", _datas);
+                }
+
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function reSetRowTitleColor(gdlcols) {
+            var p = $("#dg_datalist_id").datagrid("getPanel").find(".datagrid-view2").find(".datagrid-header-row");
+            for (var i = 0; i < gdlcols.length; i++) {
+                var row = gdlcols[i];
+                if (row.iswork == 2) {
+                    p.find("td[field='" + row.field + "']").css("background-color", "#EBFECE");
+                } else {
+                    p.find("td[field='" + row.field + "']").css("background-color", "");
+                }
+            }
+        }
+
+        function getChdre(hmdays, dt) {
+            if (dt == undefined) return undefined;
+            for (var i = 0; i < hmdays.length; i++) {
+                var row = hmdays[i];
+                if (row.ohdate == dt) {
+                    return row;
+                }
+            }
+        }
+        var _exportfields = [];
+        function rebuidDays(ym, hmdays) {
+            var y = parseInt(ym.substr(0, 4));
+            var m = parseInt(ym.substr(5, 6));
+            var dm = (new Date(y, m, 0)).getDate();
+            var gdlcols = [];
+            gdlcols = gdlcols.concat(listGridColumns());
+            _exportfields = [].concat(listGridColumns());
+            for (var i = 1; i <= dm; i++) {
+                var dt = new Date(y, m - 1, i);
+                var hd = getChdre(hmdays, $dateformattostrrYYYY_MM_DD(dt));
+                var d = (dt).getDay();
+                var t = "<span>" + i + "(" + _weekdays[d] + ")</span>";
+                var iswork = ((d != 0) && (d != 6)) ? 1 : 2;
+                if (hd) {
+                    t = t + "<br><span>" + hd.daydis + "</span>";
+                    iswork = parseInt(hd.iswork);
+                } else {
+
+                }
+                var et = i + "(" + _weekdays[d] + ")";
+                if (hd) {
+                    et = et + hd.daydis;
+                }
+                var row = {
+                    field: 'scdname' + i,
+                    title: t,
+                    halign: 'center',
+                    iswork: iswork,
+                    width: 50,
+                    formatter: _scdformators[i]
+                };// {field: '', halign: 'center', title: '1', width: 64},
+                _exportfields.push({field: 'scdname' + i, title: et});
+                gdlcols.push(row);
+            }
+
+
+            _setedclos = gdlcols;
+            $("#dg_datalist_id").datagrid({
+                columns: [gdlcols]
+            });
+            reSetRowTitleColor(gdlcols);
+        }
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

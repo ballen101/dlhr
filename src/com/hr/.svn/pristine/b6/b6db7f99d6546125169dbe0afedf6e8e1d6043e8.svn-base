@@ -1,0 +1,216 @@
+package com.hr.attd.ctr;
+
+import java.util.Date;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.hr.attd.entity.Hrkq_business_trip;
+import com.hr.attd.entity.Hrkq_holidayapp;
+import com.hr.attd.entity.Hrkq_onduty;
+import com.hr.attd.entity.Hrkq_overtime;
+import com.hr.attd.entity.Hrkq_overtime_list;
+import com.hr.attd.entity.Hrkq_parms;
+import com.hr.attd.entity.Hrkq_swcdlst;
+import com.hr.attd.entity.Hrkq_wkoff;
+import com.hr.util.DateUtil;
+import com.hr.util.HRUtil;
+
+public class HrkqUtil {
+	private static CJPALineData<Hrkq_parms> parms = new CJPALineData<Hrkq_parms>(Hrkq_parms.class);
+
+	public static String getParmValue(String parmcode) throws Exception {
+		if (parmcode == null)
+			return null;
+		if (parms.size() == 0) {
+			String sqlstr = "select * from hrkq_parms";
+			parms.findDataBySQL(sqlstr);
+		}
+		for (CJPABase jpa : parms) {
+			Hrkq_parms parm = (Hrkq_parms) jpa;
+			if (parmcode.equalsIgnoreCase(parm.parmcode.getValue())) {
+				return parm.parmvalue.getValue();
+			}
+		}
+		return null;
+	}
+
+	public static String getParmValueErr(String parmcode) throws Exception {
+		String rst = getParmValue(parmcode);
+		if (rst == null) {
+			throw new Exception("没有发现编码为【" + parmcode + "】的考勤参数");
+		} else
+			return rst;
+	}
+
+	/**
+	 * 全局检查时间交叉
+	 * 
+	 * @param stype 原单类型 1 调休（hrkq_wkoff） 2加班 3值班（hrkq_onduty） 4 出差(stype) 5
+	 * 请假（hrkq_holidayapp）
+	 * @param sid 原单ID
+	 * @param time1 开始时间
+	 * @param time2 截止时间
+	 * @throws Exception
+	 */
+	public static void checkAllOverlapDatetime(int stype, String sid, String er_id, String employee_name, Date time1,
+			Date time2) throws Exception {
+		String strtime1 = Systemdate.getStrDate(time1);
+		String strtime2 = Systemdate.getStrDate(time2);
+		// 调休
+		String sqlstr = "SELECT * FROM hrkq_wkoff WHERE er_id=" + er_id + " AND stat>1 AND stat<10 "
+				+ " AND ("
+				+ "  ((begin_date>='" + strtime1 + "') AND (begin_date<='" + strtime2 + "'))"
+				+ " or ((begin_date<='" + strtime1 + "') and (end_date>='" + strtime2 + "'))"
+				+ " or ((end_date>='" + strtime1 + "') and (end_date<='" + strtime2 + "'))"
+				+ ")";
+		if (stype == 1) {
+			sqlstr = sqlstr + " and hrkq_wkoff.woid<>" + sid;
+		}
+		Hrkq_wkoff temwo = new Hrkq_wkoff();
+		temwo.findBySQL(sqlstr, false);
+		if (!temwo.isEmpty())
+			throw new Exception("员工【" + employee_name + "】与已提交的调休申请【" + temwo.wocode.getValue() + "】时间交叉错误!");
+
+		// 加班
+		sqlstr = "SELECT o.* FROM hrkq_overtime o,hrkq_overtime_line l,hrkq_overtime_hour h "
+				+ " WHERE o.ot_id=l.ot_id AND l.otl_id=h.otl_id AND o.stat>1 AND o.stat<=9 AND l.er_id=" + er_id
+				+ " AND ("
+				+ "  ((h.begin_date>='" + strtime1 + "') AND (h.begin_date<='" + strtime2 + "'))"
+				+ " or ((h.begin_date<='" + strtime1 + "') and (h.end_date>='" + strtime2 + "'))"
+				+ " or ((h.end_date>='" + strtime1 + "') and (h.end_date<='" + strtime2 + "'))"
+				+ ")";
+		if (stype == 2) {
+			sqlstr = sqlstr + " and o.ot_id<>" + sid;
+		}
+		Hrkq_overtime ot = new Hrkq_overtime();
+		ot.findBySQL(sqlstr, false);
+		if (!ot.isEmpty())
+			throw new Exception("员工【" + employee_name + "】与已经完成的加班申请【" + ot.ot_code.getValue() + "】时间交叉错误!");
+
+		// 值班
+		sqlstr = "SELECT o.* FROM hrkq_onduty o,hrkq_ondutyline l "
+				+ " WHERE o.od_id=l.od_id AND o.stat>1 AND o.stat<=9 AND o.er_id= " + er_id
+				+ " AND ("
+				+ "  ((l.begin_date>='" + strtime1 + "') AND (l.begin_date<='" + strtime2 + "'))"
+				+ " or ((l.begin_date<='" + strtime1 + "') and (l.end_date>='" + strtime2 + "'))"
+				+ " or ((l.end_date>='" + strtime1 + "') and (l.end_date<='" + strtime2 + "'))"
+				+ ")";
+		if (stype == 3) {
+			sqlstr = sqlstr + " AND l.odlid<>" + sid;// 不包含自己
+		}
+		Hrkq_onduty odnew = new Hrkq_onduty();
+		odnew.findBySQL(sqlstr, false);
+		if (!odnew.isEmpty())
+			throw new Exception("员工【" + employee_name + "】与已提交的值班申请【" + odnew.od_code.getValue() + "】时间交叉错误!");
+
+		sqlstr = "SELECT * FROM Hrkq_business_trip t WHERE t.stat>1 AND t.stat<=9 AND t.er_id=" + er_id
+				+ " AND ("
+				+ "  ((t.begin_date>='" + strtime1 + "') AND (t.begin_date<='" + strtime2 + "'))"
+				+ " or ((t.begin_date<='" + strtime1 + "') and (t.end_date>='" + strtime2 + "'))"
+				+ " or ((t.end_date>='" + strtime1 + "') and (t.end_date<='" + strtime2 + "'))"
+				+ ")";
+		// 出差
+		if (stype == 4) {
+			sqlstr = sqlstr + " and t.bta_id<>" + sid;
+		}
+		Hrkq_business_trip bt = new Hrkq_business_trip();
+		bt.findBySQL(sqlstr, false);
+		if (!bt.isEmpty())
+			throw new Exception("员工【" + employee_name + "】与已提交的出差申请【" + bt.bta_code.getValue() + "】时间交叉错误!");
+
+		// 请假
+		sqlstr = "SELECT * FROM hrkq_holidayapp t WHERE t.stat>1 AND t.stat<=9 AND t.er_id=" + er_id
+				+ " AND ("
+				+ "  ((t.timebg>='" + strtime1 + "') AND (t.timebg<='" + strtime2 + "'))"
+				+ " or ((t.timebg<='" + strtime1 + "') and (t.timeedtrue>='" + strtime2 + "'))"
+				+ " or ((t.timeedtrue>='" + strtime1 + "') and (t.timeedtrue<='" + strtime2 + "'))"
+				+ ")";
+		if (stype == 5) {
+			sqlstr = sqlstr + " and t.haid<>" + sid;
+		}
+		Hrkq_holidayapp hp = new Hrkq_holidayapp();
+		hp.findBySQL(sqlstr, false);
+		if (!hp.isEmpty())
+			throw new Exception("员工【" + employee_name + "】与已提交的请假申请【" + hp.hacode.getValue() + "】时间交叉错误!");
+	}
+
+	/**
+	 * 检查给出时间是否允许做考勤业务, 应对这个需求： 次月2号以后就不能再补提上月的考勤单据（调休、请假、出差、加班、值班）且
+	 * 2号（包括）之前不能提起上个月及之前的单据；
+	 * 
+	 * @param date 业务时间
+	 * @throws Exception
+	 */
+	public static void checkValidDate(Date bdate) throws Exception {
+		// System.out.println("do_checkValidDate：" + CSContext.isAdminNoErr());
+		Logsw.dblog("test1111");
+		// if (CSContext.isAdminNoErr())// 管理员不控制
+		// return;
+		// 检查登录用户角色
+		if (HRUtil.hasRoles("58"))// 单据维护员 和 管理员
+			return;
+
+		int days = Integer.valueOf(HrkqUtil.getParmValue("KQ_ALLOW_BSDAY"));// 次月X号以后就不能再补提上月的考勤单据（调休、请假、出差）
+		if (days > 0)
+		{
+			Date m01 = Systemdate.getDateByStr(Systemdate.getStrDateByFmt(new Date(), "yyyy-MM-01"));// 本月1号
+			int day = Integer.valueOf(Systemdate.getStrDateByFmt(new Date(), "dd"));// 当前日
+			// System.out.println("day:" + day);
+			// System.out.println(days);
+			if (day <= days) {// 判断是否上上个月
+				Date pm01 = Systemdate.dateMonthAdd(m01, -1);
+				if (bdate.getTime() < pm01.getTime()) {
+					throw new Exception("不能提交【" + Systemdate.getStrDateByFmt(pm01, "yyyy-MM-dd") + "】之前的表单");
+				}
+			} else {
+				// System.out.println("bdate:" + Systemdate.getStrDate(bdate));
+				// System.out.println("m01:" + Systemdate.getStrDate(m01));
+				if (bdate.getTime() < m01.getTime()) {
+					throw new Exception(
+							"本月【" + days + "】号以后不能提交【" + Systemdate.getStrDateByFmt(m01, "yyyy-MM-dd") + "】之前的表单");
+				}
+			}
+		}
+		//create by czq2020-4-23 控制单据只能提交X天前的
+		long advanceDays = Long.valueOf(HrkqUtil.getParmValue("KQ_ADVANCE_BSDAY"));
+		if(advanceDays>0){	
+			long betweenDays= DateUtil.getBetweenDays(bdate, new Date());
+			Logsw.dblog("advanceDays="+advanceDays+"betweenDays="+betweenDays);
+			if(betweenDays>advanceDays){
+				throw new Exception("不能提交【"+advanceDays+"】天前的表单");
+			}
+		}
+	}
+
+	/**
+	 * 将打卡记录同步到历史表中 每3个月一张表
+	 * 
+	 * @throws Exception
+	 */
+	public static void backAndMoveKQSWCT() throws Exception {
+		String tbmonth = Systemdate.getStrDateByFmt(Systemdate.dateMonthAdd(new Date(), -3), "yyMM");
+		String tbname = "hrkq_swcdlst_his" + tbmonth;
+		String ctsqlstr = "CREATE TABLE IF NOT EXISTS  `" + tbname + "` (" + "  `skid` int(15) NOT NULL COMMENT 'ID',"
+				+ "  `machineno` int(6) DEFAULT NULL COMMENT '机器号'," + "  `readerno` int(2) DEFAULT NULL COMMENT '读头',"
+				+ "  `empno` varchar(10) NOT NULL COMMENT '工号',"
+				+ "  `card_number` varchar(6) DEFAULT NULL COMMENT '卡号',"
+				+ "  `skdate` datetime NOT NULL COMMENT 'yyyy-MM-dd hh:mm:ss',"
+				+ "  `sktype` int(1) DEFAULT '1' COMMENT '1 刷卡 2 签卡',"
+				+ "  `synid` bigint(20) NOT NULL DEFAULT '1' COMMENT '旧ID 同步条件'"
+				+ ") ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='打卡记录历史表';";
+		Hrkq_swcdlst sw = new Hrkq_swcdlst();
+		CDBConnection con = sw.pool.getCon("backAndMoveKQSWCT");
+		try {
+			con.execsql(ctsqlstr);
+			con.execsql("INSERT INTO " + tbname
+					+ " (SELECT * FROM hrkq_swcdlst WHERE skdate<DATE_SUB(CURDATE(),INTERVAL 3 MONTH))");
+			con.execsql("DELETE FROM hrkq_swcdlst WHERE skdate<DATE_SUB(CURDATE(),INTERVAL 3 MONTH)");
+		} finally {
+			con.close();
+		}
+	}
+}

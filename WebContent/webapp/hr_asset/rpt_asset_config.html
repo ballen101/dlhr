@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_asset">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [ ];</script> 
+  <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+
+        var listGridColumns = function () {
+            return [
+                {field: 'asset_register_num', title: '登记号', notfind: true, width: 100},
+                {field: 'asset_item_code', title: '资产编号', width: 120},
+                {field: 'asset_item_name', title: '资产名称', width: 150},
+                {field: 'asset_type_code', title: '资产类型编码', notfind: true, width: 120},
+                {field: 'asset_type_name', title: '资产类型名称', notfind: true, width: 150},
+                {field: 'brand', title: '品牌', notfind: true, width: 100},
+                {field: 'model', title: '型号', notfind: true, width: 100},
+                {field: 'original_value', title: '原值', notfind: true, width: 100},
+                {field: 'net_value', title: '净值', notfind: true, width: 100},
+                {field: 'uom', title: '单位', notfind: true, width: 100},
+                {field: 'service_life', title: '报废年限', notfind: true, width: 100},
+                {field: 'acquired_date', title: '购置日期', notfind: true, width: 130},
+                {field: 'deploy_qty', title: '配置数量', notfind: true, width: 80},
+                {field: 'deploy_area', title: '配置区域', notfind: true, width: 150},
+                {field: 'deploy_restaurant', title: '配置餐厅', width: 100},
+                {field: 'keep_own', title: '保管人', notfind: true, width: 100},
+                {field: 'remark', title: '备注1', notfind: true, width: 300},
+                {field: 'asset_allot_num', title: '调拨单号', notfind: true, width: 100},
+                {field: 'asset_item_name allot_item_namefrom', title: '调出资产名称', notfind: true, width: 100},
+                {field: 'deploy_restaurant_from', title: '调出餐厅', notfind: true, width: 100},
+                {field: 'deploy_area_from', title: '调出区域', notfind: true, width: 150},
+                {field: 'deploy_qty_from', title: '调出数量', notfind: true, width: 80},
+                {field: 'acquired_date_from', title: '调出日期', notfind: true, width: 130},
+                {field: 'allot_item_nameto', title: '调入资产名称', notfind: true, width: 100},
+                {field: 'deploy_restaurant_to', title: '调入餐厅', notfind: true, width: 100},
+                {field: 'deploy_area_to', title: '调入区域', notfind: true, width: 150},
+                {field: 'deploy_qty_to', title: '调入数量', notfind: true, width: 80},
+                {field: 'acquired_date_to', title: '调入日期', notfind: true, width: 130},
+                {field: 'remarkah', title: '备注2', notfind: true, width: 300},
+                {field: 'remarkad', title: '备注3', notfind: true, width: 300},
+                {field: 'asset_reject_num', title: '报废单号', notfind: true, width: 100},
+                {field: 'asset_item_namerj', title: '报废资产名称', notfind: true, width: 100},
+                {field: 'reject_qty', title: '报废数量', notfind: true, width: 100},
+                {field: 'reject_date', title: '报废日期', notfind: true, width: 130},
+                {field: 'remarkrd', title: '备注4', notfind: true, width: 300}
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/Asset/rpt/getassedtconfig.co"
+        };
+
+
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

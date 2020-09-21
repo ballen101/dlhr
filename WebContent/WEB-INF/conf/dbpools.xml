@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<dbpools> 
+
+
+  <!-- <dbpool>  -->
+    <!-- <name>dlhrmycat</name>   -->
+    <!-- <default>true</default> -->
+    <!-- <dbtype>2</dbtype>   -->
+    <!-- <driver>com.mysql.jdbc.Driver</driver>   -->
+
+    <!-- <url>jdbc:mysql://127.0.0.1:3306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true</url>   -->
+    <!-- <schema>dlhr</schema>   -->
+    <!-- <user>root</user>   -->
+    <!-- <password>123456</password>   -->
+    <!-- <minsession>10</minsession>   -->
+    <!-- <maxsession>100</maxsession>   -->
+    <!-- <checkcontime>60</checkcontime>   -->
+    <!-- <timeout>1800</timeout>  -->
+  <!-- </dbpool>    -->
+
+  <!-- <dbpool>  -->
+    <!-- <name>dlhrread</name>   -->
+    <!-- <default>false</default> -->
+    <!-- <dbtype>2</dbtype>   -->
+    <!-- <driver>com.mysql.jdbc.Driver</driver>   -->
+
+    <!-- <url>jdbc:mysql://127.0.0.1:3306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true</url>   -->
+    <!-- <schema>dlhr</schema>   -->
+    <!-- <user>root</user>   -->
+    <!-- <password>123456</password>   -->
+    <!-- <minsession>10</minsession>   -->
+    <!-- <maxsession>100</maxsession>   -->
+    <!-- <checkcontime>60</checkcontime>   -->
+    <!-- <timeout>1800</timeout>  -->
+  <!-- </dbpool>   -->
+
+
+  <dbpool> 
+    <name>dlhrmycat</name>  
+    <default>true</default>
+    <dbtype>2</dbtype>  
+    <driver>com.mysql.jdbc.Driver</driver>  
+	<url>jdbc:mysql://192.168.119.132:3306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true</url>  
+    <schema>dlhr</schema>  
+    <user>root</user>  
+    <password>q1w2e3</password>  
+    <minsession>10</minsession>  
+    <maxsession>100</maxsession>  
+    <checkcontime>60</checkcontime>  
+    <timeout>1800</timeout> 
+  </dbpool>   
+
+  <dbpool> 
+    <name>dlhrread</name>  
+    <default>false</default>
+    <dbtype>2</dbtype>  
+    <driver>com.mysql.jdbc.Driver</driver>  
+    <url>jdbc:mysql://192.168.119.132:3306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true&amp;useSSL=true</url>  
+    <schema>dlhr</schema>  
+    <user>root</user>  
+    <password>q1w2e3</password>  
+    <minsession>10</minsession>  
+    <maxsession>100</maxsession>  
+    <checkcontime>60</checkcontime>  
+    <timeout>1800</timeout> 
+  </dbpool>  
+  
+  <dbpool>
+    <name>oldtxmssql</name>
+    <default>false</default>
+    <dbtype>2</dbtype>
+    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver> 
+      <url>jdbc:sqlserver://116.6.55.45:11433;databaseName=HRMS</url>
+    <schema>HRMS</schema>
+    <user>LH</user>
+    <password>dlhrsearch161116</password>
+    <minsession>5</minsession>
+    <maxsession>10</maxsession>
+    <checkcontime>60</checkcontime>
+    <timeout>1800</timeout>
+  </dbpool> 
+  
+  <dbpool> 
+    <name>mssqlpx</name>  
+    <default>false</default>  
+    <dbtype>2</dbtype>  
+    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>  
+    <!-- oracle.jdbc.driver.OracleDriver  -->  
+    <url>jdbc:sqlserver://192.168.117.67;databaseName=BPR</url>  
+    <schema>BPR</schema>  
+    <user>TrainUser</user>  
+    <password>123456</password>  
+    <minsession>5</minsession>  
+    <maxsession>100</maxsession>  
+    <checkcontime>60</checkcontime>  
+    <timeout>60</timeout> 
+  </dbpool> 
+</dbpools>

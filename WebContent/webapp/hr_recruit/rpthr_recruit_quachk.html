@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_recruit">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>应聘人员异常分析</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrl_dic1423 = {index: 'dic1423',type: 'combobox',multiple: true,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"小于16岁的童工","dictvalue":"1"},{"language1":"身份证件过期","dictvalue":"2"},{"language1":"辞退、解除劳动关系者","dictvalue":"3"},{"language1":"在新宝入职、离职三次以上","dictvalue":"4"},{"language1":"正常离职未满三个月","dictvalue":"5"},{"language1":"自离未满六个月","dictvalue":"6"},{"language1":"列入公司黑名单者","dictvalue":"7"},{"language1":"从事过职业病工种无镇级以上医院职业病体检合格证明者","dictvalue":"8"},{"language1":"特殊工种年龄要在18-45岁之间","dictvalue":"9"}], formator: function (value, row) { var jsondata = comUrl_dic1423.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1423; } if (comUrl_dic1423.type == 'combobox') { if (comUrl_dic1423.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1423.valueField]) { rst = rst + jsondata[i][comUrl_dic1423.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1423.valueField]) return jsondata[i][comUrl_dic1423.textField]; } } } if (comUrl_dic1423.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1423.editor= {type: 'combobox', options: {valueField:comUrl_dic1423.valueField, textField:comUrl_dic1423.textField, data: comUrl_dic1423.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1423", type: "combobox", multiple: true, url: "/web/dict/getdictvalues.co?dicid=1423", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        comUrl_dic1423.formator = function (value, row) {
+            var jsondata = comUrl_dic1423.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic1423;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field: 'yearmonth', title: '年月', relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+                {field: 'createday', title: '日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'id_number', title: '身份证号', width: 150},
+                {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'reason', title: '原因', width: 150, formatter: comUrl_dic1423.formator},
+                {field: 'remark', title: '备注', width: 250}
+            ]
+        };
+
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/recruit/rpt/rpt_recruit_quachk.co"
+        };
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

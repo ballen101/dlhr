@@ -1,0 +1,253 @@
+package com.hr.attd.co;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.corsair.dbpool.util.CJSON;
+import com.corsair.dbpool.util.JSONParm;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.retention.ACO;
+import com.corsair.server.retention.ACOAction;
+import com.corsair.server.util.CReport;
+import com.corsair.server.util.CorUtil;
+import com.hr.util.HRUtil;
+
+@ACO(coname = "web.hrkq.rpt1")
+public class COreport1 {
+	@ACOAction(eventname = "findschedlist", Authentication = true, notes = "获取考勤排班列表")
+	public String findschedlist() throws Exception {
+		String[] notnull = { "yearmonth" };
+		String sqlstr = "SELECT l.*,e.sp_name,e.ljdate FROM hrkq_workschmonthlist l,hr_employee e WHERE l.er_id=e.er_id";
+		sqlstr = sqlstr + CSContext.getIdpathwhere();
+		return new CReport(HRUtil.getReadPool(), sqlstr, null, notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findovertimequallist", Authentication = true, notes = "获取加班资格申请列表")
+	public String findovertimequallist() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT h.oq_code,h.begin_date,h.end_date,h.apply_date,h.dealtype,h.over_type,h.permonlimit,"
+				+ " h.stat,h.creator,h.createtime,h.updator,h.updatetime,h.idpath,l.*"
+				+ " FROM hrkq_overtime_qual h,hrkq_overtime_qual_line l"
+				+ " WHERE h.oq_id=l.oq_id ";
+		return new CReport(HRUtil.getReadPool(), sqlstr, " createtime desc ", notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findbusinesstrip", Authentication = true, notes = "获取出差资料列表")
+	public String findbusinesstrip() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT * FROM hrkq_business_trip where stat=9 and entid=1 ";
+		return new CReport(HRUtil.getReadPool(), sqlstr, " createtime desc ", notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findovertime", Authentication = true, notes = "加班申请信息统计")
+	public String findovertime() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT ot.idpath,ot.ot_code,ot.over_type,ot.dealtype,ot.otrate,ot.otreason,ot.remark,ot.creator,ot.createtime,ot.stat, "
+				+ "oth.needchedksb,oth.needchedkxb,"
+				+ "otl.employee_code,otl.employee_name,otl.orgname,otl.sp_name,otl.lv_num, " +
+				"oth.begin_date,oth.end_date,oth.othours,oth.deductoff,oth.checkbegin_date,oth.checkend_date " +
+				" FROM hrkq_overtime ot ,hrkq_overtime_line otl ,hrkq_overtime_hour oth " +
+				" WHERE otl.ot_id=ot.ot_id AND oth.otl_id=otl.otl_id  ";
+		return new CReport(HRUtil.getReadPool(), sqlstr, " createtime desc ", notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findswcardlist", Authentication = true, notes = "获取打卡原始表")
+	public String findswcardlist() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT e.er_id,e.employee_code,e.employee_name,e.card_number,e.orgid,e.orgcode,"
+				+ " e.orgname,e.hg_name,e.lv_num,e.sp_name,p.machineno,p.skdate,p.sktype,e.idpath"
+				+ " FROM hr_employee e,hrkq_swcdlst p"
+				+ " WHERE e.employee_code=p.empno";
+		String[] ignParms = { "skdate", "employee_code", "orgname", "orgcode" };// 忽略的查询条件
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		String parms = urlparms.get("parms");
+		List<JSONParm> jps = CJSON.getParms(parms);
+
+		// skdatebg skdateed
+		List<JSONParm> skjps = CorUtil.getJSONParms(jps, "skdatebg");
+		if (skjps.size() <= 0)
+			throw new Exception("开始日期不能为空");
+		String skdatebg = skjps.get(0).getParmvalue();
+
+		skjps = CorUtil.getJSONParms(jps, "skdateed");
+		if (skjps.size() <= 0)
+			throw new Exception("截止日期不能为空");
+		String skdateed = skjps.get(0).getParmvalue();
+
+		skdateed = Systemdate.getStrDateByFmt(Systemdate.dateDayAdd(Systemdate.getDateByStr(skdateed), 1), "yyyy-MM-dd");
+
+		sqlstr = sqlstr + " and p.skdate>='" + skdatebg + "'";
+		sqlstr = sqlstr + " and p.skdate<'" + skdateed + "'";
+
+		JSONParm empparm = CorUtil.getJSONParm(jps, "employee_code");
+		if (empparm != null) {
+			String employee_code = empparm.getParmvalue();
+			sqlstr = sqlstr + " and e.employee_code " + empparm.getReloper() + "'" + employee_code + "'";
+		}
+
+		empparm = CorUtil.getJSONParm(jps, "orgcode");
+		if (empparm != null) {
+			String orgcode = empparm.getParmvalue();
+			Shworg org = new Shworg();
+			org.findBySQL("select * from shworg where code='" + orgcode + "'", false);
+			sqlstr = sqlstr + " and e.idpath like '" + org.idpath.getValue() + "%'";
+		}
+		return new CReport(HRUtil.getReadPool(), sqlstr, " skdate DESC ", notnull).findReport(ignParms);
+	}
+
+	@ACOAction(eventname = "findnotswcardlist", Authentication = true, notes = "获取指定时间段内未打卡签卡的人事信息")
+	public String findnotswcardlist() throws Exception {
+		String[] notnull = {};
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		String parms = urlparms.get("parms");
+		List<JSONParm> jps = CJSON.getParms(parms);
+		String[] ignParms = { "bgdate", "eddate", "employee_code" };// 忽略的查询条件
+		JSONParm pbg = CorUtil.getJSONParm(jps, "bgdate", "需要参数bgdate");
+		JSONParm ped = CorUtil.getJSONParm(jps, "eddate", "需要参数eddate");
+		JSONParm pec = CorUtil.getJSONParm(jps, "employee_code");
+		String employee_code = (pec == null) ? null : pec.getParmvalue();
+		if ((employee_code != null) && (employee_code.isEmpty())) {
+			employee_code = null;
+		}
+
+		Date bgdate = Systemdate.getDateByStr(Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByStr(pbg.getParmvalue())));
+		Date eddate = Systemdate.getDateByStr(Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByStr(ped.getParmvalue())));
+		if ((eddate.getTime() - bgdate.getTime()) > 604800000f)
+			throw new Exception("查询期间不能超过七天");
+		String sqlstrall = "";
+		Date temdate = bgdate;
+		while ((temdate.before(eddate)) || (temdate.equals(eddate))) {
+			Date tbgdate = Systemdate.dateDayAdd(temdate, -3);
+			Date teddate = Systemdate.dateDayAdd(tbgdate, 2);
+			String strbgdate = Systemdate.getStrDateyyyy_mm_dd(tbgdate);
+			String streddate = Systemdate.getStrDateyyyy_mm_dd(temdate);
+//			String sqlstr = "select distinct '" + streddate + "' cdate ,'" + Systemdate.getStrDateyyyy_mm_dd(tbgdate) + "到" + Systemdate.getStrDateyyyy_mm_dd(teddate) + "' memo, "
+//					+ "tb.* from "
+//					+ "(select "
+//					+ "  e.er_id, e.employee_code, e.employee_name,e.empstatid, e.card_number, e.orgid, e.orgcode, e.orgname, e.hg_name, e.lv_num, e.sp_name, p.skdate "
+//					+ "from "
+//					+ "  (select * from hr_employee  where 1=1 ";
+//			if (employee_code != null)
+//				sqlstr = sqlstr + " and  employee_code='" + employee_code + "'";
+//			sqlstr = sqlstr + " and noclock=2 and kqdate_start<'" + strbgdate + "' and ((empstatid in (1,2,3,4,5,7,8)) OR (empstatid>=10 and kqdate_end>='" + streddate + "'))"
+//					+ CSContext.getIdpathwhere() + " ) e "
+//					+ "  left join "
+//					+ "    (select *from hrkq_swcdlst "
+//					+ "    where skdate >= '" + strbgdate + "' "
+//					+ "      AND skdate < '" + streddate + "' "
+//					+ "     ) p "
+//					+ "    on e.employee_code = p.empno) tb "
+//					+ "where tb.skdate is null ";
+
+			String sqlstr = "SELECT  '" + streddate + "' cdate ,'" + Systemdate.getStrDateyyyy_mm_dd(tbgdate) + "到" + Systemdate.getStrDateyyyy_mm_dd(teddate) + "' memo, " +
+					"  e.er_id, e.employee_code, e.employee_name,e.empstatid, e.card_number, e.orgid, e.orgcode, e.orgname, e.hg_name, e.lv_num, e.sp_name " +
+					"FROM " +
+					"  hr_employee e " +
+					"WHERE  " +
+					"  empstatid>0 ";
+			if (employee_code != null)
+				sqlstr = sqlstr + " and  employee_code='" + employee_code + "'";
+			sqlstr += "  AND noclock = 2 " +
+					"  AND kqdate_start < '" + streddate + "' " +
+					"  AND ( " +
+					"     kqdate_end > '" + streddate + "' " +
+					"    OR  kqdate_end IS NULL " +
+					"  ) " +
+					CSContext.getIdpathwhere() +
+					"  AND NOT EXISTS " +
+					"  (SELECT " +
+					"    1 " +
+					"  FROM " +
+					"    hrkq_swcdlst c " +
+					"  WHERE skdate >= '" + strbgdate + "' " +
+					"    AND skdate <= '" + streddate + "' " +
+					"    AND e.employee_code = c.empno)";
+
+			String sqlstr2 = "SELECT er_id,GROUP_CONCAT(billtype) billtypes FROM ( " +
+					"SELECT t.er_id, '请假' billtype FROM hrkq_holidayapp t  " +
+					"WHERE t.stat>1 AND t.stat<10 AND t.timebg<'" + streddate + "' AND timeedtrue>='" + strbgdate + "' " +
+					"UNION " +
+					"SELECT t.er_id, '出差' billtype FROM hrkq_business_trip t  " +
+					"WHERE t.stat>1 AND t.stat<10 AND t.begin_date<'" + streddate + "' AND end_date>='" + strbgdate + "' " +
+					"UNION " +
+					"SELECT t.er_id, '调休' billtype FROM hrkq_wkoff t  " +
+					"WHERE t.stat>1 AND t.stat<10 AND t.begin_date<'" + streddate + "' AND end_date>='" + strbgdate + "') tb " +
+					"GROUP BY tb.er_id";
+			sqlstr = "select tb1.*,tb2.billtypes from (" + sqlstr + ") tb1 left join  (" + sqlstr2 + ") tb2  on tb1.er_id=tb2.er_id";
+			sqlstrall = sqlstrall + sqlstr + " union ";
+			temdate = Systemdate.dateDayAdd(temdate, 1);
+		}
+
+		if (!sqlstrall.isEmpty())
+			sqlstrall = sqlstrall.substring(0, sqlstrall.length() - 6);
+		return new CReport(HRUtil.getReadPool(), sqlstrall, null, notnull).findReport(ignParms);
+	}
+
+	@ACOAction(eventname = "findkqcalcrst", Authentication = true, notes = "查询考勤计算结果")
+	public String findkqcalcrst() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		String parms = urlparms.get("parms");
+		List<JSONParm> jps = CJSON.getParms(parms);
+		JSONParm jpym = CorUtil.getJSONParm(jps, "ym");
+
+		String[] notnull = {};
+		String[] ignParms = { "ym" };// 忽略的查询条件
+		String sqlstr = "SELECT DATE_FORMAT(r.kqdate,'%Y-%m') ym, r.bckqid,r.kqdate,e.er_id,e.employee_code,e.employee_name,e.orgname,e.sp_name,e.lv_num,"
+				+ " r.frtime,r.frsktime,r.mtslate,r.frst,r.totime,r.lrst,r.tosktime,r.mtslearly,r.trst,r.isabnom,"
+				+ " r.scdname,r.sclid,r.bcno,e.idpath"
+				+ " FROM hrkq_bckqrst r,hr_employee e"
+				+ " WHERE r.er_id=e.er_id and r.kqdate<CURDATE() ";
+		if (jpym != null) {
+			String ym = jpym.getParmvalue();
+			if ((ym != null) && (!ym.isEmpty())) {
+				sqlstr = sqlstr + " and DATE_FORMAT(r.kqdate,'%Y-%m')='" + ym + "'";
+			}
+		}
+		return new CReport(HRUtil.getReadPool(), sqlstr, " kqdate desc ", notnull).findReport(ignParms);
+	}
+
+	@ACOAction(eventname = "findovertimelist", Authentication = true, notes = "查询加班明细")
+	public String findovertimelist() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT em.idpath,em.orgid,em.orgname,em.lv_id,em.lv_num,em.ospid,em.sp_name," +
+				"otl.*  " +
+				"FROM hr_employee em,hrkq_overtime_list otl " +
+				" WHERE em.er_id=otl.er_id ";
+		String orderby = " bgtime desc ";
+		return new CReport(HRUtil.getReadPool(), sqlstr, orderby, notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findondutylist", Authentication = true, notes = "查询值班明细")
+	public String findondutylist() throws Exception {
+		String[] notnull = {};
+		String sqlstr = "SELECT od.od_code,od.orgid,od.orgname,od.lv_id,od.lv_num,od.ospid,od.sp_name,od.er_id,od.employee_code,od.employee_name," +
+				"od.needchedksb,od.needchedkxb,od.dealtype,od.odreason,od.stat,od.remark,od.idpath," +
+				"TIMESTAMPDIFF(HOUR,odl.begin_date,odl.end_date) AS applyhours,odl.* " +
+				" FROM hrkq_onduty od,hrkq_ondutyline odl " +
+				" WHERE  odl.od_id=od.od_id and od.stat=9 ";
+		return new CReport(HRUtil.getReadPool(), sqlstr, " begin_date desc ", notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findtotalholdays", Authentication = true, notes = "查询请假统计信息")
+	public String findtotalholdays() throws Exception {//
+		String[] notnull = {};
+		String sqlstr = "SELECT ha.*,hac.canceltime AS haccanceltime,hac.cancelreason,hac.stat AS hacstat " +
+				" FROM hrkq_holidayapp ha left join  hrkq_holidayapp_cancel hac on hac.haid = ha.haid "
+				+ "WHERE ha.stat=9";
+		// sqlstr = sqlstr + CSContext.getIdpathwhere();
+		return new CReport(HRUtil.getReadPool(), sqlstr, null, notnull).findReport();
+	}
+
+	@ACOAction(eventname = "findwkoffcount", Authentication = true, notes = "调休信息统计")
+	public String findwkoffcount() throws Exception {//
+		String[] notnull = {};
+		String sqlstr = "SELECT wko.*,wkos.lbid,wkos.stype,wkos.sccode,wkos.alllbtime,wkos.usedlbtime,(wkos.wotime/8) wotime " +
+				" FROM hrkq_wkoff wko,hrkq_wkoffsourse wkos WHERE wkos.woid=wko.woid and wkos.wotime<>0 AND wko.stat=9 ";
+		// sqlstr = sqlstr + CSContext.getIdpathwhere();
+		return new CReport(HRUtil.getReadPool(), sqlstr, " begin_date desc ", notnull).findReport();
+	}
+
+}

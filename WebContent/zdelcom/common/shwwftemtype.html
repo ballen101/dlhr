@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line2.html" workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+        var comUrls = [
+            {
+                index: "dic2",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=2",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'fdrname', title: '名称', width: 150}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.generic.Shwwftemtype",
+            JPAIdField: "wftpid",
+            Pagination: false,
+            istree: true,
+            allow_copy: false,
+            treeParentField: "superid",
+            showtreeHeader: false,
+            disableButtonType:_NUBType.hide,
+            onNew: function (jsondata, idx) {
+                var node = $("#dg_datalist_id").treegrid('getSelected');
+                if ((!node) && (idx == 1)) {
+                    jsondata.superid = 0;
+                }
+            },
+            onFind: function (parms) {
+                parms.enableidpath = false;
+                parms.order = " wftpid asc";
+            },
+            onSave: function (postData) {
+                return true;
+            }
+        };
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <tr>
+        <td cjoptions="fdname:'wftpid'">ID</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'wftpid',required:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'fdrname'">名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'fdrname'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stat'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'flag'">标志</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'flag'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'typepath'">类型路径</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'typepath'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'note'">备注</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'note'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'superid'">上级ID</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'superid'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'" data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime'" data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

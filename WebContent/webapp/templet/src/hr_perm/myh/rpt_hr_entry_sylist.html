@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'orgname', title: '机构', width: 200},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'lv_num', title: '职级', width: 50},
+                {field: 'hwc_namezl', title: '职类', width: 50},
+                {field: 'hiredday', title: '入职日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'probation', title: '试用期', width: 50},
+                {field: 'promotionday', title: '预计转正日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'wfpbtdate', title: '延期转正时间', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'pstat', title: '试用期状态', width: 80}
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/permrpt3/rpt_hr_entry_sylist.co"
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

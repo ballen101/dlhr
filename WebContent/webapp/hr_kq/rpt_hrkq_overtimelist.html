@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic923 = {index: 'dic923',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"平时加班","dictvalue":"1"},{"language1":"休息日加班","dictvalue":"2"},{"language1":"法定假日加班","dictvalue":"3"},{"language1":"特殊加班日","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic923.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic923; } if (comUrl_dic923.type == 'combobox') { if (comUrl_dic923.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic923.valueField]) { rst = rst + jsondata[i][comUrl_dic923.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic923.valueField]) return jsondata[i][comUrl_dic923.textField]; } } } if (comUrl_dic923.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic923.editor= {type: 'combobox', options: {valueField:comUrl_dic923.valueField, textField:comUrl_dic923.textField, data: comUrl_dic923.jsondata}}; var comUrl_dic928 = {index: 'dic928',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"调休","dictvalue":"1"},{"language1":"计算加班费","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic928.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic928; } if (comUrl_dic928.type == 'combobox') { if (comUrl_dic928.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic928.valueField]) { rst = rst + jsondata[i][comUrl_dic928.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic928.valueField]) return jsondata[i][comUrl_dic928.textField]; } } } if (comUrl_dic928.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic928.editor= {type: 'combobox', options: {valueField:comUrl_dic928.valueField, textField:comUrl_dic928.textField, data: comUrl_dic928.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic968 = {index: 'dic968',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"正常","dictvalue":"1"},{"language1":"迟到","dictvalue":"2"},{"language1":"早退","dictvalue":"3"},{"language1":"无打卡","dictvalue":"4"},{"language1":"出差","dictvalue":"5"},{"language1":"请假","dictvalue":"6"},{"language1":"调休","dictvalue":"7"},{"language1":"签卡","dictvalue":"8"},{"language1":"旷工(迟到)","dictvalue":"9"},{"language1":"早退(迟到)","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic968.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic968; } if (comUrl_dic968.type == 'combobox') { if (comUrl_dic968.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic968.valueField]) { rst = rst + jsondata[i][comUrl_dic968.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic968.valueField]) return jsondata[i][comUrl_dic968.textField]; } } } if (comUrl_dic968.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic968.editor= {type: 'combobox', options: {valueField:comUrl_dic968.valueField, textField:comUrl_dic968.textField, data: comUrl_dic968.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic923", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=923", valueField: 'dictvalue', textField: 'language1' }, { index: "dic928", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=928", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic968", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=968", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '部门', width: 200},
+                {field: 'employee_code', title: '工号', width: 70},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'sp_name', title: '职位', width: 130},
+                {field: 'over_type', title: '加班类型', width: 100, formatter: comUrl_dic923.formator},
+                {field: 'dealtype', title: '加班处理', width: 100, formatter: comUrl_dic928.formator},
+                {field: 'bgtime', title: '加班开始时间', width: 130, sortable: true, findtype: 'datetime', formatter: jbtimeformator},
+                {field: 'edtime', title: '加班结束时间', width: 130, sortable: true, findtype: 'datetime', formatter: jbtimeformator},
+                {field: 'applyhours', title: '加班申请时数', width: 100},
+                {field: 'bgpktime', title: '上班打卡时间', width: 130, formatter: jbtimeformator},
+                {field: 'edpktime', title: '下班打卡时间', width: 130, formatter: jbtimeformator},
+                {field: 'frst', title: '上班考勤', width: 64, formatter: comUrl_dic968.formator},
+                {field: 'trst', title: '下班考勤', width: 64, formatter: comUrl_dic968.formator},
+                {field: 'needchedksb', title: '上班打卡', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'needchedkxb', title: '下班打卡', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'othours', title: '实际加班时数', width: 100},
+                {field: 'remark', title: '备注', width: 150}
+            ]
+        };
+
+        var findExtParms = [
+            {field: 'orgname', title: '部门', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'sp_name', title: '职位', width: 130},
+            {field: 'over_type', title: '加班类型', width: 64},
+            {field: 'bgtime', title: '开始时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'edtime', title: '结束时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'frst', title: '上班考勤', width: 64, formatter: comUrl_dic968.formator},
+            {field: 'trst', title: '下班考勤', width: 64, formatter: comUrl_dic968.formator}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            //comUrls: comUrls,
+            coURL: _serUrl + "/web/hrkq/rpt1/findovertimelist.co"
+        };
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm");
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

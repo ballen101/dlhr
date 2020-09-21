@@ -1,0 +1,439 @@
+package com.hr.util;
+
+import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.servlet.ServletContextEvent;
+
+
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.ConstsSw;
+import com.corsair.server.generic.Shwuser;
+import com.corsair.server.listener.SWServletContextListener;
+import com.corsair.server.retention.RContextInit;
+import com.hr.attd.ctr.HrkqUtil;
+import com.hr.attd.entity.Hrkq_swcdlst;
+import com.hr.inface.ctr.TimerTaskHRAccessLog;
+import com.hr.inface.ctr.TimerTaskHRAccessSum;
+import com.hr.inface.entity.TXkqView_Hrms;
+import com.hr.inface.entity.V_TrainRecord;
+import com.hr.perm.entity.Hr_employee;
+import com.hr.perm.entity.Hr_employee_trainwk;
+import com.hr.timer.TaskCalcDepartDayReport;
+import com.hr.timer.TaskKqSendWx;
+import com.hr.timer.TaskPersonSendWx;
+
+@RContextInit()
+public class HRServletContextListener implements SWServletContextListener {
+	private Timer timer_readswcard = new Timer(true);
+	private Timer timer_calckq = new Timer(true);
+	private Timer timer_trainwk = new Timer(true);
+	private Timer timer_syncmail = new Timer(true);
+	private Timer timer_synctxzm = new Timer(true);
+	private Timer timer_synctcrs = new Timer(true);
+	private Timer timer_synconcarts = new Timer(true);
+	private Timer timer_synoplog = new Timer(true);
+	private Timer timer_synaccesssum = new Timer(true);
+	private Timer timer_syntrans2ins = new Timer(true);
+	private Timer timer_checkDisableMail = new Timer(true);
+	private Timer timer_SYNEMPCARDNO = new Timer(true);
+	private Timer timer_AUTODELENTITY = new Timer(true);
+	private Timer timer_AUTOTRY = new Timer(true);// 试用期 考察期 过期处理
+	private Timer timerTaskHRCountRecords = new Timer(true);
+	private Timer TimerTaskAUTOSalary = new Timer(true);
+	private Timer TimerTaskAUTOSalaryHotSub = new Timer(true);
+	private Timer TimerTaskAUTOSetSalaryList = new Timer(true);
+	private Timer TimerTaskSendWxDepart = new Timer(true);
+	private Timer TimerTaskSendPerson = new Timer(true);
+	private Timer TimerCalcDepartDayReport= new Timer(true);
+	private SendEmailDBThread sedbt = new SendEmailDBThread();
+	private AUTOSETSalaryListThread asslt = new AUTOSETSalaryListThread();
+	private AUTOCountRecords acrs = new AUTOCountRecords();
+	//private Scheduler scheduler;
+	@Override
+	public void contextInitialized(ServletContextEvent sContextE) {
+		//		try {
+		//			scheduler = StdSchedulerFactory.getDefaultScheduler();
+		//			scheduler.start();
+		//			if (ConstsSw.getAppParmBoolean("AUTOSENDWXMSGBYPERSON")) {
+		//				// 定义一次任务
+		//				System.out.println("发送部门考勤数据【启用】");
+		//				JobDetail job = JobBuilder.newJob(TaskKqSendWx.class)
+		//						.withIdentity("jobName1", "groupName1").build();
+		//				// 定义执行时间,2秒1次
+		//				Trigger trigger = TriggerBuilder
+		//						.newTrigger()
+		//						.withIdentity("triggerName1", "groupName1")
+		//						.withSchedule(CronScheduleBuilder.cronSchedule("0 5 15 * * ?"))
+		//						.build();
+		//				scheduler.scheduleJob(job, trigger);
+		//			}else{
+		//				System.out.println("发送部门考勤数据【停用】");
+		//			}
+		//			if (ConstsSw.getAppParmBoolean("AUTOSENDWXMSGBYPERSON")) {
+		//				// 定义一次任务
+		//				System.out.println("发送个人考勤数据【启用】");
+		//				JobDetail job = JobBuilder.newJob(TaskPersonSendWx.class)
+		//						.withIdentity("jobName3", "groupName3").build();
+		//				// 定义执行时间,2秒1次
+		//				Trigger trigger = TriggerBuilder
+		//						.newTrigger()
+		//						.withIdentity("triggerName3", "groupName3")
+		//						.withSchedule(CronScheduleBuilder.cronSchedule("0 5 9 * * ?"))
+		//						.build();
+		//				scheduler.scheduleJob(job, trigger);
+		//			}else{
+		//				System.out.println("发送个人数据【停用】");
+		//			}
+		//			if (ConstsSw.getAppParmBoolean("AUTOCALCDAYDEPART")) {
+		//				System.out.println("自动统计各部门当天考勤【启用】");
+		//				// 定义一次任务
+		//				JobDetail job = JobBuilder.newJob(TaskCalcDepartDayReport.class)
+		//						.withIdentity("jobName2", "groupName2").build();
+		//				// 定义执行时间,2秒1次
+		//				Trigger trigger = TriggerBuilder
+		//						.newTrigger()
+		//						.withIdentity("triggerName2", "groupName2")
+		//						.withSchedule(CronScheduleBuilder.cronSchedule("0 5 1 * * ?"))
+		//						.build();
+		//				scheduler.scheduleJob(job, trigger);
+		//			}else{
+		//				System.out.println("自动统计各部门当天考勤【停用】");
+		//			}
+		//			
+		//		} catch (SchedulerException e1) {
+		//			// TODO Auto-generated catch block
+		//			e1.printStackTrace();
+		//		}
+
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 1);
+		try {
+			if (ConstsSw.getAppParmBoolean("AUTOSENDWXMSGBYPERSON")) {
+				System.out.println("发送部门考勤数据【启用】");
+				long mit = 1 * 1 * 60 * 1000;
+				TimerTaskSendWxDepart.schedule(new TaskKqSendWx(), cal.getTime(), mit);
+			}
+			else{
+				System.out.println("发送部门考勤数据【停用】");
+			}
+			if (ConstsSw.getAppParmBoolean("AUTOSENDWXMSGBYPERSON")) {
+				System.out.println("发送个人考勤数据【启用】");
+				long mit = 1 * 1 * 60 * 1000;
+	
+				TimerTaskSendPerson.schedule(new TaskPersonSendWx(), cal.getTime(), mit);
+			}
+			else{
+				System.out.println("发送个人考勤数据【停用】");
+			}
+			if (ConstsSw.getAppParmBoolean("AUTOCALCDAYDEPART")) {
+				System.out.println("自动统计各部门当天考勤【启用】");
+				long mit = 1 * 1 * 60 * 1000;// 一天一次
+				TimerCalcDepartDayReport.schedule(new TaskCalcDepartDayReport(), cal.getTime(), mit);
+			}
+			else{
+				System.out.println("自动统计各部门当天考勤【停用】");
+			}
+			// 同步打卡记录
+			if (ConstsSw.getAppParmBoolean("SYNTXCARDDATA")) {
+				int mit = Integer.valueOf(HrkqUtil.getParmValue("IMPORT_SWCARDINFO"));
+				if (mit != 0) {
+					System.out.println("同步打卡记录【启用】");
+					long spedt = mit * 60 * 1000;// mit 分钟运行一次
+					timer_readswcard.schedule(new TimerTaskHRSwcard(), cal.getTime(), spedt);
+				} else
+					System.out.println("同步打卡记录【停用】,系统参数SYNTXCARDDATA:false");
+			} else
+				System.out.println("同步打卡记录【停用】,应用参数IMPORT_SWCARDINFO:false");
+
+			if (ConstsSw.getAppParmBoolean("AUTOCALCKQ")) {
+				System.out.println("考勤计算【启用】");
+				long spedt = 1 * 60 * 60 * 1000;// 每小时运行一次
+				timer_calckq.schedule(new TimerTaskHRKQCalc(), cal.getTime(), spedt);
+			} else
+				System.out.println("考勤计算【停用】,应用参数AUTOCALCKQ:false");
+
+			// 在职培训
+			if (ConstsSw.getAppParmBoolean("SYNTEAINWK")) {
+				int mit = Integer.valueOf(HrkqUtil.getParmValue("SYNTEAINWK_TIME_SEP"));
+				if (mit != 0) {
+					System.out.println("在职培训【启用】");
+					long spedt = mit * 60 * 1000;// mit 分钟运行一次
+					timer_readswcard.schedule(new TimerTasTrainwk(), cal.getTime(), spedt);
+				} else
+					System.out.println("同步在职培训【停用】,系统参数SYNTEAINWK_TIME_SEP:0");
+			} else
+				System.out.println("同步在职培训【停用】,应用参数SYNTEAINWK:false");
+
+			// 同步邮件
+			if (ConstsSw.getAppParmBoolean("SYNUSERMAIL")) {
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				System.out.println("同步邮件【启用】");
+				timer_syncmail.schedule(new TimerTasUserMail(), cal.getTime(), mit);
+			} else
+				System.out.println("同步用户邮件【停用】,应用参数SYNUSERMAIL:false");
+
+			// 同步招募系统资料
+			if (ConstsSw.getAppParmBoolean("SYNTXZMEMP")) {
+				System.out.println("同步招募系统资料【启用】");
+				long mit = 20 * 60 * 1000;// 20分钟一次
+				timer_synctxzm.schedule(new TimerTaskHRZM(), cal.getTime(), mit);
+			} else
+				System.out.println("同步招募系统资料【停用】,应用参数SYNTXZMEMP:false");
+
+			// 自动检测调动后生成购保单
+			if (ConstsSw.getAppParmBoolean("SYNTRANS2INSURANCE")) {
+				System.out.println("调动后生成购保单权限【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				timer_syntrans2ins.schedule(new TimerTaskHRTrans2Insurance(), cal.getTime(), mit);
+			}
+
+			// 同步饭堂消费记录
+			if (ConstsSw.getAppParmBoolean("SYNTXCOSTRECORD")) {
+				int mit = Integer.valueOf(HrkqUtil.getParmValue("IMPORT_CTCOSTRECORDS"));
+				if (mit != 0) {
+					System.out.println("同步饭堂消费记录【启用】");
+					long spedt = 24 * 60 * 60 * 1000;// 一天一次
+					timer_synctcrs.schedule(new TimerTaskHRCTCostRecords(), cal.getTime(), spedt);
+				} else
+					System.out.println("同步饭堂消费记录【停用】,考勤系统参数IMPORT_CTCOSTRECORDS:0");
+			} else
+				System.out.println("同步饭堂消费记录【停用】,应用参数SYNTXCOSTRECORD:false");
+
+			// 将过期合同状态修改为过期
+			if (ConstsSw.getAppParmBoolean("SYNCONSTAT")) {
+				System.out.println("更改过期合同状态【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				timer_synconcarts.schedule(new TimerTaskHRContract(), cal.getTime(), mit);
+			} else
+				System.out.println("更改过期合同状态【停用】,应用参数SYNCONSTAT:false");
+
+			// 同步开门日志
+			if (ConstsSw.getAppParmBoolean("SYNOPLOG")) {
+				System.out.println("同步开门日志【启用】");
+				long mit = 10 * 60 * 1000;// 10分钟一次
+				timer_synoplog.schedule(new TimerTaskHRAccessLog(), cal.getTime(), mit);
+			}
+
+			// 同步门禁权限
+			if (ConstsSw.getAppParmBoolean("SYNACCESSSUM")) {
+				System.out.println("同步门禁权限【启用】");
+				long mit = 10 * 60 * 1000;// 10分钟一次
+				timer_synaccesssum.schedule(new TimerTaskHRAccessSum(), cal.getTime(), mit);
+			}
+
+			// 检查无效通知
+			if (ConstsSw.getAppParmBoolean("CHECKDISABLENOTIFY")) {
+				sedbt.start();
+				//				System.out.println("检查无效通知【启用】");
+				//				long mit = 10 * 60 * 1000;// 10分钟一次
+				//				timer_checkDisableMail.schedule(new TimerCheckDisableNotify(), cal.getTime(), mit);
+			} else
+				System.out.println("检查无效通知【停用】");
+
+			// 同步人事资料卡号
+			if (ConstsSw.getAppParmBoolean("SYNEMPCARDNO")) {
+				System.out.println("同步卡号【启用】");
+				long mit = 10 * 60 * 1000;// 10分钟一次
+				timer_SYNEMPCARDNO.schedule(new TimerTaskSYNEMPCARDNO(), cal.getTime(), mit);
+			} else
+				System.out.println("同步卡号【停用】");
+
+			// 自动清除实体资料
+			if (ConstsSw.getAppParmBoolean("AUTODELENTITY")) {
+				System.out.println("自动清除实体【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				timer_AUTODELENTITY.schedule(new TimerTaskAUTODELENTITY(), cal.getTime(), mit);
+			} else
+				System.out.println("自动清除实体【停用】");
+
+			if (ConstsSw.getAppParmBoolean("AUTOTRY")) {
+				System.out.println("自动处理考察期试用期过期【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				timer_AUTOTRY.schedule(new TimerTaskAUTOTRY(), cal.getTime(), mit);
+			} else
+				System.out.println("自动处理考察期试用期过期【停用】");
+
+			// 统计计算消费记录
+			if (ConstsSw.getAppParmBoolean("COUNTCOSTRECORDS")) {
+				System.out.println("统计计算消费记录【启用】");
+				acrs.start();
+				/*long spedt = 24 * 60 * 60 * 1000;// 一天一次
+				int countday = cal.get(Calendar.DAY_OF_MONTH);
+				if (countday == 5) {
+					//timerTaskHRCountRecords.schedule(new TimerTaskHRCountRecords(), cal.getTime(), spedt);
+				}*/
+			} else
+				System.out.println("统计计算消费记录【停用】,应用参数COUNTCOSTRECORDS:false");
+
+			if (ConstsSw.getAppParmBoolean("AUTOPOSTSUB")) {
+				System.out.println("自动处理岗位津贴过期调薪【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				TimerTaskAUTOSalary.schedule(new TimerTaskAUTOSalary(), cal.getTime(), mit);
+			} else
+				System.out.println("自动处理岗位津贴过期调薪【停用】");
+
+			// 月初自动从薪资异动记录生成薪资明细
+			if (ConstsSw.getAppParmBoolean("SETSALARYCHAGTOLIST")) {
+				System.out.println("自动生成薪资明细【启用】");
+				asslt.start();
+				/*long spedt = 24 * 60 * 60 * 1000;// 一天一次
+				int countday=cal.get(Calendar.DAY_OF_MONTH);
+				if(countday==1){//每月1号
+					TimerTaskAUTOSetSalaryList.schedule(new TimerTaskAUTOSetSalaryList(), cal.getTime(), spedt);
+				}*/
+			} else
+				System.out.println("自动生成薪资明细【停用】,应用参数SETSALARYCHAGTOLIST:false");			
+
+			if (ConstsSw.getAppParmBoolean("AUTOHOTSUB")) {
+				System.out.println("自动处理高温津贴资格过期调薪【启用】");
+				long mit = 24 * 60 * 60 * 1000;// 一天一次
+				TimerTaskAUTOSalaryHotSub.schedule(new TimerTaskAUTOSalaryHotSub(), cal.getTime(), mit);
+			} else
+				System.out.println("自动处理高温津贴资格过期调薪【停用】");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sContextE) {
+		// TODO Auto-generated method stub
+		asslt.stoped=true;
+		acrs.stoped=true;
+		sedbt.stoped = true;
+		TimerTaskSendWxDepart.cancel();
+		TimerTaskSendPerson.cancel();
+		TimerCalcDepartDayReport.cancel();
+		timer_readswcard.cancel();
+		timer_calckq.cancel();
+		timer_synctxzm.cancel();
+
+		//		removeJob("jobName1","groupName1","triggerName1","groupName1");
+		//		removeJob("jobName2","groupName2","triggerName2","groupName2");
+		//		removeJob("jobName3","groupName3","triggerName3","groupName3");
+		//		shutdownJobs();
+	}
+
+	//
+	public class TimerTasTrainwk extends TimerTask {
+		// private String bgdate = "2016-01-01";
+		private int syncrowno = 5000;
+
+		@Override
+		public void run() {
+			Logsw.debug("同步在职培训");
+			try {
+				String sqlstr = "SELECT MAX(odsno) mx FROM hr_employee_trainwk ";
+				Hr_employee_trainwk trs = new Hr_employee_trainwk();
+				List<HashMap<String, String>> sws = trs.pool.openSql2List(sqlstr);
+				long mx = ((sws.size() == 0) || (sws.get(0).get("mx") == null)) ? 0 : Long.valueOf(sws.get(0).get("mx"));
+				CJPALineData<V_TrainRecord> strds = new CJPALineData<V_TrainRecord>(V_TrainRecord.class);
+				sqlstr = "SELECT TOP " + syncrowno + " * from V_TrainRecord where fHours>0 and RowNo>" + mx + " order by RowNo";
+				strds.findDataBySQL(sqlstr, true, false);
+				CJPALineData<Hr_employee_trainwk> dtrds = new CJPALineData<Hr_employee_trainwk>(Hr_employee_trainwk.class);
+				Hr_employee emp = new Hr_employee();
+				String synctime = Systemdate.getStrDate();
+				for (CJPABase jpa : strds) {
+					V_TrainRecord strd = (V_TrainRecord) jpa;
+					emp.clear();
+					emp.findBySQL("select * from hr_employee where employee_code='" + strd.UserCode.getValue() + "'");
+					Hr_employee_trainwk dtrd = new Hr_employee_trainwk();
+					if (emp.isEmpty())
+						dtrd.er_id.setAsInt(0);
+					else
+						dtrd.er_id.setValue(emp.er_id.getValue());
+					dtrd.employee_code.setValue(strd.UserCode.getValue());
+					dtrd.twktype.setAsInt(1);
+					dtrd.twktitle.setValue(strd.CourseType.getValue() + "-" + strd.CourseName.getValue());
+					dtrd.begintime.setValue(strd.CardStartTime.getValue());
+					dtrd.endtime.setValue(strd.CardEndTime.getValue());
+					dtrd.classh.setAsInt(strd.fHours.getAsIntDefault(0));
+					if (strd.TeacherOrgName.isEmpty())
+						dtrd.schoolname.setValue("0");
+					else
+						dtrd.schoolname.setValue(strd.TeacherOrgName.getValue());
+					dtrd.lecturer.setValue(strd.TeacherStaffName.getValue());
+					dtrd.remark.setValue("系统自动导入:" + synctime);
+					dtrd.odsno.setValue(strd.RowNo.getValue());
+					dtrds.add(dtrd);
+				}
+				dtrds.saveBatchSimple();// 高速存储
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public class TimerTasUserMail extends TimerTask {
+
+		@Override
+		public void run() {
+			Logsw.debug("同步用户邮件");
+			try {
+				Shwuser user = new Shwuser();
+				String sqlstr = "UPDATE shwuser SET shwuser.email=("
+						+ " SELECT DISTINCT hr_interfacemail.mail FROM hr_interfacemail WHERE shwuser.username=hr_interfacemail.employee_code"
+						+ " )WHERE EXISTS("
+						+ "  SELECT * FROM hr_interfacemail WHERE shwuser.username=hr_interfacemail.employee_code)";
+				user.pool.execsql(sqlstr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @Description: 移除一个任务
+	 * 
+	 * @param jobName
+	 * @param jobGroupName
+	 * @param triggerName
+	 * @param triggerGroupName
+	 */
+	//	public void removeJob(String jobName, String jobGroupName, String triggerName, String triggerGroupName) {
+	//        try {
+	//            TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
+	//            scheduler.pauseTrigger(triggerKey);// 停止触发器
+	//            scheduler.unscheduleJob(triggerKey);// 移除触发器
+	//            scheduler.deleteJob(JobKey.jobKey(jobName, jobGroupName));// 删除任务
+	//        } catch (Exception e) {
+	//            throw new RuntimeException(e);
+	//        }
+	//    }
+
+
+	/**
+	 * @Description:关闭所有定时任务
+	 */
+	//	   public void shutdownJobs() {
+	//	        try {
+	//	            if (!scheduler.isShutdown()) {
+	//	                scheduler.shutdown();
+	//	            }
+	//	        } catch (Exception e) {
+	//	            throw new RuntimeException(e);
+	//	        }
+	//	    }
+
+
+
+}

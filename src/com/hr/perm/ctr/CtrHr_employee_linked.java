@@ -1,0 +1,216 @@
+package com.hr.perm.ctr;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
+
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.util.CPoint;
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.cjpa.JPAController;
+import com.corsair.server.generic.Shw_physic_file;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.util.UpLoadFileEx;
+import com.hr.attd.ctr.HrkqUtil;
+import com.hr.perm.entity.Hr_employee;
+import com.hr.perm.entity.Hr_employee_linked;
+import com.hr.util.HRUtil;
+
+public class CtrHr_employee_linked extends JPAController {
+	/**
+	 * 保存前
+	 * 
+	 * @param jpa里面有值
+	 *            ，还没检测数据完整性，没生成ID CODE 设置默认值
+	 * @param con
+	 * @param selfLink
+	 * @throws Exception
+	 */
+	@Override
+	public void BeforeSave(CJPABase jpa, CDBConnection con, boolean selfLink) throws Exception {
+		Hr_employee e = (Hr_employee) jpa;
+		if (e.kqdate_start.isEmpty() && (!e.hiredday.isEmpty())) {
+			e.kqdate_start.setAsDatetime(e.hiredday.getAsDatetime());
+		}
+		if (e.kqdate_end.isEmpty() && (!e.ljdate.isEmpty())) {
+			e.kqdate_end.setAsDatetime(e.ljdate.getAsDatetime());
+		}
+		int age = Integer.valueOf(HrkqUtil.getParmValue("EMPLOYEE_AGE_LMITE"));// 年龄小于*岁不允许入职 0 不控制
+		//System.out.println("age:" + age);
+		if (e.idtype.getAsIntDefault(1) == 1) {
+			int l = e.id_number.getValue().length();
+			if ((l != 18) && (l != 20))
+				throw new Exception("身份证必须为18或20位");
+		}
+		// System.out.println("getAgeByBirth(e.birthday.getAsDatetime():" + getAgeByBirth(e.birthday.getAsDatetime()));
+		if (age > 0) {
+			float ag = HRUtil.getAgeByBirth(e.birthday.getAsDatetime());
+			System.out.println("ag:" + ag);
+			if (ag < age) {
+				throw new Exception("年龄小于【" + age + "】周岁");
+			}
+		}
+		if (!e.employee_code.isEmpty() && (e.employee_code.getValue().length() != 6)) {
+			throw new Exception("工号必须为6位");
+		}
+	}
+	
+	@Override
+	public String OnPrintField2Excel(CJPABase jpa, String modelkey, String fdname, String value, Cell cell) {
+		Hr_employee_linked empl = (Hr_employee_linked) jpa;
+		if ("A001".equalsIgnoreCase(modelkey)) {
+			if ("hiredday".equalsIgnoreCase(fdname)) {
+				String hiredday = Systemdate.getStrDateyyyy_mm_dd(empl.hiredday.getAsDatetime());
+				return hiredday;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void AfterPrintItem2Excel(CJPABase jpa, String modelkey, Workbook workbook, Sheet sheet, CPoint cellfrom, CPoint cellto) {
+		Hr_employee_linked empl = (Hr_employee_linked) jpa;
+		int bgrow = cellfrom.getY();
+		int bgcol = cellfrom.getX();
+		int edrow = cellto.getY();
+		int edcol = cellto.getX();
+
+		CPoint picbg = null;
+		CPoint piced = null;
+		for (int row = bgrow; row <= edrow; row++) {
+			Row aRow = sheet.getRow(row);
+			if (aRow == null)
+				continue;
+			for (int col = bgcol; col <= edcol; col++) {
+				Cell aCell = aRow.getCell(col);
+				String celltext = getCellValue(aCell);
+				if ("<*picbg*/>".equalsIgnoreCase(celltext)) {
+					picbg = new CPoint(col, row);
+				}
+				if ("<*piced*/>".equalsIgnoreCase(celltext)) {
+					piced = new CPoint(col, row);
+				}
+				if ("<*orgname2*/>".equalsIgnoreCase(celltext)) {
+					printorg2(empl, aCell);
+				}
+				if ("<*orgname1*/>".equalsIgnoreCase(celltext)) {
+					printorg1(empl, aCell);
+				}
+			}
+		}
+		if ((picbg == null) || (piced == null))
+			return;
+
+		if (!empl.avatar_id1.isEmpty()) {
+			printpic(empl.avatar_id1.getValue(), workbook, sheet, picbg, piced);
+		} else if (!empl.avatar_id2.isEmpty()) {
+			printpic(empl.avatar_id2.getValue(), workbook, sheet, picbg, piced);
+		} else
+			Logsw.debug("工号【" + empl.employee_code.getValue() + "】无相片，忽略相片打印");
+	}
+
+	private void printorg1(Hr_employee_linked empl, Cell aCell) {
+		try {
+			String orgid = empl.orgid.getValue();
+			Shworg org = new Shworg();
+			org.findByID(orgid, false);
+			if (org.isEmpty())
+				throw new Exception("ID为【" + orgid + "】的机构不存在");
+
+			String pid = org.superid.getValue();
+			org.clear();
+			org.findByID(pid, false);
+			if (org.isEmpty())
+				aCell.setCellValue("");
+			else
+				aCell.setCellValue(org.orgname.getValue());
+		} catch (Exception e) {
+			Logsw.debug(e);
+		}
+	}
+
+	private void printorg2(Hr_employee_linked empl, Cell aCell) {
+		try {
+			String orgid = empl.orgid.getValue();
+			Shworg org = new Shworg();
+			org.findByID(orgid, false);
+			if (org.isEmpty())
+				throw new Exception("ID为【" + orgid + "】的机构不存在");
+			aCell.setCellValue(org.orgname.getValue());
+		} catch (Exception e) {
+			Logsw.debug(e);
+		}
+	}
+
+	private void printpic(String pfid, Workbook workbook, Sheet sheet, CPoint picbg, CPoint piced) {
+		try {
+			Shw_physic_file pf = new Shw_physic_file();
+			pf.findByID(pfid);
+			if (pf.isEmpty())
+				throw new Exception("没有找到ID为【" + pfid + "】的物理文件数据库记录，停止打印相片");
+			String fullname = UpLoadFileEx.getPhysicalFileName(pf);
+			if (!(new File(fullname)).exists())
+				throw new Exception("文件" + fullname + "不存在!");
+			// InputStream is = new FileInputStream(fullname);
+			// byte[] bytes = IOUtils.toByteArray(is);
+			// int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
+			//
+			// CreationHelper helper = workbook.getCreationHelper();
+			// Drawing drawing = sheet.createDrawingPatriarch();
+			// ClientAnchor anchor = helper.createClientAnchor();
+			//
+			// anchor.setRow1(picbg.getY());
+			// anchor.setCol1(picbg.getX());
+			// anchor.setRow2(piced.getY());
+			// anchor.setCol2(piced.getX());
+			// anchor.setAnchorType(ClientAnchor.MOVE_AND_RESIZE);
+			// Picture pict = drawing.createPicture(anchor, pictureIdx);
+			// pict.resize();// 该方法只支持JPEG 和 PNG后缀文件
+
+			ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+			BufferedImage bufferImg = ImageIO.read(new File(fullname));
+			ImageIO.write(bufferImg, "jpg", byteArrayOut);
+			// 画图的顶级管理器，一个sheet只能获取一个（一定要注意这点）
+			HSSFPatriarch patriarch = (HSSFPatriarch) sheet.createDrawingPatriarch();
+			// anchor主要用于设置图片的属性
+			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) picbg.getX(),
+					picbg.getY(), (short) (piced.getX() + 1), piced.getY() + 1);
+			anchor.setAnchorType(HSSFClientAnchor.MOVE_AND_RESIZE);
+			// 插入图片
+			patriarch.createPicture(anchor, workbook.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_JPEG));
+
+		} catch (Exception e) {
+			Logsw.debug(e);
+		}
+
+	}
+
+	private static String getCellValue(Cell aCell) {
+		if (aCell != null) {
+			int cellType = aCell.getCellType();
+			switch (cellType) {
+			case 0:// Numeric
+				return String.valueOf(aCell.getNumericCellValue()).toLowerCase();
+			case 1:// String
+				return aCell.getStringCellValue().toLowerCase();
+			default:
+				return null;
+			}
+		} else
+			return null;
+	}
+}

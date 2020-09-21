@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="js/easyui/themes/icon.css">
+    <script type="text/javascript" src="js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="js/cjquery.min.js"></script>
+    <script type="text/javascript" src="js/icefall.min.js"></script>
+    <script type="text/javascript" src="js/common/login.js"></script>
+    <script type="text/javascript" src="js/common/lg.min.js"></script>
+    <script type="text/javascript" src="js/common/md5.min.js"></script>
+    <title>登录</title>
+    <style type="text/css">
+        body {
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .logboxidv {
+            width: 350px;
+            height: auto;
+            float: right;
+            position: relative;
+            margin-top: 50px;
+            margin-right: 50px;
+        }
+
+        .c1, .c1:hover {
+            color: #fff;
+            border-color: #6A7072;
+            background: #269EEA;
+            background: -webkit-linear-gradient(top, #269EEA 0, #3373AB 100%);
+            background: -moz-linear-gradient(top, #269EEA 0, #3373AB 100%);
+            background: -o-linear-gradient(top, #269EEA 0, #3373AB 100%);
+            background: linear-gradient(to bottom, #269EEA 0, #3373AB 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#269EEA, endColorstr=#3373AB, GradientType=0);
+        }
+
+        a.c1:hover {
+            background: #3373AB;
+            filter: none;
+        }
+
+        a {
+            text-decoration: none
+        }
+    </style>
+	<script type="application/javascript">
+	function a(){
+		var username=$("#username").textbox("getValue");
+		 if ((username == undefined) || (username.length == 0)) {
+			 alert('请先填写用户名！');
+			 return;
+			 }
+		$('#chguspwd_popwin').window('open');
+	}
+		
+		function dochgpwd() {
+		    var oldpw = $("#chgpwd_old_id").textbox("getValue");
+		    var new1 = $("#chgpwd_new_id1").textbox("getValue");
+		    var new2 = $("#chgpwd_new_id2").textbox("getValue");
+			var username=$("#username").textbox("getValue");
+		    $("#chgpwd_old_id").textbox("setValue", "");
+		    $("#chgpwd_new_id1").textbox("setValue", "");
+		    $("#chgpwd_new_id2").textbox("setValue", "");
+		
+		    /*if ((oldpw == undefined) || (oldpw.length == 0)) {
+		     alert("输入旧密码");
+		     return;
+		     }*/
+			 if ((username == undefined) || (username.length == 0)) {
+				  $('#chguspwd_popwin').window('close');
+			     alert("用户名不能为空");
+				$('#username').next('span').find('input').focus();
+			     return;
+			 }
+		    if ((new1 == undefined) || (new1.length == 0)) {
+		        alert("输入新密码");
+		        return;
+		    }
+		    if (oldpw == new2) {
+		        alert("新旧密码一样");
+		        return;
+		    }
+		    if (new1 != new2) {
+		        alert("两次输入密码不一致");
+		        return;
+		    }
+		    var data = {
+		        oldpwd: oldpw,
+		        newpwd: new1,
+				username:username
+		    };
+		    var url = _serUrl + "/web/login/updatePWD2.co";
+		    $ajaxjsonpost(url, JSON.stringify(data), function (data) {
+		        if (data.result == "ok") {
+		            $('#chguspwd_popwin').window('close');
+		            alert("已经保存,请牢记新密码");
+		        }
+		    }, function (err) {
+		        alert(err.errmsg);
+		    })
+		}
+		
+	</script>
+</head>
+<body>
+<div style="text-align: center">
+    <div style="position:absolute;margin: 0 auto;text-align: left;width: 100%">
+        <img src="img/boginback.png" style="position:absolute;z-index:-1;width: 100%;height: auto"/>
+        <div class="logboxidv">
+            <img src="img/loginboxback.png" style="position:absolute;z-index:-1;width: 100%;height: auto"/>
+            <div style="width: 250px;margin: 0 auto;margin-left: 50px;margin-top: 200px;text-align: left">
+                <div style="margin-bottom:10px">
+                    <input id="username" class="easyui-textbox" style="width:100%;height:40px;padding:12px"
+                           data-options="prompt:'工号',iconCls:'icon-man',iconWidth:38,iconAlign:'right'">
+                </div>
+                <div style="margin-bottom:20px">
+                    <input id="userpass" class="easyui-textbox"
+                           style="width:100%;height:40px;padding:12px"
+                           data-options="prompt:'用户密码',type:'password',iconCls:'icon-lock',iconWidth:38,iconAlign:'right'">
+                </div>
+                <div style="margin-bottom:20px;font-size: 14px">
+                    <input id="savepwd" type="checkbox" checked="checked">
+                    <span>保存密码</span><span style="margin-left: 100px"><u style="color: blue;" onclick="a()"> 修改密码</u></span>
+                </div>
+                <div></div>
+                <div>
+                    <a onclick="dologin()" class="easyui-linkbutton c1"
+                       style="padding:5px 0px;width:100%;height: 40px">
+                        <span style="font-size:16px;font-weight: 700">登录</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+		<div id="chguspwd_popwin" class="easyui-window" title="修改密码" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'" style="width:300px;height:200px;padding: 0px">
+		 <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+		  <div data-options="region:'center',border:false" style="padding:5px;margin: 0px auto"> 
+		   <table border="0" style="width: 99%;height: 99%"> 
+		    <tbody> 
+			<tr> 
+		     <tr> 
+		      <td>原密码</td> 
+		      <td> <input id="chgpwd_old_id" type="password" class="easyui-textbox" style="height:20px;width: 150px"> </td> 
+		     </tr> 
+		     <tr> 
+		      <td>新密码</td> 
+		      <td><input id="chgpwd_new_id1" type="password" class="easyui-textbox" style="height: 20px;width: 150px"></td> 
+		     </tr> 
+		     <tr> 
+		      <td>重复输入新密码</td> 
+		      <td><input id="chgpwd_new_id2" type="password" class="easyui-textbox" style="height: 20px;width: 150px"></td> 
+		     </tr> 
+		    </tbody> 
+		   </table> 
+		  </div> 
+		  <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto"> 
+		   <a class="easyui-linkbutton" onclick="dochgpwd()" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+		   <a class="easyui-linkbutton" onclick=" $('#chguspwd_popwin').window('close');" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+		  </div> 
+		 </div> 
+		</div> 
+    </div>
+</div>
+
+</body>
+</html>

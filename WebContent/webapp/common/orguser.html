@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>机构用户管理</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/icefall.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/orguser.js"></script>
+    <title></title>
+    <script type="text/javascript">
+
+
+        function formatuserinfostr(val, row) {
+
+            var usinfo = row.displayname + "(" + row.username + ")";
+            if (parseInt(row.actived) == 1) {
+                var icocls = "icon-user";
+            } else {
+                var icocls = "icon-userdisabled";
+            }
+            return "<span class='" + icocls + "' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span>" + usinfo;
+
+            // ocon-userdisabled
+
+        }
+
+
+    </script>
+    <style type="text/css">
+        .datagrid-header111 {
+            display: none;
+        }
+    </style>
+
+    <style type="text/css">
+        .textbox-readonly {
+            background-color: #E8EEFA;
+        }
+
+        .validatebox-readonly {
+            background-color: #E8EEFA;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div data-options="region:'north',border:false,split:false,collapsible:false"
+     style="overflow:hidden;margin: 0 auto">
+    <div class="easyui-panel" data-options="border:false"
+         style="padding:5px;background-color: #F4F4F4">
+        <a href="#" class="easyui-linkbutton" onclick="showOrgInfo($C.action.New);"
+           data-options="plain:true,iconCls:'icon-add'">新建子机构</a>
+        <a href="#" class="easyui-linkbutton" onclick="showOrgInfo($C.action.Edit);"
+           data-options="plain:true,iconCls:'icon-edit'">编辑机构</a>
+        <a href="#" class="easyui-linkbutton" onclick="showOrgInfo($C.action.Del);"
+           data-options="plain:true,iconCls:'icon-remove'">删除机构</a>
+        <a href="#" class="easyui-linkbutton" onclick="doFind(1)"
+           data-options="plain:true,iconCls:'icon-search'">查询机构</a>
+        <a href="#" class="button-sep"></a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.New);"
+           data-options="plain:true,iconCls:'icon-add'">新建用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Edit);"
+           data-options="plain:true,iconCls:'icon-edit'">编辑用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Del);"
+           data-options="plain:true,iconCls:'icon-remove'">删除用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="doFind(2)"
+           data-options="plain:true,iconCls:'icon-search'">查询用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Reload);"
+           data-options="plain:true,iconCls:'icon-reload'">重置密码</a>
+    </div>
+    <div style="background-color: #95B8E7;height: 1px"></div>
+</div>
+<div data-options="region:'west',border:false,split:true,collapsible:false"
+     style="width: 280px;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+    <table id="orggrid" class="easyui-treegrid"
+           data-options="
+           border:false,
+           fit:true,
+           lines: true,
+           idField: 'orgid',
+           rownumbers: true,
+           fitColumns: true,
+           treeField: 'orgname'
+           ">
+        <thead>
+        <tr>
+            <th data-options="field:'orgname',hide:true" style="width: 100%"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div data-options="region:'center',border:false">
+    <table id="usergrid" class="easyui-datagrid"
+           data-options="singleSelect:true,border:false">
+        <thead>
+        <tr>
+            <th data-options="field:'username',width:'100%',formatter:formatuserinfostr">
+            </th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+<div id="orgeditwindow" class="easyui-window" title="机构管理"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:400px;padding:0px;overflow: hidden">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div class="easyui-tabs" data-options="fit:true,border:false" style="padding: 0px;">
+                <div title="基本信息" style="padding:5px">
+                    <table id="orggridform" border="0" style="width: 100%;height:auto ;padding: 5px">
+                        <tr>
+                            <td>类型</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="dicgpid:75,fdname:'orgtype'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>名称</td>
+                            <td><input class="easyui-textbox" style="height:20px;width: 150px"
+                                       cjoptions="fdname:'orgname'"
+                                       data-options="required:true"/></td>
+                        </tr>
+                        <tr>
+                            <td>编码</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'code'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>状态</td>
+                            <td><input class="easyui-textbox" cjoptions="dicgpid:2,fdname:'stat'"
+                                       data-options="editable:false"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'manager'">第一负责人</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'manager'"
+                                       style="height:20px;width: 150px"/></td>
+                            <td cjoptions="fdname:'managerpos'">岗位</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'managerpos'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'vicemanager'">第二负责人</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'vicemanager'"
+                                       style="height:20px;width: 150px"/></td>
+                            <td cjoptions="fdname:'vicemanagerpos'">岗位</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'vicemanagerpos'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'orgaddr'">邮编</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'orgmail'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td cjoptions="fdname:'orgaddr'">机构层级</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'orglevel'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'orgaddr'">地址</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'orgaddr'"
+                                       style="height:20px;width: 385px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'attribute1'">扩展属性1</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'attribute1'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr style="display: none">
+                            <td>路径</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'idpath'"
+                                       style="height:20px;width: 150px"
+                                       data-options="required:true,buttonText:'修复'"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3"><input class="easyui-textbox" data-options="multiline:true"
+                                                   cjoptions="fdname:'note'"
+                                                   style="height: 50px;width: 385px"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="机构介绍" style="padding:5px">
+                    <input class="easyui-textbox" cjoptions="fdname:'orgfrof'"
+                           data-options="multiline:true,fit:true"/>
+                </div>
+                <div title="机构职责" style="padding:5px">
+                    <input class="easyui-textbox" cjoptions="fdname:'orgduty'"
+                           data-options="multiline:true,fit:true"/>
+                </div>
+                <div title="跨机构权限" style="padding:0px">
+                    <table id="shworg_finds" class="easyui-datagrid"
+                           data-options="fit:true,border:false,toolbar:'#toolbarOrgGridFind',singleSelect: true,
+                    onClickRow:function(){ $C.grid.accept('shworg_finds');},
+                    onDblClickRow:function(){ $C.grid.edit('shworg_finds');}">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="usereditwindow" class="easyui-window" title="用户信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:350px;;overflow: hidden">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="tabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px;">
+                    <table id="shwUserInfoForm" border="0" style="width: 99%;height: 99%">
+                        <tr>
+                            <td>登录名</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'username'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>邮箱</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'email'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>姓名</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'displayname'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>电话</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'telo'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>手机</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'mobil'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>身份证</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'idcardno'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>可用</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="dicgpid:2,fdname:'actived'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>用户类型</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="dicgpid:49,fdname:'usertype'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3"><input class="easyui-textbox" data-options="multiline:true"
+                                                   cjoptions="fdname:'note'"
+                                                   style="height: 50px;width: 350px"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="机构" style="padding:0px;">
+                    <table id="userinfo_orgs" class="easyui-datagrid"
+                           data-options="fit:true,border:false,toolbar:'#toolbarOrg',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_orgs');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_orgs');}">
+                    </table>
+                </div>
+                <div title="角色" style="padding:0px;">
+                    <table id="userinfo_roles" class="easyui-datagrid" style=""
+                           data-options="fit:true,border:false,toolbar:'#toolbarRole',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_roles');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_roles');}">
+                    </table>
+                </div>
+                <div title="岗位" style="padding:0px;">
+                    <table id="userinfo_postions" class="easyui-datagrid" style=""
+                           data-options="fit:true,border:false,toolbar:'#toolbarPostion',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_postions');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_postions');}">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="toolbarOrgGridFind" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="orgfindAction($C.action.New);">添加</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="orgfindAction($C.action.Del);">删除</a>
+</div>
+
+<!--用户窗口GRID toolbar-->
+<div id="toolbarOrg" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="findOrg2UserOrg();"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_orgs');"></a>
+</div>
+<div id="toolbarRole" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('userinfo_roles', {}, true);"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_roles');"></a>
+</div>
+<div id="toolbarPostion" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="userinfo_postions_append();"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_postions');"></a>
+</div>
+
+<div id="orgmenu" class="easyui-menu" style="width:120px;">
+    <div onclick="orgAction(1)" data-options="iconCls:'icon-submit'">并入到机构</div>
+    <div class="menu-sep"></div>
+    <div onclick="orgAction(2)" data-options="iconCls:'icon-redo'">调整所属机构</div>
+    <div class="menu-sep"></div>
+    <div onclick="orgAction(3)" data-options="iconCls:'icon-edit'">更名</div>
+    <div class="menu-sep"></div>
+    <div onclick="orgAction(4)" data-options="iconCls:'icon-remove'">注销</div>
+</div>
+
+</body>
+</html>

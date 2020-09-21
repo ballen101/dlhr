@@ -1,0 +1,91 @@
+package com.hr.attd.ctr;
+
+import java.util.Date;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.cjpa.CJPA;
+import com.corsair.server.cjpa.JPAController;
+import com.corsair.server.wordflow.Shwwf;
+import com.hr.attd.entity.Hrkq_business_trip;
+import com.hr.attd.entity.Hrkq_leave_blance;
+import com.hr.attd.entity.Hrkq_leave_blance_extend;
+import com.hr.attd.entity.Hrkq_onduty;
+import com.hr.attd.entity.Hrkq_ondutyline;
+
+public class CtrHrkq_onduty extends JPAController {
+
+	@Override
+	public void BeforeWFStartSave(CJPA jpa, Shwwf wf, CDBConnection con, boolean isFilished) throws Exception {
+		// TODO Auto-generated method stub
+		wf.subject.setValue(((Hrkq_onduty) jpa).od_code.getValue());
+	}
+
+	@Override
+	public void BeforeSave(CJPABase jpa, CDBConnection con, boolean selfLink) throws Exception {
+		Hrkq_onduty od = (Hrkq_onduty) jpa;
+		CJPALineData<Hrkq_ondutyline> ls = od.hrkq_ondutylines;
+		for (CJPABase ja : ls) {
+			Hrkq_ondutyline l = (Hrkq_ondutyline) ja;
+			l.begin_date.setValue(Systemdate.getStrDateByFmt(l.begin_date.getAsDatetime(), "yyyy-MM-dd HH:mm:00"));
+			l.end_date.setValue(Systemdate.getStrDateByFmt(l.end_date.getAsDatetime(), "yyyy-MM-dd HH:mm:00"));
+		}
+
+	}
+
+	@Override
+	public String OnCCoVoid(CDBConnection con, CJPA jpa) throws Exception {
+		Hrkq_onduty od = (Hrkq_onduty) jpa;
+		CJPALineData<Hrkq_ondutyline> ls = od.hrkq_ondutylines;
+		Hrkq_leave_blance lb = new Hrkq_leave_blance();
+		for (CJPABase j : ls) {
+			Hrkq_ondutyline l = (Hrkq_ondutyline) j;
+			lb.clear();
+			String sqlstr = "select * from hrkq_leave_blance where stype=3 and sid=" + l.odlid.getValue();
+			lb.findBySQL(sqlstr);
+			if (lb != null) {
+				if (lb.usedlbtime.getAsIntDefault(-1) > 0) {
+					throw new Exception("表单已经有调休记录，无法作废");
+				}
+				lb.delete(con, true);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void BeforeWFStart(CJPA jpa, String wftempid, CDBConnection con) throws Exception {
+		// 检查数据合法性
+		checkdata(jpa, con);
+	}
+
+	private void checkdata(CJPA jpa, CDBConnection con) throws Exception {
+		Hrkq_onduty od = (Hrkq_onduty) jpa;
+		CJPALineData<Hrkq_ondutyline> ls = od.hrkq_ondutylines;
+		for (CJPABase ja : ls) {
+			Hrkq_ondutyline l = (Hrkq_ondutyline) ja;
+			Date time1 = l.begin_date.getAsDatetime();
+			Date time2 = l.end_date.getAsDatetime();
+			HrkqUtil.checkAllOverlapDatetime(3, l.odlid.getValue(), od.er_id.getValue(), od.employee_name.getValue(), time1, time2);
+			if(!od.creator.getValue().equals("inteface")){
+				HrkqUtil.checkValidDate(l.begin_date.getAsDatetime());
+			}
+			//HrkqUtil.checkValidDate();
+
+			// String bgtstr1 = Systemdate.getStrDate(bgtime1);
+			// String edtstr1 = Systemdate.getStrDate(edtime1);
+			// String sqlstr = "SELECT DISTINCT o.* FROM hrkq_onduty o,hrkq_ondutyline l "
+			// + " WHERE o.od_id=l.od_id AND o.stat>1 AND o.stat<=9 AND o.er_id= " + od.er_id.getValue()
+			// + " AND (((l.begin_date<='" + bgtstr1 + "') AND (l.end_date>='" + bgtstr1 + "'))||((l.begin_date>='" + bgtstr1 + "')&&(l.begin_date<='"
+			// + edtstr1
+			// + "')))";
+			// Hrkq_onduty odnew = new Hrkq_onduty();
+			// odnew.findBySQL(sqlstr);
+			// if (!odnew.isEmpty())
+			// throw new Exception("员工【" + od.employee_name.getValue() + "】申请的值班时间与已经完成的值班申请【" + odnew.od_code.getValue() + "】时间交叉错误!");
+		}
+	}
+
+}

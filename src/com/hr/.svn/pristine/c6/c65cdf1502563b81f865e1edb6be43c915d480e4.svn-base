@@ -1,0 +1,1004 @@
+package com.hr.perm.ctr;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.cjpa.CJPA;
+import com.corsair.server.cjpa.JPAController;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.wordflow.Shwwf;
+import com.corsair.server.wordflow.Shwwfproc;
+import com.hr.access.ctr.UtilAccess;
+import com.hr.attd.entity.Hrkqtransfer2insurancetimer;
+import com.hr.base.entity.Hr_employeestat;
+import com.hr.base.entity.Hr_orgposition;
+import com.hr.base.entity.Hrrl_declare;
+import com.hr.insurance.co.COHr_ins_insurance;
+import com.hr.insurance.entity.Hr_ins_buyinsurance;
+import com.hr.insurance.entity.Hr_ins_insurancetype;
+import com.hr.insurance.entity.Hr_ins_prebuyins;
+import com.hr.perm.entity.Hr_employee;
+import com.hr.perm.entity.Hr_employee_contract;
+import com.hr.perm.entity.Hr_employee_transfer;
+import com.hr.perm.entity.Hr_employee_transfer_rl;
+import com.hr.perm.entity.Hr_entry_prob;
+import com.hr.perm.entity.Hr_transfer_try;
+import com.hr.salary.co.Cosacommon;
+import com.hr.salary.ctr.CtrSalaryCommon;
+import com.hr.salary.entity.Hr_salary_chgbill;
+import com.hr.salary.entity.Hr_salary_orgminstandard;
+import com.hr.salary.entity.Hr_salary_structure;
+import com.hr.util.HRUtil;
+import com.hr.util.HTQuotaUtil;
+
+import net.sf.json.JSONObject;
+
+public class CtrHr_employee_transfer extends JPAController {
+
+	/**
+	 * 通用保存后，提交事务前触发
+	 * 
+	 * @param con
+	 * @param jpa
+	 * @return 不为空的返回值，将作为查询结果返回给前台
+	 * @throws Exception
+	 */
+	@Override
+	public String AfterCCoSave(CDBConnection con, CJPA jpa) throws Exception {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		HashMap<String, String> pparms = CSContext.parPostDataParms();
+		String jpadata = pparms.get("jpadata");
+		if ((jpadata == null) || jpadata.isEmpty())
+			throw new Exception("需要jpadata参数");
+		JSONObject jo = JSONObject.fromObject(jpadata);
+		Cosacommon.save_salary_chgblill(con, ep, jo);
+		return null;
+	}
+
+	@Override
+	public void BeforeWFStartSave(CJPA jpa, Shwwf wf, CDBConnection con, boolean isFilished) throws Exception {
+		wf.subject.setValue(((Hr_employee_transfer) jpa).emptranfcode.getValue());
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		if ((ep.attribute1.getAsIntDefault(0) != 1) && (ep.attribute1.getAsIntDefault(0) != 2)) {// 组织机构调整的调动
+			int bt = isneedsarryqcode(ep.odospid.getValue(), ep.newospid.getValue(), ep.tranftype3.getAsIntDefault(0));
+			ep.salary_qcnotnull.setValue(bt);
+			if (bt == 1) {
+				if (ep.salary_quotacode.isEmpty())
+					throw new Exception("工资额度不允许为空");
+			}
+		}
+	}
+
+	@Override
+	public void AfterWFStart(CJPA jpa, CDBConnection con, Shwwf wf, boolean isFilished) throws Exception {
+		// TODO Auto-generated method stub
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		if ((ep.attribute1.getAsIntDefault(0) != 1) && (ep.attribute1.getAsIntDefault(0) != 2)) {// 组织机构调整的调动
+			// 和
+			// 批量导入的调动
+			// 不检查
+			HRUtil.issalary_quotacode_used(2, ep.salary_quotacode.getValue(), ep.emptranf_id.getValue());
+			String sqlstr = "SELECT * FROM hr_salary_chgbill WHERE scatype=2 AND stype=4 AND sid="
+					+ ep.emptranf_id.getValue();
+			Hr_salary_chgbill cb = new Hr_salary_chgbill();
+			cb.findBySQL(con, sqlstr, false);
+			if (cb.isEmpty())
+				throw new Exception("薪资结构不能为空");
+		}
+
+		checkquota(jpa, con);
+		// checkUnregzed(jpa, con);
+		if (isFilished) {
+			calcdates(jpa, con);
+			setEmploestat(jpa, con);
+			prebuyinsurances(jpa, con);
+			doresigncontract(jpa, con);
+		}
+	}
+
+	@Override
+	public void OnWfSubmit(CJPA jpa, CDBConnection con, Shwwf wf, Shwwfproc proc, Shwwfproc arg3, boolean isFilished)
+			throws Exception {
+		// TODO Auto-generated method stub
+		if (isFilished) {
+			calcdates(jpa, con);
+			setEmploestat(jpa, con);
+			prebuyinsurances(jpa, con);
+			doresigncontract(jpa, con);
+		}
+	}
+
+	@Override
+	public void BeforeSave(CJPABase jpa, CDBConnection con, boolean selfLink) throws Exception {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+			ep.odorgid.getValue();//转出部门
+		ep.neworgid.getValue();//转入部门
+		String sqlstr = "select * from shworg where orgid='" + ep.odorgid.getValue() + "'";
+		String sqlstr2 = "select * from shworg where orgid='" + ep.neworgid.getValue() + "'";
+		Shworg org = new Shworg();
+		org.findBySQL(sqlstr);
+		String oldidpath=org.idpath.getValue();
+		Shworg org2 = new Shworg();
+		org2.findBySQL(sqlstr2);
+		String newidpath=org2.idpath.getValue();
+		String [] oldidpaths= oldidpath.split(",");
+		String [] newidpaths= newidpath.split(",");
+		if(oldidpaths.length==2 || newidpaths.length==2){
+			throw new Exception("调出机构或调入机构不允许选择整个制造群");
+		}
+		boolean flag=true;
+		//调动范围 1跨部门2 跨单位 3 跨模块/制造群 4部门内部
+		
+		if(oldidpaths.length>=2 && newidpaths.length>=2){
+			if(!oldidpaths[1].equals(newidpaths[1])){
+				if(!ep.tranftype3.getValue().equals("3")){
+					throw new Exception("调动范围只能选择跨模块/制造群");
+				}else{
+					flag=false;
+				}
+			}
+		}
+		if(oldidpaths.length>=3 && newidpaths.length>=3 && flag){
+			if(oldidpaths[1].equals(newidpaths[1])&& !oldidpaths[2].equals(newidpaths[2]) ){
+				if(ep.tranftype3.getValue().equals("2")||ep.tranftype3.getValue().equals("1")){
+					flag=false;
+				}else{
+					throw new Exception("调动范围只能选择跨单位、跨部门");
+
+				}
+			}
+		}
+		if(oldidpaths.length>=3 && newidpaths.length>=3 && flag){
+			if(oldidpaths[1].equals(newidpaths[1])&& oldidpaths[2].equals(newidpaths[2])){
+				if(ep.tranftype3.getValue().equals("2") ||ep.tranftype3.getValue().equals("3")){
+					throw new Exception("调动范围只能选择跨部门/部门内部");
+				}
+			}
+		}
+		if (ep.appdate.isEmpty())
+			ep.appdate.setValue(ep.createtime.getValue());
+		checkNotMonthAVGSalary(ep, con);
+		if (((ep.newposition_salary.getAsFloatDefault(0) > ep.oldposition_salary.getAsFloatDefault(0)) && ep.chgposition_salary.getAsFloatDefault(0) == 0) ||
+				((ep.newtech_allowance.getAsFloatDefault(0) > ep.oldtech_allowance.getAsFloatDefault(0)) && ep.chgtech_allowance.getAsFloatDefault(0) == 0)) {
+			resetsalaryinfo(ep);
+		}
+		if((!ep.oldcalsalarytype.isEmpty()) && (ep.oldcalsalarytype.getValue().equals("月薪"))){
+			ep.oldavg_salary.setAsFloat(ep.oldposition_salary.getAsFloatDefault(0)+ep.oldovt_salary.getAsFloatDefault(0));
+		}
+		ep.newavg_salary.setAsFloat(ep.newposition_salary.getAsFloatDefault(0)+ep.newovt_salary.getAsFloatDefault(0));
+		checkOrgSp(ep, con);
+	}
+
+	private void checkOrgSp(Hr_employee_transfer ep, CDBConnection con) throws Exception {
+		Shworg org = new Shworg();
+		org.findByID(con, ep.neworgid.getValue());
+		if (org.isEmpty())
+			throw new Exception("没有找到ID为【" + ep.neworgid.getValue() + "】的机构");
+		String sqlstr = "SELECT * FROM  `hr_orgposition` WHERE idpath LIKE '" + org.idpath.getValue() + "%' AND ospid=" + ep.newospid.getValue();
+		Hr_orgposition op = new Hr_orgposition();
+		op.findBySQL(con, sqlstr, false);
+		if (op.isEmpty()) {
+			throw new Exception("在机构【" + org.extorgname.getValue() + "】里没有找到ID为【" + ep.newospid.getValue() + "】的机构职位");
+		}
+	}
+
+	private void checkNotMonthAVGSalary(Hr_employee_transfer ep, CDBConnection con) throws Exception {
+		if ((!ep.oldcalsalarytype.isEmpty()) && (!ep.oldcalsalarytype.getValue().equals("月薪"))) {
+			String sqlstr = "SELECT IFNULL(ROUND(AVG(paynosubs),2),0) AS avgpaysubs FROM (SELECT * FROM " +
+					" hr_salary_list WHERE wagetype=2 AND isfullattend=1 AND er_id=" + ep.er_id.getValue() + " ORDER BY yearmonth DESC LIMIT 0,3) tt";
+			float oldavg = Float.valueOf(con.openSql2List(sqlstr).get(0).get("avgpaysubs").toString());
+			ep.oldavg_salary.setAsFloat(oldavg);
+		}
+	}
+
+	private void resetsalaryinfo(Hr_employee_transfer ep) throws Exception {
+		float np = ep.newposition_salary.getAsFloatDefault(0);
+		float op = ep.oldposition_salary.getAsFloatDefault(0);
+		if ((np > op) & ep.chgposition_salary.getAsFloatDefault(0) == 0) {
+			Hr_salary_structure ss = new Hr_salary_structure();
+			ss.findByID(ep.newstru_id.getValue());
+			if (!ss.isEmpty()) {
+				if (ss.strutype.getAsInt() == 1) {
+					float minstand = 0;
+					String sqlstr = "SELECT * FROM `hr_salary_orgminstandard` WHERE stat=9 AND usable=1 AND INSTR('" + ep.idpath.getValue() + "',idpath)=1  ORDER BY idpath DESC  ";
+					Hr_salary_orgminstandard oms = new Hr_salary_orgminstandard();
+					oms.findBySQL(sqlstr);
+					if (oms.isEmpty()) {
+						minstand = 0;
+					} else {
+						minstand = oms.minstandard.getAsFloatDefault(0);
+					}
+					float bw = (np * ss.basewage.getAsFloatDefault(0)) / 100;
+					float bow = (np * ss.otwage.getAsFloatDefault(0)) / 100;
+					float sw = (np * ss.skillwage.getAsFloatDefault(0)) / 100;
+					float pw = (np * ss.meritwage.getAsFloatDefault(0)) / 100;
+					if (minstand > bw) {
+						if ((bw + bow) > minstand) {
+							bow = bw + bow - minstand;
+							bw = minstand;
+						} else if ((bw + bow + sw) > minstand) {
+							sw = bw + bow + sw - minstand;
+							bow = 0;
+							bw = minstand;
+						} else if ((bw + bow + sw + pw) > minstand) {
+							pw = bw + bow + sw + pw - minstand;
+							sw = 0;
+							bow = 0;
+							bw = minstand;
+						} else {
+							bw = np;
+							pw = 0;
+							sw = 0;
+							bow = 0;
+						}
+					}
+					ep.newbase_salary.setAsFloat(bw);
+					ep.newtech_salary.setAsFloat(sw);
+					ep.newachi_salary.setAsFloat(pw);
+					ep.newotwage.setAsFloat(bow);
+					ep.chgbase_salary.setAsFloat(bw - ep.oldbase_salary.getAsFloatDefault(0));
+					ep.chgtech_salary.setAsFloat(sw - ep.oldtech_salary.getAsFloatDefault(0));
+					ep.chgachi_salary.setAsFloat(pw - ep.oldachi_salary.getAsFloatDefault(0));
+					ep.chgotwage.setAsFloat(bow - ep.oldotwage.getAsFloatDefault(0));
+				} else {
+					ep.chgbase_salary.setAsFloat(ep.newbase_salary.getAsFloatDefault(0) - ep.oldbase_salary.getAsFloatDefault(0));
+					ep.chgtech_salary.setAsFloat(ep.newtech_salary.getAsFloatDefault(0) - ep.oldtech_salary.getAsFloatDefault(0));
+					ep.chgachi_salary.setAsFloat(ep.newachi_salary.getAsFloatDefault(0) - ep.oldachi_salary.getAsFloatDefault(0));
+					ep.chgotwage.setAsFloat(ep.newotwage.getAsFloatDefault(0) - ep.oldotwage.getAsFloatDefault(0));
+				}
+				ep.chgposition_salary.setAsFloat(np - ep.oldposition_salary.getAsFloatDefault(0));
+				ep.chgtech_allowance.setAsFloat(ep.newtech_allowance.getAsFloatDefault(0) - ep.oldtech_allowance.getAsFloatDefault(0));
+			}
+		}
+	}
+
+	/**
+	 * 调动生效日期按审批通过时间
+	 * 
+	 * @param jpa
+	 * @param con
+	 * @throws Exception
+	 */
+	// 调动单据的 待转正日期=调动生效日期+考察期。调动生效日期为15日之前（包含15号），待转正日期为当月1号+考察期；
+	// 调动生效日期为15日之后（不包含15号），待转正日期为次月1号+考察期
+	private void calcdates(CJPABase jpa, CDBConnection con) throws Exception {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		Date tranfcmpdate = Systemdate.getDateYYYYMMDD(new Date());
+		ep.tranfcmpdate.setAsDatetime(tranfcmpdate);
+		int probation = ep.probation.getAsIntDefault(0);
+		if (probation > 0) {
+			Date probationdate = Systemdate.dateMonthAdd(tranfcmpdate, probation);
+			Calendar ca = Calendar.getInstance();
+			ca.setTime(probationdate);
+			if (ca.get(Calendar.DAY_OF_MONTH) <= 15)
+				ep.probationdate.setValue(Systemdate.getStrDateByFmt(probationdate, "yyyy-MM") + "-01");
+			else
+				ep.probationdate.setValue(
+						Systemdate.getStrDateByFmt(Systemdate.dateMonthAdd(probationdate, 1), "yyyy-MM") + "-01");
+		} else {
+			ep.probationdate.setAsDatetime(tranfcmpdate);
+		}
+
+		calcsalarydate(jpa, con);
+		ep.save(con);
+	}
+
+	/*
+	 * 调动单据的 核薪生效日期，按调动生效日期自动更新。调动生效日期为15日之前（包含15号），核薪生效日期为当月1号；
+	 * 调动生效日期为15日之后（不包含15号），核薪生效日期为次月1号；
+	 */
+
+	private void calcsalarydate(CJPABase jpa, CDBConnection con) {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		if (ep.salarydate.isEmpty()) {
+			Date tranfcmpdate = ep.tranfcmpdate.getAsDate();
+			Calendar ca = Calendar.getInstance();
+			ca.setTime(tranfcmpdate);
+			if (ca.get(Calendar.DAY_OF_MONTH) <= 15)
+				ep.salarydate.setValue(Systemdate.getStrDateByFmt(tranfcmpdate, "yyyy-MM") + "-01");
+			else
+				ep.salarydate.setValue(
+						Systemdate.getStrDateByFmt(Systemdate.dateMonthAdd(tranfcmpdate, 1), "yyyy-MM") + "-01");
+		}
+	}
+
+	/**
+	 * 检查工资额度编码占用情况
+	 * 
+	 * @param jpa
+	 * @param con
+	 * @throws Exception
+	 */
+	private void checkUnregzed(CJPABase jpa, CDBConnection con) throws Exception {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		if ((ep.attribute1.getAsIntDefault(0) == 1) || (ep.attribute1.getAsIntDefault(0) == 2))// 组织机构调整的调动
+			// 和
+			// 批量导入的调动
+			// 不检查
+			return;
+		if (ep.salary_quotacode.isEmpty())
+			return;
+		if (ep.salary_quotacode.getAsIntDefault(1) == 0)
+			return;
+		String sqlstr = "SELECT * FROM hr_employee_transfer WHERE stat>1 AND stat<=9 AND salary_quotacode='"
+				+ ep.salary_quotacode.getValue() + "'";
+		if (!ep.empstatid.isEmpty())
+			sqlstr = sqlstr + " AND emptranf_id<>" + ep.emptranf_id.getValue();
+		Hr_employee_transfer nep = new Hr_employee_transfer();
+		nep.findBySQL(sqlstr, false);
+		if (!nep.isEmpty())
+			throw new Exception(
+					"工资额度编码【" + ep.salary_quotacode.getValue() + "】已经被调动单【" + nep.emptranfcode.getValue() + "】占用");
+	}
+
+	private void setEmploestat(CJPA jpa, CDBConnection con) throws Exception {
+		// 根据评审结果 修改人事资料
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		Hr_employee emp = new Hr_employee();
+		emp.findByID4Update(con, ep.er_id.getValue(), false);
+		if (emp.isEmpty()) {
+			throw new Exception("ID为【" + ep.er_id.getValue() + "】的人事档案不存在");
+		}
+		Hr_employeestat estat = new Hr_employeestat();
+		estat.findBySQL("select * from hr_employeestat where statvalue=" + emp.empstatid.getValue());
+
+		if (estat.allowtransfer.getAsInt() != 1) {
+			throw new Exception("状态为【" + estat.language1.getValue() + "】的人事档案不允许调动");
+		}
+		if (ep.quota_over.getAsIntDefault(2) == 1) {// 超编
+			if (ep.quota_over_rst.isEmpty())
+				throw new Exception("超编的调动需要评审超编处理方式");
+			int quota_over_rst = ep.quota_over_rst.getAsInt(); // 1 允许增加编制调动 2
+			// 超编调动 3不允许调动
+			if (quota_over_rst == 1) {
+				doaddquota(con, ep);// 增加编制
+				dotranfer(ep, emp, estat, con);// 调动
+			} else if (quota_over_rst == 2) {
+				dotranfer(ep, emp, estat, con);// 调动
+			} else if (quota_over_rst == 3) {
+				// 不处理资料
+			}
+		} else
+			dotranfer(ep, emp, estat, con);// 调动
+	}
+
+	private void dotranfer(Hr_employee_transfer ep, Hr_employee emp, Hr_employeestat estat, CDBConnection con)
+			throws Exception {
+		if ((ep.attribute1.getAsIntDefault(0) != 1) && (ep.attribute1.getAsIntDefault(0) != 2)) {// 组织机构调整的调动
+			// 和
+			// 批量导入的调动
+			// 不检查
+			// HRUtil.issalary_quotacode_used(2, ep.salary_quotacode.getValue(),
+			// ep.emptranf_id.getValue());
+		}
+		int needtry = CtrHr_employee_transferUtil.setEmpState(con, ep, emp);// 设置人事状态
+		Shworg org = new Shworg();
+		org.findByID(con, ep.neworgid.getValue());
+		if (org.isEmpty())
+			throw new Exception("没有找到ID为【" + ep.neworgid.getValue() + "】的机构");
+
+		Hr_orgposition op = new Hr_orgposition();
+		op.findByID(con, ep.newospid.getValue());
+		if (op.isEmpty())
+			throw new Exception("没有找到ID为【" + ep.newospid.getValue() + "】的机构职位");
+
+		emp.orgid.setValue(org.orgid.getValue()); // 部门ID
+		emp.orgcode.setValue(org.code.getValue()); // 部门编码
+		emp.orgname.setValue(org.extorgname.getValue()); // 部门名称
+		emp.lv_id.setValue(ep.newlv_id.getValue()); // 职级ID
+		emp.lv_num.setValue(ep.newlv_num.getValue()); // 职级
+		emp.hg_id.setValue(ep.newhg_id.getValue()); // 职等ID
+		emp.hg_code.setValue(ep.newhg_code.getValue()); // 职等编码
+		emp.hg_name.setValue(ep.newhg_name.getValue()); // 职等名称
+		emp.ospid.setValue(ep.newospid.getValue()); // 职位ID
+		emp.ospcode.setValue(ep.newospcode.getValue()); // 职位编码
+		emp.idpath.setValue(org.idpath.getValue());
+		emp.ospid.setValue(ep.newospid.getValue());
+		emp.ospcode.setValue(ep.newospcode.getValue());
+		emp.sp_name.setValue(ep.newsp_name.getValue());
+		emp.atdtype.setValue(ep.newattendtype.getValue());
+		emp.hwc_namezl.setValue(op.hwc_namezl.getValue());
+		emp.hwc_namezq.setValue(op.hwc_namezq.getValue());
+		emp.hwc_namezz.setValue(op.hwc_namezz.getValue());
+		if (op.isoffjob.getAsIntDefault(0) == 1) {
+			emp.emnature.setValue("脱产");
+		} else {
+			emp.emnature.setValue("非脱产");
+		}
+		emp.pay_way.setValue(ep.newcalsalarytype.getValue());
+
+		emp.uorgid.setValue(null);
+		emp.uorgcode.setValue(null);
+		emp.uorgname.setValue(null);
+		emp.uidpath.setValue(null);
+
+		emp.save(con);// 保存人事信息
+		// dosetSACHGLog(ep, con);// 薪资变动记录
+		CtrSalaryCommon.newSalaryChangeLog(con, ep);// 薪资变动记录
+		if (needtry == 1)
+			createTransferTryInfo(ep, emp, con);// 考察期记录
+		doUpdateRlDeclare(ep, emp, con);// 关联关系变动
+		// CtrHrkq_workschmonth.putEmDdtWeekPB(con, emp,
+		// ep.tranfcmpdate.getAsDatetime());// 生成默认排班
+		updateExtInfo(con, emp);// 更新扩展信息
+
+		UtilAccess.disableAllAccessByEmpid(con, emp.er_id.getAsInt(), "调出关闭权限");
+		UtilAccess.appendAccessListByOrg(con, emp.er_id.getAsInt(), ep.neworgid.getValue(), 2,
+				ep.emptranf_id.getValue(), ep.emptranfcode.getValue(), "调入新增权限");
+		// COHr_access_emauthority_list.doUpdateAccessList(con,
+		// emp.employee_code.getValue(), "3",
+		// ep.emptranf_id.getValue(), "员工调动", ep.odorgid.getValue(),
+		// ep.neworgid.getValue());
+
+	}
+
+	/**
+	 * 更新扩展信息
+	 * 
+	 * @param con
+	 * @param emp
+	 * @throws Exception
+	 */
+	public static void updateExtInfo(CDBConnection con, Hr_employee emp) throws Exception {
+		String sqlstr = "UPDATE hrkq_leave_blance SET orgid=" + emp.orgid.getValue() + " ,orgcode='"
+				+ emp.orgcode.getValue() + "',orgname='"
+				+ emp.orgname.getValue() + "',idpath='" + emp.idpath.getValue() + "' WHERE er_id="
+				+ emp.er_id.getValue();
+		con.execsql(sqlstr);
+		sqlstr = "UPDATE hr_ykt_card SET orgid=" + emp.orgid.getValue() + ", orgcode='" + emp.orgcode.getValue()
+				+ "',orgname='" + emp.orgname.getValue() + "',"
+				+ "sp_name='" + emp.sp_name.getValue() + "',hwc_namezl='" + emp.hwc_namezl.getValue() + "',hwc_namezq='"
+				+ emp.hwc_namezq.getValue() + "',"
+				+ "hwc_namezz='" + emp.hwc_namezz.getValue() + "',hg_name='" + emp.hg_name.getValue() + "',lv_num='"
+				+ emp.lv_num.getValue() + "'," + "idpath='"
+				+ emp.idpath.getValue() + "'  WHERE er_id=" + emp.er_id.getValue();
+		con.execsql(sqlstr);
+	}
+
+	private void doaddquota(CDBConnection con, Hr_employee_transfer ep) throws Exception {
+		Hr_orgposition hop = new Hr_orgposition();
+		hop.findByID4Update(con, ep.newospid.getValue(), false);
+		CtrHr_quota_release.dochgquota(con, hop, 1, ep.emptranf_id.getValue(), "0", ep.emptranfcode.getValue(), "4");
+	}
+
+	private void checkquota(CJPA jpa, CDBConnection con) throws Exception {
+		Hr_employee_transfer ep = (Hr_employee_transfer) jpa;
+		// 调动单提交时候 检查编制
+		Hr_employee emp = new Hr_employee();
+		emp.findByID4Update(con, ep.er_id.getValue(), false);
+		if (emp.isEmpty()) {
+			throw new Exception("ID为【" + ep.er_id.getValue() + "】的人事档案不存在");
+		}
+
+		Hr_orgposition op = new Hr_orgposition();
+		op.findByID(emp.ospid.getValue());
+		if (op.isEmpty())
+			throw new Exception("ID为【" + emp.ospid.getValue() + "】的机构职位不存在");
+
+		// String sqlstr = "SELECT * FROM hr_systemparms WHERE usable=1 AND
+		// parmcode='BATCH_QUATA_CLASS' AND parmvalue='" +
+		// op.hwc_idzl.getValue() + "'";
+		// Hr_systemparms hs = new Hr_systemparms(sqlstr);
+		// if (!hs.isEmpty())
+		// throw new Exception("员工对应的职类标记为【批量编制控制】不允许单个调动");
+
+		if (HTQuotaUtil.checkOrgPositionQuota(con, ep.newospid.getValue(), 1)) {
+			ep.quota_over.setAsInt(2);
+		} else {
+			ep.quota_over.setAsInt(1);
+			ep.quota_over_rst.setAsInt(2);
+		}
+		ep.save(con);// 基类已经保存过，需要重新保存
+		// System.out.println("ep.quota_over:" + ep.quota_over.getAsInt());
+	}
+
+	private void createTransferTryInfo(Hr_employee_transfer ep, Hr_employee emp, CDBConnection con) throws Exception {
+		if (ep.probation.getAsIntDefault(0) == 0)// 无考察期 不需要保存
+			return;
+		Hr_transfer_try tt = new Hr_transfer_try();
+		tt.emptranf_id.setValue(ep.emptranf_id.getValue()); // 调动单ID
+		tt.emptranfcode.setValue(ep.emptranfcode.getValue()); // 调动表单编码
+		tt.er_id.setValue(emp.er_id.getValue()); // 人事档案ID
+		tt.employee_code.setValue(emp.employee_code.getValue()); // 工号
+		tt.employee_name.setValue(emp.employee_name.getValue()); // 姓名
+		tt.id_number.setValue(emp.id_number.getValue());// 身份证号码
+		tt.degree.setValue(emp.degree.getValue()); // 学历
+		tt.orgid.setValue(emp.orgid.getValue()); // 部门ID
+		tt.orgcode.setValue(emp.orgcode.getValue()); // 部门编码
+		tt.orgname.setValue(emp.orgname.getValue()); // 部门名称
+		tt.ospid.setValue(emp.ospid.getValue()); // 职位ID
+		tt.ospcode.setValue(emp.ospcode.getValue()); // 职位编码
+		tt.sp_name.setValue(emp.sp_name.getValue()); // 职位名称
+		tt.hwc_namezl.setValue(emp.hwc_namezl.getValue()); // 职类
+		tt.hg_name.setValue(emp.hg_name.getValue()); // 职等名称
+		tt.lv_num.setValue(emp.lv_num.getValue()); // 职级
+		tt.entrydate.setValue(emp.hiredday.getValue()); // 入职日期
+		tt.tranfcmpdate.setValue(ep.tranfcmpdate.getValue());// 调动日期
+		tt.probation.setValue(ep.probation.getValue()); // 考察期
+		tt.probationdate.setValue(ep.probationdate.getValue()); // 转正日期
+		// 第一次约定的考察期
+		tt.probationdatetrue.setValue(null); // 实际转正日期 根据转正评审结果确定 如延长考察期则为空
+		tt.wfresult.setValue(null); // 评审结果 1 同意转正 2 延长考察 3 考察不合格
+		tt.delayprobation.setValue(null); // 延长考察期
+		tt.delaypromotionday.setValue(null); // 延期待转正时间 根据延长考察期自动计算，多次延期累计计算
+		tt.delaypromotiondaytrue.setValue(null); // 延期实际转正时间
+		tt.delaywfresult.setValue(null); // 评审结果 1 同意转正 2 延长考察 3 考察不合格
+		tt.delaytimes.setValue("0"); // 延期次数
+		tt.trystat.setValue("1"); // 考察期人事状态 考察期中、考察过期、考察延期、己转正、考察不合格
+		tt.remark.setValue(null); // 备注
+		tt.idpath.setValue(emp.idpath.getValue()); // idpath
+		tt.entid.setValue(emp.entid.getValue()); // entid
+		tt.creator.setValue("SYSTEM"); // 创建人
+		tt.createtime.setAsDatetime(new Date()); // 创建时间
+		tt.save(con);
+
+	}
+
+	// private void dosetSACHGLog(Hr_employee_transfer ep, CDBConnection con)
+	// throws Exception {
+	// Hrsa_chglg sac = new Hrsa_chglg();
+	// sac.er_id.setValue(ep.er_id.getValue()); // 人事ID
+	// sac.scatype.setValue("2"); // 入职定薪、调薪核薪、转正调薪、年度调薪、特殊调薪
+	// sac.stype.setValue("4"); // 来源类别 历史数据、实习登记、入职表单、调动表单、入职转正、调动转正....
+	// sac.sid.setValue(ep.emptranf_id.getValue()); // 来源ID
+	// sac.scode.setValue(ep.emptranfcode.getValue()); // 来源单号
+	// sac.oldattendtype.setValue(ep.odattendtype.getValue()); // 调薪前出勤类别
+	// sac.oldcalsalarytype.setValue(ep.oldcalsalarytype.getValue()); // 调薪前计薪方式
+	// sac.oldposition_salary.setValue(ep.oldposition_salary.getValue()); //
+	// 调薪前职位工资
+	// sac.oldbase_salary.setValue(ep.oldbase_salary.getValue()); // 调薪前基本工资
+	// sac.oldtech_salary.setValue(ep.oldtech_salary.getValue()); // 调薪前技能工资
+	// sac.oldachi_salary.setValue(ep.oldachi_salary.getValue()); // 调薪前技能工资
+	// sac.oldtech_allowance.setValue(ep.oldtech_salary.getValue()); // 调薪前技术津贴
+	// sac.oldavg_salary.setValue(ep.oldavg_salary.getValue()); // 调薪前平均工资
+	// sac.newattendtype.setValue(ep.newattendtype.getValue()); // 调薪后出勤类别
+	// sac.newcalsalarytype.setValue(ep.newcalsalarytype.getValue()); // 调薪后计薪方式
+	// sac.newposition_salary.setValue(ep.newposition_salary.getValue()); //
+	// 调薪前职位工资
+	// sac.newbase_salary.setValue(ep.newbase_salary.getValue()); // 调薪后基本工资
+	// sac.newtech_salary.setValue(ep.newtech_salary.getValue()); // 调薪后技能工资
+	// sac.newachi_salary.setValue(ep.newachi_salary.getValue()); // 调薪后技能工资
+	// sac.newtech_allowance.setValue(ep.newtech_salary.getValue()); // 调薪后技术津贴
+	// sac.sacrage.setAsFloat(sac.newposition_salary.getAsFloatDefault(0) -
+	// sac.oldposition_salary.getAsFloatDefault(0)); // 调薪幅度
+	// sac.chgdate.setValue(ep.tranfcmpdate.getValue()); // 调薪日期
+	// sac.chgreason.setValue(""); // 调薪原因
+	// sac.remark.setValue(""); // 备注
+	// sac.createtime.setAsDatetime(new Date()); // 创建时间
+	// sac.save(con);
+	// }
+
+	private void doUpdateRlDeclare(Hr_employee_transfer ep, Hr_employee emp, CDBConnection con) throws Exception {
+		Hrrl_declare rldcold = new Hrrl_declare();
+		Hrrl_declare rldcnew1 = new Hrrl_declare();
+		Hrrl_declare rldcnew2 = new Hrrl_declare();
+		Hr_employee remp = new Hr_employee();
+		CJPALineData<Hr_employee_transfer_rl> rls = ep.hr_employee_transfer_rls;
+		for (CJPABase jpa : rls) {
+			Hr_employee_transfer_rl rl = (Hr_employee_transfer_rl) jpa;
+			rldcold.clear();
+			rldcnew1.clear();
+			rldcnew2.clear();
+			remp.clear();
+			rldcold.findByID(con, rl.ldid.getValue());
+			if (rldcold.isEmpty())
+				throw new Exception("ID为【" + rl.ldid.getValue() + "】的申报单不存在");
+			rldcnew1.assignfield(rldcold, true);
+			rldcold.useable.setAsInt(2);
+			rldcold.disusetime.setAsDatetime(new Date());
+			rldcold.disuseremark.setValue("人事调动表单【" + ep.emptranfcode.getValue() + "】审批通过禁用");
+			rldcold.save(con);
+
+			String sqlstr = "SELECT * FROM Hrrl_declare WHERE er_id=" + remp.er_id.getValue() + " AND rer_id="
+					+ emp.er_id.getValue()
+					+ " AND  ldtype=1 AND useable=1";
+			rldcnew2.findBySQL(con, sqlstr, false);
+			if (!rldcnew2.isEmpty()) {
+				rldcnew2.useable.setAsInt(2);
+				rldcnew2.disusetime.setAsDatetime(new Date());
+				rldcnew2.disuseremark.setValue("人事调动表单【" + ep.emptranfcode.getValue() + "】审批通过禁用");
+				rldcnew2.save(con);
+			}
+			rldcnew2.clear();
+
+			rldcnew1.ldid.setValue(null);
+			rldcnew1.ldcode.setValue(null);
+			rldcnew1.dcldate.setAsDatetime(new Date());
+			rldcnew1.ljdate.setValue(emp.ljdate.getValue());
+			rldcnew1.orgid.setValue(emp.orgid.getValue());
+			rldcnew1.orgcode.setValue(emp.orgcode.getValue());
+			rldcnew1.orgname.setValue(emp.orgname.getValue());
+			rldcnew1.ospid.setValue(emp.ospid.getValue());
+			rldcnew1.ospcode.setValue(emp.ospcode.getValue());
+			rldcnew1.sp_name.setValue(emp.sp_name.getValue());
+			rldcnew1.hwc_namezl.setValue(emp.hwc_namezl.getValue());
+			rldcnew1.hg_name.setValue(emp.hg_name.getValue());
+			rldcnew1.lv_num.setValue(emp.lv_num.getValue());
+
+			rldcnew1.rbusiness.setValue(rl.newrbusiness.getValue());
+			rldcnew1.rlmanagetype.setValue(rl.newrlmanagetype.getValue());
+			rldcnew1.rctrms.setValue(rl.newrctrms.getValue());
+			rldcnew1.rccode.setValue(rl.newrccode.getValue());
+			rldcnew1.useable.setAsInt(1);
+			rldcnew1.disusetime.setValue(null);
+			rldcnew1.disuseremark.setValue(null);
+			rldcnew1.remark.setValue(rl.remark.getValue());
+			rldcnew1.creator.setValue(null);
+			rldcnew1.createtime.setValue(null);
+			rldcnew1.updator.setValue(null);
+			rldcnew1.updatetime.setValue(null);
+			rldcnew1.clearAllId();
+
+			remp.findByID(con, rldcnew1.rer_id.getValue());
+			if (!remp.isEmpty()) {
+				rldcnew2.clear();
+				rldcnew2.assignfield(rldcnew1, true);
+				rldcnew2.ldid.setValue(null);
+				rldcnew2.ldcode.setValue(null);
+				rldcnew2.er_id.setValue(remp.er_id.getValue()); // 档案ID
+				rldcnew2.employee_code.setValue(remp.employee_code.getValue()); // 工号
+				rldcnew2.employee_name.setValue(remp.employee_name.getValue()); // 姓名
+				rldcnew2.sex.setValue(remp.sex.getValue()); // 性别
+				rldcnew2.hiredday.setValue(remp.hiredday.getValue());
+				rldcnew2.ljdate.setValue(remp.ljdate.getValue());
+				rldcnew2.orgid.setValue(remp.orgid.getValue());
+				rldcnew2.orgcode.setValue(remp.orgcode.getValue());
+				rldcnew2.orgname.setValue(remp.orgname.getValue());
+				rldcnew2.ospid.setValue(remp.ospid.getValue());
+				rldcnew2.ospcode.setValue(remp.ospcode.getValue());
+				rldcnew2.sp_name.setValue(remp.sp_name.getValue());
+				rldcnew2.hwc_namezl.setValue(remp.hwc_namezl.getValue());
+				rldcnew2.hg_name.setValue(remp.hg_name.getValue());
+				rldcnew2.lv_num.setValue(remp.lv_num.getValue());
+				rldcnew2.emplev.setValue("0");
+				rldcnew2.idpath.setValue(remp.idpath.getValue());
+				rldcnew2.rer_id.setValue(emp.er_id.getValue()); // 关联档案ID
+				rldcnew2.remployee_code.setValue(emp.employee_code.getValue()); // 关联工号
+				rldcnew2.remployee_name.setValue(emp.employee_name.getValue()); // 关联姓名/推荐人姓名
+				rldcnew2.rsex.setValue(emp.sex.getValue()); // 关联性别
+				rldcnew2.rhiredday.setValue(emp.hiredday.getValue()); // 关联入职日期
+				rldcnew2.rljdate.setValue(emp.ljdate.getValue()); // 关联离职日期
+				rldcnew2.rorgid.setValue(emp.orgid.getValue()); // 关联部门ID
+				rldcnew2.rorgcode.setValue(emp.orgcode.getValue()); // 关联部门编码
+				rldcnew2.rorgname.setValue(emp.orgname.getValue()); // 关联部门名称/推荐人工作单位
+				rldcnew2.rospid.setValue(emp.ospid.getValue()); // 关联职位ID
+				rldcnew2.rospcode.setValue(emp.ospcode.getValue()); // 关联职位编码
+				rldcnew2.rsp_name.setValue(emp.sp_name.getValue()); // 关联职位/推荐人职务
+				rldcnew2.rhwc_namezl.setValue(emp.hwc_namezl.getValue()); // 关联职类
+				rldcnew2.rhg_name.setValue(emp.hg_name.getValue()); // 关联职等
+				rldcnew2.rlv_num.setValue(emp.lv_num.getValue()); // 关联职级
+				rldcnew2.clearAllId();
+				rldcnew1.save(con);
+				rldcnew2.save(con);
+			} else
+				rldcnew1.save(con);
+		}
+	}
+
+	private void dobuyinsurance(CJPA jpa, CDBConnection con) throws Exception {
+		Hr_employee_transfer trans = (Hr_employee_transfer) jpa;
+		Hr_employee emp = new Hr_employee();
+		emp.findByID4Update(con, trans.er_id.getValue(), false);
+		if (emp.isEmpty()) {
+			throw new Exception("ID为【" + trans.er_id.getValue() + "】的人事档案不存在");
+		}
+		if (emp.empstatid.getAsInt() >= 12) {
+			throw new Exception("工号为【" + trans.employee_code.getValue() + "】的人员状态不是在职或其他可购保的状态");
+		}
+		Hr_ins_buyinsurance oldbi = new Hr_ins_buyinsurance();
+		oldbi.findBySQL(
+				"SELECT * FROM `hr_ins_buyinsurance` WHERE stat=9  AND CURDATE()>=buydday AND CURDATE()<=LAST_DAY(buydday) AND er_id="
+						+ emp.er_id.getValue());
+		if (!oldbi.isEmpty()) {
+			setinsrancetimer(trans, con);// 插入调度列表等待自动生成购保单
+			return;
+		}
+
+		Hr_ins_buyinsurance bi = new Hr_ins_buyinsurance();
+		// Hr_ins_buyins_line buyinsline = new Hr_ins_buyins_line();
+		Hr_ins_insurancetype it = new Hr_ins_insurancetype();
+		String buydate = Systemdate.getStrDateyyyy_mm_dd(new Date());
+		it.findBySQL("SELECT * FROM hr_ins_insurancetype WHERE ins_type=1 AND '" + buydate
+				+ "'>=buydate ORDER BY buydate DESC ");
+		if (it.isEmpty()) {
+			throw new Exception("购保时间为【" + buydate + "】时无可用的险种");
+		}
+
+		bi.insurance_number.setValue(emp.employee_code.getValue());
+		bi.orgid.setValue(emp.orgid.getValue()); // 部门ID
+		bi.orgcode.setValue(emp.orgcode.getValue()); // 部门编码
+		bi.orgname.setValue(emp.orgname.getValue()); // 部门名称
+		bi.buydday.setValue(buydate);
+		bi.insit_id.setValue(it.insit_id.getValue());
+		bi.insit_code.setValue(it.insit_code.getValue());
+		bi.insname.setValue(it.insname.getValue());
+		bi.ins_type.setAsInt(1);
+		bi.payment.setValue(it.payment.getValue());
+		bi.tselfpay.setValue(it.selfpay.getValue());
+		bi.tcompay.setValue(it.compay.getValue());
+
+		bi.er_id.setValue(emp.er_id.getValue());
+		bi.employee_code.setValue(emp.employee_code.getValue());
+		bi.employee_name.setValue(emp.employee_name.getValue());
+		bi.ospid.setValue(emp.ospid.getValue());
+		bi.ospcode.setValue(emp.ospcode.getValue());
+		bi.sp_name.setValue(emp.sp_name.getValue());
+		bi.lv_id.setValue(emp.lv_id.getValue());
+		bi.lv_num.setValue(emp.lv_num.getValue());
+		bi.hiredday.setValue(emp.hiredday.getValue());
+		bi.orgid.setValue(emp.orgid.getValue());
+		bi.orgcode.setValue(emp.orgcode.getValue());
+		bi.orgname.setValue(emp.orgname.getValue());
+		bi.degree.setValue(emp.degree.getValue());
+		bi.sex.setValue(emp.sex.getValue());
+		bi.telphone.setValue(emp.telphone.getValue());
+		bi.nativeplace.setValue(emp.nativeplace.getValue());
+		bi.registertype.setValue(emp.registertype.getValue());
+		bi.pay_type.setValue(emp.pay_way.getValue());
+		bi.id_number.setValue(emp.id_number.getValue());
+		bi.sign_org.setValue(emp.sign_org.getValue());
+		bi.sign_date.setValue(emp.sign_date.getValue());
+		bi.expired_date.setValue(emp.expired_date.getValue());
+		bi.birthday.setValue(emp.birthday.getValue());
+		int age = getAgeByBirth(emp.birthday.getValue());
+		bi.age.setAsInt(age);
+		bi.sptype.setValue(emp.emnature.getValue());
+		bi.isnew.setAsInt(1);
+		bi.reg_type.setAsInt(1);
+		String nowtime = "";
+		Calendar hday = Calendar.getInstance();
+		Date hd = Systemdate.getDateByStr(emp.hiredday.getValue());
+		hday.setTime(hd);
+		int inday = hday.get(Calendar.DATE);
+		if (inday < 21) {
+			nowtime = Systemdate.getStrDateByFmt(new Date(), "yyyy-MM-dd");
+		} else {
+			Date bgdate = Systemdate.getDateByStr(Systemdate.getStrDateByFmt(new Date(), "yyyy-MM-dd"));// 去除时分秒
+			Date eddate = Systemdate.dateMonthAdd(bgdate, 1);// 加一月
+			nowtime = Systemdate.getStrDateyyyy_mm_dd(eddate);
+		}
+		bi.buydday.setValue(nowtime);
+		bi.ins_type.setValue(it.ins_type.getValue());
+		bi.selfratio.setValue(it.selfratio.getValue());
+		bi.selfpay.setValue(it.selfpay.getValue());
+		bi.comratio.setValue(it.comratio.getValue());
+		bi.compay.setValue(it.compay.getValue());
+		bi.insurancebase.setValue(it.insurancebase.getValue());
+		// bi.hr_ins_buyins_lines.add(buyinsline);
+		bi.remark.setValue("调动单【" + trans.emptranfcode.getValue() + "】自动生成购保");
+		bi.save(con);
+	}
+
+	private static int getAgeByBirth(String birthday) {
+		int age = 0;
+		try {
+			Calendar now = Calendar.getInstance();
+			now.setTime(new Date());// 当前时间
+			Calendar birth = Calendar.getInstance();
+			Date bd = Systemdate.getDateByStr(birthday);
+			birth.setTime(bd);
+			if (birth.after(now)) {// 如果传入的时间，在当前时间的后面，返回0岁
+				age = 0;
+			} else {
+				age = now.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+				if (now.get(Calendar.DAY_OF_YEAR) > birth.get(Calendar.DAY_OF_YEAR)) {
+					age += 1;
+				}
+			}
+			return age;
+		} catch (Exception e) {// 兼容性更强,异常后返回数据
+			return 0;
+		}
+	}
+
+	private void doresigncontract(CJPA jpa, CDBConnection con) throws Exception {// 调动后更新原有合同
+		Hr_employee_transfer trans = (Hr_employee_transfer) jpa;
+		Hr_employee_contract hrecon = new Hr_employee_contract();
+		Hr_employee emp = new Hr_employee();
+		emp.findByID(trans.er_id.getValue());
+		if (emp.isEmpty()) {
+			throw new Exception("ID为【" + trans.er_id.getValue() + "】的人事档案不存在");
+		}
+		Shworg org = new Shworg();
+		org.findByID(con, trans.neworgid.getValue());
+		if (org.isEmpty())
+			throw new Exception("没有找到ID为【" + trans.neworgid.getValue() + "】的机构");
+
+		Hr_orgposition op = new Hr_orgposition();
+		op.findByID(con, trans.newospid.getValue());
+		if (op.isEmpty())
+			throw new Exception("没有找到ID为【" + trans.newospid.getValue() + "】的机构职位");
+		hrecon.findBySQL(
+				"SELECT * FROM `hr_employee_contract` WHERE stat=9 AND contractstat=1 AND contract_type=1 AND er_id="
+						+ emp.er_id.getValue());
+		if (hrecon.isEmpty())
+			return;
+		// throw new Exception("没有找到员工【" + emp.employee_name.getValue() +
+		// "】的有效合同资料"); //要求取消限制 17-12-27
+
+		hrecon.orgid.setValue(org.orgid.getValue()); // 部门ID
+		hrecon.orgcode.setValue(org.code.getValue()); // 部门编码
+		hrecon.orgname.setValue(org.extorgname.getValue()); // 部门名称
+		hrecon.lv_id.setValue(trans.newlv_id.getValue()); // 职级ID
+		hrecon.lv_num.setValue(trans.newlv_num.getValue()); // 职级
+		hrecon.ospid.setValue(trans.newospid.getValue()); // 职位ID
+		hrecon.ospcode.setValue(trans.newospcode.getValue()); // 职位编码
+		hrecon.idpath.setValue(org.idpath.getValue());
+		hrecon.ospid.setValue(trans.newospid.getValue());
+		hrecon.ospcode.setValue(trans.newospcode.getValue());
+		hrecon.sp_name.setValue(trans.newsp_name.getValue());
+		hrecon.remark.setValue("调动单【" + trans.emptranfcode.getValue() + "】自动更新合同！"); // 备注
+		hrecon.save(con);
+	}
+
+	private void setinsrancetimer(Hr_employee_transfer trans, CDBConnection con) throws Exception {// 插入待调度列表，等待调度生成购保单
+		Hrkqtransfer2insurancetimer instimer = new Hrkqtransfer2insurancetimer();
+		instimer.er_id.setValue(trans.er_id.getValue());
+		instimer.employee_code.setValue(trans.employee_code.getValue());
+		instimer.employee_name.setValue(trans.employee_name.getValue());
+		instimer.tranfcmpdate.setValue(trans.tranfcmpdate.getValue());
+		String tranmount = Systemdate.getStrDateByFmt(instimer.tranfcmpdate.getAsDatetime(), "yyyy-MM");
+		tranmount = tranmount + "-01";
+		Date buydate = Systemdate.dateMonthAdd(Systemdate.getDateByyyyy_mm_dd(tranmount), 1);
+		instimer.dobuyinsdate.setAsDatetime(buydate);
+		instimer.isbuyins.setAsInt(2);
+		instimer.sourceid.setValue(trans.emptranf_id.getValue());
+		instimer.sourcecode.setValue(trans.emptranfcode.getValue());
+		instimer.save(con);
+	}
+
+	private void prebuyinsurances(CJPA jpa, CDBConnection con) throws Exception {
+		Hr_employee_transfer trans = (Hr_employee_transfer) jpa;
+		Hr_employee emp = new Hr_employee();
+		emp.findByID4Update(con, trans.er_id.getValue(), false);
+		if (emp.isEmpty()) {
+			throw new Exception("ID为【" + trans.er_id.getValue() + "】的人事档案不存在");
+		}
+
+		Hr_ins_buyinsurance oldbi = new Hr_ins_buyinsurance();
+		oldbi.findBySQL("SELECT * FROM `hr_ins_buyinsurance` WHERE stat=9  AND '" + trans.tranfcmpdate.getValue()
+				+ "'>=buydday AND '"
+				+ trans.tranfcmpdate.getValue() + "'<=LAST_DAY(buydday) AND er_id=" + emp.er_id.getValue());
+		if (!oldbi.isEmpty()) {
+			return;
+		}
+		boolean islocal = false;
+		boolean levcheck = false;
+		if (emp.registertype.isEmpty())
+			throw new Exception("工号【" + emp.employee_code.getValue() + "】未维护户籍类型，购保单生成失败");
+		if ((emp.registertype.getAsInt() == 1) || (emp.registertype.getAsInt() == 2)) {// 户籍类型是本地的
+			islocal = true;
+		}
+		if (trans.newlv_num.getAsFloat() <= 6.3) {// 调动后职级<=6.3的
+			levcheck = true;
+		}
+		if (islocal || levcheck) {
+			Hr_ins_prebuyins pbi = new Hr_ins_prebuyins();
+			pbi.er_id.setValue(emp.er_id.getValue());
+			pbi.employee_code.setValue(emp.employee_code.getValue());
+			pbi.employee_name.setValue(emp.employee_name.getValue());
+			pbi.ospid.setValue(emp.ospid.getValue());
+			pbi.ospcode.setValue(emp.ospcode.getValue());
+			pbi.sp_name.setValue(emp.sp_name.getValue());
+			pbi.lv_id.setValue(emp.lv_id.getValue());
+			pbi.lv_num.setValue(emp.lv_num.getValue());
+			pbi.hiredday.setValue(emp.hiredday.getValue());
+			pbi.orgid.setValue(emp.orgid.getValue());
+			pbi.orgcode.setValue(emp.orgcode.getValue());
+			pbi.orgname.setValue(emp.orgname.getValue());
+			pbi.sex.setValue(emp.sex.getValue());
+			pbi.birthday.setValue(emp.birthday.getValue());
+			pbi.registertype.setValue(emp.registertype.getValue());
+			pbi.idpath.setValue(emp.idpath.getValue());
+			pbi.degree.setValue(emp.degree.getValue());
+			pbi.nativeplace.setValue(emp.nativeplace.getValue());
+			pbi.id_number.setValue(emp.id_number.getValue());
+			pbi.registeraddress.setValue(emp.registeraddress.getValue());
+			pbi.telphone.setValue(emp.telphone.getValue());
+			pbi.transorg.setValue(emp.transorg.getValue());
+			pbi.dispunit.setValue(emp.dispunit.getValue());
+			int age = COHr_ins_insurance.getAgeByBirth(emp.birthday.getValue());
+			pbi.age.setAsInt(age);
+			pbi.tranfcmpdate.setValue(trans.tranfcmpdate.getValue());
+			pbi.isbuyins.setAsInt(2);
+			pbi.sourceid.setValue(trans.emptranf_id.getValue());
+			pbi.sourcecode.setValue(trans.emptranfcode.getValue());
+			pbi.prebuytype.setAsInt(2);
+			Calendar hday = Calendar.getInstance();
+			Date hd = Systemdate.getDateByStr(trans.tranfcmpdate.getValue());
+			hday.setTime(hd);
+			String nowtime = "";
+			// Date nowdate =
+			// Systemdate.getDateByStr(Systemdate.getStrDateyyyy_mm_dd());
+			int inday = hday.get(Calendar.DATE);
+			if (inday <= 25) {
+				Date firstdate = Systemdate.getFirstAndLastOfMonth(hd).date1;
+				nowtime = Systemdate.getStrDateyyyy_mm_dd(firstdate);
+			} else {
+				Date bgdate = Systemdate.getFirstAndLastOfMonth(hd).date2;// 取最后一天的日期
+				Date eddate = Systemdate.dateDayAdd(bgdate, 1);// 加一天获取下月一号的日期
+				nowtime = Systemdate.getStrDateyyyy_mm_dd(eddate);
+			}
+			pbi.dobuyinsdate.setValue(nowtime);
+			pbi.save(con);
+		}
+	}
+
+	/**
+	 * 
+	 * 算法逻辑: 调入非脱产的：都不需要填写； 调入为脱产的：不是“同部门内部”和“特殊部门”调动都需要填
+	 * 是“同部门内部”和“特殊部门”的，调动前为非脱产需要填写，为脱产不需要填写;
+	 * 
+	 * 
+	 * @param orgid
+	 * @return 1 必填 2 非必填
+	 * @throws Exception
+	 */
+	public static int isneedsarryqcode(String odospid, String newospid, int tranftype3) throws Exception {
+		Hr_orgposition odosp = new Hr_orgposition();
+		odosp.findByID(odospid);
+		if (odosp.isEmpty())
+			throw new Exception("ID为【" + odospid + "】的机构职位ID不存在");
+		Hr_orgposition nosp = new Hr_orgposition();
+		nosp.findByID(newospid);
+		if (nosp.isEmpty())
+			throw new Exception("ID为【" + newospid + "】的机构职位ID不存在");
+
+		if (nosp.isoffjob.getAsIntDefault(0) == 2) {// 调入非脱产的：都不需要填写；
+			System.out.println("调入非脱产的：都不需要填写；");
+			return 2;
+		} else { // 调入是脱产
+			boolean isspec = isSpecOrg(nosp.orgid.getValue());// 特殊部门
+			if ((tranftype3 != 4) && (!isspec)) {// 不是“内部”且不是跨部门且不是“特殊部门”调动都需要填
+				// //&& (tranftype3 != 1)又取消了
+				// System.out.println("不是“同部门内部”且不是“特殊部门”调动都需要填");
+				return 1;
+			} else {// 是“同部门内部”或“特殊部门”的，
+				if (odosp.isoffjob.getAsIntDefault(0) == 1) {// 调动前为非脱产需要填写，;
+					// System.out.println("调动前为脱产不需要填写");
+					return 2;
+				} else {
+					// System.out.println("调动前为非脱产需要填写");
+					return 1;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param orgid
+	 * @return 是否特殊部门
+	 * @throws Exception
+	 */
+	private static boolean isSpecOrg(String orgid) throws Exception {
+		Shworg org = new Shworg();
+		org.findByID(orgid);
+		if (org.isEmpty())
+			throw new Exception("ID为【" + orgid + "】的机构不存在");
+		String orgids = org.idpath.getValue();
+		String[] ids = orgids.split(",");
+		orgids = "";
+		for (String id : ids) {
+			if ((id != null) && (!id.isEmpty())) {
+				orgids = orgids + "'" + id + "',";
+			}
+		}
+		orgids = orgids.substring(0, orgids.length() - 1);
+		String sqlstr = "SELECT IFNULL(COUNT(*),0) ct FROM hr_transfer_salarycode_parms WHERE useable=1 AND includchild=1 AND orgid IN("
+				+ orgids + ")";
+		if (Integer.valueOf(org.pool.openSql2List(sqlstr).get(0).get("ct").toString()) > 0)// 需要
+			return true;
+		sqlstr = "SELECT IFNULL(COUNT(*),0) ct FROM hr_transfer_salarycode_parms WHERE useable=1 and includchild=2 AND orgid="
+				+ orgid;
+		if (Integer.valueOf(org.pool.openSql2List(sqlstr).get(0).get("ct").toString()) > 0)// 需要
+			return true;
+		return false;
+	}
+
+}

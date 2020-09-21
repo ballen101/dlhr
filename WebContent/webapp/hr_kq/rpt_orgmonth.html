@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [];</script> 
+  <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '机构名', notfind: true, width: 100},
+                {field: 'numzz', title: '在职人数', notfind: true, width: 80},
+                {field: 'numrz', title: '入职人数', notfind: true, width: 80},
+                {field: 'numlz', title: '离职人数', notfind: true, width: 80},
+                {field: 'numdr', title: '调入人数', notfind: true, width: 80},
+                {field: 'numdc', title: '调出人数', notfind: true, width: 80},
+                {field: 'numsj', title: '事假人数', notfind: true, width: 80},
+                {field: 'numsjsc', title: '事假时长', notfind: true, width: 80},
+                {field: 'numgj', title: '公假人数', notfind: true, width: 80},
+                {field: 'numgjsc', title: '公假时长', notfind: true, width: 80},
+                {field: 'numhj', title: '婚假人数', notfind: true, width: 80},
+                {field: 'numhjsc', title: '婚假时长', notfind: true, width: 80},
+                {field: 'numcj', title: '产假人数', notfind: true, width: 80},
+                {field: 'numcjsc', title: '产假时长', notfind: true, width: 80},
+                {field: 'numsnj', title: '丧假人数', notfind: true, width: 80},
+                {field: 'numsnjsc', title: '丧假时长', notfind: true, width: 80},
+                {field: 'numbj', title: '病假人数', notfind: true, width: 80},
+                {field: 'numbjsc', title: '病假时长', notfind: true, width: 80},
+                {field: 'numgsj', title: '工伤假人数', notfind: true, width: 80},
+                {field: 'numgsjsc', title: '工伤假时长', notfind: true, width: 80},
+                {field: 'numgkgkg', title: '旷工(旷工)人数', notfind: true, width: 80},
+                {field: 'numgkgkgsc', title: '旷工(旷工)时长', notfind: true, width: 80},
+                {field: 'numgkgcd', title: '旷工(迟到)人数', notfind: true, width: 80},
+                {field: 'numgkgzt', title: '旷工(早退)人数', notfind: true, width: 80},
+                {field: 'numgcd', title: '迟到人数', notfind: true, width: 80},
+                {field: 'numgzt', title: '早退人数', notfind: true, width: 80},
+                {field: 'numjbpr', title: '平日加班人数', notfind: true, width: 80},
+                {field: 'numjbprsc', title: '平日加班时长', notfind: true, width: 80},
+                {field: 'numjbxx', title: '休息加班人数', notfind: true, width: 80},
+                {field: 'numjbxxsc', title: '休息加班时长', notfind: true, width: 80},
+                {field: 'numjbfd', title: '法定加班人数', notfind: true, width: 80},
+                {field: 'numjbfdsc', title: '法定加班时长', notfind: true, width: 80},
+                {field: 'numjb', title: '加班人数', notfind: true, width: 80},
+                {field: 'numjbsc', title: '加班时长', notfind: true, width: 80}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'dqdate', title: '考勤日期', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrkq/rpt2/getkqorgmonthrpt.co"
+        };
+
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

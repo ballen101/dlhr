@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+	<head lang="en">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+		<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+		<script type="text/javascript" src="../js/cjquery.min.js"></script>
+		<script type="text/javascript" src="../js/icefall.min.js"></script>
+		<script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+		<script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+		<script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+		<script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+		<title></title>
+		<script type="text/javascript" style="cserver_js">
+			var comUrls = [{
+					index: "dic5",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=5",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic227",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=227",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic1450",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=1450",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic1455",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=1455",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic1482",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=1482",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic1548",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=1548",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic782",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=782",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic227",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=227",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+			];
+			var formtype = 1;
+			var allowAtt = true;
+			var allowWF = true;
+		</script>
+
+		<script type="text/javascript">
+			var listGridColumns = [{
+					field: 'mkq_code',
+					title: '编码',
+					width: 120
+				},
+				{
+					field: 'orgname',
+					title: '机构',
+					width: 250
+				},
+				{
+					field: 'submitdate',
+					title: '提报月份',
+					width: 64,
+					formatter: $fieldDateFormatorYYYY_MM
+				},
+				{
+					field: 'stat',
+					title: '流程状态',
+					width: 64,
+					formatter: comUrl_dic227.formator
+				},
+				{
+					field: 'remark',
+					title: '备注',
+					width: 100
+				},
+				{
+					field: 'creator',
+					title: '制单人',
+					width: 64
+				},
+				{
+					field: 'createtime',
+					title: '制单时间',
+					findtype: 'datetime',
+					width: 100,
+					formatter: $fieldDateFormatorYYYY_MM_DD
+				},
+				{
+					field: 'updator',
+					title: '更新人',
+					width: 64
+				},
+				{
+					field: 'updatetime',
+					title: '更新时间',
+					findtype: 'datetime',
+					width: 100,
+					formatter: $fieldDateFormatorYYYY_MM_DD
+				}
+			];
+
+
+			var gdLinesColumns = [{
+					field: 'employee_code',
+					title: '工号',
+					width: 64
+				},
+				{
+					field: 'employee_name',
+					title: '姓名',
+					width: 64
+				},
+				{
+					field: 'orgname',
+					title: '部门名称',
+					width: 64
+				},
+				{
+					field: 'sp_name',
+					title: '职位',
+					width: 100
+				},
+				{
+					field: 'lv_num',
+					title: '职级',
+					width: 50
+				},
+				{
+					field: 'hiredday',
+					title: '入职日期',
+					width: 64,
+					formatter: $fieldDateFormatorYYYY_MM_DD
+				},
+				{
+					field: 'ljdate',
+					title: '离职日期',
+					width: 64,
+					formatter: $fieldDateFormatorYYYY_MM_DD
+				},
+				{
+					field: 'ljtype',
+					title: '离职类别',
+					width: 64,
+					formatter: comUrl_dic782.formator
+				},
+				{
+					field: 'ycmq',
+					title: '应出满勤',
+					width: 64
+				},
+				{
+					field: 'sjcq',
+					title: '实际出勤',
+					width: 64
+				},
+				{
+					field: 'psjb',
+					title: '平时加班',
+					width: 64,
+					editor: {type: 'numberbox',options:{precision:1}}
+				},
+				{
+					field: 'xxrjb',
+					title: '休息日加班',
+					width: 64,
+					editor: {type: 'numberbox',options:{precision:1}}
+				},
+				{
+					field: 'fdjrjb',
+					title: '法定假日加班',
+					width: 64
+				},
+				{
+					field: 'kgts',
+					title: '旷工天数',
+					width: 64
+				},
+				{
+					field: 'cdztcs',
+					title: '迟到早退次数',
+					width: 64
+				},
+				{
+					field: 'cqcs',
+					title: '超签次数',
+					width: 64
+				},
+				{
+					field: 'bjts',
+					title: '病假天数',
+					width: 64
+				},
+				{
+					field: 'qjts',
+					title: '请假天数',
+					width: 64
+				},
+				{
+					field: 'yxts',
+					title: '法定假日',
+					width: 64
+				},
+				{
+					field: 'ybts',
+					title: '夜班天数',
+					width: 64,
+					editor: {type: 'numberbox',options:{precision:1}}
+				},
+				{
+					field: 'gzxsz',
+					title: '工作小时制',
+					width: 64,
+					formatter: comUrl_dic1548.formator,
+					editor: comUrl_dic1548.editor
+				},
+				{
+					field: 'jxfs',
+					title: '计薪方式',
+					width: 64
+				},
+				{
+					field: 'tsts',
+					title: '特殊天数',
+					width: 64,
+					editor: {type: 'numberbox',options:{precision:1}}
+				},
+				{
+					field: 'remark',
+					title: '备注',
+					width: 64,
+					editor: 'textbox'
+				}
+			];
+			frmOptions = {
+				// findUrl: _serUrl + "/web/hrsalary/list/findpostsublist.co",
+				JPAClass: "com.hr.attd.entity.Hr_kq_monthsubmit",
+				JPAIdField: "mkq_id",
+				allowAtt: true,
+				allowWF: true,
+				allow_void: false, //作废
+				gdLinesName: 'hr_kq_monthsubmit_lines', //行Grid ID对应到json 明细行属性 名
+				gdLinesColumns: gdLinesColumns,
+				datainfo_pw_title: "月薪人员考勤数据提报",
+				allow_expt_list: true,
+				datainfo_line_title: "月考勤数据明细",
+				htmlTemeType: HtmlTempType.htMLPop,
+				allow_copy: false,
+				disableButtonType: _NUBType.hide,
+				/*extButtons: [//扩展按钮
+				    {
+				        text: '导入Excel',
+				        iconCls: 'icon-importexcel',
+				        handler: function () {
+				            impexcel();
+				        }
+				    },
+				    {
+				        text: '导出导入模板',
+				        iconCls: 'icon-exportexcel',
+				        handler: function () {
+				            mainline.exportExcelModel();
+				        }
+				    }
+				],*/
+				OnReady: function() { //都准备好后
+					var tb = mainline.lineToolBar();
+					tb.push("-");
+					tb.push({
+						text: '导入Excel',
+						iconCls: 'icon-importexcel',
+						handler: function() {
+							impexcel();
+						}
+					});
+					tb.push("-");
+					tb.push({
+						text: '导出导入模板',
+						iconCls: 'icon-exportexcel',
+						handler: function() {
+							mainline.exportExcelModel();
+						}
+					});
+					tb.push("-");
+					tb.push({
+						text: '产假人员明细',
+						iconCls: 'icon-exportexcel',
+						handler: function() {
+							onFindNotPBemployee();
+						}
+					});
+					tb.push("-");
+					tb.push({
+						text: '按月生成数据',
+						iconCls: 'icon-exportexcel',
+						handler: function() {
+							var submitdate = mainline.getFieldValue("submitdate");
+							var orgid = mainline.getFieldValue("orgid");
+							if ((!submitdate) || (submitdate.length == 0)) {
+								$.messager.alert('错误', "请先选择提报月份！", 'error');
+								return;
+							}
+							if ((!orgid) || (orgid.length == 0)) {
+								$.messager.alert('错误', "请先选择提报部门！", 'error');
+								return;
+							}
+							$("#detail_main_grid_id").datagrid("loadData", []);
+							if (frmOptions.afterClearGrid)
+								frmOptions.afterClearGrid("#detail_main_grid_id");
+							mainline.setDataChanged(true, "清空");
+							var chgurl = _serUrl + "/web/hrkq/monthsubmit/getSubmitKqMonth.co?orgid=" + orgid + "&submitdate=" +
+								submitdate;
+							$ajaxjsonget(chgurl, function(jsdata) {
+								var rows = jsdata.rows;
+								for (var i = 0; i < rows.length; i++) {
+									var row = rows[i];
+									if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+										$("#detail_main_grid_id").datagrid("appendRow", row);
+									}
+								}
+							}, function(err) {
+								alert(JSON.stringify(err));
+							});
+						}
+					});
+					$parserDatebox2YearMonth(mainline.getField('submitdate'));
+				},
+				onAddLine: function(append) { //点击添加明细行
+					onFindemployee(append);
+					// append(rowdata);
+				},
+				onNew: function(jsondata) {
+					// jsondata.subsdate = new Date();
+					//jsondata.substype = 4;
+				},
+				beforeSave: function() {
+					/*   if (!checkdata())
+					       throw new Error("数据检查失败，终止保存!");*/
+				},
+				onFind: function(parms) {
+					//  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+					// parms.parms.push(p);
+				},
+				onEditChanged: function(fdname, newValue, oldValue) {
+				
+					if ("submitdate" == fdname) {
+						$("#detail_main_grid_id").datagrid("loadData", []);
+						var submitdate = mainline.getFieldValue("submitdate");
+						if (!$isEmpty(submitdate)) {
+							if (frmOptions.afterClearGrid)
+								frmOptions.afterClearGrid("#detail_main_grid_id");
+							mainline.setDataChanged(true, "清空");
+						}
+					}
+					if ("orgname" == fdname) {
+						$("#detail_main_grid_id").datagrid("loadData", []);
+						var orgname = mainline.getFieldValue("orgname");
+						if (!$isEmpty(orgname)) {
+							if (frmOptions.afterClearGrid)
+								frmOptions.afterClearGrid("#detail_main_grid_id");
+							mainline.setDataChanged(true, "清空");
+						}
+					}
+				}
+
+			};
+
+			var select_notpbemployee_pw = undefined;
+
+			function onFindNotPBemployee() {
+				var submitdate = mainline.getFieldValue("submitdate");
+				var orgid = mainline.getFieldValue("orgid");
+				if ((!submitdate) || (submitdate.length == 0)) {
+					$.messager.alert('错误', "请先选择提报月份！", 'error');
+					return;
+				}
+				if ((!orgid) || (orgid.length == 0)) {
+					$.messager.alert('错误', "请先选择提报度部门！", 'error');
+					return;
+				}
+
+				var url = _serUrl + "/web/hrkq/monthsubmit/findnotpbemp.co?orgid=" + orgid + "&submitdate=" + submitdate;
+				var wo = {
+					id: "select_notpbemployee_pw",
+					coURL: url,
+					//orderStr: " orgid asc ",
+					multiRow: true,
+					//idField: 'er_id',
+					autoFind: true, //是否自动查询
+					gdListColumns: [{
+							field: 'employee_code',
+							title: '工号',
+							width: 120
+						},
+						{
+							field: 'employee_name',
+							title: '姓名',
+							width: 100
+						},
+						{
+							field: 'htname',
+							title: '假期类别',
+							width: 80
+						},
+						{
+							field: 'cj',
+							title: '当月请假天数',
+							width: 40
+						},
+						{
+							field: 'sjcq',
+							title: '实际出勤',
+							width: 40
+						},
+						{
+							field: 'hdays',
+							title: '总请假天数',
+							width: 40
+						}
+					],
+					//         onResult: function (rows) {
+					//             var datas = $("#detail_main_grid_id").datagrid("getRows");
+					//             var apddatas = [];
+
+					//             for (var i = 0; i < rows.length; i++) {
+					//                 var row = rows[i];
+					//                 if (!$getRowByFields(datas, [row.er_id, "3"], ["tid", "ttype"])) {
+					//                     var erow = {};
+					//                     erow.tid = row.er_id;
+					//                     erow.tcode = row.employee_code;
+					//                     erow.tname = row.employee_name;
+					//                     erow.sp_name = row.sp_name;
+					//                     erow.lv_num = row.lv_num;
+					//                     erow.ttype = "3";
+					//                     apddatas.push(erow);
+					//                 }
+					//             }
+					//             datas = datas.concat(apddatas);
+					//             $("#detail_main_grid_id").datagrid("loadData", datas);
+					//             mainline.setDataChanged(true);
+					//         }
+				};
+				if (!select_notpbemployee_pw) {
+					select_notpbemployee_pw = new TSearchForm(wo);
+				}
+				var extp = [];
+				extp.push({
+					parmname: 'includelv',
+					reloper: '=',
+					parmvalue: "false"
+				}); //不包含离职的
+				select_notpbemployee_pw.extendOptions({
+					coURL: url
+				});
+				select_notpbemployee_pw.show();
+			}
+
+			function impexcel() {
+				var submitdate = mainline.getFieldValue("submitdate");
+				var orgid = mainline.getFieldValue("orgid");
+				if ((!submitdate) || (submitdate.length == 0)) {
+					$.messager.alert('错误', "请先选择提报月份！", 'error');
+					return;
+				}
+				if ((!orgid) || (orgid.length == 0)) {
+					$.messager.alert('错误', "请先选择提报度部门！", 'error');
+					return;
+				}
+				$uploadfile(_serUrl + "/web/hrkq/monthsubmit/impchgsubmit_listexcel.co?orgid=" + orgid + "&submitdate=" +
+					submitdate, null,
+					function(err) {
+						$.messager.alert('错误', err, 'error');
+					},
+					function(jsdata) {
+						var rows = jsdata.rows;
+						for (var i = 0; i < rows.length; i++) {
+							var row = rows[i];
+							if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+								$("#detail_main_grid_id").datagrid("appendRow", row);
+							}
+						}
+					});
+			}
+
+			var select_Org_pw = undefined;
+
+			function onSelectOrg() {
+				var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+				var wo = {
+					id: "select_Org_pw",
+					coURL: url,
+					orderStr: " orgid asc ",
+					multiRow: false,
+					isTree: true,
+					idField: 'orgid',
+					pidField: 'superid',
+					treeField: 'code',
+					showTitle: false,
+					extParms: [{
+						parmname: 'stat',
+						reloper: '=',
+						parmvalue: '1'
+					}], //扩展参数
+					width: "500px", //
+					height: "400px", //
+					gdListColumns: [{
+							field: 'code',
+							title: '编码',
+							width: 120
+						},
+						{
+							field: 'orgname',
+							title: '机构',
+							width: 100
+						}
+					]
+				};
+				if (!select_Org_pw) {
+					select_Org_pw = new TSearchForm(wo);
+				}
+				select_Org_pw.extendOptions({
+					coURL: url,
+					onResult: function(rows) {
+						if (rows.length > 0) {
+							var row = rows[0];
+							mainline.setFieldValue('orgid', row.orgid);
+							mainline.setFieldValue('orgcode', row.code);
+							mainline.setFieldValue('orgname', row.extorgname);
+							mainline.setFieldValue('idpath', row.idpath);
+							var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+							$ajaxjsonget(url, function(jsdata) {
+								mainline.setFieldValue('orghrlev', jsdata.hrlev);
+							}, function(err) {
+								alert(JSON.stringify(err));
+							});
+
+
+						}
+					}
+				});
+				select_Org_pw.show(true);
+			}
+
+			var select_employee_pw = undefined;
+
+			function onFindemployee(append) {
+				var submitdate = mainline.getFieldValue("submitdate");
+				var orgid = mainline.getFieldValue("orgid");
+				if ((!submitdate) || (submitdate.length == 0)) {
+					$.messager.alert('错误', "请先选择提报月份！", 'error');
+					return;
+				}
+				if ((!orgid) || (orgid.length == 0)) {
+					$.messager.alert('错误', "请先选择提报度部门！", 'error');
+					return;
+				}
+				var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid;
+
+				var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co" + orgp;
+				var wo = {
+					id: "select_employee_pw",
+					coURL: url,
+					orderStr: " orgid asc ",
+					multiRow: true,
+					idField: 'orgid',
+					autoFind: false, //是否自动查询
+					gdListColumns: [{
+							field: 'employee_code',
+							title: '工号',
+							width: 120
+						},
+						{
+							field: 'employee_name',
+							title: '姓名',
+							width: 100
+						},
+						{
+							field: 'orgname',
+							title: '机构',
+							width: 300
+						},
+						{
+							field: 'sp_name',
+							title: '职位',
+							width: 64
+						},
+						{
+							field: 'lv_num',
+							title: '职级',
+							width: 64
+						}
+					]
+				};
+				if (!select_employee_pw) {
+					select_employee_pw = new TSearchForm(wo);
+				}
+				select_employee_pw.extendOptions({
+					coURL: _serUrl + "/web/hrkq/monthsubmit/getSubmitKqMonth.co?orgid=" + orgid + "&submitdate=" + submitdate,
+					onResult: function(rows) {
+						for (var i = 0; i < rows.length; i++) {
+							var row = rows[i];
+							if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+								$("#detail_main_grid_id").datagrid("appendRow", row);
+							}
+						}
+					}
+				});
+				select_employee_pw.show(true);
+			}
+
+			function zeroformator(value, row, index) {
+				var v = parseFloat(value);
+				if (isNaN((v))) v = 0;
+				if (v == 0) return 0;
+				v = v.toFixed(0);
+				return v;
+			}
+		</script>
+	</head>
+	<body>
+		<table id="maindata_id" border="0" style="">
+			<tr>
+				<td cjoptions="fdname:'mkq_code'">编码</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mkq_code',crequired:true,readonly:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'submitdate'">提报月份</td>
+				<td><input cjoptions="easyui_class:'easyui-datebox',fdname:'submitdate',formatter:$dateformattostrrYYYY_MM,editable:false"
+					 style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'orgname'">机构</td>
+				<td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',buttonIcon:'icon-search',onClickButton:onSelectOrg,crequired:true"
+					 style="height:20px;width: 300px" /></td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'remark'">备注</td>
+				<td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px" /></td>
+				<td cjoptions="fdname:'stat'">流程状态</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+					 style="height:20px;width: 100px" /></td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'creator'">制单人</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'createtime'">制单时间</td>
+				<td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr"
+					 style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'updator'">更新人</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px" />
+				</td>
+				<td cjoptions="fdname:'updatetime'">更新时间</td>
+				<td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+					 style="height:20px;width: 100px" /></td>
+			</tr>
+		</table>
+	</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>黑名单加封报表</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrl_dic1082 = {index: 'dic1082',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"与公司发生纠纷、申请仲裁、或走诉讼程序处理的人员、职务侵占、行贿受贿、弄虚作假类等案件被公司解雇需要进黑名单","dictvalue":"1"},{"language1":"违反国家法律法规、严重违反公司制度被解雇，各种原因被辞退（有/无经济补偿）并出具EIP文件公布或各单位级文件通报","dictvalue":"2"},{"language1":"协商一致解除劳动合同、经济性裁员并获得经济补偿需要进黑名单","dictvalue":"3"},{"language1":"特殊地区与特殊民族人员","dictvalue":"4"},{"language1":"非违规违纪的自行离职人员","dictvalue":"5"},{"language1":"两次（含）以上入职公司人员","dictvalue":"6"},{"language1":"由于各类疾病导致情绪激动、精神异常、行为异常、不能正常从事本职工作需要进黑名单","dictvalue":"7"}], formator: function (value, row) { var jsondata = comUrl_dic1082.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1082; } if (comUrl_dic1082.type == 'combobox') { if (comUrl_dic1082.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1082.valueField]) { rst = rst + jsondata[i][comUrl_dic1082.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1082.valueField]) return jsondata[i][comUrl_dic1082.textField]; } } } if (comUrl_dic1082.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1082.editor= {type: 'combobox', options: {valueField:comUrl_dic1082.valueField, textField:comUrl_dic1082.textField, data: comUrl_dic1082.jsondata}}; var comUrl_dic1049 = {index: 'dic1049',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"无故连续旷工三天或请假到期后三天未续假未打卡（没有考勤记录）","dictvalue":"1"},{"language1":"终止劳动关系时不履行解除手续；或解除手续没有办理完毕而离开单位","dictvalue":"2"},{"language1":"个人原因提出","dictvalue":"3"},{"language1":"不适应本职工作岗位 ","dictvalue":"4"},{"language1":"薪资福利达不到要求","dictvalue":"5"},{"language1":"合同期满员工不再续签","dictvalue":"6"},{"language1":"不能胜任工作，经调岗或培训仍不能胜任工作","dictvalue":"7"},{"language1":"违反国家法律法规 ","dictvalue":"8"},{"language1":"严重违反公司规章制度 ","dictvalue":"9"},{"language1":"提供虚假信息和伪造证件 ","dictvalue":"10"},{"language1":"合同期满公司终止劳动合同","dictvalue":"11"},{"language1":"优化性裁员","dictvalue":"12"},{"language1":"结构性裁员","dictvalue":"13"},{"language1":"经济性裁员","dictvalue":"14"},{"language1":"正常退休","dictvalue":"15"},{"language1":"因病提前退休","dictvalue":"16"},{"language1":"特殊工种退休","dictvalue":"17"},{"language1":"正常补偿范围内协商离职而取得经济补偿","dictvalue":"18"},{"language1":"恶意协商离职超出正常离职补偿范围索要并取得经济补偿","dictvalue":"19"},{"language1":"协商离职，离职人员未要求经济补偿或经协商后同意不要求补偿","dictvalue":"20"},{"language1":"其它","dictvalue":"21"},{"language1":"一类","dictvalue":"22"},{"language1":"二类","dictvalue":"23"},{"language1":"死亡","dictvalue":"24"},{"language1":"精神行为异常或态度恶劣","dictvalue":"25"}], formator: function (value, row) { var jsondata = comUrl_dic1049.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1049; } if (comUrl_dic1049.type == 'combobox') { if (comUrl_dic1049.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1049.valueField]) { rst = rst + jsondata[i][comUrl_dic1049.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1049.valueField]) return jsondata[i][comUrl_dic1049.textField]; } } } if (comUrl_dic1049.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1049.editor= {type: 'combobox', options: {valueField:comUrl_dic1049.valueField, textField:comUrl_dic1049.textField, data: comUrl_dic1049.jsondata}}; var comUrl_dic779 = {index: 'dic779',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"实习生离职","dictvalue":"1"},{"language1":"正式员工离职","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic779.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic779; } if (comUrl_dic779.type == 'combobox') { if (comUrl_dic779.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic779.valueField]) { rst = rst + jsondata[i][comUrl_dic779.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic779.valueField]) return jsondata[i][comUrl_dic779.textField]; } } } if (comUrl_dic779.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic779.editor= {type: 'combobox', options: {valueField:comUrl_dic779.valueField, textField:comUrl_dic779.textField, data: comUrl_dic779.jsondata}}; var comUrl_dic1071 = {index: 'dic1071',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"A类黑名单","dictvalue":"1"},{"language1":"B类黑名单","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic1071.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1071; } if (comUrl_dic1071.type == 'combobox') { if (comUrl_dic1071.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1071.valueField]) { rst = rst + jsondata[i][comUrl_dic1071.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1071.valueField]) return jsondata[i][comUrl_dic1071.textField]; } } } if (comUrl_dic1071.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1071.editor= {type: 'combobox', options: {valueField:comUrl_dic1071.valueField, textField:comUrl_dic1071.textField, data: comUrl_dic1071.jsondata}}; var comUrl_dic1074 = {index: 'dic1074',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"法务诉讼类","dictvalue":"1"},{"language1":"违纪处理类","dictvalue":"2"},{"language1":"经济补偿类","dictvalue":"3"},{"language1":"状态异常类","dictvalue":"4"},{"language1":"特殊地区与特殊民族人员","dictvalue":"5"},{"language1":"非违规违纪的自行离职人员","dictvalue":"6"},{"language1":"两次（含）以上入职公司人员","dictvalue":"7"}], formator: function (value, row) { var jsondata = comUrl_dic1074.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1074; } if (comUrl_dic1074.type == 'combobox') { if (comUrl_dic1074.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1074.valueField]) { rst = rst + jsondata[i][comUrl_dic1074.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1074.valueField]) return jsondata[i][comUrl_dic1074.textField]; } } } if (comUrl_dic1074.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1074.editor= {type: 'combobox', options: {valueField:comUrl_dic1074.valueField, textField:comUrl_dic1074.textField, data: comUrl_dic1074.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1082", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1082", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1049", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1049", valueField: 'dictvalue', textField: 'language1' }, { index: "dic779", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=779", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1071", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1071", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1074", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1074", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+
+        var listGridColumns = function () {
+            return [
+                {field: 'bacode', title: '加封编码', width: 100},
+                {field: 'addappdate', title: '加封申请日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'adddate', title: '加封生效日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'blackreason', title: '加封原因', width: 120, formatter: comUrl_dic1082.formator},
+                {field: 'addtype', title: '加封类型', width: 120, formatter: comUrl_dic1071.formator},
+                {field: 'addtype1', title: '加封类别', width: 120, formatter: comUrl_dic1074.formator},
+                {field: 'ljcode', title: '离职编码', width: 100},
+                {field: 'ljreason', title: '离职原因', width: 120, formatter: comUrl_dic1049.formator},
+                {field: 'orgcode', title: '部门编码', width: 80},
+                {field: 'orgname', title: '部门名称', width: 150},
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'id_number', title: '身份证号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'hiredday', title: '入职日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljdate', title: '离职日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljtype1', title: '离职方式', width: 64, formatter: comUrl_dic779.formator},
+                {field: 'sp_name', title: '职位', width: 100},
+                {field: 'hg_name', title: '职等', width: 64},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'remark', title: '备注', width: 120},
+                {field: 'creator', title: '制单人', width: 100},
+                {field: 'createtime', title: '制单时间', width: 150},
+                {field: 'updator', title: '更新人', width: 100},
+                {field: 'updatetime', title: '更新时间', width: 150}
+            ];
+        };
+        var prtOptions = {
+            idField: "baid",
+            fitColumns: false,
+            findExtParms: listGridColumns(),
+            gdListColumns: listGridColumns,
+            coURL: _serUrl + "/web/hr/permrpt1/findblackaddrpt.co"
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_access">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../jshr/hr.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1405",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1405",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'access_list_code', title: '设备编号', width: 64},
+            {field: 'access_list_model', title: '设备型号', width: 80},
+            {field: 'access_list_name', title: '设备名称', width: 120},
+            {field: 'orgcode', title: '机构编码', width: 64},
+            {field: 'extorgname', title: '机构全称', width: 200},
+            {field: 'deploy_area', title: '门禁区域', width: 100},
+            {field: 'access_stat', title: '门禁状态', width: 100, formatter: comUrl_dic1405.formator},
+            {field: 'accip', title: '门禁IP', width: 100},
+            {field: 'accport', title: '门禁端口', width: 64},
+            {field: 'device_no', title: '机号', width: 64},
+            {field: 'readid', title: '读头', width: 64},
+            {field: 'remarks', title: '备注', width: 300},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 130},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 130}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.access.entity.Hr_access_list",
+            JPAIdField: "access_list_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_print: true,
+            datainfo_pw_title: "设备配置",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '300px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '远程开门',
+                    iconCls: 'icon-copy',
+                    handler: function () {
+                        doopen();
+                    }
+                },
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+        //Excel导入功能
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Access/ImpListExcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 80},
+                    {field: 'orgname', title: '机构', width: 100},
+                    {field: 'extorgname', title: '机构全称', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('extorgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        function doopen() {
+            //  if (open_door("192.168.1.252", 4001, 1, 1, 2)) {
+            //      alert("开门成功");
+            //  }
+            var row = $("#dg_datalist_id").datagrid("getSelected");
+            if (row == null) {
+                alert("请选择需要打开的门");
+            } else {
+                var accip = row.accip;
+                if ($isEmpty(accip)) {
+                    alert("IP为空");
+                    return;
+                }
+                var accport = parseInt(row.accport);
+                if (isNaN(accport)) {
+                    accport = 4001;
+                }
+                var readid = parseInt(row.readid);
+                if (isNaN(readid)) {
+                    readid = 1;
+                }
+                var device_no = parseInt(row.device_no);
+                if (isNaN(device_no)) {
+                    device_no = 1;
+                }
+                if (open_door(accip, accport, device_no, readid, 2)) {
+                    alert("开门成功");
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<div style="display:none">
+    <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C"
+            codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0">
+    </object>
+</div>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'access_list_code'">设备编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_code',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_list_model'">设备型号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_model',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_list_name'">设备名称</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_name',crequired:true" style="height:20px;width: 280px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'accip'">门禁IP</td>
+        <td colspan="1"><input cjoptions="easyui_class:'easyui-textbox',fdname:'accip'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'accport'">门禁端口</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'accport'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'device_no'">机号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'device_no'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'readid'">读头</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'readid'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">机构编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgcode',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onSelectOrg" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'extorgname'">机构全称</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'extorgname',readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deploy_area'">门禁区域</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_stat'">门禁状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_stat',crequired:true, comidx:'dic1405'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks'" style="height:20px;width: 280px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

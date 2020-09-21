@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../js/css/corsair.css">
+    <script type="text/javascript" src="../../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../../js/hrms/cactivex.js"></script>
+    <title>attach</title>
+    <script type="text/javascript">
+        var _callback = undefined;
+        var _options = options = undefined;
+        function $OnCorsairReady() {
+            var dftfds = [
+                [
+                    {field: 'displayfname', title: '附件名', width: 200},
+                    {field: 'extname', title: '扩展名', width: 100},
+                    {field: 'filesize', title: '大小', width: 100},
+                    {field: 'filevision', title: '版本', width: 100},
+                    {field: 'filecreator', title: '所有者', width: 100},
+                    {field: 'filecreate_time', title: '创建时间', width: 150}
+                ]
+            ];
+
+            setTimeout(function () {
+                if (_options)
+                    options = _options;
+                dftfds = (options.attfields) ? options.attfields : dftfds;
+                $("#dg_att_id").datagrid({
+                    border: false,
+                    columns: dftfds,
+                    onDblClickRow: onAttGrigDBClick
+                });
+                if (options.attach && options.attach.shw_attach_lines) {
+                    $("#dg_att_id").datagrid("loadData", options.attach.shw_attach_lines);
+                }
+            }, 500);
+        }
+
+        function onAttGrigDBClick(index, row) {
+            if (_options)
+                options = _options;
+            var furl = $C.cos.downattfile() + "?pfid=" + row.pfid;
+            window.open(furl);
+        }
+
+
+        function rightClickDownload() {
+            if (_options)
+                options = _options;
+            var row = $("#dg_att_id").datagrid('getSelected');
+            if (row) {
+                var furl = $C.cos.downattfile() + "?pfid=" + row.pfid;
+                window.open(furl);
+            } else {
+                $.messager.alert('错误', '没有选择附件!', 'error');
+            }
+        }
+
+
+        function dodel() {
+            if (_options)
+                options = _options;
+            var row = $("#dg_att_id").datagrid('getSelected');
+            if (row) {
+                var furl = $C.cos.delattfile() + "?pfid=" + row.pfid;
+                // window.open(furl);
+                $ajaxjsonget(furl, function () {
+                    $C.grid.remove("#dg_att_id");
+                    // alert("删除成功");
+                }, function () {
+                    $.messager.alert('错误', '删除附件失败!', 'error');
+                });
+            } else {
+                $.messager.alert('错误', '没有选择附件!', 'error');
+            }
+        }
+
+        function doupload() {
+            if (_options)
+                options = _options;
+            var url = _serUrl + "/web/att/upLoadJPAAtt.co?jpaclass=" + options.jpaclass + "&id=" + options.id;
+            if (options.imgthb != undefined)
+                url = url + "&imgthb=" + options.imgthb;
+            $uploadfile(url, undefined,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        $("#dg_att_id").datagrid("loadData", jsdata.shw_attach_lines);
+                    });
+        }
+
+        function dosacn() {
+            var photo = JSON.parse($ScanPhoto());
+            if (photo && (photo.base64pic)) {
+                var url = _serUrl + "/web/att/upLoadJPAAtt64.co?jpaclass=" + options.jpaclass + "&id=" + options.id;
+                var data = {
+                    fdata: photo.base64pic,
+                    fname: photo.fname,
+                    extfname: ".jpg"
+                };
+                $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                    $("#dg_att_id").datagrid("loadData", jsdata.shw_attach_lines);
+                }, function (err) {
+                    $.messager.alert('错误', '上传BASE64文件错误：' + err, 'error');
+                });
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div class="easyui-layout" data-options="border:false,fit:true" style="padding: 0px">
+    <div data-options="region:'north',split:false,border:false" style="background:#eee;padding: 5px">
+        <a id="btn_upload" href="#" onclick="doupload()" class="easyui-linkbutton" style="width: 100px"
+           data-options="iconCls:'icon-ml_upload'">上传</a>
+        <a id="btn_del" href="#" onclick="dodel()" class="easyui-linkbutton" style="width: 100px"
+           data-options="iconCls:'icon-ml_del'">删除</a>
+        <a id="btn_scan" href="#" onclick="dosacn()" class="easyui-linkbutton" style="width: 100px"
+           data-options="iconCls:'ico_scan'">扫描</a>
+    </div>
+    <div data-options="region:'center',border:false" style="padding:0px;">
+        <table id="dg_att_id"
+               data-options="rownumbers:true,fitColumns:false,border:false,singleSelect: true,fit:true"></table>
+    </div>
+</div>
+</body>
+</html>

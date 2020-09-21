@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1450",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1450",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1455",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1455",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'tsp_code',title:'编码',width:120},
+            {field:'appsys',title:'系统',width:150, formatter: comUrl_dic1455.formator},
+            {field:'sp_name',title:'职位',width:100},
+            {field:'usable',title:'有效',width:64, formatter: comUrl_dic5.formator},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.salary.entity.Hr_salary_techsub_post",
+            JPAIdField: "tsp_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+           // gdLinesName: 'hr_salary_techsub_lines',   //行Grid ID对应到json 明细行属性 名
+           // gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "技术津贴系统职位维护",
+            allow_expt_list: true,
+            // datainfo_line_title: "申请名单",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            /*extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],*/
+            OnReady: function () {   //都准备好后
+
+            },
+            onAddLine: function (append) {//点击添加明细行
+               // onFindemployee(append);
+                // append(rowdata);
+            },
+            onNew: function (jsondata) {
+                jsondata.usable=1;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            }
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/command/imptechsubs_listexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var sch_standiptions_pw = undefined;
+        function onFindStationOption() {
+           // var url = _serUrl + "/web/hrsalary/command/getHotSubsPost.co";
+            var wo = {
+                id: "sch_standiptions_pw",
+                JPAClass: "com.hr.base.entity.Hr_standposition",  //对应后台JPAClass名
+                enableIdpath: false,
+                orderStr: " sp_id asc ",
+                multiRow: false,
+                idField: 'sp_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                 {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'istechsub', reloper: '=', parmvalue: '1'}
+                 ],//扩展参数
+                gdListColumns: [
+                    {field: 'sp_code', title: '职位编码', width: 100},
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('sp_id', row.sp_id);
+                        mainline.setFieldValue('sp_code', row.sp_code);
+                        mainline.setFieldValue('sp_name', row.sp_name);
+                    }
+                }
+            };
+            if (!sch_standiptions_pw) {
+                sch_standiptions_pw = new TSearchForm(wo);
+            }
+            sch_standiptions_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'tsp_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'tsp_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'appsys'">系统</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'appsys',crequired:true,comidx:'dic1455'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',buttonIcon:'icon-search',onClickButton:onFindStationOption,crequired:true,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usable'">有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',comidx:'dic5'" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

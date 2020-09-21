@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/login.js"></script>
+    <script type="text/javascript" src="../js/common/lg.js"></script>
+    <script type="text/javascript" src="../js/common/md5.min.js"></script>
+    <title>登录</title>
+
+    <script type="text/javascript">
+
+
+    </script>
+</head>
+<body>
+<div style="margin-bottom:10px">
+    <input id="username" class="easyui-textbox" style="width:100%;height:40px;padding:12px"
+           data-options="prompt:'用户名',iconCls:'icon-man',iconWidth:38">
+</div>
+<div style="margin-bottom:20px">
+    <input id="userpass" class="easyui-textbox" type="password"
+           style="width:100%;height:40px;padding:12px"
+           data-options="prompt:'用户密码',iconCls:'icon-lock',iconWidth:38">
+</div>
+<div style="margin-bottom:20px">
+    <input id="savepwd" type="checkbox" checked="checked">
+    <span>保存密码</span>
+</div>
+<div></div>
+<div>
+    <a onclick="dologin()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'"
+       style="padding:5px 0px;width:100%;">
+        <span style="font-size:14px;">登录</span>
+    </a>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+package com.hr.perm.entity;
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.server.cjpa.CJPA;
+import java.sql.Types;
+
+@CEntity()
+public class Hr_employee_family extends CJPA {
+	@CFieldinfo(fieldname = "empf_id", iskey = true, notnull = true, caption = "家庭关系ID", datetype = Types.INTEGER)
+	public CField empf_id; // 家庭关系ID
+	@CFieldinfo(fieldname = "er_id", notnull = true, caption = "员工档案ID", datetype = Types.INTEGER)
+	public CField er_id; // 员工档案ID
+	@CFieldinfo(fieldname = "frname", notnull = false, caption = "姓名", datetype = Types.VARCHAR)
+	public CField frname; // 姓名
+	@CFieldinfo(fieldname = "rchengwei", caption = "称谓", datetype = Types.VARCHAR)
+	public CField rchengwei; // 称谓
+	@CFieldinfo(fieldname = "addr", caption = "家庭住址", datetype = Types.VARCHAR)
+	public CField addr; // 家庭住址
+	@CFieldinfo(fieldname = "sex", caption = "性别", datetype = Types.INTEGER)
+	public CField sex; // 性别
+	@CFieldinfo(fieldname = "frtype", notnull = false, caption = "关系", datetype = Types.VARCHAR)
+	public CField frtype; // 关系
+	@CFieldinfo(fieldname = "frtcompany", caption = "工作单位", datetype = Types.VARCHAR)
+	public CField frtcompany; // 工作单位
+	@CFieldinfo(fieldname = "position", caption = "职务", datetype = Types.VARCHAR)
+	public CField position; // 职务
+	@CFieldinfo(fieldname = "phonebum", notnull = false, caption = "联系电话", datetype = Types.VARCHAR)
+	public CField phonebum; // 联系电话
+	@CFieldinfo(fieldname = "isemcat", notnull = false, caption = "是否新宝股份员工", datetype = Types.INTEGER)
+	public CField isemcat; // 是否新宝股份员工
+	@CFieldinfo(fieldname = "remark", caption = "备注", datetype = Types.VARCHAR)
+	public CField remark; // 备注
+	@CFieldinfo(fieldname = "creator", notnull = false, caption = "制单人", datetype = Types.VARCHAR)
+	public CField creator; // 制单人
+	@CFieldinfo(fieldname = "createtime", notnull = false, caption = "制单时间", datetype = Types.TIMESTAMP)
+	public CField createtime; // 制单时间
+	@CFieldinfo(fieldname = "updator", caption = "更新人", datetype = Types.VARCHAR)
+	public CField updator; // 更新人
+	@CFieldinfo(fieldname = "updatetime", caption = "更新时间", datetype = Types.TIMESTAMP)
+	public CField updatetime; // 更新时间
+	@CFieldinfo(fieldname = "attribute1", caption = "备用字段1", datetype = Types.VARCHAR)
+	public CField attribute1; // 备用字段1
+	@CFieldinfo(fieldname = "attribute2", caption = "备用字段2", datetype = Types.VARCHAR)
+	public CField attribute2; // 备用字段2
+	@CFieldinfo(fieldname = "attribute3", caption = "备用字段3", datetype = Types.VARCHAR)
+	public CField attribute3; // 备用字段3
+	@CFieldinfo(fieldname = "attribute4", caption = "备用字段4", datetype = Types.VARCHAR)
+	public CField attribute4; // 备用字段4
+	@CFieldinfo(fieldname = "attribute5", caption = "备用字段5", datetype = Types.VARCHAR)
+	public CField attribute5; // 备用字段5
+	public String SqlWhere; // 查询附加条件
+	public int MaxCount; // 查询最大数量
+
+	// 自关联数据定义
+
+	public Hr_employee_family() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {// 类初始化调用的方法
+		super.InitObject();
+		return true;
+	}
+
+	@Override
+	public boolean FinalObject() { // 类释放前调用的方法
+		super.FinalObject();
+		return true;
+	}
+}

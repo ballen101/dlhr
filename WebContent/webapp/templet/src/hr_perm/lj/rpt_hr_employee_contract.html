@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title>合同到期提醒</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic764",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=764",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic684",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=684",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field:'con_number',title:'合同编号',width:120},
+                {field:'employee_code',title:'工号',width:100},
+                {field:'employee_name',title:'姓名',width:80},
+                {field:'orgname',title:'部门',width:300},
+                {field:'hiredday',title:'入职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'lv_num',title:'职级',width:60},
+                {field:'empstatid',title:'人事状态',width:80, formatter: comUrl_cbxintype.formator},
+                {field:'contract_type',title:'合同类型',width:100, formatter: comUrl_dic758.formator},
+                {field:'contractstat',title:'合同状态',width:80, formatter: comUrl_dic764.formator},
+                {field:'contract_name',title:'合同名称',width:150},
+                {field:'sign_date',title:'签订日期',width:130, formatter: $fieldDateFormatorYYYY_MM_DD},
+               // {field:'begin_date',title:'开始日期',width:130},
+                {field:'end_date',title:'截止日期',width:130, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'sign_number',title:'签订次数',width:60},
+                {field:'stat',title:'流程状态',width:80, formatter: comUrl_dic227.formator},
+                {field:'remark',title:'备注',width:150}
+            ]
+        };
+
+        var findColums = [
+            {field:'con_number',title:'合同编号',width:64},
+            {field:'employee_code',title:'工号',width:64},
+            {field:'employee_name',title:'姓名',width:64},
+            {field:'orgcode',title:'部门编码',width:64},
+            {field:'orgname',title:'部门名称',width:64},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'ospcode',title:'职位编码',width:64},
+            {field:'sp_name',title:'职位名称',width:64},
+            {field:'hiredday',title:'入职日期',width:64},
+            {field:'contract_name',title:'合同名称',width:64},
+            {field:'sign_date',title:'签订日期',width:64},
+            {field:'begin_date',title:'开始日期',width:64},
+            {field:'end_date',title:'截止日期',width:64}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL:_serUrl + "/web/hr/employeecontract/findExpireContracts.co",
+            beforeLoadData: function (jsdata) {
+
+            }
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

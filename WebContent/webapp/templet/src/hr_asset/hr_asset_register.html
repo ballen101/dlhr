@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_asset">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'asset_register_num',title:'登记号',width:100},
+            {field:'asset_item_code',title:'资产编码',width:120},
+            {field:'asset_item_name',title:'资产名称',width:150},
+            {field:'asset_type_code',title:'资产类型编码',width:120},
+            {field:'asset_type_name',title:'资产类型',width:150},
+            {field:'brand',title:'品牌',width:64},
+            {field:'model',title:'型号',width:64},
+            {field:'original_value',title:'原值',width:64},
+            {field:'net_value',title:'净值',width:64},
+            {field:'uom',title:'单位',formatter: comUrl_dic9.formator,width:64},
+            {field:'service_life',title:'报废年限',width:64},
+            {field:'acquired_date',title:'购置日期',width:130},
+            {field:'deploy_qty',title:'配置数量',width:64},
+            {field:'deploy_area',title:'配置区域',width:150},
+            {field:'deploy_restaurant',title:'配置餐厅',width:80},
+            {field:'keep_own',title:'保管人',width:64},
+            {field:'stat',title:'表单状态',width:64, formatter: comUrl_dic227.formator},
+            {field:'remark',title:'备注',width:100},
+            {field:'creator',title:'创建人',width:64},
+            {field:'createtime',title:'创建时间',width:130},
+            {field:'updator',title:'更新人',width:64},
+            {field:'updatetime',title:'更新时间',width:130}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.asset.entity.Hr_asset_register",
+            JPAIdField: "asset_register_id",
+            allowAtt: true,
+            allowWF: true,
+            datainfo_pw_title: "资产登记",
+            allow_expt_list: true,
+            windowWidth: '900px',
+            windowHeight: '400px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+                jsondata.actived = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+        //查询类型数据
+        var select_assettype_pw=undefined;
+        function onFindtype() {
+            var wo = {
+                id: "select_assettype_pw",
+                JPAClass: "com.hr.asset.entity.Hr_asset_type",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'assettypeid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'asset_type_code', title: '类型编码', width: 100},
+                    {field: 'asset_type_name', title: '类型名称', width: 150, notfind:true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("asset_type_id", row.asset_type_id);//设置界面值
+                        mainline.setFieldValue("asset_type_code", row.asset_type_code);
+                        mainline.setFieldValue("asset_type_name", row.asset_type_name);
+
+                    }
+                }
+            };
+            if (!select_assettype_pw) {
+                select_assettype_pw = new TSearchForm(wo);
+            }
+            select_assettype_pw.show();
+        }
+
+        //查询物料数据
+        var select_assetitem_pw=undefined;
+        function onFinditem() {
+            var wo = {
+                id: "select_assetitem_pw",
+                JPAClass: "com.hr.asset.entity.Hr_asset_item",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'assetoitemid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'asset_item_code', title: '类型编码', width: 100},
+                    {field: 'asset_item_name', title: '类型名称', width: 150, notfind:true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("asset_item_id", row.asset_item_id);//设置界面值
+                        mainline.setFieldValue("asset_item_code", row.asset_item_code);
+                        mainline.setFieldValue("asset_item_name", row.asset_item_name);
+                        mainline.setFieldValue("asset_type_id", row.asset_type_id);
+                        mainline.setFieldValue("asset_type_code", row.asset_type_code);
+                        mainline.setFieldValue("asset_type_name", row.asset_type_name);
+                        mainline.setFieldValue("uom", row.uom);
+                    }
+                }
+            };
+            if (!select_assetitem_pw) {
+                select_assetitem_pw = new TSearchForm(wo);
+            }
+            select_assetitem_pw.show();
+        }
+        //查询餐厅数据
+        var select_ct_pw=undefined;
+        function onFindCtr() {
+            var wo = {
+                id: "select_ct_pw",
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ctid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'ctr_code', title: '餐厅编码', width: 100},
+                    {field: 'ctr_name', title: '餐厅名称', width: 150, notfind:true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("deploy_restaurant_id", row.ctr_id);//设置界面值
+                        mainline.setFieldValue("deploy_restaurant", row.ctr_name);
+                        mainline.setFieldValue("deploy_area", row.address);
+                        mainline.setFieldValue("idpath",row.idpath);
+                    }
+                }
+            };
+            if (!select_ct_pw) {
+                select_ct_pw = new TSearchForm(wo);
+            }
+            select_ct_pw.show();
+        }
+
+        //Excel导入功能
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Asset/ImpRegExcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'asset_register_num'">登记号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_register_num',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_item_code'">资产编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_item_code',buttonIcon:'icon-search',onClickButton:onFinditem,editable:false,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_item_name'">资产名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_item_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_type_code'">资产类型编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_type_code',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'asset_type_name'">资产类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_type_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'uom'">单位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'uom',readonly:true,comidx:'dic9'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'brand'">品牌</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'brand'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'model'">型号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'model'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'original_value'">原值</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',crequired:true,fdname:'original_value',min:0,precision:2" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'net_value'">净值</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',crequired:true,fdname:'net_value',min:0,precision:2" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'service_life'">报废年限</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'service_life'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'acquired_date'">购置日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',crequired:true,fdname:'acquired_date',formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deploy_qty'">配置数量</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',crequired:true,fdname:'deploy_qty',min:0,precision:2" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deploy_restaurant'">配置餐厅</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'deploy_restaurant',buttonIcon:'icon-search',onClickButton:onFindCtr,editable:false,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deploy_area'">配置区域</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area',readonly:true" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'keep_own'">保管人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'keep_own'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">表单状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>、
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>

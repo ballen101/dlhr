@@ -1,0 +1,141 @@
+package com.hr.util;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimerTask;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.DBPools;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.hr.attd.ctr.HrkqUtil;
+import com.hr.attd.entity.Hrkq_swcdlst;
+import com.hr.inface.entity.TXkqView_Hrms;
+
+public class TimerTaskHRSwcard extends TimerTask {
+	private static String autosynkqbgdate = "2017-07-01";
+	private static int syncrowno = 5000;
+	private static int pageonetime = 20;// 每次触发导入
+
+	@Override
+	public void run() {
+		Logsw.debug("同步考勤数据");
+		try {
+			for (int i = 0; i < pageonetime; i++) {
+				int synct = importdata4oldqkEx2();//
+				if (synct == 0) {
+					System.out.println("导入打卡数据提前结束【" + Systemdate.getStrDate() + "】" + i + "/" + pageonetime);
+					break;
+				} else
+					System.out.println("导入打卡数据【" + Systemdate.getStrDate() + "】" + i + "/" + pageonetime);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @return增量同步
+	 * @throws Exception
+	 */
+	public static int importdata4oldqkEx2() throws Exception {
+		String sqlstr = "select max(synid) mx from hrkq_swcdlst";
+		Hrkq_swcdlst swte = new Hrkq_swcdlst();
+		List<HashMap<String, String>> sws = swte.pool.openSql2List(sqlstr);
+		long mx = ((sws.size() == 0) || (sws.get(0).get("mx") == null)) ? 0 : Long.valueOf(sws.get(0).get("mx"));
+		CJPALineData<TXkqView_Hrms> txcds = new CJPALineData<TXkqView_Hrms>(TXkqView_Hrms.class);
+		sqlstr = "SELECT TOP " + syncrowno + " * from view_Hrms_TXkq where KqId>" + mx
+				+ " and FDateTime>='" + autosynkqbgdate + "'";
+		sqlstr = sqlstr + " order by KqId";
+		txcds.findDataBySQL(sqlstr, true, false);
+		CJPALineData<Hrkq_swcdlst> kqsws = new CJPALineData<Hrkq_swcdlst>(Hrkq_swcdlst.class);
+		int rst = txcds.size();
+		for (CJPABase jpa : txcds) {
+			TXkqView_Hrms txcd = (TXkqView_Hrms) jpa;
+			Hrkq_swcdlst sw = new Hrkq_swcdlst();
+			sw.empno.setValue(txcd.Code.getValue().trim());// 工号
+			sw.card_number.setValue(txcd.CardNo.getValue().trim()); // 卡号
+			sw.skdate.setAsDatetime(txcd.FDateTime.getAsDatetime()); // yyyy-MM-dd hh:mm:ss
+			sw.sktype.setAsInt(1);// 1 刷卡 2 签卡
+			sw.synid.setValue(txcd.KqId.getValue()); // 旧ID 同步条件
+			sw.machineno.setValue(txcd.machno.getValue());
+			sw.machno1.setValue(txcd.machno1.getValue());
+			//sw.machno1.setValue("新宝");
+			kqsws.add(sw);
+		}
+		if (kqsws.size() > 0)
+			kqsws.saveBatchSimple();// 高速存储
+		return rst;
+	}
+
+	/**
+	 * 同步该时间段一页数据到打卡记录表 时间段内增量
+	 * 
+	 * @param ftime
+	 * @param ttime
+	 * @return 同步数据条数 条数为0 时候 表示该时间段数据同步完成
+	 * @throws Exception
+	 */
+	private static int getTempdataPage(Date ftime, Date ttime, String empno) throws Exception {
+		String sft = Systemdate.getStrDateByFmt(ftime, "yyyy-MM-dd HH:mm:ss");
+		String stt = Systemdate.getStrDateByFmt(ttime, "yyyy-MM-dd HH:mm:ss");
+		String sqlstr = "select max(synid) mx from hrkq_swcdlst where skdate>='" + sft + "' AND skdate<'" + stt + "' and  sktype=1 ";
+		if (empno != null)
+			sqlstr = sqlstr + " and empno='" + empno + "' ";
+		Hrkq_swcdlst swte = new Hrkq_swcdlst();
+		List<HashMap<String, String>> sws = swte.pool.openSql2List(sqlstr);
+		long mx = ((sws.size() == 0) || (sws.get(0).get("mx") == null)) ? 0 : Long.valueOf(sws.get(0).get("mx"));
+		CJPALineData<TXkqView_Hrms> txcds = new CJPALineData<TXkqView_Hrms>(TXkqView_Hrms.class);
+		sqlstr = "SELECT TOP " + syncrowno + " * from view_Hrms_TXkq where KqId>" + mx
+				+ " and FDateTime>='" + sft + "' and FDateTime<'" + stt + "'";
+		if (empno != null)
+			sqlstr = sqlstr + " and Code='" + empno + "'";
+		sqlstr = sqlstr + " order by KqId";
+		txcds.findDataBySQL(sqlstr, true, false);
+		CJPALineData<Hrkq_swcdlst> kqsws = new CJPALineData<Hrkq_swcdlst>(Hrkq_swcdlst.class);
+		int rst = txcds.size();
+		for (CJPABase jpa : txcds) {
+			TXkqView_Hrms txcd = (TXkqView_Hrms) jpa;
+			Hrkq_swcdlst sw = new Hrkq_swcdlst();
+			sw.empno.setValue(txcd.Code.getValue().trim());// 工号
+			sw.card_number.setValue(txcd.CardNo.getValue().trim()); // 卡号
+			sw.skdate.setAsDatetime(txcd.FDateTime.getAsDatetime()); // yyyy-MM-dd hh:mm:ss
+			sw.sktype.setAsInt(1);// 1 刷卡 2 签卡
+			sw.synid.setValue(txcd.KqId.getValue()); // 旧ID 同步条件
+			sw.machineno.setValue(txcd.machno.getValue()); // 机号
+			sw.machno1.setValue(txcd.machno1.getValue());
+			kqsws.add(sw);
+		}
+		if (kqsws.size() > 0)
+			kqsws.saveBatchSimple();// 高速存储
+		return rst;
+	}
+
+	/**
+	 * 删除原始表该时间段数据； 同步原始表该时间段数据；
+	 * 
+	 * @param ftime
+	 * @param ttime
+	 * @throws Exception
+	 */
+	public static void importdata4oldkq(Date ftime, Date ttime, String empno) throws Exception {
+		String sft = Systemdate.getStrDateByFmt(ftime, "yyyy-MM-dd HH:mm:ss");
+		String stt = Systemdate.getStrDateByFmt(ttime, "yyyy-MM-dd HH:mm:ss");
+		String sqlstr = null;
+		sqlstr = "DELETE FROM hrkq_swcdlst WHERE skdate>='" + sft + "' AND skdate<'" + stt + "' and  sktype=1 ";
+		if ((empno != null) && (!empno.trim().isEmpty()))
+			sqlstr = sqlstr + " and empno='" + empno + "' ";
+		Hrkq_swcdlst swctem = new Hrkq_swcdlst();
+		swctem.pool.execsql(sqlstr);// 删除已经存在的数据
+		while (true) {
+			int synct = getTempdataPage(ftime, ttime, empno);
+			System.out.println("导入打卡数据【" + synct + "】条【" + Systemdate.getStrDate() + "】");
+			if (synct == 0)
+				break;
+		}
+		System.out.println("同步打卡数据，处理完毕" + Systemdate.getStrDate());
+	}
+}

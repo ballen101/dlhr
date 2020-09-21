@@ -1,0 +1,47 @@
+<div id=$pwid$ class="easyui-window" title="查找..."
+     data-options="modal:true,closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-search'"
+     style="width:$pwwidth$;height:$pwheigth$;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+                <div data-options="region:'north',border:false"
+                     style="text-align:right;padding: 5px;height: auto;background-color: #F2F2F2">
+                    <table>
+                        <tr>
+                            <td>项目</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'item'"
+                                       style="height:20px;width: 150px"/>
+                            <td>最大条数</td>
+                            <td><input class="easyui-textbox" value="300" cjoptions="fdname:'max_rst'"
+                                       style="height:20px;width: 50px"/>
+                            <td rowspan="2" style="padding:10px">
+                                <a class="easyui-linkbutton" cjoptions="caction:'act_search'"
+                                   data-options="iconCls:'icon-search'" style="height: 30px;max-width: 200px">查询</a></td>
+                        </tr>
+                        <tr>
+                            <td>值</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'value'"
+                                       style="height:20px;width: 100%"/>
+                        </tr>
+                    </table>
+                </div>
+                <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+                    <table class="easyui-datagrid" cjoptions="type:'gridlist'"
+                           data-options="fit:true,rownumbers:true,border:false,onDblClickRow:function(){}">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'icon-selectall'"
+               style="width:80px">选择</a>
+
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ct">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+               // {field:'cardnumber',title:'卡号',width:80},
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field:'orgname',title:'部门',width:350},
+                {field:'sp_name',title:'职位',width:120},
+                {field:'lv_num',title:'职级',width:64},
+                {field:'ctr_name',title:'用餐餐厅',width:180},
+				{field:'ctcr_name',title:'卡机号',width:100},
+                {field:'costnum',title:'打卡餐数',width:64},
+                {field:'totalpay',title:'标准餐费单价',width:100},
+                {field:'ttpay',title:'个人支付饭堂合计',width:110,formatter: costnumformator},
+                {field:'ttsub',title:'公司餐补金额',width:100},
+                {field:'mc_name',title:'餐费分类',width:64}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var relOptionsDY = {
+            data: [{id: '>=', value: '大于等于'}]
+        };
+        var relOptionsXY = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field: 'begintime', title: '统计开始', notnull: true, relOptions: relOptionsDY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'endtime', title: '统计截止', notnull: true, relOptions: relOptionsXY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field:'sp_name',title:'职位',width:120},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'ctr_name',title:'用餐餐厅',width:180},
+            {field:'price',title:'标准餐费单价',width:80},
+            {field:'mc_name',title:'餐费分类',width:64}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrct/costrecord/costSummaryEx4.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '统计计算',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        addbt();
+                    }
+                }
+            ]
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+			var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+        function costnumformator(value, row, index) {
+            var number = Number(value);
+            if (isNaN(number)) {
+                return '';
+            } else {
+                return number.toFixed(1);
+            }
+        }
+        function addbt() {
+            $('#pw_matcals_id').window('open');
+        }
+        function dosync() {
+            var bgdt = $("#calbgdate").datebox('getValue');
+            var eddt = $("#caleddate").datebox('getValue');
+            // var code = $("#calcode").textbox('getValue');
+            bgdt = $date4str(bgdt).format("yyyy-MM-dd");
+            eddt = $date4str(eddt).format("yyyy-MM-dd");
+            var url = _serUrl + "/web/hrct/costrecord/docountrecords.co?bgdate=" + bgdt + "&eddate=" + eddt;
+            /* if((code!=null)&&(code.length>0)&&(code!="")){
+             var url = url + "&code=" + code;
+             }*/
+            $ajaxjsonget(url, function (jsdata) {
+                alert(jsdata.rst);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+    </script>
+</head>
+<body>
+<div style="display: none">
+    <div id="pw_matcals_id" class="easyui-window" title="选择日期范围" data-options="iconCls:'icon-save',closed:true,modal:true,collapsible:false"
+         style="width: 200px;height: 150px;padding:5px;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center',border:false" style="padding:5px;">
+                <label for="calbgdate">开始日期</label>
+                <input id="calbgdate" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str"
+                       style="width: 100px;height: 20px"> </input></br>
+                <label for="caleddate">截止日期</label>
+                <input id="caleddate" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str"
+                       style="width: 100px;height: 20px"> </input></br>
+                <!-- <label for="calcode">工号</label>
+                 <input id="calcode" type="text" class="easyui-textbox" data-options=""
+                        style="width: 100px;height: 20px;margin-top: 5px"> </input>-->
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;height: 40px;padding:5px 0 0;">
+                <a class="easyui-linkbutton" onclick="dosync()" data-options="iconCls:'icon-ok'"
+                   style="width:80px">确定</a>
+                <a class="easyui-linkbutton" onclick="$('#pw_matcals_id').window('close')" data-options="iconCls:'icon-cancel'"
+                   style="width:80px">取消</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

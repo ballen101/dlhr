@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html template="" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <title>用户参数设置</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [];
+    </script>
+
+    <script type="text/javascript">
+        var pw_setuserwfagent = undefined;
+
+        var fds = [
+            {field: 'language', title: '参数名', width: 100},
+            {field: 'parmvalue', title: '参数值', width: 100},
+            {field: 'defaultvalue', title: '默认值', width: 100},
+            {field: 'notelanguage', title: '参数说明', width: 200}
+        ];
+
+        function $OnCorsairReady() {
+            $ajaxjsonget($C.cos.userparms(), function (jsondata) {
+                $('#userparms_grid').datagrid({
+                    columns: [fds],
+                    data: jsondata,
+                    onDblClickRow: itemDBClick
+                });
+            }, function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("服务器开小差了哦！");
+            });
+            initselcts();
+        }
+
+
+        function itemDBClick(rowIndex, rowData) {
+            var cstparmid = rowData.cstparmid;
+            if (cstparmid == 7) {
+                $("#chguspwd_popwin").window("open");
+            } else if (cstparmid == 9) {
+                pw_setuserwfagent.show({}, function () {
+                    return true;
+                });
+            } else {
+                $("#chgusparmvalue_popwin").window({title: rowData.language});
+                $("#notelanguage1").html(rowData.notelanguage);
+                $("#parmvalue").textbox("setValue", rowData.parmvalue);
+                $("#chgusparmvalue_popwin").window("open");
+            }
+        }
+        function dochgpwd() {
+            var oldpw = $("#chgpwd_old_id").textbox("getValue");
+            var new1 = $("#chgpwd_new_id1").textbox("getValue");
+            var new2 = $("#chgpwd_new_id2").textbox("getValue");
+
+            $("#chgpwd_old_id").textbox("setValue", "");
+            $("#chgpwd_new_id1").textbox("setValue", "");
+            $("#chgpwd_new_id2").textbox("setValue", "");
+
+            /*if ((oldpw == undefined) || (oldpw.length == 0)) {
+             alert("输入旧密码");
+             return;
+             }*/
+            if ((new1 == undefined) || (new1.length == 0)) {
+                alert("输入新密码");
+                return;
+            }
+            if (oldpw == new2) {
+                alert("新旧密码一样");
+                return;
+            }
+            if (new1 != new2) {
+                alert("两次输入密码不一致");
+                return;
+            }
+            var data = {
+                oldpwd: oldpw,
+                newpwd: new1
+            };
+            var url = _serUrl + "/web/login/updatePWD.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (data) {
+                if (data.result == "ok") {
+                    $('#chguspwd_popwin').window('close');
+                    alert("已经保存,请牢记新密码");
+                }
+            }, function (err) {
+                alert(err);
+            })
+        }
+        function initselcts() {
+            var poptions = {
+                url: "shwuser_wf_agent.html",
+                title: "职务代理设置",
+                woptions: "modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'",
+                style: "width:600px;height:400px;padding: 0px",
+                chtch: false
+            };
+            pw_setuserwfagent = new $showModalDialog(poptions);
+        }
+        function doSaveParms() {
+            var row = $('#userparms_grid').datagrid("getSelected");
+            if (!row) {
+                alert("选择参数行");
+                return;
+            }
+            var cstparmid = row.cstparmid;
+            if ($isEmpty(cstparmid)) {
+                alert("选择参数行");
+                return;
+            }
+            var parmvalue = $("#parmvalue").textbox("getValue");
+            var data = {
+                cstparmid: cstparmid,
+                parmvalue: parmvalue
+            };
+            var url = _serUrl + "/web/user/saveuserparm.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                var idx = $('#userparms_grid').datagrid("getRowIndex", row);
+                row.parmvalue = parmvalue;
+                $('#userparms_grid').datagrid("updateRow", {index: idx, row: row});
+                $('#chgusparmvalue_popwin').window('close');
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+    </script>
+</head>
+<body class="easyui-layout">
+
+<table id="userparms_grid" class="easyui-datagrid" title="" style="width:100%;height:100%;"
+       data-options="singleSelect:true,border:false">
+</table>
+
+
+<div id="chguspwd_popwin" class="easyui-window" title="修改密码"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:300px;height:200px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:5px;margin: 0px auto">
+            <table border="0" style="width: 99%;height: 99%">
+                <tr>
+                    <td>原始密码</td>
+                    <td>
+                        <input id="chgpwd_old_id" type="password" class="easyui-textbox"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>新密码</td>
+                    <td><input id="chgpwd_new_id1" type="password" class="easyui-textbox"
+                               style="height: 20px;width: 150px"/></td>
+                </tr>
+                <tr>
+                    <td>重复输入新密码</td>
+                    <td><input id="chgpwd_new_id2" type="password" class="easyui-textbox"
+                               style="height: 20px;width: 150px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" onclick="dochgpwd()" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick=" $('#chguspwd_popwin').window('close');"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="chgusparmvalue_popwin" class="easyui-window" title=""
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:200px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:5px;margin: 0px auto">
+            <table border="0" style="width: 99%;height: 99%">
+                <tr>
+                    <td>说明</td>
+                    <td id="notelanguage1"></td>
+                </tr>
+                <tr>
+                    <td>输入值</td>
+                    <td><input id="parmvalue" class="easyui-textbox"
+                               style="height: 20px;width: 400px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" onclick="doSaveParms()" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick=" $('#chgusparmvalue_popwin').window('close');"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

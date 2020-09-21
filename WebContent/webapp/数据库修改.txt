@@ -1,0 +1,12 @@
+表 shwmod
+modidpath 存储模块对应的图标 css 标签
+clas 修改为字符型，用来存储模块对应的的url
+
+菜单表
+menuidpath 存储图标 css 标签
+增加字段 weburl
+
+
+shw_attach
+添加3个字段 stat   wfid   idpath
+分别用来将来办公平台走流程和权限控制

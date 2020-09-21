@@ -1,0 +1,149 @@
+package com.hr.access.co;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.naming.Context;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import com.corsair.cjpa.util.CjpaUtil;
+import com.corsair.dbpool.util.CJSON;
+import com.corsair.dbpool.util.JSONParm;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.retention.ACO;
+import com.corsair.server.retention.ACOAction;
+import com.corsair.server.util.CReport;
+import com.hr.access.entity.Hr_access_list;
+import com.hr.inface.entity.View_ICCO_TimeRecords;
+import com.hr.perm.entity.Hr_employee;
+
+@ACO(coname = "web.hr.Access.rpt")
+public class COAccessRpt {
+
+	@ACOAction(eventname = "getAccessSum", Authentication = true, notes = "门禁权限表")
+	public String getAccessSum() throws Exception {
+		// HashMap<String,String> parms= CSContext.get_pjdataparms();
+		// parms.get("a").toString();
+		// String sqlstr = "SELECT t.access_card_number," +
+		// " t.access_card_seq," +
+		// " t.employee_code," +
+		// " t.employee_name," +
+		// " t.orgname," +
+		// " t.sex," +
+		// " t.hiredday,t.access_list_code," +
+		// " he.sp_name," +
+		// " he.lv_num," +
+		// " cp.publish_date," +
+		// " t.access_place," +
+		// " a.deploy_area," +
+		// " he.card_stat," +
+		// " t.access_status," +
+		// " t.accredit_date," +
+		// " t.extorgname," +
+		// " t.remarks" +
+		// " FROM hr_access_emauthority_sum t,hr_access_list a,hr_ykt_card he,hr_ykt_card_publish cp "
+		// + " where t.access_list_id=a.access_list_id " +
+		// " and t.employee_code = he.employee_code" +
+		// " AND t.access_card_number = he.card_number" +
+		// " and t.employee_code = cp.employee_code" +
+		// " AND t.access_card_number = cp.card_number" +
+		// " order by accredit_date desc ";
+
+		String sqlstr = "SELECT  " +
+				"    t.idpath, " +
+				"    t.er_id, " +
+				"    t.access_card_number, " +
+				"    t.access_card_seq, " +
+				"    t.employee_code, " +
+				"    t.employee_name, " +
+				"    t.orgname, " +
+				"    t.sex, " +
+				"    t.hiredday, " +
+				"    t.access_list_code, " +
+				"    he.sp_name, " +
+				"    he.lv_num, " +
+				"    t.access_place, " +
+				"    a.deploy_area, a.access_list_name," +
+				"    he.card_stat, " +
+				"    t.access_status, " +
+				"    t.accredit_date, " +
+				"    t.extorgname, " +
+				"    t.remarks,he.effective_date  publish_date  " +
+				"  FROM " +
+				"    hr_access_emauthority_sum t, " +
+				"    hr_access_list a, " +
+				"    hr_ykt_card he  " +
+				"  WHERE t.access_list_id = a.access_list_id  " +
+				"    AND t.er_id = he.er_id  " +
+				"  ORDER BY accredit_date DESC";
+		return new CReport(sqlstr, null).findReport();
+	}
+
+	@ACOAction(eventname = "getDoorLog", Authentication = true, notes = "门禁门禁日志查询")
+	public String getDoorLog() throws Exception {
+		final int sd = 1000 * 60 * 60 * 24;
+		final int maxday = 15;
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		List<JSONParm> jps = CJSON.getParms(urlparms.get("parms"));
+		JSONParm code = CjpaUtil.getParm(jps, "code");
+		JSONParm clock_id = CjpaUtil.getParm(jps, "clock_id");
+		JSONParm startDate = CjpaUtil.getParm(jps, "startDate");
+		//System.out.println("startDate:" + startDate.toJSON());
+		JSONParm endDate = CjpaUtil.getParm(jps, "endDate");
+		if (((code == null) || (code.getParmvalue().isEmpty())) && ((clock_id == null) || (clock_id.getParmvalue().isEmpty())))
+			throw new Exception("参数【工号】【机号】不能同时为空");
+		if ((startDate == null) || (startDate.getParmvalue().isEmpty()))
+			throw new Exception("【开始日期】不能为空");
+		if ((endDate == null) || (endDate.getParmvalue().isEmpty()))
+			throw new Exception("【截止日期】不能为空");
+		//System.out.println("startDate:" + startDate.getParmvalue());
+		Date sdate = Systemdate.getDateByStr(startDate.getParmvalue());
+		Date edate = Systemdate.getDateByStr(endDate.getParmvalue());
+
+		if ((edate.getTime() - sdate.getTime()) / sd > maxday)
+			throw new Exception("起止时间不能超过【" + maxday + "】天");
+		String sqlstr = "select * from [dbo].[view_ICCO_TimeRecords] where sign_time>='"
+				+ Systemdate.getStrDateyyyy_mm_dd(sdate) + "' and sign_time<='" + Systemdate.getStrDateyyyy_mm_dd(edate) + "' ";
+		if (code != null)
+			sqlstr = sqlstr + " and code='" + code.getParmvalue() + "'";
+		if (clock_id != null)
+			sqlstr = sqlstr + " and clock_id='" + clock_id.getParmvalue() + "'";
+		View_ICCO_TimeRecords tcs = new View_ICCO_TimeRecords();
+		JSONArray rows = tcs.pool.opensql2json_O(sqlstr);
+		Hr_employee emp = new Hr_employee();
+		Hr_access_list al = new Hr_access_list();
+		for (int i = 0; i < rows.size(); i++) {
+			JSONObject row = rows.getJSONObject(i);
+			getgetDoorLogExtinfo(row, emp, al);
+		}
+		String scols = urlparms.get("cols");
+		if (scols == null) {
+			return rows.toString();
+		} else {
+			(new CReport()).export2excel(rows, scols);
+			return null;
+		}
+	}
+
+	private void getgetDoorLogExtinfo(JSONObject row, Hr_employee emp, Hr_access_list al) throws Exception {
+		String sqlstr = "SELECT * FROM `hr_employee` WHERE hr_employee.`employee_code`='" + row.getString("code").trim() + "'";
+		emp.findBySQL(sqlstr, false);
+		if (!emp.isEmpty()) {
+			row.put("employee_name", emp.employee_name.getValue());
+			row.put("orgname", emp.orgname.getValue());
+			row.put("sex", emp.sex.getValue());
+			row.put("sp_name", emp.sp_name.getValue());
+			row.put("lv_num", emp.lv_num.getValue());
+		}
+		sqlstr = "SELECT * FROM hr_access_list WHERE access_list_code='" + row.getString("clock_id").trim() + "'";
+		al.findBySQL(sqlstr);
+		if (!al.isEmpty()) {
+			row.put("deploy_area", al.deploy_area.getValue());
+			row.put("access_list_name", al.access_list_name.getValue());
+		}
+	}
+}

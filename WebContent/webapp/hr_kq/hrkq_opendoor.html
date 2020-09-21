@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../jshr/hr.js"></script> 
+  <title>远程开门</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic9 = {index: 'dic9',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"台","dictvalue":"1"},{"language1":"个","dictvalue":"2"},{"language1":"米","dictvalue":"3"},{"language1":"公斤","dictvalue":"4"},{"language1":"瓶","dictvalue":"5"},{"language1":"箱","dictvalue":"6"},{"language1":"吨","dictvalue":"7"},{"language1":"条","dictvalue":"8"},{"language1":"件","dictvalue":"9"},{"language1":"包","dictvalue":"10"},{"language1":"本","dictvalue":"11"},{"language1":"套","dictvalue":"12"},{"language1":"支","dictvalue":"13"},{"language1":"块","dictvalue":"14"},{"language1":"扎","dictvalue":"15"},{"language1":"卷","dictvalue":"16"},{"language1":"张","dictvalue":"17"}], formator: function (value, row) { var jsondata = comUrl_dic9.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic9; } if (comUrl_dic9.type == 'combobox') { if (comUrl_dic9.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic9.valueField]) { rst = rst + jsondata[i][comUrl_dic9.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic9.valueField]) return jsondata[i][comUrl_dic9.textField]; } } } if (comUrl_dic9.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic9.editor= {type: 'combobox', options: {valueField:comUrl_dic9.valueField, textField:comUrl_dic9.textField, data: comUrl_dic9.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic1405 = {index: 'dic1405',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"可用","dictvalue":"1"},{"language1":"不可用","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic1405.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1405; } if (comUrl_dic1405.type == 'combobox') { if (comUrl_dic1405.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1405.valueField]) { rst = rst + jsondata[i][comUrl_dic1405.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1405.valueField]) return jsondata[i][comUrl_dic1405.textField]; } } } if (comUrl_dic1405.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1405.editor= {type: 'combobox', options: {valueField:comUrl_dic1405.valueField, textField:comUrl_dic1405.textField, data: comUrl_dic1405.jsondata}}; var comUrls = [ { index: "dic9", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=9", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1405", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1405", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'access_list_code', title: '设备编号', width: 64},
+            {field: 'access_list_model', title: '设备型号', width: 80},
+            {field: 'access_list_name', title: '设备名称', width: 120},
+            {field: 'orgcode', title: '机构编码', width: 64},
+            {field: 'extorgname', title: '机构全称', width: 200},
+            {field: 'deploy_area', title: '门禁区域', width: 100},
+            {field: 'access_stat', title: '门禁状态', width: 100, formatter: comUrl_dic1405.formator},
+            {field: 'remarks', title: '备注', width: 300},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 130},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 130}
+        ];
+
+        function doopen() {
+            if (open_door("192.168.1.252", 4001, 1, 1, 2)) {
+                alert("开门成功");
+            }
+        }
+
+        function $OnCorsairReady() {
+            $("#doorlist").datagrid({columns: [listGridColumns]});
+
+
+
+        }
+
+    </script> 
+ </head> 
+ <body> 
+  <div style="display:none"> 
+   <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C" codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0"> </object> 
+  </div> 
+  <div onclick="doopen()">
+    测试开门 
+  </div> 
+  <div> 
+   <table id="doorlist" class="easyui-datagrid" style="width:100%;min-height: 500px" data-options="singleSelect:true"> 
+   </table> 
+  </div>  
+ </body>
+</html>

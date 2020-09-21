@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_card">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../jshr/hr.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1268",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'card_clean_no', title: '清卡单号', width: 120},
+            {field: 'card_number', title: '卡号', width: 80},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'orgcode', title: '部门编码', width: 64},
+            {field: 'orgname', title: '部门名称', width: 100},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'clean_date', title: '清卡时间', width: 120},
+            {field: 'clean_reason', title: '清卡原因', width: 150},
+            {field: 'stat', title: '表单状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'creator', title: '创建人', width: 64},
+            {field: 'createtime', title: '创建时间', width: 64},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 64}
+        ];
+        frmOptions = {
+            saveUrl: _serUrl + '/web/hr/Card/saveclean.co',
+            JPAClass: "com.hr.card.entity.Hr_ykt_card_clean",
+            JPAIdField: "card_clean_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_new: false,
+            allow_del: false,
+            allow_copy: false,
+            allow_save: false,
+            allow_print: false,
+            datainfo_pw_title: "清卡详情",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '300px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: false,
+            id_bt_save: '清卡',
+            OnReady: function () {   //都准备好后
+                if (browinfo.browser != "IE") {
+                    alert("无法加载控件，本页面仅支持IE8到IE11浏览器");
+                } else {
+                    //if (!MyActiveX.OpenCurUsbPort) {
+                    //    alert("控件装载错误或没有安装控件");
+                    //}
+                }
+
+                $("#cleancardpwid").window({onClose: onbatchwpclose});
+            },
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            },
+            extButtons: [//扩展按钮
+                {
+                    id: "id_bt_clean",
+                    text: '清卡',
+                    iconCls: 'icon',
+                    handler: function () {
+                        $("#cleancardpwid").window("open");
+                        $("#clean_reason_id").textbox("setValue", undefined);
+                    }
+                },
+                {
+                    id: "id_bt_init",
+                    text: '初始化卡',
+                    iconCls: 'icon',
+                    handler: function () {
+                        clear_card(true);
+                        alert("成功清除卡片信息");
+                    }
+                }]
+        };
+
+        var checkbatch = false, iscleaning = false;
+        function oncheckclick() {
+            checkbatch = document.getElementById("checkbatch_id").checked;
+        }
+
+        function cleancard() {
+            if (checkbatch) {
+                iscleaning = !iscleaning;
+                if (iscleaning) {
+                    var msg = "清卡中";
+                    docleancard();
+                } else {
+                    var msg = "清卡";
+                }
+                $("#id_cleanbt").linkbutton({text: msg});
+            }
+            docleancard();
+        }
+
+        function onbatchwpclose() {
+            checkbatch = false;
+            iscleaning = false;
+            document.getElementById("checkbatch_id").checked = checkbatch;
+        }
+
+        function docleancard() {
+            if (checkbatch)
+                if (!iscleaning) return;
+            try {
+                var ci = $ReadCardInfo(!checkbatch);
+                if (ci) {
+                    //alert(JSON.stringify(ci));
+                    var cardno = ci.cardno;
+                    cardno = parseInt(cardno);
+                    if (isNaN(cardno)) {
+                        alert("卡号格式错误");
+                        return;
+                    }
+                    cardno = cardno.toString();
+                    if (cardno.length != 6) {
+                        cardno = "000000" + cardno;
+                        cardno = cardno.substring(cardno.length - 6, cardno.length);
+                    }
+                    //alert(cardno);
+                    dosavecleaninfo(cardno);
+                }
+            } finally {
+                if (checkbatch) {
+                    setTimeout(docleancard, 1000);
+                } else {
+                    $("#id_cleanbt").linkbutton({text: "清卡"});
+                    iscleaning = false;
+                }
+            }
+        }
+
+        function dosavecleaninfo(cardno) {
+            var clean_reason = $("#clean_reason_id").textbox("getValue");
+            var url = _serUrl + "/web/hr/Card/doclean.co";
+            if ($isEmpty(clean_reason)) {
+                clean_reason = "";
+            }
+            var data = {
+                card_number: cardno,
+                clean_reason: clean_reason
+            };
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                //alert(JSON.stringify(jsdata));
+                if (clear_card(true)) {
+                    $("#dg_datalist_id").datagrid("appendRow", jsdata);
+                    alert("完成【" + jsdata.employee_name + "】清卡");
+                } else
+                    alert("清卡失败");
+            }, function (err) {
+                alert(err.errmsg);
+
+            }, false);
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var orgid = mainline.getFieldValue("orgid");
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid;
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co" + orgp;
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("employee_code", row.employee_code);//设置界面值
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("card_number", row.card_number);
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('er_code', row.er_code);
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue("hwc_namezl", row.hwc_namezl);
+                        mainline.setFieldValue("hwc_namezq", row.hwc_namezq);
+                        mainline.setFieldValue("hwc_namezz", row.hwc_namezz);
+                        mainline.setFieldValue("hg_name", row.hg_name);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("idpath", row.idpath);
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+
+        }
+
+    </script>
+</head>
+<body>
+<div style="display:none">
+    <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C" codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0">
+    </object>
+</div>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'card_clean_no'">清卡单号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_clean_no',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee,editable:true,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_number',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">部门编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgcode',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">部门名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'clean_date'">清卡时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'clean_date',formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'clean_reason'">清卡原因</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'clean_reason'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stat'">表单状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',editable:false,comidx:'dic227'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',editable:false,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+
+<div id="cleancardpwid" class="easyui-window" title="清卡" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 300px;height: 200px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <span>输入清卡原因：</span>
+            <input id="clean_reason_id" class="easyui-textbox " style="height:20px;width: 200px"/><br>
+            <span>批量清卡：</span>
+            <input id="checkbatch_id" onclick="oncheckclick()" type="checkbox">
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a id="id_cleanbt" class="easyui-linkbutton" onclick="cleancard();" data-options="iconCls:'icon-ok'"
+               style="width:80px">清卡</a>
+            <a class="easyui-linkbutton" onclick=" $('#cleancardpwid').window('close');" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

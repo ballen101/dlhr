@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/hrms/dlhrsary.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic724",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=724",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic719",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=719",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic729",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=729",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic705",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=705",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1215",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1215",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic855",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=855",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic865",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=865",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1189",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1189",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1194",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1194",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1197",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1197",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1117",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1117",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1120",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1120",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1133",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1133",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1141",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1141",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1146",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1146",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1162",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1162",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic901",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=901",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1166",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1166",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1437",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1437",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1399",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1399",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }, {
+                index: "dic1555",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1555",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+				
+
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            [
+                {field: 'emptranfcode', rowspan: 2, title: '编码', width: 100},
+                {field: 'employee_code', rowspan: 2, title: '工号', width: 80},
+                {field: 'employee_name', rowspan: 2, title: '姓名', width: 80},
+                {field: 'degree', title: '学历', rowspan: 2, width: 64, formatter: comUrl_dic84.formator},
+                {
+                    field: 'hiredday',
+                    title: '入职日期',
+                    rowspan: 2,
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {field: 'tranftype2', title: '调动性质', rowspan: 2, width: 80, formatter: comUrl_dic724.formator},
+                {field: 'tranftype4', title: '调动类型', rowspan: 2, width: 80, formatter: comUrl_dic1189.formator},
+                {field: 'tranftype1', title: '调动类别', rowspan: 2, width: 80, formatter: comUrl_dic719.formator},
+                {field: 'tranftype3', title: '调动范围', rowspan: 2, width: 80, formatter: comUrl_dic729.formator},
+                {field: 'tranflev', title: '调动层级', rowspan: 2, width: 80, formatter: comUrl_dic1215.formator},
+                {field: 'isexistsrl', title: '关联关系', rowspan: 2, width: 80, formatter: comUrl_dic1194.formator},
+                {field: 'quota_over_rst', title: '超编审批', rowspan: 2, width: 80, formatter: comUrl_dic855.formator},
+                {field: 'isdreamemploye', title: '梦职场', rowspan: 2, width: 80, formatter: comUrl_dic5.formator},
+                {field: 'istp', title: '是否特批', rowspan: 2, width: 80, formatter: comUrl_dic5.formator},
+                {field: 'tranfreason', title: '调动原因', rowspan: 2, width: 150},
+                {field: 'probation', title: '考察期', rowspan: 2, width: 80, formatter: comUrl_dic705.formator},
+                {
+                    field: 'tranfcmpdate', title: '生效日期', findtype: 'date', rowspan: 2,
+                    width: 100, formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {field: 'appdate', title: '申请日期', rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {title: '调动前', colspan: 10, width: 150},
+                {title: '调动后', colspan: 10, width: 150},
+                {field: 'salary_qcnotnull', title: '工资额度必填', rowspan: 2, width: 80, formatter: comUrl_dic5.formator},
+                {field: 'remark', title: '备注', rowspan: 2, width: 150},
+                {field: 'stat', title: '流程状态', rowspan: 2, width: 64, formatter: comUrl_dic227.formator},
+                {field: 'creator', title: '制单人', rowspan: 2, width: 80},
+                {field: 'createtime', title: '制单时间', rowspan: 2, findtype: 'datetime', width: 120},
+                {field: 'updator', title: '更新人', rowspan: 2, width: 80},
+                {field: 'updatetime', title: '更新时间', rowspan: 2, findtype: 'datetime', width: 120}],
+            [
+                {field: 'odorgname', title: '机构', width: 120},
+                {field: 'odsp_name', title: '职位', width: 64},
+                {field: 'oldemnature', title: '职位性质', width: 64},
+                {field: 'oldhwc_namezl', title: '职类', width: 64},
+                {field: 'newhwc_namezq', title: '职群', width: 64},
+                {field: 'newhwc_namezz', title: '职种', width: 64},
+                {field: 'odhg_name', title: '职等', width: 64},
+                {field: 'odlv_num', title: '职级', width: 64},
+                {field: 'odattendtype', title: '出勤类别', width: 64, formatter: comUrl_dic1399.formator},
+                {field: 'oldcalsalarytype', title: '计薪方式', width: 64, formatter: comUrl_dic901.formator},
+                {field: 'neworgname', title: '机构', width: 120},
+                {field: 'newsp_name', title: '职位', width: 64},
+                {field: 'newemnature', title: '职位性质', width: 64},
+                {field: 'newhwc_namezl', title: '职类', width: 64},
+                {field: 'newhwc_namezq', title: '职群', width: 64},
+                {field: 'newhwc_namezz', title: '职种', width: 64},
+                {field: 'newhg_name', title: '职等', width: 64},
+                {field: 'newlv_num', title: '职级', width: 64},
+                {field: 'newattendtype', title: '出勤类别', width: 64, formatter: comUrl_dic1399.formator},
+                {field: 'newcalsalarytype', title: '计薪方式', width: 64, formatter: comUrl_dic901.formator}
+            ]
+        ];
+
+
+        var hr_employee_relations_cls = [
+            {field: 'hrvname', title: '与本人关系', width: 120},//母子 父子等
+            {field: 'rchengwei', title: '关联人称谓', width: 120},//父亲 母亲
+            {field: 'rtype', title: '关联关系类别', width: 130},//指父族亲属关系、母族亲属关系、妻族亲属关系、其他关系等四大类关联关系类别
+            {field: 'rdetail', title: '关联关系明细', width: 150},//指四大娄关联关系类别的进一步分级细分。如父族亲属关系1级，妻族亲属关系2级
+            {
+                field: 'mgrtype',
+                title: '管理关联关系类别',
+                width: 120,
+                formatter: comUrl_dic865.formator
+            },
+            {
+                field: 'dectime', title: '申报时间', width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'isremitted', title: '申请豁免', width: 64,
+                formatter: comUrl_dic5.formator
+            },
+            {field: 'rorgname', title: '机构', width: 150},
+            {field: 'remployee_name', title: '员工姓名', width: 120},
+            {field: 'rsp_name', title: '职位', width: 120},
+            {
+                field: 'intime', title: '入职时间', width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'remark', title: '备注', width: 150, editor: 'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee_transfer",
+            JPAIdField: "emptranf_id",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '90%',
+            wfWindowHeight: "600px",
+            datainfo_line_title: "调动详情",
+            allowcheckexportfields: false,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            findUrl: _serUrl + "/web/hr/employeetransfer/findTransfer.co",
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    type: "menubutton",
+                    text: "调动导入",
+                    iconCls: 'icon-importexcel',
+                    menu: "#transimp"
+                },
+                {
+                    type: "menubutton",
+                    text: "历史资料导入",
+                    iconCls: 'icon-importexcel',
+                    menu: "#histransimp"
+                }
+            ],
+            OnReady: function () {   //都准备好后
+                $("#transfer_rl_nb").datagrid({
+                    onAfterEdit: function () {
+                        mainline.setDataChanged(true)
+                    },
+                    onClickRow: function () {
+                        $C.grid.accept('transfer_rl_nb');
+                    },
+                    onDblClickRow: function () {
+                        $C.grid.edit('transfer_rl_nb');
+                    },
+                    columns: rlfdnb
+                });
+                $("#transfer_rl_wb").datagrid({
+                    onAfterEdit: function () {
+                        mainline.setDataChanged(true)
+                    },
+                    onClickRow: function () {
+                        $C.grid.accept('transfer_rl_wb');
+                    },
+                    onDblClickRow: function () {
+                        $C.grid.edit('transfer_rl_wb');
+                    },
+                    columns: rlfdwb
+                });
+            },
+            onNew: function (jsondata) {
+                jsondata.ispromotioned = 2;
+                jsondata.oldposition_salary = 0;
+                jsondata.oldbase_salary = 0;
+                jsondata.oldtech_salary = 0;
+                jsondata.oldachi_salary = 0;
+                jsondata.oldtech_allowance = 0;
+                jsondata.oldovt_salary = 0;
+                //jsondata.oldavg_salary = 0;
+                jsondata.newposition_salary = 0;
+                jsondata.newbase_salary = 0;
+                jsondata.newtech_salary = 0;
+                jsondata.newachi_salary = 0;
+                jsondata.newtech_allowance = 0;
+                jsondata.newavg_salary = 0;
+                jsondata.newovt_salary = 0;
+                jsondata.tranamt = 0;
+            },
+            beforeSave: function () {
+                var mdata = mainline.getMainData();
+                //mdata.oldcalsalarytype=mdata.oldcalsalarytype;
+                //mdata.oldachi_salary=mdata.oldcalsalarytype;
+                var isexistsrl = mdata.isexistsrl;// mainline.getFieldValue("isexistsrl");
+                if (parseInt(isexistsrl) == 1) {
+                    var rlmgms = mainline.getFieldValue("rlmgms");
+                    if ($isEmpty(rlmgms)) {
+                        $.messager.alert('错误', "有【关联关系】时候需要选择【管控措施】", 'error');
+                        throw "rlmgms is null";
+                    }
+                }
+
+                var salary_qcnotnull = parseInt(mdata.salary_qcnotnull);
+                /*
+                if(isNaN(salary_qcnotnull)){
+                    $.messager.alert('错误', "薪资额度编号必填", 'error');
+                    throw "薪资额度编号必填";
+                }
+                if (salary_qcnotnull == 1) {
+                    if ($isEmpty(mdata.salary_quotacode)) {
+                        $.messager.alert('错误', "薪资额度编号必填", 'error');
+                        throw "薪资额度编号必填";
+                    }
+                }
+*/
+                $C.grid.accept("#transfer_rl_nb");
+                $C.grid.accept("#transfer_rl_wb");
+                var nbrows = $("#transfer_rl_nb").datagrid("getRows");
+                var wbrows = $("#transfer_rl_wb").datagrid("getRows");
+                var nwbrows = [];
+                for (var i = 0; i < nbrows.length; i++) {
+                    var row = nbrows[i];
+                    row.emptranfcode = mainline.getFieldValue("emptranfcode");
+                    row.er_id = mainline.getFieldValue("er_id");
+                    row.employee_code = mainline.getFieldValue("employee_code");
+                    row.employee_name = mainline.getFieldValue("employee_name");
+                    row.neworgid = mainline.getFieldValue("neworgid");
+                    row.neworgcode = mainline.getFieldValue("neworgcode");
+                    row.neworgname = mainline.getFieldValue("neworgname");
+                    row.newsp_name = mainline.getFieldValue("newsp_name");
+                    row.newlv_num = mainline.getFieldValue("newlv_num");
+                    if ($isEmpty((row.newrlmanagetype))) {
+                        alert("关联关系【管理关系类别】不允许为空");
+                        throw "关联关系【管理关系类别】不允许为空";
+                        return;
+                    }
+                    if ($isEmpty((row.newrctrms))) {
+                        alert("关联关系【管控措施】不允许为空");
+                        throw "关联关系【管控措施】不允许为空";
+                        return;
+                    }
+                    nwbrows.push(row);
+                }
+                for (var i = 0; i < wbrows.length; i++) {
+                    var row = wbrows[i];
+                    row.emptranfcode = mainline.getFieldValue("emptranfcode");
+                    row.er_id = mainline.getFieldValue("er_id");
+                    row.employee_code = mainline.getFieldValue("employee_code");
+                    row.employee_name = mainline.getFieldValue("employee_name");
+                    row.neworgid = mainline.getFieldValue("neworgid");
+                    row.neworgcode = mainline.getFieldValue("neworgcode");
+                    row.neworgname = mainline.getFieldValue("neworgname");
+                    row.newsp_name = mainline.getFieldValue("newsp_name");
+                    row.newlv_num = mainline.getFieldValue("newlv_num");
+                    nwbrows.push(row);
+                }
+                mdata.hr_employee_transfer_rls = nwbrows;
+                if ($isEmpty(mdata.newstru_id)) {
+                    var newcalsalarytype = mdata.newcalsalarytype;
+                    if (newcalsalarytype != '月薪') {
+                        mainline.setFieldValue('newstru_id', 2);
+                        mainline.setFieldValue('newstru_name', "5天无考核");
+                        mainline.setFieldValue('newchecklev', 5);
+                        mainline.setFieldValue('newattendtype', 3);
+                    }
+                }
+            },
+            onFind: function (parms) {
+
+            },
+            afterFindDetail: function (jsdata) {
+                //console.error(JSON.stringify(jsdata));
+                var nwbrows = jsdata.hr_employee_transfer_rls;
+                var nbrows = [];
+                var wbrows = [];
+                for (var i = 0; i < nwbrows.length; i++) {
+                    var row = nwbrows[i];
+                    if (parseInt(row.ldtype) == 1) {
+                        nbrows.push(row);
+                    } else {
+                        wbrows.push(row);
+                    }
+                }
+                $("#transfer_rl_nb").datagrid("loadData", nbrows);
+                $("#transfer_rl_wb").datagrid("loadData", wbrows);
+                showsalarydetail(3, jsdata.emptranf_id, function (dt) {
+                    if(!((edittps.isedit==false)&&(edittps.isview==true)&&(jsdata.stat==9))){
+                        if(!$isEmpty(dt.chgbill)){
+                            getorgminwage();
+                            onFindSalaryStruc(dt.chgbill.newstru_id);
+                        }
+                    }
+                });
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == 'probation') || (fdname == 'tranfcmpdate')) {
+                    //calcToDate();
+                }
+                if (fdname == "tranftype1") {
+                    resetsyq();
+                }
+                if (fdname == "tranflev") {
+                    resetsyq();
+                }
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+                if (fdname == 'salary_quotacode') {
+                    var salary_quotacode = (mainline.getField("salary_quotacode")).textbox("getValue");
+                    if (!$isEmpty(salary_quotacode)) {
+                        findsalary_quotacode(salary_quotacode);
+                    }
+                }
+                
+                if ((fdname == 'newposition_salary') || (fdname = 'newtech_allowance') || (fdname = 'newovt_salary')) {
+                    calcsalary();
+                }
+                if ((fdname == 'newbase_salary') || (fdname == 'newtech_salary') || (fdname == 'newachi_salary') || (fdname == 'newotwage')) {
+                    calcsalarystruitems();
+                }
+            }
+        };
+
+        function resetsyq() {
+            var v = parseInt(mainline.getFieldValue("tranftype1"));//1 升  2 降
+            var cj = parseInt(mainline.getFieldValue("tranflev"));
+            if (v == 1) {
+                if (cj < 4) {
+                    mainline.setFieldValue("probation", 6);
+                } else {
+                    mainline.setFieldValue("probation", 3);
+                }
+            } else if (v == 2) {
+                mainline.setFieldValue("probation", 0);
+            } else {
+                mainline.setFieldValue("probation", undefined);
+            }
+        }
+
+        /*
+         *
+         无考察期
+         转正日期为调动生效日期；
+         核薪生效日期：调动日期为15日前，当月1号生效；否则次月1号生效；
+         有考察期
+         转正日期：
+         调动生效日期15号前（包括），为包含当月+试用期之后一天；
+         调动生效日期15号后，为不包含当月+试用期之后一天；
+         核薪生效日期：按转正日期
+
+         * */
+        function calcToDate() {
+            var tdt = mainline.getFieldValue("tranfcmpdate");
+            var pb = parseInt(mainline.getFieldValue("probation"));
+            if (isNaN(pb)) return;
+            if (tdt) {
+                var tranfcmpdate = (new Date()).fromStr(tdt);//调动生效日期
+                var sdt = (new Date()).fromStr(tranfcmpdate.getFullYear() + "-" + (tranfcmpdate.getMonth() + 1) + "-01");//当月1日
+                var dtd1 = (new Date()).fromStr(sdt.format("yyyy-MM-dd"));
+                var dtd2 = sdt.addMonth(1);//次月一日
+                var day = tranfcmpdate.getDate();
+                if (pb == 0) {
+                    mainline.setFieldValue("probationdate", tranfcmpdate.format("yyyy-MM-dd"));
+                    /*   if (day <= 15) {
+                     mainline.setFieldValue("salarydate", dtd1.format("yyyy-MM-dd"));
+                     } else {
+                     mainline.setFieldValue("salarydate", dtd2.format("yyyy-MM-dd"));
+                     }*/
+                } else {
+                    if (day <= 15) {
+                        var pdate = dtd1.addMonth(pb);
+                    } else {
+                        var pdate = dtd2.addMonth(pb);
+                    }
+                    mainline.setFieldValue("probationdate", pdate.format("yyyy-MM-dd"));
+                    // mainline.setFieldValue("salarydate", pdate.format("yyyy-MM-dd"));
+                }
+            }
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmployeeTrancer.co?tp=1";//单个
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                singleAutoReturn: true,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500},//不作为查询条件
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('id_number', row.id_number);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('mnemonic_code', row.mnemonic_code);
+                        mainline.setFieldValue('email', row.email);
+                        mainline.setFieldValue('empstatid', row.empstatid);
+                        mainline.setFieldValue('hiredday', row.hiredday);
+                        mainline.setFieldValue('degree', row.degree);
+                        mainline.setFieldValue('odorgid', row.orgid);
+                        mainline.setFieldValue('odorgcode', row.orgcode);
+                        mainline.setFieldValue('odorgname', row.orgname);
+                        mainline.setFieldValue('odlv_id', row.lv_id);
+                        mainline.setFieldValue('odlv_num', row.lv_num);
+                        mainline.setFieldValue('odhg_id', row.hg_id);
+                        mainline.setFieldValue('odhg_code', row.hg_code);
+                        mainline.setFieldValue('odhg_name', row.hg_name);
+                        mainline.setFieldValue('odospid', row.ospid);
+                        mainline.setFieldValue('odospcode', row.ospcode);
+                        mainline.setFieldValue('odsp_name', row.sp_name);
+                        mainline.setFieldValue('oldemnature', row.emnature);
+						mainline.setFieldValue('oldhg_remark', row.hg_remark);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue('odattendtype', row.atdtype);
+                        mainline.setFieldValue("oldcalsalarytype", row.pay_way);
+
+                        var url = _serUrl + "/web/hr/perm/findOrgpositionByOspid.co?ospid=" + row.ospid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('oldhwc_namezl', jsdata.hwc_namezl);
+                            mainline.setFieldValue('oldhwc_namezq', jsdata.hwc_namezq);
+                            mainline.setFieldValue('oldhwc_namezz', jsdata.hwc_namezz);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        /*
+                         var url = _serUrl + "/web/user/getExtOrgName.co?orgid=" + row.orgid;
+                         $ajaxjsonget(url, function (jsdata) {
+                         mainline.setFieldValue('odorgname', jsdata.extorgname);
+                         }, function (err) {
+                         alert(JSON.stringify(err));
+                         });*/
+
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('odorghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                        var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + row.employee_code;
+                        $ajaxjsonget(url, function (jsdata) {
+                            if (jsdata.length > 0)
+                                mainline.setFieldValue('isexistsrl', 1);
+                            else
+                                mainline.setFieldValue('isexistsrl', 2);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        setEmpLevParms();
+                        onFindGLGX();
+                        if ((row.pay_way == '月薪') || (row.pay_way == '年薪')) {
+                            getOldSaralyInfo(row.er_id, function (dt) {
+                                onFindSalaryStruc(dt.newstru_id);
+                            });
+                        } else {
+                            var url = _serUrl + "/web/hrsalary/command/getEmpAvgWage.co?er_id=" + row.er_id;
+                            $ajaxjsonget(url, function (jsdata) {
+                                if (jsdata.rows.length > 0) {
+                                    mainline.setFieldValue('oldavg_salary', jsdata.rows[0].avgpaysubs);
+                                }
+                            }, function (err) {
+                                alert(JSON.stringify(err));
+                            });
+                            mainline.setFieldValue("oldposition_salary", 0);
+                            mainline.setFieldValue("oldbase_salary", 0);
+                            mainline.setFieldValue("oldotwage", 0);
+                            mainline.setFieldValue("oldtech_salary", 0);
+                            mainline.setFieldValue("oldachi_salary", 0);
+                            mainline.setFieldValue("oldtech_allowance", 0);
+                            mainline.setFieldValue("oldovt_salary", 0);
+                            mainline.setFieldValue("odattendtype", 3);
+                            mainline.setFieldValue("oldchecklev", 5);
+                            mainline.setFieldValue("oldstru_id", undefined);
+                            mainline.setFieldValue("oldovt_salary", undefined);
+                        }
+
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show();
+        }
+
+        function setEmpLevParms() {
+            var odlv_num = mainline.getFieldValue("odlv_num");
+            odlv_num = odlv_num = parseFloat(odlv_num);
+            var newlv_num = mainline.getFieldValue("newlv_num");
+            newlv_num = parseFloat(newlv_num);
+            //alert(odlv_num);
+            //alert(newlv_num);
+            if (isNaN(odlv_num) || isNaN(newlv_num)) {
+                return false;
+            }
+            var lv_num = (newlv_num < odlv_num) ? newlv_num : odlv_num;
+            if (isNaN(lv_num)) {
+                alert("人事职级错误，请核查人事资料!");
+                return false;
+            }
+            var fd = mainline.getField("tranflev");
+            if (lv_num <= 2.3) {
+                fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1215, [1]));
+                mainline.setFieldValue("tranflev", 1);
+            }
+            if ((lv_num > 2.3) && (lv_num < 4)) {
+                fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1215, [2, 3]));
+                mainline.setFieldValue("tranflev", undefined);
+            }
+            if (lv_num >= 4) {
+                fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1215, [4]));
+                mainline.setFieldValue("tranflev", 4);
+            }
+            return true;
+        }
+
+
+        function onFindGLGX() {
+            var employee_code = mainline.getFieldValue("employee_code");
+            if (employee_code && (employee_code.length > 0)) {
+                var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + employee_code + "&ldtype=1";
+                $ajaxjsonget(url, function (jsdata) {
+                    for (var i = 0; i < jsdata.length; i++) {
+                        jsdata[i].oldrlmanagetype = jsdata[i].rlmanagetype;
+                    }
+                    $("#transfer_rl_nb").datagrid("loadData", jsdata);
+                }, function (msg) {
+                    $.messager.alert('错误', msg, 'error');
+                });
+
+                var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + employee_code + "&ldtype=2";
+                $ajaxjsonget(url, function (jsdata) {
+                    for (var i = 0; i < jsdata.length; i++) {
+                        jsdata[i].oldrbusiness = jsdata[i].rbusiness;
+                    }
+                    $("#transfer_rl_wb").datagrid("loadData", jsdata);
+                }, function (msg) {
+                    $.messager.alert('错误', msg, 'error');
+                });
+            } else
+                alert("先选择调用员工");
+        }
+
+        var orgminwagestandard = "";
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('neworgid', row.orgid);
+                        mainline.setFieldValue('neworgcode', row.code);
+                        mainline.setFieldValue('neworgname', row.orgname);
+                        mainline.setFieldValue('neworgname', row.extorgname);
+
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('neworghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        var omsurl = _serUrl + "/web/hrsalary/command/getOrgMinStandard.co?orgid=" + row.orgid;
+                        $ajaxjsonget(omsurl, function (jsdata) {
+                            orgminwagestandard = jsdata.rows[0].minstandard;
+                            calcsalary();
+                        }, function (err) {
+                            orgminwagestandard = 0;
+                        });
+
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var select_OrgPosition_pw = undefined;
+        function onFindOrgPosition() {
+            var tranftype1 = mainline.getFieldValue("tranftype1");
+            if ((!tranftype1) || (tranftype1.length == 0)) {
+                $.messager.alert('错误', "先选择【调动类别】", 'error');
+                return;
+            }
+            tranftype1 = parseInt(tranftype1);
+
+            var tranftype3 = mainline.getFieldValue("tranftype3");
+            if ((!tranftype3) || (tranftype3.length == 0)) {
+                $.messager.alert('错误', "先选择【调动范围】", 'error');
+                return;
+            }
+            tranftype3 = parseInt(tranftype3);
+
+
+            var odospid = mainline.getFieldValue("odospid");
+            if ((!odospid) || (odospid.length == 0)) {
+                $.messager.alert('错误', "先选择【调动员工】", 'error');
+                return;
+            }
+            odospid = parseInt(odospid);
+
+            var orgid = mainline.getFieldValue("neworgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "选择调入机构", 'error');
+                return;
+            }
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/employeetransfer/findOrgPostions.co?disidpw=true",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 100},
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field: 'hwc_namezq', title: '职群', width: 64},
+                    {field: 'hwc_namezz', title: '职种', width: 64}
+                ]
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            }
+            select_OrgPosition_pw.extendOptions({
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+
+                        var odlv_num = parseFloat(mainline.getFieldValue("odlv_num"));
+                        var newlv_num = parseFloat(row.lv_num);
+                        if (tranftype1 == 1) {//生殖
+                            if (newlv_num > odlv_num) {
+                                alert("【升职调动】要求调动后职级高于调动前职级");
+                                return;
+                            }
+                        }
+                        if (tranftype1 == 2) {//降职
+                            if (newlv_num < odlv_num) {
+                                alert("【降职调动】要求调动后职级低于调动前职级");
+                                return;
+                            }
+                        }
+                        if ((tranftype1 == 3) || (tranftype1 == 4)) {//同职种平级调
+                            if (newlv_num != odlv_num) {
+                                alert("【平级调动】要求调动后职级等于调动前职级");
+                                return;
+                            }
+                        }
+
+                        if (odospid == parseInt(row.ospid)) {
+                            alert("调动前后不能是同一个职位！");
+                            return;
+                        }
+
+                        mainline.setFieldValue("newlv_id", row.lv_id);
+                        mainline.setFieldValue("newlv_num", row.lv_num);
+                        mainline.setFieldValue("newhg_id", row.hg_id);
+                        mainline.setFieldValue("newhg_code", row.hg_code);
+                        mainline.setFieldValue("newhg_name", row.hg_name);
+                        mainline.setFieldValue("newospid", row.ospid);
+                        mainline.setFieldValue("newospcode", row.ospcode);
+                        mainline.setFieldValue("newsp_name", row.sp_name);
+                        var isoffjob = parseInt(row.isoffjob);
+                        var emnature = (isoffjob == 1) ? "脱产" : "非脱产";
+                        mainline.setFieldValue('newemnature', emnature);
+                        var url = _serUrl + "/web/hr/perm/findOrgpositionByOspid.co?ospid=" + row.ospid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('newhwc_namezl', jsdata.hwc_namezl);
+                            mainline.setFieldValue('newhwc_namezq', jsdata.hwc_namezq);
+                            mainline.setFieldValue('newhwc_namezz', jsdata.hwc_namezz);
+                            mainline.setFieldValue('isdreamposition', jsdata.isdreamposition);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        var url = _serUrl + "/web/hr/perm/getTrantype4byOspids.co?odospid=" + odospid + "&newospid=" + row.ospid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('tranftype4', jsdata.rst);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                        var url = _serUrl + "/web/hr/employeetransfer/isneedsarryqcode.co?odospid=" + odospid + "&newospid=" + row.ospid + "&tranftype3=" + tranftype3;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('salary_qcnotnull', jsdata.salary_qcnotnull);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        setEmpLevParms();
+                    }
+                }
+            });
+            select_OrgPosition_pw.show(true);
+        }
+
+        var rlfdnb = [
+            [
+                {title: "调动人员信息", colspan: 5},
+                {title: "关联人信息", colspan: 7},
+                {field: 'rlname', title: '关联关系', width: 100, rowspan: 2},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100, rowspan: 2},
+                {field: 'rllabel_a', title: '关联人自称', width: 100, rowspan: 2},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator, rowspan: 2},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator, rowspan: 2},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator, rowspan: 2},
+                {field: 'rlext', title: '关联关系说明', width: 150, rowspan: 2},
+                {
+                    field: 'oldrlmanagetype',
+                    title: '原管理关系类别',
+                    width: 100,
+                    formatter: comUrl_dic1146.formator,
+                    rowspan: 2
+                },
+                {
+                    field: 'newrlmanagetype',
+                    title: '新管理关系类别(*)',
+                    width: 100,
+                    required: true,
+                    formatter: comUrl_dic1146.formator,
+                    editor: comUrl_dic1146.editor,
+                    rowspan: 2
+                },
+                {
+                    field: 'newrctrms',
+                    title: '管控措施(*)',
+                    width: 100,
+                    formatter: comUrl_dic1141.formator,
+                    required: true,
+                    editor: comUrl_dic1141.editor,
+                    rowspan: 2
+                },
+                {field: 'newrccode', title: '管控单编码', width: 100, editor: "text", rowspan: 2},
+                {field: 'remark', title: '备注', width: 64, editor: "text", rowspan: 2}
+            ],
+            [
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'neworgname', title: '拟调入机构', width: 64},
+                {field: 'newsp_name', title: '拟调入职位', width: 64},
+                {field: 'newlv_num', title: '拟调入职级', width: 64},
+                {field: 'remployee_code', title: '工号', width: 64},
+                {field: 'remployee_name', title: '姓名', width: 64},
+                {field: 'rhiredday', title: '入职日期', width: 64},
+                {field: 'rorgname', title: '机构', width: 64},
+                {field: 'rsp_name', title: '职位', width: 64},
+                {field: 'rhwc_namezl', title: '职类', width: 64},
+                {field: 'rlv_num', title: '职级', width: 64}
+            ]
+        ];
+        var rlfdwb = [
+            [
+                {title: "调动人员信息", colspan: 5},
+                {title: "推荐人信息", colspan: 7},
+                {field: 'rlname', title: '关联关系', width: 100, rowspan: 2},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100, rowspan: 2},
+                {field: 'rllabel_a', title: '关联人自称', width: 100, rowspan: 2},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator, rowspan: 2},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator, rowspan: 2},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator, rowspan: 2},
+                {field: 'rlext', title: '关联关系说明', width: 150, rowspan: 2},
+                {field: 'oldrbusiness', title: '原商业厉害关系', width: 100, formatter: comUrl_dic1166.formator, rowspan: 2},
+                {
+                    field: 'newrbusiness',
+                    title: '新商业厉害关系',
+                    width: 100,
+                    formatter: comUrl_dic1166.formator,
+                    editor: comUrl_dic1166.editor,
+                    rowspan: 2
+                },
+                {
+                    field: 'newrctrms',
+                    title: '管控措施',
+                    width: 100,
+                    formatter: comUrl_dic1141.formator,
+                    editor: comUrl_dic1141.editor,
+                    rowspan: 2
+                },
+                {field: 'rccode', title: '管控单编码', width: 100, editor: "text", rowspan: 2},
+                {field: 'remark', title: '备注', width: 64, editor: "text", rowspan: 2}
+            ], [
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'neworgname', title: '拟调入机构', width: 64},
+                {field: 'newsp_name', title: '拟调入职位', width: 64},
+                {field: 'newlv_num', title: '拟调入职级', width: 64},
+                {field: 'ldtype', title: '推荐性质', width: 64, formatter: comUrl_dic1162.formator},
+                {field: 'rname', title: '推荐客户/供应商', width: 100},
+                {field: 'raddr', title: '客户/供应商地址', width: 150},
+                {field: 'remployee_name', title: '推荐人姓名', width: 100},
+                {field: 'rorgname', title: '推荐人工作单位', width: 64},
+                {field: 'rsp_name', title: '推荐人职务', width: 100},
+                {field: 'rmobile', title: '推荐人手机号码', width: 120}
+            ]
+        ];
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/employeetransfer/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        function imphisexcel() {
+            $uploadfile(_serUrl + "/web/hr/employeetransfer/imphisexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        function exphisexcelmodel() {
+            var url = _serUrl + "/ExcelModels/Hr_employee_transfer/excelmodel/调动历史记录导入模板.xls";
+            window.open(url);
+        }
+
+        function findsalary_quotacode(salary_quotacode) {
+			var employee_code=mainline.getFieldValue("employee_code");
+			 if (employee_code && (employee_code.length > 0)) {
+            var url = _serUrl + "/web/hr/employeetransfer/findWageSysTohr.co?salary_quotacode=" + salary_quotacode+"&employee_code="+employee_code;
+            $ajaxjsonget(url, function (jsdata) {
+				if(jsdata.wage==null || jsdata.wage==""){
+					clear();
+				}
+                mainline.setisloadingdata(true);
+                mainline.setFieldValue("salary_quota_stand", jsdata.wage);
+                mainline.setFieldValue("salary_quota_used", jsdata.usedwage);
+                mainline.setFieldValue("salary_quota_canuse", jsdata.balance);
+                mainline.setFieldValue("salary_quota_appy", jsdata.money);
+                if ((parseFloat(jsdata.balance)) < 0)
+                    mainline.setFieldValue("salary_quota_ovsp", 1);
+                else
+                    mainline.setFieldValue("salary_quota_ovsp", 2);
+                mainline.setisloadingdata(false);
+            }, function (err) {
+                mainline.setisloadingdata(true);
+                mainline.setFieldValue("salary_quotacode", undefined);//"test" + $RndNum(5)
+                mainline.setFieldValue("salary_quota_stand", undefined);
+                mainline.setFieldValue("salary_quota_used", undefined);
+                mainline.setFieldValue("salary_quota_canuse", undefined);
+                mainline.setFieldValue("salary_quota_appy", undefined);
+                mainline.setFieldValue("salary_quota_ovsp", 2);
+                mainline.setisloadingdata(false);
+                alert(JSON.stringify(err));
+            });
+        
+		}else{
+			 alert("先选择员工");
+		}
+		}
+		function clear(){
+			mainline.setisloadingdata(true);
+			mainline.setFieldValue("salary_quotacode", undefined);//"test" + $RndNum(5)
+			mainline.setFieldValue("salary_quota_stand", undefined);
+			mainline.setFieldValue("salary_quota_used", undefined);
+			mainline.setFieldValue("salary_quota_canuse", undefined);
+			mainline.setFieldValue("salary_quota_appy", undefined);
+			mainline.setFieldValue("salary_quota_ovsp", 2);
+			mainline.setisloadingdata(false);
+			alert("没有找到相关数据");
+			return;
+		}
+    </script>
+    <script>
+        function persentformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(2);
+            return v + "%";
+        }
+
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        var selected_salary_structure = undefined;
+        var select_findSalaryStruc_pw = undefined;
+        function onFindSalaryStruc(stru_id) {
+            if ($isEmpty(stru_id)) {
+                var atdtype = mainline.getFieldValue("newattendtype");
+                if ((!atdtype) || (atdtype.length == 0)) {
+                    //$.messager.alert('错误', "选择出勤类别", 'error');
+                    return;
+                }
+                var checklev = mainline.getFieldValue("newchecklev");
+                if ((!checklev) || (checklev.length == 0)) {
+                    //$.messager.alert('错误', "选择绩效考核层级", 'error');
+                    return;
+                }
+            }
+            var wo = {
+                coURL: _serUrl + "/web/hr/sa/getSalaryStruce.co",
+                id: "select_findSalaryStruc_pw",
+                JPAClass: "com.hr.salary.entity.Hr_salary_structure",  //对应后台JPAClass名
+                orderStr: " stru_id asc ",
+                multiRow: false,
+                idField: 'stru_id',
+                autoFind: true,//是否自动查询
+                singleAutoReturn: true,//返回单行数据自动选择并点击确定
+                notFindAutoReturn: true,//没数据自动返回
+                gdListColumns: [
+                    {field: 'stru_name', title: '工资结构名称', width: 100},
+                    {field: 'kqtype', title: '出勤机制', width: 100, formatter: comUrl_dic1399.formator},
+                    {field: 'checklev', title: '绩效考核层级', width: 100, formatter: comUrl_dic1437.formator},
+                    {field: 'basewage', title: '基本工资', width: 100, formatter: persentformator},
+                    {field: 'otwage', title: '固定加班工资', width: 100, formatter: persentformator},
+                    {field: 'skillwage', title: '技能工资', width: 100, formatter: persentformator},
+                    {field: 'meritwage', title: '绩效工资', width: 100, formatter: persentformator}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var strutype = row.strutype;
+                        strutype = parseInt(strutype);
+                        if (strutype == 1) {
+                            selected_salary_structure = row;
+                            selected_salary_structure.basewage = (isNaN(parseFloat(selected_salary_structure.basewage))) ? 0 : parseFloat(selected_salary_structure.basewage);
+                            selected_salary_structure.otwage = (isNaN(parseFloat(selected_salary_structure.otwage))) ? 0 : parseFloat(selected_salary_structure.otwage);
+                            selected_salary_structure.skillwage = (isNaN(parseFloat(selected_salary_structure.skillwage))) ? 0 : parseFloat(selected_salary_structure.skillwage);
+                            selected_salary_structure.meritwage = (isNaN(parseFloat(selected_salary_structure.meritwage))) ? 0 : parseFloat(selected_salary_structure.meritwage);
+
+                            mainline.setReadOnly("newbase_salary", true);
+                            mainline.setReadOnly("newtech_salary", true);
+                            mainline.setReadOnly("newotwage", true);
+                            mainline.setReadOnly("newachi_salary", true);
+                            calcsalary();
+                        } else {
+                            selected_salary_structure = undefined;
+                            mainline.setReadOnly("newbase_salary", false);
+                            mainline.setReadOnly("newtech_salary", false);
+                            mainline.setReadOnly("newotwage", false);
+                            mainline.setReadOnly("newachi_salary", false);
+                        }
+                        mainline.setFieldValue("newstru_id", row.stru_id);
+                        mainline.setFieldValue("newstru_name", row.stru_name);
+                    }
+                }
+            };
+            if (!select_findSalaryStruc_pw) {
+                select_findSalaryStruc_pw = new TSearchForm(wo);
+            }
+            if ($isEmpty(stru_id)) {
+                select_findSalaryStruc_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'stat', reloper: '=', parmvalue: 9},
+                        {parmname: 'kqtype', reloper: '=', parmvalue: atdtype},
+                        {parmname: 'checklev', reloper: '=', parmvalue: checklev}
+                    ]
+                });
+            } else {
+                select_findSalaryStruc_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'stru_id', reloper: '=', parmvalue: stru_id}
+                    ]
+                });
+            }
+            select_findSalaryStruc_pw.show(true);
+        }
+
+        function calcsalarystruitems() {
+            //调整前
+
+            var oldbase_salary = parseFloat(mainline.getFieldValue("oldbase_salary"));
+            var oldotwage = parseFloat(mainline.getFieldValue("oldotwage"));
+            var oldtech_salary = parseFloat(mainline.getFieldValue("oldtech_salary"));
+            var oldachi_salary = parseFloat(mainline.getFieldValue("oldachi_salary"));
+            var oldtech_allowance = parseFloat(mainline.getFieldValue("oldtech_allowance"));
+
+            //调整后
+
+            var newbase_salary = parseFloat(mainline.getFieldValue("newbase_salary"));
+            var newotwage = parseFloat(mainline.getFieldValue("newotwage"));
+            var newtech_salary = parseFloat(mainline.getFieldValue("newtech_salary"));
+            var newachi_salary = parseFloat(mainline.getFieldValue("newachi_salary"));
+
+
+            if (isNaN(oldbase_salary) || (oldbase_salary == undefined) || (oldbase_salary == 0)) oldbase_salary = 0;
+            if (isNaN(oldotwage) || (oldotwage == undefined) || (oldotwage == 0)) oldotwage = 0;
+            if (isNaN(oldtech_salary) || (oldtech_salary == undefined) || (oldtech_salary == 0)) oldtech_salary = 0;
+            if (isNaN(oldachi_salary) || (oldachi_salary == undefined) || (oldachi_salary == 0)) oldachi_salary = 0;
+            if (isNaN(oldtech_allowance) || (oldtech_allowance == undefined) || (oldtech_allowance == 0)) oldtech_allowance = 0;
+
+            if (isNaN(newbase_salary) || (newbase_salary == undefined) || (newbase_salary == 0)) newbase_salary = 0;
+            if (isNaN(newotwage) || (newotwage == undefined) || (newotwage == 0)) newotwage = 0;
+            if (isNaN(newtech_salary) || (newtech_salary == undefined) || (newtech_salary == 0)) newtech_salary = 0;
+            if (isNaN(newachi_salary) || (newachi_salary == undefined) || (newachi_salary == 0)) newachi_salary = 0;
+
+            var chgbase_salary = newbase_salary - oldbase_salary;
+            var chgotwage = newotwage - oldotwage;
+            var chgtech_salary = newtech_salary - oldtech_salary;
+            var chgachi_salary = newachi_salary - oldachi_salary;
+
+            chgbase_salary = chgbase_salary.toFixed(0);
+            chgotwage = chgotwage.toFixed(0);
+            chgtech_salary = chgtech_salary.toFixed(0);
+            chgachi_salary = chgachi_salary.toFixed(0);
+
+            if (chgbase_salary == -0)chgbase_salary = 0;
+            if (chgotwage == -0)chgotwage = 0;
+            if (chgtech_salary == -0)chgtech_salary = 0;
+            if (chgachi_salary == -0)chgachi_salary = 0;
+            if (!selected_salary_structure) {
+                var np = newbase_salary + newotwage + newtech_salary + newachi_salary;
+                mainline.setFieldValue("newposition_salary", np);
+            }
+            mainline.setFieldValue("chgbase_salary", chgbase_salary);
+            mainline.setFieldValue("chgotwage", chgotwage);
+            mainline.setFieldValue("chgtech_salary", chgtech_salary);
+            mainline.setFieldValue("chgachi_salary", chgachi_salary);
+        }
+
+        function getorgminwage(){
+            if(!orgminwagestandard){
+                var orgid = mainline.getFieldValue("neworgid");
+                if ((!orgid) || (orgid.length == 0)) {
+                    orgid=1;
+                }
+                var omsurl = _serUrl + "/web/hrsalary/command/getOrgMinStandard.co?orgid=" + orgid;
+                $ajaxjsonget(omsurl, function (jsdata) {
+                    orgminwagestandard = jsdata.rows[0].minstandard;
+                }, function (err) {
+                    orgminwagestandard = 0;
+                });
+            }
+        }
+
+        function calcsalary() {
+            if (!selected_salary_structure) {
+                //alert("选择工资结构");
+                var oldposition_salary = parseFloat(mainline.getFieldValue("oldposition_salary"));
+                var newposition_salary = parseFloat(mainline.getFieldValue("newposition_salary"));
+                var chgposition_salary = newposition_salary - oldposition_salary;
+                mainline.setFieldValue("chgposition_salary", chgposition_salary);
+                mainline.setFieldValue("pbtsarylev", chgposition_salary);
+                mainline.setFieldValue("sacrage", chgposition_salary);
+                return;
+            }
+            if(!orgminwagestandard){
+                var orgid = mainline.getFieldValue("neworgid");
+                if ((!orgid) || (orgid.length == 0)) {
+                    orgid=1;
+                }
+                var omsurl = _serUrl + "/web/hrsalary/command/getOrgMinStandard.co?orgid=" + orgid;
+                $ajaxjsonget(omsurl, function (jsdata) {
+                    orgminwagestandard = jsdata.rows[0].minstandard;
+                }, function (err) {
+                    orgminwagestandard = 0;
+                });
+            }
+
+            //调整前
+            var oldposition_salary = parseFloat(mainline.getFieldValue("oldposition_salary"));
+            var oldbase_salary = parseFloat(mainline.getFieldValue("oldbase_salary"));
+            var oldotwage = parseFloat(mainline.getFieldValue("oldotwage"));
+            var oldtech_salary = parseFloat(mainline.getFieldValue("oldtech_salary"));
+            var oldachi_salary = parseFloat(mainline.getFieldValue("oldachi_salary"));
+            var oldtech_allowance = parseFloat(mainline.getFieldValue("oldtech_allowance"));
+            var oldovt_salary = parseFloat(mainline.getFieldValue("oldovt_salary"));
+            var oldavg_salary = parseFloat(mainline.getFieldValue("oldavg_salary"));
+
+            //调整后
+            var newposition_salary = parseFloat(mainline.getFieldValue("newposition_salary"));
+            var newbase_salary = newposition_salary * selected_salary_structure.basewage / 100;
+            var newotwage = newposition_salary * selected_salary_structure.otwage / 100;
+            var newtech_salary = newposition_salary * selected_salary_structure.skillwage / 100;
+            var newachi_salary = newposition_salary * selected_salary_structure.meritwage / 100;
+            var newtech_allowance = parseFloat(mainline.getFieldValue("newtech_allowance"));
+            var newovt_salary = parseFloat(mainline.getFieldValue("newovt_salary"));
+            //var newavg_salary = newposition_salary + newovt_salary; //
+            var newavg_salary = parseFloat(mainline.getFieldValue("newavg_salary"));
+
+            if (mainline.getFieldValue("oldcalsalarytype") == '月薪') {
+                oldavg_salary = oldposition_salary + oldovt_salary;
+            }
+
+
+            if (isNaN(oldposition_salary)) oldposition_salary = 0;
+            if (isNaN(oldbase_salary)) oldbase_salary = 0;
+            if (isNaN(oldotwage)) oldotwage = 0;
+            if (isNaN(oldtech_salary)) oldtech_salary = 0;
+            if (isNaN(oldachi_salary)) oldachi_salary = 0;
+            if (isNaN(oldtech_allowance)) oldtech_allowance = 0;
+            if (isNaN(oldovt_salary)) oldovt_salary = 0;
+            if (isNaN(oldavg_salary)) oldavg_salary = 0;
+
+            if (isNaN(newposition_salary)) newposition_salary = 0;
+            if (isNaN(newbase_salary)) newbase_salary = 0;
+            if (isNaN(newotwage)) newotwage = 0;
+            if (isNaN(newtech_salary)) newtech_salary = 0;
+            if (isNaN(newachi_salary)) newachi_salary = 0;
+            if (isNaN(newtech_allowance)) newtech_allowance = 0;
+            if (isNaN(newovt_salary)) newovt_salary = 0;
+            if (isNaN(newavg_salary)) newavg_salary = 0;
+
+            orgminwagestandard = parseFloat(orgminwagestandard);
+            if (orgminwagestandard > 0) {
+                if (orgminwagestandard > newbase_salary) {
+                    if ((newbase_salary + newotwage) > orgminwagestandard) {
+                        newotwage = newbase_salary + newotwage - orgminwagestandard;
+                        newbase_salary = orgminwagestandard;
+                    } else if ((newbase_salary + newotwage + newtech_salary) > orgminwagestandard) {
+                        newtech_salary = newbase_salary + newotwage + newtech_salary - orgminwagestandard;
+                        newotwage = 0;
+                        newbase_salary = orgminwagestandard;
+                    } else if ((newbase_salary + newotwage + newtech_salary + newachi_salary) > orgminwagestandard) {
+                        newachi_salary = newbase_salary + newotwage + newtech_salary + newachi_salary - orgminwagestandard;
+                        newtech_salary = 0;
+                        newotwage = 0;
+                        newbase_salary = orgminwagestandard;
+                    } else {
+                        newbase_salary = newposition_salary;
+                        newachi_salary = 0;
+                        newtech_salary = 0;
+                        newotwage = 0;
+                    }
+                }
+            }
+
+            var chgposition_salary = newposition_salary - oldposition_salary;
+            var chgbase_salary = newbase_salary - oldbase_salary;
+            var chgotwage = newotwage - oldotwage;
+            var chgtech_salary = newtech_salary - oldtech_salary;
+            var chgachi_salary = newachi_salary - oldachi_salary;
+            var chgtech_allowance = newtech_allowance - oldtech_allowance;
+            var chgovt_salary = newovt_salary - oldovt_salary;
+            var chgavg_salary = newavg_salary - oldavg_salary;
+
+            //alert(newbase_salary + " " + oldbase_salary + " " + chgbase_salary + ":" + chgbase_salary.toFixed(2));
+
+            //var pbtsarylev = chgposition_salary;//+ chgbase_salary + chgtech_salary + chgachi_salary + chgtech_allowance;
+            var pbtsarylev = chgposition_salary + chgtech_allowance;
+
+            //chgposition_salary = parseFloat(chgposition_salary.toFixed(4)) * 100;
+            //chgbase_salary = parseFloat(chgbase_salary.toFixed(4)) * 100;
+            //chgtech_salary = parseFloat(chgtech_salary.toFixed(4)) * 100;
+            //chgachi_salary = parseFloat(chgachi_salary.toFixed(4)) * 100;
+            //chgtech_allowance = parseFloat(chgtech_allowance.toFixed(4)) * 100;
+
+            /*选人后自动带出
+             mainline.setFieldValue("oldposition_salary", oldposition_salary.toFixed(2));
+             mainline.setFieldValue("oldbase_salary", oldbase_salary.toFixed(2));
+             mainline.setFieldValue("oldotwage", oldotwage.toFixed(2));
+             mainline.setFieldValue("oldtech_salary", oldtech_salary.toFixed(2));
+             mainline.setFieldValue("oldachi_salary", oldachi_salary.toFixed(2));
+             mainline.setFieldValue("oldtech_allowance", oldtech_allowance.toFixed(2));
+             */
+            if(oldavg_salary>0){
+                mainline.setFieldValue('oldavg_salary', oldavg_salary.toFixed(2));
+            }
+            mainline.setFieldValue("newposition_salary", newposition_salary.toFixed(2));
+            mainline.setFieldValue("newbase_salary", newbase_salary.toFixed(2));
+            mainline.setFieldValue("newotwage", newotwage.toFixed(2));
+            mainline.setFieldValue("newtech_salary", newtech_salary.toFixed(2));
+            mainline.setFieldValue("newachi_salary", newachi_salary.toFixed(2));
+            mainline.setFieldValue("newtech_allowance", newtech_allowance.toFixed(2));
+            mainline.setFieldValue("newovt_salary", newovt_salary.toFixed(2));
+            mainline.setFieldValue("newavg_salary", newavg_salary.toFixed(2));
+
+
+            mainline.setFieldValue("chgposition_salary", chgposition_salary.toFixed(0));
+            mainline.setFieldValue("chgbase_salary", chgbase_salary.toFixed(0));
+            mainline.setFieldValue("chgotwage", chgotwage.toFixed(0));
+            mainline.setFieldValue("chgtech_salary", chgtech_salary.toFixed(0));
+            mainline.setFieldValue("chgachi_salary", chgachi_salary.toFixed(0));
+            mainline.setFieldValue("chgtech_allowance", chgtech_allowance.toFixed(0));
+            mainline.setFieldValue("pbtsarylev", pbtsarylev.toFixed(2));
+            mainline.setFieldValue("chgovt_salary", chgovt_salary.toFixed(0));
+            mainline.setFieldValue("chgavg_salary", chgavg_salary.toFixed(0));
+            mainline.setFieldValue("sacrage", pbtsarylev.toFixed(2));
+        }
+    </script>
+
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">1.调动信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'emptranfcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'emptranfcode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee,editable:true"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'degree',readonly:true,comidx:'dic84',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'tranftype3'">调动范围</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'tranftype3',crequired:true,comidx:'dic729',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'tranflev'">调动层级</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'tranflev',crequired:true,comidx:'dic1215',editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'tranftype2'">调动性质</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'tranftype2',crequired:true,comidx:'dic724',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'tranftype4'">调动类型</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'tranftype4',crequired:true,comidx:'dic1189',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'tranftype1'">调动类别</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'tranftype1',crequired:true,comidx:'dic719',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'appdate'">调动申请日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'appdate',formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'probation'">考察期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'probation',crequired:true,comidx:'dic705',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'tranfcmpdate'">调动生效日期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'tranfcmpdate',readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'probationdate'">待转正日期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'probationdate',readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'tranfreason'">调动原因</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'tranfreason'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr style="font-weight: 700; background-color:#EBEBEB">
+        <td>项目</td>
+        <td colspan="3">调动前</td>
+        <td colspan="4">调动后</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'odorgname'">调动前机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'odorgname',crequired:true,readonly:true"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'neworgname'" style="text-align: right">调动后机构</td>
+        <td colspan="4"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'neworgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr style="display: none">
+        <td cjoptions="fdname:'odorghrlev'">调动前人事级别</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'odorghrlev',crequired:true,readonly:true"
+                style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'neworghrlev'" style="text-align: right">调动后人事级别</td>
+        <td colspan="4"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'neworghrlev',crequired:true,readonly:true"
+                style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'odsp_name'">调动前职位</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'odsp_name',crequired:true,readonly:true"
+                               style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'newsp_name'" style="text-align: right">调动后职位</td>
+        <td colspan="4"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'newsp_name',crequired:true,buttonIcon:'icon-search',onClickButton:onFindOrgPosition,editable:false"
+                style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr style="">
+        <td cjoptions="fdname:'oldhwc_namezl'">调动前职类</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'oldhwc_namezl',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'newhwc_namezl'" style="text-align: right">调动后职类</td>
+        <td colspan="4">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'newhwc_namezl',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+    </tr>
+
+    <tr style="">
+        <td cjoptions="fdname:'oldhwc_namezq'">调动前职群</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'oldhwc_namezq',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'newhwc_namezq'" style="text-align: right">调动后职群</td>
+        <td colspan="4">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'newhwc_namezq',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr style="">
+        <td cjoptions="fdname:'oldhwc_namezz'">调动前职种</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'oldhwc_namezz',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'newhwc_namezz'" style="text-align: right">调动后职种</td>
+        <td colspan="4">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'newhwc_namezz',readonly:true"
+                   style="height:20px;width: 300px"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'odhg_name'">调动前职等</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'odhg_name',readonly:true"
+                               style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'newhg_name'" style="text-align: right">调动后职等</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newhg_name',readonly:true"
+                               style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'odlv_num'">调动前职级</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'odlv_num',readonly:true"
+                               style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'newlv_num'" style="text-align: right">调动后职级</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newlv_num',readonly:true"
+                               style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'oldemnature'">调动前职位性质</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldemnature',readonly:true"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'newemnature'" style="text-align: right">调动后职位性质</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newemnature',readonly:true"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+	<tr>
+	    <td cjoptions="fdname:'oldhg_remark'">调动前备注职位</td>
+	    <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldhg_remark',comidx:'dic1555',editable:false,readonly:true" style="height:20px;width: 300px"/></td>
+	    <td cjoptions="fdname:'newhg_remark'" style="text-align: right">调动后备注职位</td>
+	    <td colspan="4">
+			<input cjoptions="easyui_class:'easyui-textbox',fdname:'newhg_remark',comidx:'dic1555',editable:false" style="height:20px;width: 300px"/></td>
+	</tr>
+    <tr>
+        <td cjoptions="fdname:'oldcalsalarytype'">调动前计薪方式</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'oldcalsalarytype',comidx:'dic901',editable:false,crequired:true" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'newcalsalarytype'" style="text-align: right">调动后计薪方式</td>
+        <td colspan="4"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'newcalsalarytype',comidx:'dic901',editable:false,crequired:true"
+                style="height:20px;width: 300px"/></td>
+    </tr>
+
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">2.关联关系管控
+            <a class="easyui-linkbutton" onclick="$('#glgxpw').window('open');" data-options="iconCls:'icon-workflow'">关联关系</a>
+            <span style="color: red">(如有关联关系，请点击维护必填信息)</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" cjoptions="fdname:'isexistsrl'">关联关系</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'isexistsrl',comidx:'dic1194',editable:false,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td colspan="1" cjoptions="fdname:'rlmgms'">管控措施</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'rlmgms',comidx:'dic1197',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">3.工资额度</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'salary_qcnotnull'">工资额度必填</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_qcnotnull',readonly:true,comidx:'dic5'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'salary_quotacode'">额度编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quotacode'"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'salary_quota_stand'">标准工资额度</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_stand',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'salary_quota_used'">已用工资额度</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_used',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'salary_quota_canuse'">可用工资额度</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_canuse',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'salary_quota_appy'">申请使用额度</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_appy',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'salary_quota_ovsp'">超额度审批</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_ovsp',readonly:true,comidx:'dic5'"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">4.调动编制确认</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'quotastand'">标准配置人数</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'quotastand'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'quotasj'">实际配置人数</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'quotasj'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'quotacq'">超缺编人数</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'quotacq'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'quota_over_rst'">超编审批</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'quota_over_rst',readonly:true,comidx:'dic855'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">5.梦职场调动确认</td>
+    </tr>
+    <tr>
+        <td colspan="2" cjoptions="fdname:'isdreamemploye'">调动员工是否属梦职场储备人才？</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isdreamemploye',comidx:'dic5',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td colspan="2" cjoptions="fdname:'isallowdrmin'">是否同意特批调动至梦职场职位?</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'isallowdrmin',comidx:'dic5',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">6.调动考试</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'exam_title'">考试课题</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'exam_title'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'exam_time'">考试时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'exam_time',formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'exam_score'">考试分数</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'exam_score'" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'mupexam_time'" style="display: none">补考时间</td>
+        <td style="display: none"><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'mupexam_time',formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td style="display: none" cjoptions="fdname:'mupexam_score'">补考分数</td>
+        <td style="display: none"><input cjoptions="easyui_class:'easyui-numberbox',fdname:'mupexam_score'"
+                                         style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'exam_note'">考试备注</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'exam_note'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr id="salary_div">
+        <td colspan="20">
+            <table>
+                <tr style="font-weight: 700; background-color: #D3D3D3">
+                    <td colspan="2">7.调动核薪</td>
+                </tr>
+                <tr>
+                    <td>调动前</td>
+                    <td cjoptions="fdname:'odattendtype'">出勤类别</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'odattendtype',crequired:false,comidx:'dic1399',editable:false"
+                            style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'oldchecklev'">绩效考核层级</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'oldchecklev',crequired:false,comidx:'dic1437',editable:false"
+                            style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'oldstru_name'">工资结构</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldstru_name'"
+                               style="height:20px;width: 100px"/></td>
+                </tr>
+                <tr>
+                    <td>调动后</td>
+                    <td cjoptions="fdname:'newattendtype'">出勤类别</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'newattendtype',crequired:false,comidx:'dic1399',editable:false"
+                            style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'newchecklev'">绩效考核层级</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'newchecklev',crequired:false,comidx:'dic1437',editable:false"
+                            style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'newstru_name'">工资结构</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'newstru_name',buttonIcon:'icon-search',onClickButton:onFindSalaryStruc,editable:false,crequired:true"
+                            style="height:20px;width: 100px"/></td>
+                </tr>
+                <tr style="font-weight: 700; background-color:#EBEBEB;text-align: center">
+                    <td colspan="">薪资结构</td>
+                    <td>职位工资</td>
+                    <td>基本工资</td>
+                    <td>固定加班工资</td>
+                    <td>技能工资</td>
+                    <td>绩效工资</td>
+                    <td>加班工资</td>
+                    <td>技术津贴</td>
+                    <td>平均工资</td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'oldposition_salary'">核薪前薪资</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-numberbox',fdname:'oldposition_salary',crequired:false,precision:2,readonly:true"
+                            style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldbase_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldotwage',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldtech_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldachi_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldovt_salary',precision:2"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldtech_allowance',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'oldavg_salary',precision:2"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'newposition_salary'">核薪后薪资</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-numberbox',fdname:'newposition_salary',crequired:false,precision:2"
+                            style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newbase_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newotwage',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newtech_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newachi_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newovt_salary',precision:2"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newtech_allowance',precision:2"
+                               style="height:20px;width: 100px"/></td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'newavg_salary',precision:2,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                </tr>
+                <!--          <tr>
+                              <td cjoptions="fdname:'newposition_salary'">调整额度</td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgposition_salary',crequired:false,precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/>
+                              </td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgbase_salary',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/>
+                              </td>
+                              <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'chgotwage',precision:2,readonly:true"
+                                         style="height:20px;width: 100px"/></td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgtech_salary',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/>
+                              </td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgachi_salary',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/>
+                              </td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgovt_salary',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/></td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgtech_allowance',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/></td>
+                              <td><input
+                                      cjoptions="easyui_class:'easyui-numberbox',fdname:'chgavg_salary',precision:2,readonly:true"
+                                      style="height:20px;width: 100px"/>
+                              </td>
+                          </tr>-->
+                <tr>
+                    <td cjoptions="fdname:'istp'">是否特批</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'istp',crequired:false,comidx:'dic5',editable:false"
+                            style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'tranamt'">调拨金额</td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'tranamt',crequired:false,precision:2"
+                               style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'salarydate'">核薪生效日期</td>
+                    <td>
+                        <input cjoptions="easyui_class:'easyui-datetimebox',fdname:'salarydate',formatter:$dateformattostrrYYYY_MM_DD,editable:false,readonly:true"
+                               style="height:20px;width: 100px"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="8">8.其它信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+
+    <style type="text/css">
+        #maindata_id td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</table>
+
+
+<div id="glgxpw" class="easyui-window" title="关联关系" style="width:90%;height:400px"
+     data-options="modal:true,closed:true,minimizable:false,collapsible:false">
+    <table id="transfer_rl_nb" class="easyui-datagrid"
+           data-options="border:false,singleSelect:true,title:'内部关联关系'" style="height: 200px;width: 100%">
+    </table>
+    <table id="transfer_rl_wb" class="easyui-datagrid"
+           data-options="border:false,singleSelect:true,title:'外部关联关系'" style="height: 200px;width: 100%">
+    </table>
+</div>
+
+<div id="transimp">
+    <div data-options="iconCls:'icon-importexcel'" onclick="impexcel();">导入Excel</div>
+    <div data-options="iconCls:'icon-exportexcel'" onclick=" mainline.exportExcelModel();">导出导入模板</div>
+</div>
+
+<div id="histransimp">
+    <div data-options="iconCls:'icon-importexcel'" onclick="imphisexcel();">导入Excel</div>
+    <div data-options="iconCls:'icon-exportexcel'" onclick="exphisexcelmodel();">导出导入模板</div>
+</div>
+
+</body>
+</html>

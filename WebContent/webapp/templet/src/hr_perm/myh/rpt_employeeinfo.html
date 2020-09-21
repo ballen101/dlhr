@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <title></title>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic714",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=714",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic495",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=495",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic865",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=865",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic870",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=870",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic697",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=697",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic797",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=797",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic702",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=702",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic913",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=913",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic705",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=705",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic996",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=996",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic719",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=719",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic764",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=764",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic771",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=771",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic724",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=724",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic999",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=999",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic711",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=711",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1117",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1117",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1120",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1120",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1133",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1133",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1141",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1141",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1162",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1162",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1146",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1146",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1166",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1166",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1189",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1189",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic745",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=745",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1289",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1289",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+
+    <script type="text/javascript">
+        var _callback = undefined;
+        var parms = $getPageParms();
+        var er_id = parseInt(parms.er_id);// 人员ID
+        var tp = parms.tp;// 人员ID
+        if (!er_id) {
+            alert("没有设置【er_id】参数");
+        }
+        if (!tp)tp = "";
+
+        var _jsbd = undefined;
+        var _ipts = undefined;
+
+        var hr_employee_works_cls = [
+            {field: 'company', title: '工作单位', width: 120},
+            {field: 'start_date', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'end_date', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'func', title: '职位', width: 80},
+            {field: 'jobexp', title: '主要工作', width: 100},
+            {field: 'endsarary', title: '离职薪资', width: 64}
+        ];
+
+        var hr_employee_leanexps_cls = [
+            {field: 'schoolname', title: '学校名称', width: 150},
+            {field: 'begintime', title: '入学日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'endtime', title: '毕业日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'major', title: '专业', width: 150},
+            {field: 'degree', title: '学历层次', width: 80, formatter: comUrl_dic84.formator},
+            {field: 'gcernum', title: '毕业证书', width: 100},
+            {field: 'certnum', title: '学位证书', width: 100},
+            {field: 'remark', title: '备注', width: 150}
+        ];
+        var hr_employee_trainexps_cls = [
+            {field: 'major', title: '培训课题', width: 100},
+            {field: 'begintime', title: '起始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'endtime', title: '终止日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'classh', title: '培训课时', width: 64},
+            {field: 'schoolname', title: '培训机构', width: 150},
+            {field: 'lecturer', title: '培训讲师', width: 64},
+            {field: 'certname', title: '培训证书', width: 100},
+            {field: 'remark', title: '备注', width: 150}
+        ];
+
+        var hr_employee_trainwk_cls = [
+            {field: 'twktitle', title: '培训课题', width: 100},
+            {field: 'begintime', title: '培训起始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'endtime', title: '培训结束日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'classh', title: '培训课时', width: 64},
+            {field: 'twktype', title: '培训类别', width: 100, formatter: comUrl_dic996.formator},
+            {field: 'schoolname', title: '培训机构', width: 150},
+            {field: 'lecturer', title: '培训讲师', width: 64},
+            {field: 'certname', title: '培训证书名称', width: 100},
+            {field: 'cervtime', title: '培训证书有效期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'twkexamine', title: '培训考核', width: 80}
+        ];
+
+        var hr_employee_familys_cls = [
+            {field: 'frname', title: '姓名', width: 120},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'frtype', title: '关系', width: 100, editor: 'text'},
+            {field: 'rchengwei', title: '称谓', width: 64},
+            {field: 'addr', title: '住址', width: 150},
+            {field: 'frtcompany', title: '工作单位', width: 120},
+            {field: 'position', title: '职位', width: 100},
+            {field: 'phonebum', title: '联系电话', width: 100},
+            {
+                field: 'isemcat', title: '是否新宝股份员工', width: 100,
+                formatter: comUrl_dic5.formator
+            }
+        ];
+        /*
+         var hr_employee_relations_cls = [
+         {field: 'employee_code', title: '工号', width: 100},//母子 父子等
+         {field: 'remployee_name', title: '员工姓名', width: 120},
+         {field: 'rorgname', title: '机构', width: 150},
+         {field: 'rsp_name', title: '职位', width: 120},//差职级
+         {field: 'rchengwei', title: '关联人称谓', width: 120},//父亲 母亲
+         {field: 'rtype', title: '关联关系类别', width: 130},//指父族亲属关系、母族亲属关系、妻族亲属关系、其他关系等四大类关联关系类别
+         {field: 'rdetail', title: '关联关系明细', width: 150},//指四大娄关联关系类别的进一步分级细分。如父族亲属关系1级，妻族亲属关系2级
+         {field: 'mgrtype', title: '管理关联关系类别', width: 120, formatter: comUrl_dic865.formator},
+         {field: 'intime', title: '聘用时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+         {field: 'dectime', title: '申报时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+         {field: 'isremitted', title: '申请豁免', width: 64, formatter: comUrl_dic5.formator},
+         {field: 'remark', title: '备注', width: 150}
+         ];
+         */
+        var hrrl_declare_nb_cls = [
+            [
+                {field: 'dcldate', title: '申报日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'remployee_code', title: '关联工号', width: 80},
+                {field: 'remployee_name', title: '关联姓名', width: 80},
+                {field: 'rsex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'rhiredday', title: '入职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'rorgname', title: '部门', width: 64},
+                {field: 'rsp_name', title: '职位', width: 64},
+                {field: 'rhwc_namezl', title: '职类', width: 64},
+                {field: 'rhg_name', title: '职等', width: 64},
+                {field: 'rlv_num', title: '职级', width: 64},
+                {field: 'rlname', title: '关联关系', width: 100},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator},
+                {field: 'rlmanagetype', title: '管理关系类别', width: 100, formatter: comUrl_dic1146.formator},
+                {field: 'rctrms', title: '管控措施', width: 100, formatter: comUrl_dic1141.formator}
+            ]
+        ];
+        var hrrl_declare_wb_cls = [
+            [
+                {field: 'dcldate', title: '申报日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'remployee_name', title: '推荐人姓名', width: 100},
+                {field: 'rsp_name', title: '推荐人职务', width: 100},
+                {field: 'rname', title: '推荐客户/供应商名称', width: 100},
+                {field: 'raddr', title: '客户/供应商地址', width: 150},
+                {field: 'rlname', title: '关联关系', width: 100},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator},
+                {field: 'rbusiness', title: '商业利益利害关系', width: 100, formatter: comUrl_dic1166.formator},
+                {field: 'rctrms', title: '管控措施', width: 100, formatter: comUrl_dic1141.formator}
+            ]
+        ];
+
+
+        var hr_employee_contract_cls = [
+            {field: 'con_number', title: '合同编号', width: 100},
+            {field: 'contract_name', title: '合同名称', width: 100},
+            {field: 'contract_type', title: '合同类型', width: 64, formatter: comUrl_dic758.formator},
+            {field: 'contractstat', title: '合同状态', width: 64, formatter: comUrl_dic764.formator},
+            {field: 'deadline_type', title: '期限类型', width: 80, formatter: comUrl_dic771.formator},
+            {field: 'begin_date', title: '开始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'end_date', title: '截止日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'signyears', title: '签订年限', width: 64},
+            {field: 'signreason', title: '签订/续签原因', width: 200},
+            {field: 'sign_number', title: '签订次数', width: 64}
+        ];
+
+        var hr_employee_rewards_cls = [
+            {field: 'rwnature', title: '激励性质', width: 100, formatter: comUrl_dic711.formator},
+            {field: 'rwtype', title: '激励类型', width: 100, formatter: comUrl_dic870.formator},
+            {field: 'rwamount', title: '激励金额', width: 100},
+            {field: 'rwscore', title: '激励绩效系数', width: 120},
+            {field: 'rwnote', title: '激励情况描述', width: 120},
+            {field: 'rwfile', title: '激励支持文件', width: 120},
+            {field: 'rwfilenum', title: '激励文件字号', width: 120},
+            {field: 'rewardtime', title: '激励生效日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'remark', title: '备注', width: 150}
+        ];
+        var hr_employee_transferinfo_cls = [
+            [
+                {field: 'tranfcmpdate', rowspan: 2, title: '调动日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                //{field: 'trantype', title: '调动方式', rowspan: 2, width: 64},
+                {field: 'tranftype1', title: '调动类型', rowspan: 2, width: 100, formatter: comUrl_dic719.formator},
+                {field: 'tranftype2', title: '调动性质', rowspan: 2, width: 100, formatter: comUrl_dic724.formator},
+
+
+                //{field: 'code', title: '表单编码', rowspan: 2, width: 100},
+                //{field: 'tranfreason', rowspan: 2, title: '调动原因', width: 120},
+                //{field: 'probation', rowspan: 2, title: '考察期', width: 64, formatter: comUrl_dic705.formator},
+                {title: "调动前", colspan: 5},
+                {title: "调动后", colspan: 5},
+                {field: 'remark', rowspan: 2, title: '备注', width: 100}
+            ],
+            [
+                {field: 'odorgname', title: '部门', width: 150},
+                {field: 'odsp_name', title: '职位', width: 64},
+                {field: 'oldhwc_namezl', title: '职类', width: 64},
+                {field: 'odhg_name', title: '职等', width: 64},
+                {field: 'odlv_num', title: '职级', width: 64},
+
+                {field: 'neworgname', title: '部门', width: 150},
+                {field: 'newsp_name', title: '职位', width: 64},
+                {field: 'newhwc_namezl', title: '职类', width: 64},
+                {field: 'newhg_name', title: '职等', width: 64},
+                {field: 'newlv_num', title: '职级', width: 64}
+            ]
+        ];
+
+        var hr_empptjob_appinfo_cls = [
+            [
+                // {field: 'applaydate', title: '申请时间', rowspan: 2, width: 120},
+                {field: 'startdate', title: '开始时间', rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'enddate', title: '结束时间', rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'issubsidy', title: '申请补贴', rowspan: 2, width: 64, formatter: comUrl_dic5.formator},
+                {title: '主职', colspan: 5},
+                {title: '兼职', colspan: 5}
+                //  {field: 'remark', title: '备注', rowspan: 2, width: 120}
+            ],
+            [
+                {field: 'odorgname', title: '部门', width: 100},
+                {field: 'odsp_name', title: '职位', width: 100},
+                {field: 'oldhwc_namezl', title: '职类', width: 64},
+                {field: 'odhg_name', title: '职等', width: 64},
+                {field: 'odlv_num', title: '职级', width: 64},
+
+                {field: 'neworgname', title: '部门', width: 100},
+                {field: 'newsp_name', title: '职位', width: 100},
+                {field: 'newhwc_namezl', title: '职类', width: 100},
+                {field: 'newhg_name', title: '职等', width: 64},
+                {field: 'newlv_num', title: '职级', width: 64}
+            ]
+        ];
+        var hr_leavejobinfo_cls = [
+            {field: 'ljappdate', title: '申请离职日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljfs', title: '离职方式', truefd: false, width: 64},
+            {field: 'ljtype1', title: '离职类别', width: 64, formatter: comUrl_dic779.formator},
+            {field: 'ljreason', title: '离职原因', width: 64},
+            {field: 'iscpst', title: '是否补偿', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'cpstarm', title: '补偿金额', width: 64},
+            {field: 'lzzylx', title: '劳资争议类型', truefd: false, width: 80},
+            {field: 'lzxyah', title: '劳资争议案号', truefd: false, width: 80},
+            {field: 'remark', title: '备注', width: 100}
+        ];
+        var hr_black_addinfo_cls = [
+            {field: 'bacode', title: '加封编码', width: 100},
+            {field: 'blackreason', title: '加封原因', width: 120},
+            {field: 'addappdate', title: '申请日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'adddate', title: '生效日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljcode', title: '离职编码', width: 80},
+            {field: 'ljdate', title: '离职日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljtype1', title: '离职类型', width: 64, formatter: comUrl_dic779.formator},
+            {field: 'ljreason', title: '离职原因', width: 150},
+            {field: 'sp_name', title: '离职职位', width: 80},
+            {field: 'remark', title: '备注', width: 100}
+        ];
+        var hr_black_delinfo_cls = [
+            {field: 'bdcode', title: '解封编码', width: 100},
+            {field: 'blackreason', title: '解封原因', width: 120},
+            {field: 'delappdate', title: '申请日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'deldate', title: '生效日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljcode', title: '离职编码', width: 80},
+            {field: 'ljdate', title: '离职日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljtype1', title: '离职类型', width: 64, formatter: comUrl_dic779.formator},
+            {field: 'ljreason', title: '离职原因', width: 150},
+            {field: 'sp_name', title: '离职职位', width: 80},
+            {field: 'remark', title: '备注', width: 100}
+        ];
+        var hrsa_chglg_cls = [
+            [
+                {field: 'scatype', title: '调薪类别', rowspan: 2, width: 70, formatter: comUrl_dic999.formator},
+                {title: '调薪前', colspan: 8},
+                {title: '调薪后', colspan: 7},
+                {field: 'sacrage', title: '调薪幅度', rowspan: 2, width: 70},
+                {field: 'chgdate', title: '调薪日期', rowspan: 2, width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'chgreason', title: '调薪原因', rowspan: 2, width: 70},
+                {field: 'remark', title: '备注', rowspan: 2, width: 64}
+            ],
+            [
+                {field: 'oldattendtype', title: '出勤类别', width: 60},
+                {field: 'oldcalsalarytype', title: '计薪方式', width: 60},
+                {field: 'oldposition_salary', title: '职位工资', width: 60},
+                {field: 'oldbase_salary', title: '基本工资', width: 60},
+                {field: 'oldtech_salary', title: '技能工资', width: 60},
+                {field: 'oldachi_salary', title: '技能工资', width: 60},
+                {field: 'oldtech_allowance', title: '技术津贴', width: 60},
+                {field: 'oldavg_salary', title: '平均工资', width: 60},
+                {field: 'newattendtype', title: '出勤类别', width: 60},
+                {field: 'newcalsalarytype', title: '计薪方式', width: 60},
+                {field: 'newposition_salary', title: '职位工资', width: 60},
+                {field: 'newbase_salary', title: '基本工资', width: 60},
+                {field: 'newtech_salary', title: '技能工资', width: 60},
+                {field: 'newachi_salary', title: '技能工资', width: 60},
+                {field: 'newtech_allowance', title: '技术津贴', width: 60}
+            ]
+        ];
+        var hrpm_rstyear_cls = [
+            [
+                {field: 'pmyear', title: '年份', rowspan: 2, width: 80},
+                {field: 'pmtype', title: '类别', rowspan: 2, width: 80, formatter: comUrl_dic1289.formator},
+                {title: '绩效系数', colspan: 13}
+            ], [
+                {field: 'm1', title: '1月', width: 80},
+                {field: 'm2', title: '2月', width: 80},
+                {field: 'm3', title: '3月', width: 80},
+                {field: 'm4', title: '4月', width: 80},
+                {field: 'm5', title: '5月', width: 80},
+                {field: 'm6', title: '6月', width: 80},
+                {field: 'm7', title: '7月', width: 80},
+                {field: 'm8', title: '8月', width: 80},
+                {field: 'm9', title: '9月', width: 80},
+                {field: 'm10', title: '10月', width: 80},
+                {field: 'm11', title: '11月', width: 80},
+                {field: 'm12', title: '12月', width: 80},
+                {field: 'mavg', title: '年度均值', width: 80}
+            ]
+        ];
+        //试用期考察期
+        var hr_emppt_ent_tran_try_cls = [
+            {field: 'rowtype', title: '类型', width: 80},
+            {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'tranfcmpdate', title: '调动日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'tranftype4', title: '调动类型', width: 80, formatter: comUrl_dic1189.formator},
+            {field: 'tranftype1', title: '调动类别', width: 80, formatter: comUrl_dic719.formator},
+            {field: 'probation', title: '试用期/考察期', width: 80},
+            {field: 'probationdate', title: '待转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'probationdatetrue', title: '实际转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'wfresult', title: '转正评审结果', formatter: comUrl_dic745.formator}
+        ];
+
+        var hasacc = false;
+
+        function gethasacc() {
+            /* var url = _serUrl + "/web/hr/sa/getHasAccess4Sa.co";
+             $ajaxjsonget(url, function (jsdata) {
+             hasacc = (jsdata.ha == "true");
+             if (!hasacc) {
+             $("#hrsa_chglg").parent().parent().parent().parent().css("display", "none");
+             }
+             }, function (err) {
+             alert(JSON.stringify(err));
+             }, false);*/
+        }
+
+
+        function $OnCorsairReady() {
+            gethasacc();
+            _jsbd = new TJSONBandingFrm();
+            _ipts = _jsbd.getInputArray("#baseinfodiv");
+            _jsbd.setAllInputReadOnly(_ipts.els_all, true);
+
+            $("#hr_employee_work").datagrid({columns: [hr_employee_works_cls]});
+
+            $("#hr_employee_leanexp").datagrid({columns: [hr_employee_leanexps_cls]});
+            $("#hr_employee_trainexp").datagrid({columns: [hr_employee_trainexps_cls]});
+            $("#hr_employee_trainwk").datagrid({columns: [hr_employee_trainwk_cls]});
+
+            $("#hr_employee_family").datagrid({columns: [hr_employee_familys_cls]});
+            //$("#hr_employee_relation").datagrid({columns: [hr_employee_relations_cls]});
+            $("#hrrl_declare_nb").datagrid({columns: hrrl_declare_nb_cls});
+            $("#hrrl_declare_wb").datagrid({columns: hrrl_declare_wb_cls});
+
+
+            $("#hr_employee_contract").datagrid({columns: [hr_employee_contract_cls]});
+            $("#hr_employee_reward").datagrid({columns: [hr_employee_rewards_cls]});
+
+            $("#hr_employee_transferinfo").datagrid({columns: hr_employee_transferinfo_cls});
+            $("#hr_empptjob_appinfo").datagrid({columns: hr_empptjob_appinfo_cls});
+            $("#hr_leavejobinfo").datagrid({columns: [hr_leavejobinfo_cls]});
+            $("#hr_black_addinfo").datagrid({columns: [hr_black_addinfo_cls]});
+            $("#hr_black_delinfo").datagrid({columns: [hr_black_delinfo_cls]});
+            $("#hrsa_chglg").datagrid({columns: hrsa_chglg_cls});
+            $("#hrpm_rstyear").datagrid({columns: hrpm_rstyear_cls});
+            $("#hr_emppt_ent_tran_try").datagrid({columns: [hr_emppt_ent_tran_try_cls]});
+
+            showempinfosbytype(tp);
+
+            getemployeebyid();
+        }
+
+        function showempinfosbytype(tp) {
+            if (tp == 0) return;
+            var tps = tp.split(",");
+            if (!tps) return;
+            if (tps.length == 0)return;
+            $("div[showtype]").css("display", "none");
+            for (var i = 0; i < tps.length; i++) {
+                if (!$isEmpty(tps[i])) {
+                    $("div[showtype=" + tps[i] + "]").css("display", "");
+                }
+            }
+        }
+
+        function getfieldnames(flds) {
+            var fds = "";
+            for (var i = 0; i < flds.length; i++) {
+                var fld = flds[i];
+                if (fld instanceof Array) {
+                    for (var j = 0; j < fld.length; j++) {
+                        var fd = fld[j];
+                        var fdname = getfdname(fd);
+                        if ((fdname) && (fdname.length > 0))
+                            fds = fds + fdname + ",";
+                    }
+                } else {
+                    var fdname = getfdname(fld);
+                    if ((fdname) && (fdname.length > 0))
+                        fds = fds + fdname + ",";
+                }
+            }
+            if (fds.length > 0)
+                fds = fds.substr(0, fds.length - 1);
+            return fds;
+        }
+
+        function getfdname(fd) {
+            if ((fd.field) && (fd.field.length > 0)) {
+                if (fd.truefd == undefined) {
+                    return fd.field;
+                } else {
+                    if (fd.truefd == true) {
+                        return fd.field;
+                    }
+                }
+            }
+        }
+
+
+        function getemployeebyid() {
+            var url = _serUrl + "/web/hr/rptempinfo/findEmpExtInfo.co?er_id=" + er_id; // + er_id;
+            var data = [];
+            data.push({lname: "hr_employee_work", fds: getfieldnames(hr_employee_works_cls)});
+            data.push({lname: "hr_employee_leanexp", fds: getfieldnames(hr_employee_leanexps_cls)});
+            data.push({lname: "hr_employee_trainexp", fds: getfieldnames(hr_employee_trainexps_cls)});
+            data.push({lname: "hr_employee_trainwk", fds: getfieldnames(hr_employee_trainwk_cls)});
+            data.push({lname: "hr_employee_family", fds: getfieldnames(hr_employee_familys_cls)});
+            //data.push({lname: "hr_employee_relation", fds: getfieldnames(hr_employee_relations_cls)});
+            data.push({lname: "hrrl_declare_nb", fds: getfieldnames(hrrl_declare_nb_cls)});
+            data.push({lname: "hrrl_declare_wb", fds: getfieldnames(hrrl_declare_wb_cls)});
+            data.push({lname: "hr_employee_contract", fds: getfieldnames(hr_employee_contract_cls)});
+            data.push({lname: "hr_employee_reward", fds: getfieldnames(hr_employee_rewards_cls)});
+            data.push({lname: "hr_employee_transferinfo", fds: getfieldnames(hr_employee_transferinfo_cls)});
+            data.push({lname: "hr_empptjob_appinfo", fds: getfieldnames(hr_empptjob_appinfo_cls)});
+            data.push({lname: "hr_leavejobinfo", fds: getfieldnames(hr_leavejobinfo_cls)});
+            data.push({lname: "hr_black_addinfo", fds: getfieldnames(hr_black_addinfo_cls)});
+            data.push({lname: "hr_black_delinfo", fds: getfieldnames(hr_black_delinfo_cls)});
+            data.push({lname: "hrsa_chglg", fds: getfieldnames(hrsa_chglg_cls)});
+            data.push({lname: "hrpm_rstyear", fds: getfieldnames(hrpm_rstyear_cls)});
+            data.push({lname: "hr_emppt_ent_tran_try", fds: getfieldnames(hr_emppt_ent_tran_try_cls)});
+
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                jsondata.birthday = formatdateyyyymmdd(jsondata.birthday);
+                jsondata.hiredday = formatdateyyyymmdd(jsondata.hiredday);
+                jsondata.promotionday = formatdateyyyymmdd(jsondata.promotionday);
+
+                _jsbd.fromJsonData(_ipts.els_all, jsondata);
+                setData2Grid(jsondata, "hr_employee_work");//工作记录
+                setData2Grid(jsondata, "hr_employee_reward");//激励记录
+                //setData2Grid(jsondata, "hr_employee_relation");//关联关系
+                setData2Grid(jsondata, "hrrl_declare_nb");//关联关系
+                setData2Grid(jsondata, "hrrl_declare_wb");//关联关系
+                setData2Grid(jsondata, "hr_employee_contract");//合同信息
+                setData2Grid(jsondata, "hr_employee_leanexp");//教育经历
+                setData2Grid(jsondata, "hr_employee_family");//家庭成员
+                setData2Grid(jsondata, "hr_employee_trainexp");//培训经历
+                setData2Grid(jsondata, "hr_employee_transferinfo");//调动记录
+                dealeaveData(jsondata.hr_leavejobinfo);//处理离职数据
+                setData2Grid(jsondata, "hr_leavejobinfo");//离职记录
+                setData2Grid(jsondata, "hr_empptjob_appinfo");//兼职记录
+                setData2Grid(jsondata, "hr_employee_trainwk");//在职培训
+                setData2Grid(jsondata, "hrsa_chglg");//调薪记录
+                setData2Grid(jsondata, "hrpm_rstyear");//调薪记录
+                setData2Grid(jsondata, "hr_black_addinfo");//黑名单加封记录
+                setData2Grid(jsondata, "hr_black_delinfo");//黑名单解封记录
+                setData2Grid(jsondata, "hr_emppt_ent_tran_try");//转正记录
+                if (_callback)
+                    _callback(window);
+                if ($isEmpty(jsondata.avatar_id1))
+                    showpic(jsondata.avatar_id2);
+                else
+                    showpic(jsondata.avatar_id1);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function formatdateyyyymmdd(dt) {
+            if ($isEmpty(dt)) return undefined;
+            try {
+                return $dateformattostrrYYYY_MM_DD((new Date()).fromStr(dt));
+            } catch (error) {
+                return undefined;
+            }
+        }
+
+        function setData2Grid(jsondata, fdname) {
+            if (!jsondata[fdname]) return;
+            if (jsondata[fdname].length == 0) {
+                //$("#" + fdname).parent().parent().parent().parent().remove();
+            } else {
+                $("#" + fdname).datagrid("loadData", jsondata[fdname]);
+                $("#" + fdname).datagrid({data: jsondata[fdname]});
+            }
+        }
+
+        function dealeaveData(lvs) {
+            if (!lvs) return;
+            for (var i = 0; i < lvs.length; i++) {
+                var lv = lvs[i];
+                var ljtype1 = parseInt(lv.ljtype1);
+                var ljfs = "";
+                if ((ljtype1 == 1) || (ljtype1 == 2)) {
+                    ljfs = "主动离职";
+                }
+                if ((ljtype1 == 3) || (ljtype1 == 4)) {
+                    ljfs = "被动离职";
+                }
+                if ((ljtype1 == 5) || (ljtype1 == 6)) {
+                    ljfs = "协商离职";
+                }
+                lv.ljfs = ljfs;
+                var lzzylx = "";
+                if (parseInt(lv.iscpt) == 1)
+                    lzzylx = lzzylx + "投诉";
+                if (parseInt(lv.isabrt) == 1)
+                    lzzylx = lzzylx + "仲裁";
+                if (parseInt(lv.islawsuit) == 1)
+                    lzzylx = lzzylx + "诉讼";
+                if (lzzylx.length == 0)
+                    lzzylx = "无";
+                lv.lzzylx = lzzylx;
+                if ((lv.casenum) && (lv.casenum.length > 0))
+                    lv.lzxyah = lv.casenum;
+                else
+                    lv.lzxyah = "无";
+            }
+        }
+
+
+        function showpic(pfid) {
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#img_avatar_id").attr("src", url);
+            } else
+                $("#img_avatar_id").attr("src", "");
+        }
+        function nofind() {
+            $("#img_avatar_id").attr("src", "../img/timg.jpg");
+            $("#img_avatar_id").unbind();
+        }
+    </script>
+    <style type="text/css">
+        #baseinfodiv table td[cjoptions] {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div id="baseinfodiv" style="width:98%;height:auto;padding:5px;font-size: 12px">
+    <table cellspacing="0" cellpadding="1" border="0" style="text-align: center;table-layout: fixed;border-collapse: collapse">
+        <tr style="font-weight: 700; background-color: #D3D3D3;text-align: left">
+            <td class="emptd" colspan="20" style="margin-bottom: 2px;">基本信息</td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'employee_code'">工号</td>
+            <td class="emptd">
+                <input id="employee_code" class="corsair-label" cjoptions="fdname:'employee_code',required:true,readonly:true"
+                       style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'employee_name'">姓名</td>
+            <td class="emptd">
+                <input id="employee_name" class="corsair-label" cjoptions="fdname:'employee_name',required:true,readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'usedname'">曾用名</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'usedname',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'english_name'">英文名</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'english_name',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'sex'">性别</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'sex',comidx:'dic81',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'birthday'">出生日期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'birthday',required:true,formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="">年龄</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'old',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" rowspan="5" style="">
+                <div style="width: 95%;height: 95%;margin: 5px;background-color: #3d3d3d">
+                    <img id="img_avatar_id" cjoptions="fdname:'avatar_id'"
+                         style="line-height: 98%;width: 80px;height: auto;text-align: center"
+                         onclick="showpicWindow()"
+                         onerror="nofind();"
+                         src="../img/timg.jpg">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'married'">婚姻状况</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'married',comidx:'dic714',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'pldcp'">政治面貌</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'pldcp',comidx:'dic495',readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'nationality'">国籍</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'nationality',readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'nativeplace'">籍贯</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'nativeplace',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'nation'">民族</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'nation',required:true,comidx:'dic797',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'id_number'">身份证/护照号</td>
+            <td class="emptd" colspan="3">
+                <input class="corsair-label" cjoptions="fdname:'id_number',required:true,readonly:true"
+                       style="height:20px;width: 100%"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'sign_date'">签发日期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'sign_date',formatter:$dateformattostrrYYYY_MM_DD"
+                       style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'expired_date'">签发到期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'expired_date',formatter:$dateformattostrrYYYY_MM_DD"
+                       style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'sign_org'">发证机关</td>
+            <td class="emptd" colspan="3">
+                <input class="corsair-label" cjoptions="fdname:'sign_org'" style="height:20px;width: 100%"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'registeraddress'">户籍住址</td>
+            <td class="emptd" colspan="5">
+                <input class="corsair-label" cjoptions="fdname:'registeraddress',readonly:true" style="height:20px;width: 100%"/></td>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'registertype'">户籍类型</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'registertype',comidx:'dic702',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'degree'">学历</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'degree',comidx:'dic84',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'major'">专业</td>
+            <td class="emptd" colspan="3">
+                <input class="corsair-label" cjoptions="fdname:'major',readonly:true" style="height:20px;width: 100%"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'address'">现住址</td>
+            <td class="emptd" colspan="5">
+                <input class="corsair-label" cjoptions="fdname:'address',readonly:true" style="height:20px;width: 100%"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'hiredday'">入职日期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'hiredday',required:true,formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'promotionday'" style="">转正日期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'promotionday',required:true,formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'probation'" style="">试用期</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'probation',required:true,comidx:'dic705',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'height'">身高</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'height',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'bloodtype'">血型</td>
+            <td class="emptd"><input class="corsair-label"
+                                     cjoptions="fdname:'bloodtype',editable:false,comidx:'dic697'"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'health'">健康情况</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'health',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'medicalhistory'">过往病史</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'medicalhistory',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'bwday'">参加工作时间</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'bwday',formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                       style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'workym'">司龄</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'workym',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'orgname'">部门</td>
+            <td class="emptd" colspan="3">
+                <input class="corsair-label" cjoptions="fdname:'orgname',required:true,readonly:true" style="height:20px;width: 100%"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'sp_name'">职位</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'sp_name',required:true,readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'hg_name'">职等</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'hg_name',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'lv_num'">职级</td>
+            <td class="emptd">
+                <input class="corsair-label" cjoptions="fdname:'lv_num',readonly:true" style="height:20px;width: 80px"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'hwc_namezq'">职群</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'hwc_namezq',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'hwc_namezz'">职种</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'hwc_namezz',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'emnature'">职位性质</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'emnature',editable:false,comidx:'dic913'"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'pay_way'">计薪方式</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'pay_way',readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'iskey'">关键岗位</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'iskey',readonly:true,comidx:'dic5',readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'sscurty_addr'">社保购买地</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'sscurty_addr',readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+            <td class="emptd" cjoptions="fdname:'sscurty_startdate'">社保开始时间</td>
+            <td class="emptd"><input class="corsair-label"
+                                     cjoptions="fdname:'sscurty_startdate',formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                                     style="height:20px;width: 80px"/></td>
+        </tr>
+        <tr>
+
+        </tr>
+        <tr style="font-weight: 700; background-color: #D3D3D3;text-align: left;margin-bottom: 5px;margin-top: 5px">
+            <td class="emptd" colspan="20">联系信息</td>
+        </tr>
+        <tr>
+            <td class="emptd" cjoptions="fdname:'telphone'">联系电话</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'telphone',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+            <td class="emptd" cjoptions="fdname:'email'">邮箱</td>
+            <td class="emptd" colspan="3"><input class="corsair-label" cjoptions="fdname:'email',readonly:true"
+                                                 style="height:20px;width: 100%"/></td>
+            <td class="emptd" cjoptions="fdname:'urgencycontact'">紧急联系人</td>
+            <td class="emptd" colspan="3"><input class="corsair-label" cjoptions="fdname:'urgencycontact',readonly:true"
+                                                 style="height:20px;width: 100%"/></td>
+            <td class="emptd" cjoptions="fdname:'cellphone'">紧急联系电话</td>
+            <td class="emptd"><input class="corsair-label" cjoptions="fdname:'cellphone',readonly:true"
+                                     style="height:20px;width: 80px"/>
+            </td>
+        </tr>
+    </table>
+
+    <div class="empinfo_grid">
+        <div showtype="6">
+            <div class="easyui-panel" title="教育经历" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_leanexp" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_leanexp'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="2">
+            <div class="easyui-panel" title="工作经历" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_work" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_work'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="3">
+            <div class="easyui-panel" title="家庭成员" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_family" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_family'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="4">
+            <div class="easyui-panel" title="内部关联关系" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hrrl_declare_nb" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hrrl_declare_nb'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="4">
+            <div class="easyui-panel" title="外部关联关系" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hrrl_declare_wb" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hrrl_declare_wb'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="5">
+            <div class="easyui-panel" title="合同信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_contract" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_contract'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+
+        <div showtype="7">
+            <div class="easyui-panel" title="入职前培训经历" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_trainexp" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_trainexp'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="8">
+            <div class="easyui-panel" title="在职培训经历" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_trainwk" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_trainwk'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+
+        <div showtype="9">
+            <div class="easyui-panel" title="激励记录" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_reward" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_reward'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="10">
+            <div class="easyui-panel" title=" 调动记录" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_employee_transferinfo" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_employee_transferinfo'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="11">
+            <div class="easyui-panel" title=" 兼职信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_empptjob_appinfo" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_empptjob_appinfo'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="99">
+            <div class="easyui-panel" title=" 薪资信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hrsa_chglg" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hrsa_chglg'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="12">
+            <div class="easyui-panel" title=" 绩效信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hrpm_rstyear" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hrpm_rstyear'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="15">
+            <div class="easyui-panel" title="转正信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_emppt_ent_tran_try" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_emppt_ent_tran_try'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="13">
+            <div class="easyui-panel" title=" 离职信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_leavejobinfo" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_leavejobinfo'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+        <div showtype="14">
+            <div class="easyui-panel" title=" 黑名单加封信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_black_addinfo" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_black_addinfo'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+        <div showtype="14">
+            <div class="easyui-panel" title="黑名单解封信息" style="width:98%;height:auto;"
+                 data-options="collapsible:true,headerCls:'panheaderCls'">
+                <table id="hr_black_delinfo" class="easyui-datagrid" style="min-height: 80px"
+                       cjoptions="fdname:'hr_black_delinfo'"
+                       data-options="border:false,singleSelect: true">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

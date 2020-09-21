@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1117",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1117",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1120",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1120",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1133",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1133",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'lscode', title: '编码', width: 120},
+            {field: 'rlname', title: '关联关系', width: 100},
+            {field: 'rllabel_b', title: '关联人称谓', width: 100},
+            {field: 'rllabel_a', title: '关联人自称', width: 100},
+            {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator},
+            {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator},
+            {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator},
+            {field: 'rlext', title: '说明', width: 150},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150, findtype: 'datetime'},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hrrl_standlib",
+            JPAIdField: "slid",
+            allowAtt: false,
+            allowWF: false,
+            allow_expt_list: true,
+            autoFind: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '950px',//窗体宽度  htMLPop有效
+            windowHeight: '450px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '隐藏/显示不可用',
+                    iconCls: 'icon-task',
+                    handler: function () {
+                        hidediusable();
+                    }
+                },
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后\
+
+            },
+            onFind: function (parms) {
+
+            },
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == "rltype1") {
+                    reset_rltype2();
+                }
+                if (fdname == "rltype2") {
+                    reset_hrvlevel();
+                }
+            }
+        };
+
+        function reset_rltype2() {
+            var rltype1 = mainline.getFieldValue("rltype1");
+            rltype1 = parseInt(rltype1);
+            if (isNaN(rltype1)) return;//不是数字
+            var fdrltype2 = mainline.getField("rltype2");
+            if (rltype1 == 1) {
+                fdrltype2.combobox($getNewComboxParmsByComUrl(comUrl_dic1120, [1, 2, 3, 4, 5, 6, 7, 8, 9]));
+            } else if (rltype1 == 2) {
+                fdrltype2.combobox($getNewComboxParmsByComUrl(comUrl_dic1120, [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]));
+            }
+        }
+
+        function reset_hrvlevel() {
+            var rltype2 = mainline.getFieldValue("rltype2");
+            rltype2 = parseInt(rltype2);
+            if (isNaN(rltype2)) return;//不是数字
+            var fdhrvlevel = mainline.getField("hrvlevel");
+            switch (rltype2) {
+                case 1://
+                    fdhrvlevel.combobox($getNewComboxParmsByComUrl(comUrl_dic1133, [1, 2, 3, 4, 5]));
+                    break;
+                case 2://
+                case 3:
+                    fdhrvlevel.combobox($getNewComboxParmsByComUrl(comUrl_dic1133, [1, 2, 3, 4]));
+                    break;
+                case 10://
+                case 11:
+                case 12://
+                case 13:
+                    fdhrvlevel.combobox($getNewComboxParmsByComUrl(comUrl_dic1133, [1, 2]));
+                    break;
+                case 4://
+                case 15:
+                case 16:
+                    fdhrvlevel.combobox($getNewComboxParmsByComUrl(comUrl_dic1133, [1]));
+                    fdhrvlevel.combobox("setValue", 1);
+                    break;
+            }
+        }
+
+        var ishide = false;
+        function hidediusable() {
+            ishide = !ishide;
+            var parms = (ishide) ? [{parmname: "usable", reloper: "=", parmvalue: "1"}] : [];
+            mainline.do_find(parms);
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/rlsl/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'lscode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lscode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'usable'">有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5'"
+                       data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'rlname'">关联关系</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rlname',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rllabel_b'">关联人称谓</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rllabel_b',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rllabel_a'">关联人自称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rllabel_a',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'rltype1'">关联关系类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rltype1',crequired:true,comidx:'dic1117'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'rltype2'">关联关系类别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rltype2',crequired:true,comidx:'dic1120'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hrvlevel'">关联关系级别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hrvlevel',crequired:true,comidx:'dic1133'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'rlext'">说明</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'rlext',crequired:true"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

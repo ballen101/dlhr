@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/shwmodmenu.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function onCModTreeMenu(e, node) {
+            e.preventDefault();
+            $(this).tree('select', node.target);
+            $('#modtree_menu').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+        }
+
+        function onCMenuTreeMenu(e, node) {
+            e.preventDefault();
+            $(this).tree('select', node.target);
+            $('#menutree_menu').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+        }
+    </script>
+    <style type="text/css">
+        .coinfotb td {
+            word-break: break-all; /*必须*/
+        }
+
+        input[type=checkbox].css-checkbox {
+            position: absolute;
+            z-index: -1000;
+            left: -1000px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            width: 1px;
+            margin: -1px;
+            padding: 0;
+            border: 0;
+        }
+
+        input[type=checkbox].css-checkbox + label.css-label {
+            padding-left: 19px;
+            height: 14px;
+            display: inline-block;
+            line-height: 14px;
+            background-repeat: no-repeat;
+            background-position: 0 0;
+            font-size: 14px;
+            vertical-align: middle;
+            cursor: pointer;
+
+        }
+
+        input[type=checkbox].css-checkbox:checked + label.css-label {
+            background-position: 0 -14px;
+        }
+
+        label.css-label {
+            background-image: url(http://csscheckbox.com/checkboxes/u/csscheckbox_d34819d2b01494a7b7c3fae70f1dbb78.png);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div data-options="region:'west',border:false,split:true,title:'系统模块',collapsible:false"
+     style="width: 250px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+    <div class="easyui-panel" data-options="border:false"
+         style="padding:0px;width: 100%;background-color: #E5EFFF;border-bottom:1px solid #95B8E7 ">
+        <a href="javascript:void(0)" onclick="modmenu_action(1,$C.action.New)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add1',plain:true">一级</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(1,$C.action.New2)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add2',plain:true">二级</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(1,$C.action.Edit)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-edit',plain:true">编辑</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(1,$C.action.Del)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-remove',plain:true">删除</a>
+    </div>
+    <ul id="modtree" class="easyui-tree"
+        data-options="animate:true,lines:true,onContextMenu:onCModTreeMenu,onClick: modclick,
+        onDblClick:modDClick"></ul>
+</div>
+<div data-options="region:'center',border:false,title:'模块菜单'">
+    <div class="easyui-panel" data-options="border:false"
+         style="padding:0px;width: 100%;background-color: #E5EFFF;border-bottom:1px solid #95B8E7 ">
+        <a href="javascript:void(0)" onclick="modmenu_action(2,$C.action.New)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add1',plain:true">一级</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(2,$C.action.New2)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-add2',plain:true">二级</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(2,$C.action.Edit)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-edit',plain:true">编辑</a>
+        <a href="javascript:void(0)" onclick="modmenu_action(2,$C.action.Del)" class="easyui-linkbutton"
+           data-options="iconCls:'icon-remove',plain:true">删除</a>
+    </div>
+    <ul id="menutree" class="easyui-tree"
+        data-options="animate:true,lines:true,onContextMenu:onCMenuTreeMenu,
+        onDblClick:menuDClick"></ul>
+</div>
+
+<div id="modtree_menu" class="easyui-menu" style="width:120px;">
+    <div onclick="modmenu_action(1,$C.action.New)" data-options="iconCls:'icon-add'">添加一级模块</div>
+    <div onclick="modmenu_action(1,$C.action.New2)" data-options="iconCls:'icon-add'">添加二级模块</div>
+    <div onclick="modmenu_action(1,$C.action.Edit)" data-options="iconCls:'icon-edit'">编辑模块</div>
+    <div class="menu-sep"></div>
+    <div onclick="modmenu_action(1,$C.action.Del)" data-options="iconCls:'icon-remove'">删除模块</div>
+</div>
+
+<div id="menutree_menu" class="easyui-menu" data-options="onShow:onmenutreemenushow" style="width:120px;">
+    <div onclick="modmenu_action(2,$C.action.New)" data-options="iconCls:'icon-add'">添加一级菜单</div>
+    <div onclick="modmenu_action(2,$C.action.New2)" data-options="iconCls:'icon-add'">添加二级菜单</div>
+    <div onclick="modmenu_action(2,$C.action.Edit)" data-options="iconCls:'icon-edit'">编辑菜单</div>
+    <div class="menu-sep"></div>
+    <div onclick="modmenu_action(2,$C.action.Del)" data-options="iconCls:'icon-remove'">删除菜单</div>
+    <div class="menu-sep"></div>
+    <div onclick="copyMCos()" data-options="iconCls:'icon-copy'">复制CO权限</div>
+    <div onclick="pastMCos()" data-options="iconCls:'icon-paste'">粘贴CO权限</div>
+</div>
+
+
+<div id="mod_info_w" class="easyui-window" title="模块信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:400px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:5px;margin: 0px auto">
+            <table id="mod_form" border="0" style="width: 100%;height: 100%">
+                <tr>
+                    <td>编码</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'modcode'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>模块名称</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'modname'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>flag</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'flag'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>modtag</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'modtag'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>序号</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'sortindex'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>可用</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'usesable',dicgpid:5"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>系统内建</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'issystem',dicgpid:5"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>子模块</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'isitem',dicgpid:5" readonly="readonly"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr/>
+                <tr>
+                    <td>窗体类</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'frmclass'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>窗体标题</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'frmcaption'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>BPL</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'bplname'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>win图标</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'imageindex'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>跳转地址</td>
+                    <td colspan="3">
+                        <input class="easyui-textbox" cjoptions="fdname:'refaddr'"
+                               style="height:20px;width: 390px"/>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>web路径</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'clas'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>web图标</td>
+                    <td>
+                        <input id="modidpath_id" class="easyui-textbox" cjoptions="fdname:'modidpath'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>创建时间</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                               style="height:20px;width: 150px" readonly="readonly"
+                               data-options="formatter:$dateformattostr"/></td>
+                    <td>创建人</td>
+                    <td><input class="easyui-textbox" readonly="readonly"
+                               cjoptions="fdname:'creator'"
+                               style="height:20px;width: 150px"
+                               data-options=""/></td>
+                </tr>
+                <tr>
+                    <td>更新时间</td>
+                    <td><input class="easyui-datetimebox" readonly="readonly"
+                               cjoptions="fdname:'updatetime'"
+                               style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                    </td>
+                    <td>更新人</td>
+                    <td><input class="easyui-textbox" readonly="readonly"
+                               cjoptions="fdname:'updator'"
+                               style="height:20px;width: 150px"/></td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td colspan="3">
+                        <input class="easyui-textbox" cjoptions="fdname:'note'"
+                               style="height:20px;width: 390px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>简体中文</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language1'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>繁体中文</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language2'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>英文</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language3'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="menu_info_w" class="easyui-window" title="菜单信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:450px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="tabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px;">
+                    <table id="menu_form" border="0" style="width: 100%;height: 100%">
+                        <tr>
+                            <td>编码</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'menucode'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>名称</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'menuname'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>flag</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'flag'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>menutag</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'menutag'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>序号</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'sortindex'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>可用</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'usesable',dicgpid:2"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>类别</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'clas',dicgpid:58"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>系统内建</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'issystem',dicgpid:5"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr/>
+                        <tr>
+                            <td>编辑</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'isedit',dicgpid:5"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>审批</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'issubmit',dicgpid:5"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>浏览</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'isview',dicgpid:5"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>变更</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'isupdate',dicgpid:5"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>编辑类型</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'frmedttype',dicgpid:241"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>显示类型</td>
+                            <td colspan="1">
+                                <input class="easyui-textbox" cjoptions="fdname:'showtype',dicgpid:622"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>web路径</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'weburl'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>web图标</td>
+                            <td>
+                                <input id="menuidpath_id" class="easyui-textbox" cjoptions="fdname:'menuidpath'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'note'"
+                                       style="height:20px;width: 390px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>简体中文</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'language1'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>繁体中文</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'language2'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>英文</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'language3'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>平台</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'flatform',dicgpid:581"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="CO权限" style="padding:5px">
+                    <div class="easyui-layout" data-options="fit:true,border:false">
+                        <div data-options="region:'west',split:true" style="width:40%;">
+                            <ul id="cotreeid" class="easyui-tree"
+                                data-options="animate:true,lines:true,checkbox:true,cascadeCheck:true,onSelect: onCoTreeSelect,
+                                onContextMenu: function(e,node){
+                                  e.preventDefault();
+                                  $(this).tree('select',node.target);
+                                  $('#cotreemm').menu('show',{
+                                     left: e.pageX,
+                                     top: e.pageY
+                                  });
+                                }">
+                            </ul>
+                        </div>
+                        <div data-options="region:'center'" style="padding:5px;background:#eee;">
+                            <table class="coinfotb">
+                                <tr>
+                                    <td style="width: 50px">method:</td>
+                                    <td id="methodid"></td>
+                                </tr>
+                                <tr>
+                                    <td>auth:</td>
+                                    <td id="authid"></td>
+                                </tr>
+                                <tr>
+                                    <td>note:</td>
+                                    <td id="noteid"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

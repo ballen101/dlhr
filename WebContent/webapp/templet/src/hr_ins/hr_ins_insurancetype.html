@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_ins">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1090",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1090",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic916",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=916",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1169",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1169",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1220",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1220",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic901",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=901",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic913",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=913",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1234",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1234",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1220",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1220",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'insit_code',title:'保险编号',width:130},
+            {field:'ins_type',title:'保险类型',width:100, formatter: comUrl_dic1220.formator},
+            {field:'insname',title:'保险名称',width:150},
+           // {field:'insurancebase',title:'缴费基数',width:64},
+            {field:'payment',title:'缴费总额',width:64},
+            {field:'buydate',title:'调整月份',width:100, formatter: $fieldDateFormatorYYYY_MM},
+           // {field:'emnature',title:'职位性质',width:64, formatter: comUrl_dic913.formator},
+           // {field:'pay_way',title:'计薪方式',width:64, formatter: comUrl_dic901.formator},
+          //  {field:'buy_type',title:'参保性质',width:64, formatter: comUrl_dic1234.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 80},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 80},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+            {field:'linsurance',title:'保险名称',width:100,editor:'text'},
+            {field:'paybase',title:'缴费基数',width:64,editor:'text'},
+            {field:'lcomratio',title:'单位缴费占比',width:100,editor:'text', formatter:persentformator},
+            {field:'lcompay',title:'单位缴费金额',width:100},
+            {field:'lselfratio',title:'个人缴费占比',width:100,editor:'text', formatter:persentformator},
+            {field:'lselfpay',title:'个人缴费金额',width:100},
+            {field:'lpayment',title:'缴纳总金额',width:100},
+            {field:'remark',title:'备注',width:150,editor:'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.insurance.entity.Hr_ins_insurancetype",
+            JPAIdField: "insit_id",
+            allowAtt: true,
+            allowWF: true,
+              gdLinesName: 'hr_ins_insurancetype_lines',   //行Grid ID对应到json 明细行属性 名
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "险种设置",
+            allow_expt_list: true,
+             datainfo_line_title: "包含险项",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allowEmptyLine: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+                $parserDatebox2YearMonth(mainline.getField("buydate"));
+            },
+            onNew: function (jsondata) {
+               // jsondata.cttype = 1;
+               // jsondata.hygienelicense = 1;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+                parms.order = " updatetime desc";
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == "hygienelicense") ) {
+                    var hltype = mainline.getFieldValue("hygienelicense");
+                    hltype = parseInt(hltype);
+                    if(hltype==1){
+                        mainline.setReadOnly("licensebg", false);
+                        mainline.setReadOnly("licenseed", false);
+                    }else {
+                        mainline.setReadOnly("licensebg", true);
+                        mainline.setFieldValue("licensebg", undefined);
+
+                        mainline.setReadOnly("licenseed", true);
+                        mainline.setFieldValue("licenseed", undefined);
+                    }
+                }
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+                var base=row.paybase;
+                if(base&&(base.length>0)){
+                    base=parseFloat(base);
+                }else{
+                    base=0;
+                }
+                var instype = mainline.getFieldValue("ins_type");
+                instype = parseInt(instype);
+                if(instype==2){
+                    mainline.setFieldValue("insurancebase", base);
+                }
+                if(instype==1){
+                    mainline.setFieldValue("insurancebase", undefined);
+                }
+                if (isNaN(row.lselfratio) || (row.lselfratio == undefined) || (row.lselfratio.length == 0)){
+                    row.lselfratio = 0;
+                    row.lselfpay=0;
+                }
+                if (isNaN(row.lcomratio) || (row.lcomratio == undefined) || (row.lcomratio.length == 0)) {
+                    row.lcomratio = 0;
+                    row.lcompay = 0;
+                }
+
+                var paybase = changes.paybase;
+                if (paybase && (paybase.length > 0)) {
+                    paybase=parseFloat(paybase);
+                    if(row.lselfratio.length>0){
+                        var selfpay=(paybase * parseFloat(row.lselfratio))/100;
+                        selfpay=Math.round(parseFloat(selfpay)*100)/100;
+                        row.lselfpay=selfpay;
+                    }
+                    if(row.lcomratio.length>0){
+                        var compay=(paybase * parseFloat(row.lcomratio))/100;
+                        compay=Math.round(parseFloat(compay)*100)/100;
+                        row.lcompay=compay;
+                    }
+                }
+
+                var lsr = changes.lselfratio;
+                if (lsr && (lsr.length > 0)) {
+                    lsr=parseFloat(lsr);
+                    var selfpay=(base * lsr)/100;
+                    selfpay=Math.round(parseFloat(selfpay)*100)/100;
+                    row.lselfpay=selfpay;
+                }
+
+                var lcr = changes.lcomratio;
+                if (lcr && (lcr.length > 0)) {
+                    lcr=parseFloat(lcr);
+                    var compay=(base * lcr)/100;
+                    compay=Math.round(parseFloat(compay)*100)/100;
+                    row.lcompay=compay;
+                }
+                var total=parseFloat(row.lselfpay)+ parseFloat(row.lcompay);
+                row.lpayment=Math.round(parseFloat(total)*100)/100;
+                if (isNaN(row.lpayment) || (row.lpayment == undefined) || (row.lpayment.length == 0))  row.lpayment = 0;
+                $('#detail_main_grid_id').datagrid('refreshRow', index);
+                totalcount();
+            },
+            afterClearGrid:function (filter){
+                mainline.setFieldValue("payment", 0);
+                mainline.setFieldValue("selfratio", 0);
+                mainline.setFieldValue("selfpay", 0);
+                mainline.setFieldValue("comratio", 0);
+                mainline.setFieldValue("compay", 0);
+                return true;
+            },
+            onRemoveLine: function (rowdata) {//点击删除行
+                deletecount();
+                return true;//return false 将不删除
+            }
+        };
+
+        function totalcount(){
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            var totalmoney = 0;
+            var sr = 0;
+            var sp = 0;
+            var cr = 0;
+            var cp = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                totalmoney = $accAdd(totalmoney,parseFloat(row.lpayment));
+                sr = $accAdd(sr,parseFloat(row.lselfratio));
+                sp = $accAdd(sp,parseFloat(row.lselfpay));
+                cr = $accAdd(cr,parseFloat(row.lcomratio));
+                cp = $accAdd(cp,parseFloat(row.lcompay));
+            }
+            mainline.setFieldValue("payment", totalmoney);
+            mainline.setFieldValue("selfratio", sr);
+            mainline.setFieldValue("selfpay", sp);
+            mainline.setFieldValue("comratio", cr);
+            mainline.setFieldValue("compay", cp);
+        }
+
+        function deletecount(){
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            var selectrow = $("#detail_main_grid_id").datagrid("getSelected");
+            var index = $("#detail_main_grid_id").datagrid("getRowIndex", selectrow);
+            var totalmoney = 0;
+            var sr = 0;
+            var sp = 0;
+            var cr = 0;
+            var cp = 0;
+            for (var i = 0; i < rows.length; i++) {
+                if (i == index)continue;
+                var row = rows[i];
+                totalmoney = $accAdd(totalmoney,parseFloat(row.lpayment));
+                sr = $accAdd(sr,parseFloat(row.lselfratio));
+                sp = $accAdd(sp,parseFloat(row.lselfpay));
+                cr = $accAdd(cr,parseFloat(row.lcomratio));
+                cp = $accAdd(cp,parseFloat(row.lcompay));
+            }
+            mainline.setFieldValue("payment", totalmoney);
+            mainline.setFieldValue("selfratio", sr);
+            mainline.setFieldValue("selfpay", sp);
+            mainline.setFieldValue("comratio", cr);
+            mainline.setFieldValue("compay", cp);
+            var instype = mainline.getFieldValue("ins_type");
+            instype = parseInt(instype);
+            if(instype==2){
+                mainline.setFieldValue("insurancebase", undefined);
+            }
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrins/insurance/impinstypelineexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.linsurance], ["linsurance"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                        totalcount();
+                    });
+        }
+        function persentformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value+"%";
+            }else{
+                dt=znum+"%";
+            }
+            return dt;
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'insit_code'">保险编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'insit_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ins_type'">保险类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ins_type',comidx:'dic1220',editable:false,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'insname'">保险名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'insname',crequired:true" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'buydate'">调整月份</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'buydate',formatter:$dateformattostrrYYYY_MM_DD,crequired:true,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'compay'">单位缴费金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compay',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'selfpay'">个人缴费金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'selfpay',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'payment'">缴费总额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'payment',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

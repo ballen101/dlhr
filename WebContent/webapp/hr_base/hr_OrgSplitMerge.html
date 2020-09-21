@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_base">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/color.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrls = [ { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        function $OnCorsairReady() {
+            initui();
+        }
+        function initui() {
+            $("#sorggrid").datagrid({
+                columns: [[
+                    {
+                        field: 'caption',
+                        title: '名称',
+                        width: 100,
+                        editor: 'text',
+                        formatter: function (value, row, index) {
+                            if (row.otype == 1) {
+                                var icocls = "icon-folder";
+                            } else {
+                                var icocls = "icon-user";
+                            }
+                            return "<span class='" + icocls + "' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span>" + value;
+                        }
+                    }
+                ]]
+            });
+            $("#dorggrid1").datagrid({
+                columns: [[
+                    {
+                        field: 'caption',
+                        title: '名称',
+                        width: 100,
+                        editor: 'text',
+                        formatter: function (value, row, index) {
+                            if (row.otype == 1) {
+                                var icocls = "icon-folder";
+                            } else {
+                                var icocls = "icon-user";
+                            }
+                            return "<span class='" + icocls + "' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span>" + value;
+                        }
+                    }
+                ]]
+            });
+        }
+
+        var sourceorg = null, destorg = null;
+        var select_Org_pw = undefined;
+        function onSelectSOrg() {
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        sourceorg = rows[0];
+                        //alert(JSON.stringify(sourceorg));
+                        $("#spanel").panel({title: sourceorg.extorgname});
+                        getOrgChldorgsemps(sourceorg);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show(false);
+        }
+
+        var select_DOrg_pw = undefined;
+        function selectDOrg() {
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_DOrg_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        destorg = rows[0];
+                        $("#dpanel1").panel({title: destorg.extorgname});
+                    }
+                }
+            };
+            if (!select_DOrg_pw) {
+                select_DOrg_pw = new TSearchForm(wo);
+            }
+            select_DOrg_pw.show(false);
+        }
+
+        function getOrgChldorgsemps(org) {
+            var url = _serUrl + "/web/hr/org/getcorgandemps.co?orgid=" + org.orgid;
+            $ajaxjsonget(url, function (jsdata) {
+                $("#sorggrid").datagrid("loadData", jsdata);
+                $("#dorggrid1").datagrid("loadData", []);
+                $("#dorggrid2").datagrid("loadData", []);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function appendDOrg() {
+            var rows = $("#sorggrid").datagrid("getSelections");
+            if (rows.length == 0) {
+                alert("从源机构列表选择需要添加的机构或人员");
+                return;
+            }
+
+            if (!destorg) {
+                alert("选择目标机构" + idx);
+                return;
+            }
+            var dorggrid = $("#dorggrid1");
+
+            while (true) {
+                if (rows.length <= 0) {
+                    break;
+                }
+                var row = rows[0];
+                dorggrid.datagrid("appendRow", row);
+                var idx = $("#sorggrid").datagrid("getRowIndex", row);
+                $("#sorggrid").datagrid("deleteRow", idx);
+            }
+            $("#sorggrid").datagrid("clearSelections");
+        }
+
+        function removeDOrg() {
+            var rows = $("#dorggrid1").datagrid("getSelections");
+            if (rows.length == 0) {
+                alert("从目标机构列表选择需要移除的机构或人员");
+                return;
+            }
+            var sorggrid = $("#sorggrid");
+
+            while (true) {
+                if (rows.length <= 0) {
+                    break;
+                }
+                var row = rows[0];
+                sorggrid.datagrid("appendRow", row);
+                var idx = $("#dorggrid1").datagrid("getRowIndex", row);
+                $("#dorggrid1").datagrid("deleteRow", idx);
+            }
+            $("#dorggrid1").datagrid("clearSelections");
+
+        }
+
+        function doappchange() {
+            var rows = $("#dorggrid1").datagrid("getData").rows;
+            if (rows.length == 0) {
+                alert("没有需要应用的变更");
+                return;
+            }
+            var chgdata = {
+                destorg: destorg,
+                sourseorg: sourceorg,
+                chgs: rows
+            };
+            var url = _serUrl + "/web/hr/org/apporgschg.co";
+            $ajaxjsonpost(url, JSON.stringify(chgdata), function (jsondata) {
+                $.messager.alert('提示', '完成调整!');
+            }, function (msg) {
+                $.messager.alert('错误', '错误:' + msg.errmsg, 'error');
+            });
+        }
+
+        function SOrgSelectAll() {
+            $("#sorggrid").datagrid("selectAll");
+        }
+
+        function clearAllDorg() {
+            $("#dorggrid1").datagrid("loadData", []);
+        }
+    </script> 
+  <style type="text/css">
+        table td {
+            padding: 5px;
+        }
+
+        .datagrid-header {
+            position: absolute;
+            visibility: hidden;
+        }
+    </style> 
+ </head> 
+ <body> 
+  <table style="font-size: 12px;width: auto;padding: 5px"> 
+   <tbody> 
+    <tr> 
+     <td colspan="6"> <a href="#" class="easyui-linkbutton c5" style="width: 100px" onclick="doappchange()">应用变更</a> </td> 
+    </tr> 
+    <tr style="background: #eee"> 
+     <td style="">源机构 <a onclick="onSelectSOrg()" class="easyui-linkbutton" style="width: 60px">选择机构</a> <a onclick="SOrgSelectAll()" class="easyui-linkbutton" style="width: 60px">全选</a> </td> 
+     <td> </td> 
+     <td style="">目标结构 <a onclick="selectDOrg()" class="easyui-linkbutton" style="width: 60px">选择机构</a> <a onclick="clearAllDorg()" class="easyui-linkbutton" style="width: 60px">清空</a> </td> 
+    </tr> 
+    <tr> 
+     <td rowspan="2"> 
+      <div id="spanel" class="easyui-panel" style="width:400px;height: 500px;padding:0px" data-options="title:'源机构'"> 
+       <table id="sorggrid" class="easyui-datagrid" data-options="border:false,idField: 'id',rownumbers: true,singleSelect:false,fitColumns: true"> 
+       </table> 
+      </div> </td> 
+     <td> 
+      <div> 
+       <a onclick="appendDOrg()" class="easyui-linkbutton" data-options="iconCls:'icon-arrow-right-enable'" style="width: 60px"></a> 
+      </div> 
+      <div style="height: 5px"></div> 
+      <div> 
+       <a onclick="removeDOrg()" class="easyui-linkbutton" data-options="iconCls:'icon-arrow-left-enable'" style="width: 60px"></a> 
+      </div> </td> 
+     <td rowspan="2"> 
+      <div id="dpanel1" class="easyui-panel" style="width:400px;height: 500px;padding:0px;" data-options="title:'目标机构'"> 
+       <table id="dorggrid1" class="easyui-datagrid" data-options="border:false,idField: 'id',rownumbers: true,singleSelect:true,fitColumns: true"> 
+       </table> 
+      </div> </td> 
+    </tr> 
+   </tbody> 
+  </table>  
+ </body>
+</html>

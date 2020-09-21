@@ -1,0 +1,394 @@
+package com.hr.attd.co;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.util.CJSON;
+import com.corsair.dbpool.util.JSONParm;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.base.ConstsSw;
+import com.corsair.server.generic.Shw_physic_file;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.retention.ACO;
+import com.corsair.server.retention.ACOAction;
+import com.corsair.server.util.CExcelField;
+import com.corsair.server.util.CExcelUtil;
+import com.corsair.server.util.CReport;
+import com.corsair.server.util.CorUtil;
+import com.corsair.server.util.DictionaryTemp;
+import com.corsair.server.util.UpLoadFileEx;
+import com.hr.asset.entity.Hr_asset_allot_d;
+import com.hr.attd.ctr.HrkqUtil;
+import com.hr.attd.entity.Hr_kq_monthsubmit_line;
+import com.hr.perm.entity.Hr_employee;
+import com.hr.salary.ctr.CtrSalaryCommon;
+import com.hr.salary.entity.Hr_salary_chglg;
+import com.hr.salary.entity.Hr_salary_chglgsubmit_line;
+import com.hr.util.DateUtil;
+import com.hr.util.HRUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+@ACO(coname = "web.hrkq.monthsubmit")
+public class COHr_kq_monthsubmit {
+	/*
+	 * 月考勤提报
+	 */
+	@ACOAction(eventname = "getSubmitKqMonth", Authentication = true, ispublic = true, notes = "获取指定机构的月考勤记录")
+	public String getSubmitKqMonth() throws Exception {
+		HashMap<String, String> parms = CSContext.getParms();
+		String orgid = CorUtil.hashMap2Str(parms, "orgid", "orgid参数不能为空");
+		String ym = CorUtil.hashMap2Str(parms, "submitdate", "submitdate参数不能为空");
+		Shworg org = new Shworg();
+		org.findByID(orgid);
+		if (org.isEmpty())
+			throw new Exception("id为【" + orgid + "】的机构不存在");
+		JSONObject rows=new JSONObject();
+		//只查询有排班的员工
+		//List<String> empIds=HrkqUtil.findPbInOrg(org,ym);
+		//if(empIds.size()==0)throw new Exception("没有找到记录");
+		JSONObject rst= HrkqUtil.getkqorgmonthrptdetail(org.code.getValue(),ym,null);
+		JSONArray emps = rst.getJSONArray("rows");
+		rows.put("rows", calcKq(ym,emps,null));
+		return rows.toString();
+	}
+
+	/*
+	 * 月考勤提报明细查询
+	 */
+	@ACOAction(eventname = "rpt_hrkq_monthsubmit", Authentication = true, notes = "获取月考勤提报明细")
+	public String rpt_hrkq_monthsubmit() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		String parms = urlparms.get("parms");
+		List<JSONParm> jps = CJSON.getParms(parms);
+		List<JSONParm> orgnameparam = CorUtil.getJSONParms(jps, "orgname");
+		List<JSONParm> submitdateparam = CorUtil.getJSONParms(jps, "submitdate");
+		if (orgnameparam.size() <= 0)
+			throw new Exception("机构不能为空");
+		String orgname = orgnameparam.get(0).getParmvalue();
+		if(orgname.equals(""))throw new Exception("机构不能为空");
+		if (submitdateparam.size() <= 0)
+			throw new Exception("提报年月不能为空");
+		String ym = submitdateparam.get(0).getParmvalue();
+		if(ym.equals(""))throw new Exception("提报年月不能为空");
+		Shworg org = new Shworg();
+		String sqlstr = "select * from shworg where code='" + orgname + "'";
+		org.findBySQL(sqlstr);
+		String[] notnull = {};
+		sqlstr = "SELECT l.*,h.submitdate,h.orgname as horgname from Hr_kq_monthsubmit_line l inner join Hr_kq_monthsubmit h on l.mkq_id=h.mkq_id where h.idpath like '"
+				+ org.idpath.getValue() + "%' and submitdate='"+ym+"-01' and stat='9'";
+		String[] ignParms = { "orgname","submitdate" };// 忽略的查询条件
+		return new CReport(HRUtil.getReadPool(), sqlstr, null, notnull).findReport(ignParms);
+	}
+
+
+	/**
+	 * 数据导入
+	 * @return
+	 * @throws Exception
+	 */
+	@ACOAction(eventname = "impchgsubmit_listexcel", Authentication = true, ispublic = false, notes = "导入月考勤提报明细Excel")
+	public String impchgsubmit_listexcel() throws Exception {
+		if (!CSContext.isMultipartContent())
+			throw new Exception("没有文件");
+		String submitdate = CorUtil.hashMap2Str(CSContext.getParms(), "submitdate", "需要参数submitdate");
+		CJPALineData<Shw_physic_file> pfs = UpLoadFileEx.doupload(false);
+		if (pfs.size() > 0) {
+			Shw_physic_file p = (Shw_physic_file) pfs.get(0);
+			String rst = parserExcelFile_chgsubmitlist(p,submitdate);
+			for (CJPABase pfb : pfs) {
+				Shw_physic_file pf = (Shw_physic_file) pfb;
+				UpLoadFileEx.delAttFile(pf.pfid.getValue());
+			}
+			return rst;
+		} else {
+			return "[]";
+		}
+
+	}
+
+	private String parserExcelFile_chgsubmitlist(Shw_physic_file pf,String submitdate) throws Exception {
+		String fs = System.getProperty("file.separator");
+		String fullname = ConstsSw.geAppParmStr("UDFilePath") + fs + pf.ppath.getValue() + fs + pf.pfname.getValue();
+		File file = new File(fullname);
+		if (!file.exists()) {
+			fullname = ConstsSw._root_filepath + "attifiles" + fs + pf.ppath.getValue() + fs + pf.pfname.getValue();
+			file = new File(fullname);
+			if (!file.exists())
+				throw new Exception("文件" + fullname + "不存在!");
+		}
+
+		Workbook workbook = WorkbookFactory.create(file);
+		int sn = workbook.getNumberOfSheets();
+		if (sn <= 0)
+			throw new Exception("excel<" + fullname + ">没有sheet");
+		Sheet aSheet = workbook.getSheetAt(0);// 获得一个sheet
+		return parserExcelSheet_chgsubmitlist(aSheet,submitdate);
+	}
+
+	private String parserExcelSheet_chgsubmitlist(Sheet aSheet,String submitdate) throws Exception {
+		if (aSheet.getLastRowNum() == 0) {
+			return "[]";
+		}
+		List<CExcelField> efds = initExcelFields_chgsubmitlist();
+		efds = CExcelUtil.parserExcelSheetFields(aSheet, efds, 0);// 解析title 并检查必须存在的列
+		List<Map<String, String>> values = CExcelUtil.getExcelValues(aSheet, efds, 0);
+		HashMap<String, String> parms = CSContext.getParms();
+		String orgid = CorUtil.hashMap2Str(parms, "orgid", "orgid参数不能为空");
+		String ym = CorUtil.hashMap2Str(parms, "submitdate", "submitdate参数不能为空");
+		Shworg org = new Shworg();
+		org.findByID(orgid);
+		if (org.isEmpty())
+			throw new Exception("id为【" + orgid + "】的机构不存在");
+
+		Hr_employee emp = new Hr_employee();
+		Shworg emporg = new Shworg();
+		// DictionaryTemp dictemp = new DictionaryTemp();// 数据字典缓存
+		List<String>empList=new ArrayList<String>();//无排版队列
+		for (Map<String, String> v : values) {
+			String employee_code = v.get("employee_code");
+			if ((employee_code == null) || (employee_code.isEmpty()))
+				throw new Exception("明细行上的工号不能为空");
+			emp.clear();
+			emp.findBySQL("SELECT * FROM `hr_employee` WHERE employee_code='" + employee_code + "'");
+			if (emp.isEmpty())
+				throw new Exception("工号【" + employee_code + "】不存在人事资料");
+			emporg.clear();
+			emporg.findByID(emp.orgid.getValue());
+			if (emporg.isEmpty())
+				throw new Exception("没找到员工【" + emp.employee_name.getValue() + "】所属的ID为【" + emp.orgid.getValue() + "】的机构");
+			empList.add(emp.er_id.getValue());
+		}
+
+		//运算记录
+		JSONObject rst= HrkqUtil.getkqorgmonthrptdetail(org.code.getValue(),ym,empList);
+		JSONArray emps = rst.getJSONArray("rows");
+		Logsw.dblog("实际出勤num"+emps.size());
+		for (int i = 0; i < emps.size(); i++) {
+			JSONObject jo = emps.getJSONObject(i);
+	
+			Logsw.dblog("实际出勤+++"+jo.getString("sjcq"));
+		}
+		JSONObject rows=new JSONObject();
+		rows.put("rows", calcKq(ym,emps,values));
+		return rows.toString();
+	}
+
+	private List<CExcelField> initExcelFields_chgsubmitlist() {
+		List<CExcelField> efields = new ArrayList<CExcelField>();
+		efields.add(new CExcelField("工号", "employee_code", true));
+		efields.add(new CExcelField("姓名", "employee_name", true));
+		efields.add(new CExcelField("工作小时制", "gzxsz", true));
+		efields.add(new CExcelField("特殊天数", "tsts", false));
+		efields.add(new CExcelField("备注", "remark", false));
+		return efields;
+	}
+
+	private JSONArray calcKq(String ym,JSONArray emps,List<Map<String, String>>values) throws Exception{
+		DictionaryTemp dictemp = new DictionaryTemp();// 数据字典缓存
+		JSONArray datalist=new JSONArray();
+		for (int i = 0; i < emps.size(); i++) {
+			System.out.print("emps="+emps.size());
+			JSONObject jo = emps.getJSONObject(i);
+			JSONObject bean= new JSONObject();
+			bean.put("er_id", jo.get("er_id"));
+			bean.put("employee_code", jo.get("employee_code"));
+			if(values!=null){
+				for (Map<String, String> v : values) {
+					if(jo.get("employee_code").equals( v.get("employee_code"))){
+						if(v.get("gzxsz")!=null && !v.get("gzxsz").equals("")){
+							bean.put("gzxsz", dictemp.getVbCE("1548", v.get("gzxsz"), false,"工号【" + jo.get("employee_code") + "】工作小时制【" + v.get("gzxsz") + "】不存在"));
+						}
+						bean.put("remark", v.get("remark"));
+						if(v.get("tsts")!=null && !v.get("tsts").equals("")){
+							bean.put("tsts", v.get("tsts"));
+						}else{
+							bean.put("tsts","0");
+						}
+
+					}
+				}
+			}else{
+				bean.put("tsts", "0");
+			}
+			bean.put("employee_name", jo.get("employee_name"));
+			bean.put("idpath", jo.get("idpath"));
+			bean.put("orgid", jo.get("orgid"));
+			bean.put("orgcode", jo.get("orgcode"));
+			bean.put("orgname", jo.get("orgname"));
+			bean.put("sp_name", jo.get("sp_name"));
+			bean.put("lv_num", jo.get("lv_num"));
+			bean.put("hiredday", jo.get("hiredday"));
+			bean.put("ljdate", jo.get("ljdate"));
+			bean.put("ljtype", jo.get("ljtype1"));
+			bean.put("jxfs", jo.get("pay_way"));
+			bean.put("ycmq", jo.get("ycmq"));
+			//实际出勤（含法定）=对应部门考勤明细表“实际出勤”-“工伤假”+“看护假”
+			float sjcq = (float) jo.getDouble("sjcq");
+			float gsj = (float) jo.getDouble("gsj");
+			float khj = (float) jo.getDouble("khj");
+			sjcq=sjcq-gsj+khj;
+			bean.put("sjcq", sjcq);
+			bean.put("fdjrjb", jo.getDouble("fdjbss"));
+			bean.put("kgts", jo.get("kgts"));
+			float cdcs = (float) jo.getDouble("cdcs");
+			float ztcs = (float) jo.getDouble("ztcs");
+			bean.put("cdztcs", cdcs+ztcs);
+			bean.put("cqcs", jo.get("cqcs"));
+			bean.put("bjts", jo.get("bj"));
+			//请假天数=事假+工伤假+产假-看护假
+			float sj = (float) jo.getDouble("sj");
+			float cj = (float) jo.getDouble("cj");
+			bean.put("qjts", sj+gsj+cj-khj);
+			bean.put("yxts", jo.get("fdjq"));
+			bean.put("ybts", jo.get("nightworkdays"));
+			//平时加班（H）=对应部门考勤明细表“平时加班时数”+“直落班加班时数”
+			float prjbss =(float)jo.getDouble("prjbss")+(float)jo.getDouble("zlbjbss");
+			//对应部门考勤明细表“周末加班时数”
+			float zmjbss =(float)jo.getDouble("zmjbss");
+			//先获取加班资格表的加班上限
+//			String jbsql="select  over_type,permonlimit from hrkq_overtime_qual a INNER JOIN hrkq_overtime_qual_line b on a.oq_id=b.oq_id"+
+//					" where b.er_id='"+jo.get("er_id").toString()+"' and begin_date<='"+strbgdate+"' and end_date>='"+streddate+"' order by updatetime desc limit 1";
+//			List<HashMap<String, String>> overlist = HRUtil.getReadPool().openSql2List(jbsql);
+//			String over_type="";
+//			float permonlimit=0;
+//			if(overlist.size()>0){
+//				HashMap<String, String>over=overlist.get(0);
+//				over_type=	over.get("over_type");//加班类别
+//				permonlimit=Float.parseFloat(over.get("permonlimit").toString());//加班上限
+//				//计算平时加班，休息日加班
+//				float psjb=0;
+//				float xxrjb=0;
+//				if(over_type.equals("1")){
+//					//平时加班
+//					System.out.print("上限："+permonlimit+"加班时数："+prjbss);
+//					if(prjbss>=permonlimit){
+//						psjb=permonlimit;
+//					}else{
+//						psjb=prjbss;
+//					}
+//				}else if(over_type.equals("2")){
+//					//休息日加班
+//					if(zmjbss>=permonlimit){
+//						xxrjb=permonlimit;
+//					}else{
+//						xxrjb=zmjbss;
+//					}
+//				}if(over_type.equals("1,2")){
+//					System.out.print("上限："+permonlimit+"加班时数："+prjbss);
+//					//平时加班,休息日加班
+//					if((zmjbss+prjbss)>permonlimit){
+//						if(zmjbss>=permonlimit){
+//							xxrjb=permonlimit;
+//						}else{
+//							xxrjb=zmjbss;
+//							psjb=permonlimit-zmjbss;
+//						}
+//
+//					}else{
+//						xxrjb=zmjbss;
+//						psjb=prjbss;
+//					}
+//				}
+//				bean.put("xxrjb", xxrjb);
+//				bean.put("psjb", psjb);
+//			}else{
+//				//没有加班上限
+//				bean.put("xxrjb", zmjbss);
+//				bean.put("psjb", prjbss);
+//			}
+			bean.put("xxrjb", zmjbss);
+			bean.put("psjb", prjbss);
+		
+			datalist.add(bean);
+			//查询
+		}
+		//重排
+		JSONArray datalistOrderBy=new JSONArray();
+		if(values!=null){
+			for (Map<String, String> v : values) {
+				for (int i = 0; i < datalist.size(); i++) {
+					JSONObject jo = datalist.getJSONObject(i);
+					if(jo.get("employee_code").equals(v.get("employee_code"))){
+						datalistOrderBy.add(jo);
+					}
+				}
+			}
+		}else{
+			datalistOrderBy=datalist;
+		}
+		return datalistOrderBy;
+	}
+	/**
+	 * 产假查询
+	 * @return
+	 * @throws Exception
+	 */
+	@ACOAction(eventname = "findnotpbemp", Authentication = true, ispublic = false, notes = "查找某机构某月未排班人事列表")
+	public String findnotpbemp() throws Exception {
+		HashMap<String, String> parms = CSContext.getParms();
+		List<String>empList=new ArrayList<String>();//无排版队列
+		String orgid = CorUtil.hashMap2Str(parms, "orgid", "orgid参数不能为空");
+		String ym = CorUtil.hashMap2Str(parms, "submitdate", "submitdate参数不能为空");
+		Shworg org = new Shworg();
+		org.findByID(orgid);
+		if (org.isEmpty())
+			throw new Exception("id为【" + orgid + "】的机构不存在");
+		JSONObject rows=new JSONObject();
+		//先找出机构下有产假单的人员
+		String cjSql="select er_id from hrkq_holidayapp h,hrkq_holidayapp_month l,hrkq_holidaytype t "+
+				"where  h.htid=t.htid AND h.haid=l.haid AND l.yearmonth='"+ym+"' and  h.stat='9' and  h.bhtype =5 AND (htconfirm<>2 OR htconfirm IS NULL) and idpath like '"+org.idpath.getValue()+"%'";
+		List<HashMap<String, String>> eridList = HRUtil.getReadPool().openSql2List(cjSql);
+		for (Map<String, String> v : eridList) {
+			empList.add(v.get("er_id").toString());
+		}
+		if(empList.size()==0)
+			throw new Exception("没有找到记录");
+		JSONObject rst= HrkqUtil.getkqorgmonthrptdetail(org.code.getValue(),ym,empList);
+		JSONArray emps = rst.getJSONArray("rows");
+		rows.put("rows", calcKqByCj(emps));
+		return rows.toString();
+	}
+
+	/**
+	 * 产假
+	 * @param emps
+	 * @param values
+	 * @return
+	 * @throws Exception
+	 */
+	private JSONArray calcKqByCj(JSONArray emps) throws Exception{
+		JSONArray datalist=new JSONArray();
+		for (int i = 0; i < emps.size(); i++) {
+			JSONObject jo = emps.getJSONObject(i);
+			JSONObject bean= new JSONObject();
+			bean.put("er_id", jo.get("er_id"));
+			bean.put("employee_code", jo.get("employee_code"));
+			bean.put("employee_name", jo.get("employee_name"));
+			bean.put("sjcq", jo.getDouble("sjcq"));
+			if(jo.getDouble("cj")>0){
+				String sqlstr="select  hdays,htname from Hrkq_holidayapp where employee_code='"+jo.get("employee_code")+"' and stat='9' and bhtype='5'  and (htconfirm<>2 OR htconfirm IS NULL) order by haid DESC LIMIT 1";
+				List<HashMap<String, String>> lm = HRUtil.getReadPool().openSql2List(sqlstr);
+				bean.put("hdays",lm.get(0).get("hdays"));
+				bean.put("htname", lm.get(0).get("htname"));
+				bean.put("cj", jo.getDouble("cj"));
+				datalist.add(bean);
+			}
+			//查询
+		}
+		return datalist;
+	}
+
+}

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var _scdformators = [], _setsc = [];
+        initSckFormator();
+        var listGridColumns = [
+            {field: 'wwdcode', title: '编码', width: 100},
+            {field: 'orgname', title: '机构', width: 150},
+            {field: 'scdname1', title: '周一', width: 100, formatter: _scdformators[1]},
+            {field: 'scdname2', title: '周二', width: 100, formatter: _scdformators[2]},
+            {field: 'scdname3', title: '周三', width: 100, formatter: _scdformators[3]},
+            {field: 'scdname4', title: '周四', width: 100, formatter: _scdformators[4]},
+            {field: 'scdname5', title: '周五', width: 100, formatter: _scdformators[5]},
+            {field: 'scdname6', title: '周六', width: 100, formatter: _scdformators[6]},
+            {field: 'scdname7', title: '周天', width: 100, formatter: _scdformators[7]},
+            {field: 'useable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 120},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150, findtype: 'datetime'},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_workschweekdft",
+            JPAIdField: "wwdid",
+            allowAtt: false,
+            allowWF: false,
+            allow_expt_list: true,
+            autoFind: false,
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '500px',//窗体宽度  htMLPop有效
+            windowHeight: '450px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+            ],
+            onCreate: function () {//创建对象前
+
+            },
+            OnReady: function () {   //都准备好后\
+                //alert(JSON.stringify(_scdformators[1]));
+            },
+            onFind: function (parms) {
+
+            },
+            onNew: function (jsondata) {
+                jsondata.useable = 1;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            //var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var select_sched_pw = undefined;
+        function onSelectSched(idx) {
+            var orgid = mainline.getFieldValue("orgid");
+            if ($isEmpty(orgid)) {
+                alert("请先选择机构");
+                return;
+            }
+
+            var url = _serUrl + "/web/hrkq/sched/findsched.co?tid=" + orgid + "&ttype=2";
+            var wo = {
+                id: "select_sched_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'scid',
+                autoFind: false,//是否自动查询
+                width: "500px",//
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'scdname', title: '班制', width: 100},
+                    {field: 'slinfo', title: '班次详情', width: 350}
+                ]
+            };
+            if (!select_sched_pw) {
+                select_sched_pw = new TSearchForm(wo);
+            }
+            select_sched_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("scid" + idx, row.scid);
+                        mainline.setFieldValue("scdname" + idx, row.scdname);
+                        mainline.setFieldValue("backcolor" + idx, row.backcolor);
+                    }
+                }
+            });
+            select_sched_pw.show();
+        }
+
+        function setsc1() {
+            onSelectSched(1);
+        }
+        function setsc2() {
+            onSelectSched(2);
+        }
+        function setsc3() {
+            onSelectSched(3);
+        }
+        function setsc4() {
+            onSelectSched(4);
+        }
+        function setsc5() {
+            onSelectSched(5);
+        }
+        function setsc6() {
+            onSelectSched(6);
+        }
+        function setsc7() {
+            onSelectSched(7);
+        }
+
+        function initSckFormator() {
+            for (var i = 1; i <= 7; i++) {
+                var fs = "var backcolor = row['backcolor" + i + "'];"
+                        + "if (backcolor) {"
+                        + "return \"<span style='background-color: \" + backcolor + \"'>\" + value + \"</span>\";"
+                        + "} else return value;";
+                _scdformators[i] = new Function("value", "row", "index", fs);
+            }
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'wwdcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'wwdcode',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'useable'">有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'useable',crequired:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname1'">周一</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname1',buttonIcon:'icon-search',onClickButton:setsc1,editable:false" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'scdname2'">周二</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname2',buttonIcon:'icon-search',onClickButton:setsc2,editable:false" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname3'">周三</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname3',buttonIcon:'icon-search',onClickButton:setsc3,editable:false" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'scdname4'">周四</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname4',buttonIcon:'icon-search',onClickButton:setsc4,editable:false" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname5'">周五</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname5',buttonIcon:'icon-search',onClickButton:setsc5,editable:false" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'scdname6'">周六</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname6',buttonIcon:'icon-search',onClickButton:setsc6,editable:false" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'scdname7'">周天</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname7',buttonIcon:'icon-search',onClickButton:setsc7,editable:false" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

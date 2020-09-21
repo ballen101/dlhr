@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>调休展期</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1019",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1019",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'lbecode', title: '展期编码', width: 80},
+
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'stype', title: '来源类型', width: 80, formatter: comUrl_dic1019.formator},
+            {field: 'sccode', title: '来源编码/年度', width: 100},
+            {field: 'alllbtime', title: '总调休时间(H)', width: 120},
+            {field: 'usedlbtime', title: '已经调休时间(H)', width: 120},
+            {field: 'valdate', title: '原到期日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'newvaldate', title: '展期有效期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ext_reason', title: '展期原因', width: 120},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_leave_blance_extend",
+            JPAIdField: "lbeid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesName: 'hrkq_overtime_qual_lines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "可调休展期",
+            allow_expt_list: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+
+            onCreate: function () {//创建对象前
+
+            },
+            onNew: function (jsondata) {
+                jsondata.stat = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onSelectOvertimeBlance(employee_code);
+                    }
+                }
+                if (fdname == 'newvaldate') {
+                    var newvaldate = (mainline.getField("newvaldate")).textbox("getValue");
+                    if (!$isEmpty(newvaldate)) {
+                        checknewvdate(newvaldate);
+                    }
+                }
+            }
+        };
+
+        function checknewvdate(newvaldate) {
+            var newvaldate = mainline.getFieldValue("newvaldate");
+            var valdate = mainline.getFieldValue("valdate");
+            if ($isEmpty(valdate)) {
+                alert("先选择调休信息");
+                return;
+            }
+            newvaldate = (new Date()).fromStr(newvaldate);
+            valdate = (new Date()).fromStr(valdate);
+            valdate = valdate.addMonth(3);
+            if (newvaldate.getTime() > valdate.getTime()) {
+                alert("展期时间不允许超过3个月");
+                mainline.setFieldValue("newvaldate", undefined);
+                return;
+            }
+        }
+
+        var SelectOvertimeBlance_pw = undefined;
+        function onSelectOvertimeBlance(employee_code) {
+            var url = _serUrl + "/web/hrkq/lbe/findbl4ext.co";
+            var wo = {
+                id: "SelectOvertimeBlance_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'er_id',
+                singleAutoReturn: true,
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 64},
+                    {field: 'orgname', title: '机构', width: 200},
+                    {field: 'employee_name', title: '姓名', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field: 'stype', title: '来源类型', width: 80, formatter: comUrl_dic1019.formator},
+                    {field: 'sccode', title: '来源编码/年度', width: 100},
+                    {field: 'alllbtime', title: '总调休时间(H)', width: 120},
+                    {field: 'usedlbtime', title: '已经调休时间(H)', width: 120},
+                    {field: 'valdate', title: '到期日期(到期当天不可使用)', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'isexpire', title: '是否过期', notfind: true, width: 64, formatter: comUrl_dic5.formator}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var md = mainline.getMainData();
+                        $.extend(md, row);
+                        mainline.showDetail();
+                    }
+                }
+            };
+            if (!SelectOvertimeBlance_pw) {
+                SelectOvertimeBlance_pw = new TSearchForm(wo);
+            }
+            if (employee_code) {
+                SelectOvertimeBlance_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                SelectOvertimeBlance_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            SelectOvertimeBlance_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'lbecode'">展期编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lbecode',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">签批状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOvertimeBlance"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newvaldate'">展期有效期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'newvaldate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ext_reason'">展期原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'ext_reason',crequired:true"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'lbname'">标题</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lbname',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stype'">来源类型</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'stype',crequired:true,readonly:true,comidx:'dic1019'"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sccode'">源编码/年假的年份</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sccode',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'alllbtime'">总调休时间(H)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'alllbtime',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usedlbtime'">已经调休时间(H)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usedlbtime',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'valdate'">到期日期(到期当天不可使用)</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'valdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">申请人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">申请时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+
+</table>
+</body>
+</html>

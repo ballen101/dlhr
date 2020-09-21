@@ -1,0 +1,121 @@
+package com.hr.card.entity;
+
+//codeid=113
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.cjpa.util.CLinkFieldInfo;
+import com.corsair.cjpa.util.LinkFieldItem;
+import com.corsair.server.cjpa.CJPA;
+import com.corsair.server.generic.Shw_attach;
+import com.hr.card.co.COHr_ykt_card_publish;
+
+import java.sql.Types;
+
+@CEntity(controller = COHr_ykt_card_publish.class)
+public class Hr_ykt_card_publish extends CJPA {
+	@CFieldinfo(fieldname = "card_publish_id", iskey = true, notnull = true, precision = 10, scale = 0, caption = "发补卡ID", datetype = Types.INTEGER)
+	public CField card_publish_id; // 发补卡ID
+	@CFieldinfo(fieldname = "card_publish_no", codeid = 113, precision = 20, scale = 0, caption = "发补卡编号", datetype = Types.VARCHAR)
+	public CField card_publish_no; // 发补卡编号
+	@CFieldinfo(fieldname = "card_id", precision = 10, scale = 0, caption = "卡ID", datetype = Types.INTEGER)
+	public CField card_id; // 卡ID
+	@CFieldinfo(fieldname = "card_sn", precision = 20, scale = 0, caption = "卡序列号", datetype = Types.VARCHAR)
+	public CField card_sn; // 卡序列号
+	@CFieldinfo(fieldname = "card_number", precision = 20, scale = 0, caption = "卡号", datetype = Types.VARCHAR)
+	public CField card_number; // 卡号
+	@CFieldinfo(fieldname = "old_card_sn", precision = 20, scale = 0, caption = "旧卡序列号", datetype = Types.VARCHAR)
+	public CField old_card_sn; // 旧卡序列号
+	@CFieldinfo(fieldname = "old_card_number", precision = 20, scale = 0, caption = "旧卡号", datetype = Types.VARCHAR)
+	public CField old_card_number; // 旧卡号
+	@CFieldinfo(fieldname = "er_id", notnull = true, precision = 20, scale = 0, caption = "人事ID", datetype = Types.INTEGER)
+	public CField er_id; // 人事ID
+	@CFieldinfo(fieldname = "er_code", precision = 16, scale = 0, caption = "档案编码", datetype = Types.VARCHAR)
+	public CField er_code; // 档案编码
+	@CFieldinfo(fieldname = "employee_code", notnull = true, precision = 16, scale = 0, caption = "工号", datetype = Types.VARCHAR)
+	public CField employee_code; // 工号
+	@CFieldinfo(fieldname = "employee_name", precision = 256, scale = 0, caption = "姓名", datetype = Types.VARCHAR)
+	public CField employee_name; // 姓名
+	@CFieldinfo(fieldname = "orgid", notnull = true, precision = 10, scale = 0, caption = "部门ID", datetype = Types.INTEGER)
+	public CField orgid; // 部门ID
+	@CFieldinfo(fieldname = "orgcode", notnull = true, precision = 16, scale = 0, caption = "部门编码", datetype = Types.VARCHAR)
+	public CField orgcode; // 部门编码
+	@CFieldinfo(fieldname = "orgname", notnull = true, precision = 128, scale = 0, caption = "部门名称", datetype = Types.VARCHAR)
+	public CField orgname; // 部门名称
+	@CFieldinfo(fieldname = "sp_name", precision = 128, scale = 0, caption = "职位", datetype = Types.VARCHAR)
+	public CField sp_name; // 职位
+	@CFieldinfo(fieldname = "hwc_namezl", precision = 32, scale = 0, caption = "职类", datetype = Types.VARCHAR)
+	public CField hwc_namezl; // 职类
+	@CFieldinfo(fieldname = "hwc_namezq", precision = 64, scale = 0, caption = "职群", datetype = Types.VARCHAR)
+	public CField hwc_namezq; // 职群
+	@CFieldinfo(fieldname = "hwc_namezz", precision = 64, scale = 0, caption = "职种", datetype = Types.VARCHAR)
+	public CField hwc_namezz; // 职种
+	@CFieldinfo(fieldname = "hg_name", precision = 64, scale = 0, caption = "职等", datetype = Types.VARCHAR)
+	public CField hg_name; // 职等
+	@CFieldinfo(fieldname = "lv_num", precision = 4, scale = 1, caption = "职级", datetype = Types.DECIMAL)
+	public CField lv_num; // 职级
+	@CFieldinfo(fieldname = "card_type", precision = 32, scale = 0, caption = "类型", datetype = Types.VARCHAR)
+	public CField card_type; // 类型 1新发 2补卡
+	@CFieldinfo(fieldname = "publish_date", precision = 19, scale = 0, caption = "发卡时间", datetype = Types.TIMESTAMP)
+	public CField publish_date; // 发卡时间
+	@CFieldinfo(fieldname = "effective_date", precision = 19, scale = 0, caption = "生效时间", datetype = Types.TIMESTAMP)
+	public CField effective_date; // 生效时间
+	@CFieldinfo(fieldname = "disable_date", precision = 19, scale = 0, caption = "失效时间", datetype = Types.TIMESTAMP)
+	public CField disable_date; // 失效时间
+	@CFieldinfo(fieldname = "finger_mark_no", precision = 32, scale = 0, caption = "指纹登记号", datetype = Types.VARCHAR)
+	public CField finger_mark_no; // 指纹登记号
+	@CFieldinfo(fieldname = "remark", precision = 512, scale = 0, caption = "备注", datetype = Types.VARCHAR)
+	public CField remark; // 备注
+	@CFieldinfo(fieldname = "wfid", precision = 20, scale = 0, caption = "wfid", datetype = Types.INTEGER)
+	public CField wfid; // wfid
+	@CFieldinfo(fieldname = "attid", precision = 20, scale = 0, caption = "attid", datetype = Types.INTEGER)
+	public CField attid; // attid
+	@CFieldinfo(fieldname = "stat", precision = 2, scale = 0, caption = "表单状态", datetype = Types.INTEGER)
+	public CField stat; // 表单状态
+	@CFieldinfo(fieldname = "idpath", precision = 256, scale = 0, caption = "idpath", datetype = Types.VARCHAR)
+	public CField idpath; // idpath
+	@CFieldinfo(fieldname = "entid", precision = 20, scale = 0, caption = "entid", datetype = Types.INTEGER)
+	public CField entid; // entid
+	@CFieldinfo(fieldname = "creator", notnull = true, precision = 32, scale = 0, caption = "创建人", datetype = Types.VARCHAR)
+	public CField creator; // 创建人
+	@CFieldinfo(fieldname = "createtime", notnull = true, precision = 19, scale = 0, caption = "创建时间", datetype = Types.TIMESTAMP)
+	public CField createtime; // 创建时间
+	@CFieldinfo(fieldname = "updator", precision = 32, scale = 0, caption = "更新人", datetype = Types.VARCHAR)
+	public CField updator; // 更新人
+	@CFieldinfo(fieldname = "updatetime", precision = 19, scale = 0, caption = "更新时间", datetype = Types.TIMESTAMP)
+	public CField updatetime; // 更新时间
+	@CFieldinfo(fieldname = "attribute1", precision = 128, scale = 0, caption = "attribute1", datetype = Types.VARCHAR)
+	public CField attribute1; // attribute1
+	@CFieldinfo(fieldname = "attribute2", precision = 19, scale = 0, caption = "attribute2", datetype = Types.TIMESTAMP)
+	public CField attribute2; // attribute2
+	@CFieldinfo(fieldname = "attribute3", precision = 128, scale = 0, caption = "attribute3", datetype = Types.VARCHAR)
+	public CField attribute3; // attribute3
+	@CFieldinfo(fieldname = "attribute4", precision = 128, scale = 0, caption = "attribute4", datetype = Types.VARCHAR)
+	public CField attribute4; // attribute4
+	@CFieldinfo(fieldname = "attribute5", precision = 128, scale = 0, caption = "attribute5", datetype = Types.VARCHAR)
+	public CField attribute5; // attribute5
+	@CFieldinfo(fieldname = "amount", precision = 22, scale = 31, caption = "补卡金额", datetype = Types.DOUBLE)
+	public CField amount; // 补卡金额
+	public String SqlWhere; // 查询附加条件
+	public int MaxCount; // 查询最大数量
+
+	// 自关联数据定义
+	@CLinkFieldInfo(jpaclass = Shw_attach.class, linkFields = { @LinkFieldItem(lfield = "attid", mfield = "attid") })
+	public CJPALineData<Shw_attach> shw_attachs;
+
+	public Hr_ykt_card_publish() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {// 类初始化调用的方法
+		super.InitObject();
+		return true;
+	}
+
+	@Override
+	public boolean FinalObject() { // 类释放前调用的方法
+		super.FinalObject();
+		return true;
+	}
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>Title</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic672",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=672",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'qadjcode', title: '编码', width: 120},
+            {field: 'quota_year', title: '年月', width: 64, formatter: $fieldDateFormatorYYYY_MM},
+            {field: 'stat', title: '状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'orgname', title: '机构', width: 120},
+            {field: 'sp_name', title: '职位', width: 120},
+            {field: 'oldquota', title: '现有编制', width: 100},
+            {field: 'adjtype', title: '类型', width: 64, formatter: comUrl_dic672.formator, editor: comUrl_dic672.editor},
+            {field: 'adjquota', title: '调整数量', width: 80, editor: 'numberbox'},
+            {field: 'remark', title: '备注', width: 200, editor: 'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_quota_adjust",
+            JPAIdField: "qadjid",
+            allowAtt: true,
+            allowWF: false,
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: 'hr_quota_adjustlines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "调整单详情",
+            datainfo_line_title: "调整职位",
+            windowWidth: '900px',//窗体宽度  htMLPop有效
+            windowHeight: '550px',//窗体高度 htMLPop有效
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            allow_expt: true,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+                $parserDatebox2YearMonth(mainline.getField('quota_year'));
+            },
+            onFind: function (parms) {
+
+            },
+            onAddLine: function (append) {//点击添加明细行
+                selectOrgPositions(append);
+            }
+        };
+        var select_OrgPosition_pw = undefined;
+        function selectOrgPositions(append) {
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/quotarelease/findOrgOptionByLoginUser.co",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "600px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 300},
+                    {field: 'sp_name', title: '职位', width: 120}
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.ospid, "ospid")) {
+                            var quotaline = {};
+                            quotaline.ospid = row.ospid;
+                            quotaline.ospcode = row.ospcode;
+                            quotaline.sp_name = row.sp_name;
+                            quotaline.orgid = row.orgid;
+                            quotaline.orgname = row.orgname;
+                            quotaline.orgcode = row.orgcode;
+                            quotaline.oldquota = row.quota;
+                            append(quotaline);
+                        }
+                    }
+                }
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            }
+            select_OrgPosition_pw.show();
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/quotaadjust/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        for (var i = 0; i < jsdata.length; i++) {
+                            if (!$C.grid.getRowByField("#detail_main_grid_id", jsdata[i].ospid, "ospid")) {
+                                $("#detail_main_grid_id").datagrid("appendRow", jsdata[i]);
+                            }
+                        }
+                    });
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'qadjcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'qadjcode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'quota_year'">年月</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'quota_year',crequired:true,formatter:$dateformatorYYYY_MM,parser:$date4str,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:true"
+                               style="height:40px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic705 = {index: 'dic705',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"无","dictvalue":"0"},{"language1":"一个月","dictvalue":"1"},{"language1":"三个月","dictvalue":"3"},{"language1":"六个月","dictvalue":"6"}], formator: function (value, row) { var jsondata = comUrl_dic705.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic705; } if (comUrl_dic705.type == 'combobox') { if (comUrl_dic705.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic705.valueField]) { rst = rst + jsondata[i][comUrl_dic705.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic705.valueField]) return jsondata[i][comUrl_dic705.textField]; } } } if (comUrl_dic705.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic705.editor= {type: 'combobox', options: {valueField:comUrl_dic705.valueField, textField:comUrl_dic705.textField, data: comUrl_dic705.jsondata}}; var comUrl_dic745 = {index: 'dic745',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"同意转正","dictvalue":"1"},{"language1":"延长试用期","dictvalue":"2"},{"language1":"试用不合格","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic745.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic745; } if (comUrl_dic745.type == 'combobox') { if (comUrl_dic745.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic745.valueField]) { rst = rst + jsondata[i][comUrl_dic745.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic745.valueField]) return jsondata[i][comUrl_dic745.textField]; } } } if (comUrl_dic745.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic745.editor= {type: 'combobox', options: {valueField:comUrl_dic745.valueField, textField:comUrl_dic745.textField, data: comUrl_dic745.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"硕士及以上","dictvalue":"2"},{"language1":"本科","dictvalue":"3"},{"language1":"大专","dictvalue":"4"},{"language1":"高中","dictvalue":"5"},{"language1":"中专","dictvalue":"6"},{"language1":"中技","dictvalue":"7"},{"language1":"初中","dictvalue":"8"},{"language1":"小学","dictvalue":"9"},{"language1":"无","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrl_dic1183 = {index: 'dic1183',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"试用期中","dictvalue":"1"},{"language1":"试用过期","dictvalue":"2"},{"language1":"试用延期","dictvalue":"3"},{"language1":"己转正","dictvalue":"4"},{"language1":"试用不合格","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1183.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1183; } if (comUrl_dic1183.type == 'combobox') { if (comUrl_dic1183.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1183.valueField]) { rst = rst + jsondata[i][comUrl_dic1183.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1183.valueField]) return jsondata[i][comUrl_dic1183.textField]; } } } if (comUrl_dic1183.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1183.editor= {type: 'combobox', options: {valueField:comUrl_dic1183.valueField, textField:comUrl_dic1183.textField, data: comUrl_dic1183.jsondata}}; var comUrls = [ { index: "dic705", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=705", valueField: 'dictvalue', textField: 'language1' }, { index: "dic745", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=745", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1183", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1183", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'entry_code', title: '入职编码', width: 100},
+                {field: 'employee_name', title: '姓名', width: 100},
+                {field: 'degree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+                {field: 'orgname', title: '部门', width: 100},
+                {field: 'ospcode', title: '职位编码', width: 100},
+                {field: 'sp_name', title: '职位名称', width: 100},
+                {field: 'hwc_namezl', title: '职类', width: 80},
+                {field: 'hg_name', title: '职等', width: 80},
+                {field: 'lv_num', title: '职级', width: 80},
+                {
+                    field: 'entrydate',
+                    title: '入职日期',
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {field: 'probation', title: '试用期', width: 64, formatter: comUrl_dic705.formator},
+                {
+                    field: 'promotionday',
+                    title: '待转正日期',
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {
+                    field: 'promotiondaytrue',
+                    title: '实际转正日期',
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {field: 'wfresult', title: '转正评审结果', formatter: comUrl_dic745.formator},
+                {field: 'delayprobation', title: '延长试用期', width: 80},
+                {
+                    field: 'delaypromotionday',
+                    title: '延期待转正时间',
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {
+                    field: 'delaypromotiondaytrue',
+                    title: '延期实际转正时间',
+                    findtype: 'date',
+                    width: 100,
+                    formatter: $fieldDateFormatorYYYY_MM_DD
+                },
+                {field: 'delaywfresult', title: '延期转正评审结果', width: 100, formatter: comUrl_dic745.formator},
+                {field: 'delaytimes', title: '延期次数', width: 64},
+                {field: 'trystat', title: '试用期人事状态', width: 100, formatter: comUrl_dic1183.formator},
+                {field: 'remark', title: '备注', width: 120}
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/permrpt3/rpt_hr_entry_trylist.co",
+            extButtons: [
+                { //扩展按钮
+                    iconCls: 'icon-task',
+                    text: '7天内到期',
+                    handler: function () {
+                        doextfind(1);
+                    },
+                    posion: '#id_bt_expt'//按钮位置之前，默认
+                }, { //扩展按钮
+                    iconCls: 'icon-task',
+                    text: '入职转正',
+                    handler: function () {
+                        var url = "hr_perm/hr_entry_prob.html";
+                        window.top.PerDeskClick("入职转正制单", url, 0, 0, 0);
+                    },
+                    posion: '#id_bt_expt'//按钮位置之前，默认
+                }, { //扩展按钮
+                    iconCls: 'icon-task',
+                    text: '批量转正',
+                    handler: function () {
+                        var url = "hr_perm/hr_entrybatch_prob.html";
+                        window.top.PerDeskClick("批量转正制单", url, 0, 0, 0);
+                    },
+                    posion: '#id_bt_expt'//按钮位置之前，默认
+                }
+            ]
+        };
+
+        function doextfind(tp) {
+            var pv = [];
+            if (tp == 1) {
+                pv.push({"parmname": "trystat", "reloper": "in", "parmvalue": "(1,2,3)"});
+                var sql = "(((delaytimes is null)or(delaytimes=0)) and promotionday>DATE_SUB(CURDATE(),INTERVAL 7 DAY) AND promotionday<CURDATE())"
+                        + " or((delaytimes>0) and delaypromotionday>DATE_SUB(CURDATE(),INTERVAL 7 DAY) AND delaypromotionday<CURDATE())";
+                pv.push({"parmname": "parmname_sqlwhere", "reloper": "=", "parmvalue": sql})
+            }
+            if (tp == 2) {
+                pv.push({"parmname": "trystat", "reloper": "in", "parmvalue": "(1,2,3)"});
+            }
+            creport.do_find(pv);
+        }
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

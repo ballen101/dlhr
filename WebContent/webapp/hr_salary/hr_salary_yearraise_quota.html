@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline2.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cpopinfo2.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic1450 = {index: 'dic1450',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"兼职津贴","dictvalue":"1"},{"language1":"技术津贴","dictvalue":"2"},{"language1":"高温津贴","dictvalue":"3"},{"language1":"岗位津贴","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic1450.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1450; } if (comUrl_dic1450.type == 'combobox') { if (comUrl_dic1450.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1450.valueField]) { rst = rst + jsondata[i][comUrl_dic1450.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1450.valueField]) return jsondata[i][comUrl_dic1450.textField]; } } } if (comUrl_dic1450.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1450.editor= {type: 'combobox', options: {valueField:comUrl_dic1450.valueField, textField:comUrl_dic1450.textField, data: comUrl_dic1450.jsondata}}; var comUrl_dic1455 = {index: 'dic1455',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"产品开发","dictvalue":"1"},{"language1":"产品工程","dictvalue":"2"},{"language1":"IE","dictvalue":"3"},{"language1":"工业设计","dictvalue":"4"},{"language1":"手板制作","dictvalue":"5"},{"language1":"认证测试","dictvalue":"6"},{"language1":"品质检验","dictvalue":"7"},{"language1":"模具设计/制作/维修","dictvalue":"8"},{"language1":"电子电机开发","dictvalue":"9"},{"language1":"信息化系统","dictvalue":"10"},{"language1":"物流模块","dictvalue":"11"},{"language1":"自动化","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic1455.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1455; } if (comUrl_dic1455.type == 'combobox') { if (comUrl_dic1455.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1455.valueField]) { rst = rst + jsondata[i][comUrl_dic1455.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1455.valueField]) return jsondata[i][comUrl_dic1455.textField]; } } } if (comUrl_dic1455.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1455.editor= {type: 'combobox', options: {valueField:comUrl_dic1455.valueField, textField:comUrl_dic1455.textField, data: comUrl_dic1455.jsondata}}; var comUrl_dic999 = {index: 'dic999',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"入职定薪","dictvalue":"1"},{"language1":"调动核薪","dictvalue":"2"},{"language1":"转正调薪","dictvalue":"3"},{"language1":"年度调薪","dictvalue":"4"},{"language1":"特殊调薪","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic999.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic999; } if (comUrl_dic999.type == 'combobox') { if (comUrl_dic999.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic999.valueField]) { rst = rst + jsondata[i][comUrl_dic999.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic999.valueField]) return jsondata[i][comUrl_dic999.textField]; } } } if (comUrl_dic999.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic999.editor= {type: 'combobox', options: {valueField:comUrl_dic999.valueField, textField:comUrl_dic999.textField, data: comUrl_dic999.jsondata}}; var comUrl_dic1399 = {index: 'dic1399',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"每周休息1天","dictvalue":"1"},{"language1":"每周休息1.5天","dictvalue":"2"},{"language1":"每周休息2天","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic1399.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1399; } if (comUrl_dic1399.type == 'combobox') { if (comUrl_dic1399.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1399.valueField]) { rst = rst + jsondata[i][comUrl_dic1399.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1399.valueField]) return jsondata[i][comUrl_dic1399.textField]; } } } if (comUrl_dic1399.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1399.editor= {type: 'combobox', options: {valueField:comUrl_dic1399.valueField, textField:comUrl_dic1399.textField, data: comUrl_dic1399.jsondata}}; var comUrl_dic1437 = {index: 'dic1437',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"P1级","dictvalue":"1"},{"language1":"P2级(经理级)","dictvalue":"2"},{"language1":"P2级(非经理级)","dictvalue":"3"},{"language1":"P3级","dictvalue":"4"},{"language1":"未纳入绩效考核","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1437.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1437; } if (comUrl_dic1437.type == 'combobox') { if (comUrl_dic1437.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1437.valueField]) { rst = rst + jsondata[i][comUrl_dic1437.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1437.valueField]) return jsondata[i][comUrl_dic1437.textField]; } } } if (comUrl_dic1437.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1437.editor= {type: 'combobox', options: {valueField:comUrl_dic1437.valueField, textField:comUrl_dic1437.textField, data: comUrl_dic1437.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"硕士及以上","dictvalue":"2"},{"language1":"本科","dictvalue":"3"},{"language1":"大专","dictvalue":"4"},{"language1":"高中","dictvalue":"5"},{"language1":"中专","dictvalue":"6"},{"language1":"中技","dictvalue":"7"},{"language1":"初中","dictvalue":"8"},{"language1":"小学","dictvalue":"9"},{"language1":"无","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1450", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1450", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1455", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1455", valueField: 'dictvalue', textField: 'language1' }, { index: "dic999", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=999", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1399", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1399", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1437", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1437", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 2; var allowAtt = false; var allowWF = true;</script> 
+  <script type="text/javascript">
+        var listGridColumns = [
+            {field:'orgname',title:'机构',width:300},
+            {field:'salaryquotadate',title:'额度使用月份',width:80, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'yrqname',title:'额度名称',width:80},
+            {field:'salary_quota_canuse',title:'可用工资额度',width:80, formatter: zeroformator},
+            {field:'usable',title:'有效',width:80, formatter: comUrl_dic5.formator},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.salary.entity.Hr_salary_yearraise_quota",
+            JPAIdField: "yrqid",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+            datainfo_pw_title: "机构额度维护",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后
+                /*var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        implistexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});*/
+                $parserDatebox2YearMonth(mainline.getField('salaryquotadate'));
+            },
+            onNew: function (jsondata) {
+               // jsondata.subsdate = new Date();
+                jsondata.usable = 1;
+                jsondata.salaryquotadate = new Date().format("yyyy-MM-dd");
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'salary_quota_canuse') {
+                    var salary_quota_canuse = (mainline.getField("salary_quota_canuse")).textbox("getValue");
+                    v=parseFloat(salary_quota_canuse);
+                    if (v == 0) mainline.setFieldValue('salary_quota_canuse',0);
+                    v = v.toFixed(0);
+                    mainline.setFieldValue('salary_quota_canuse',v);
+                }
+            },
+            beforeSave: function () {
+            /*    if (!checkdata())
+                    throw new Error("数据检查失败，终止保存!");*/
+            }
+        };
+
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/command/impyearraise_quotaexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show(true);
+        }
+
+        function persentformator(value) {
+            vl=value;
+            vl.textbox({
+                formatter: function (d) {
+                    var v = parseFloat(d);
+                    if (isNaN((v))) v = 0;
+                    if (v == 0) return 0;
+                    v = v.toFixed(0);
+                    return v;
+                }
+            });
+           // return v;
+        }
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        function checkdata() {
+            var qcu = mainline.getFieldValue("salary_quota_canuse");
+            if ((!qcu) || (qcu.length == 0)) {
+                $.messager.alert('错误', "先输入可用工资额度", 'error');
+                return;
+            }
+            qcu = parseFloat(qcu);
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            for (var i =0;i<rows.length;i++) {
+                var row = rows[i];
+                if((!row.newstru_id)||(row.newstru_id.length==0)){
+                    $.messager.alert('错误', "调薪后工作结构不能为空", 'error');
+                    return;
+                }
+                if (parseInt(row.pbtsarylev) > qcu) {
+                    alert("本次调薪金额大于可用工资额度");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <script id="findline" type="text/html">
+    <tr style="height: 20px;padding: 0px" id="{{rowid}}">
+        <td style="width: 30%">
+            <input class="easyui-combobox" fieldname="parmname" style="height: 20px;width: 100%"
+                   data-options="{{parmnameData}},width:120,onSelect:mainline.find_window_selectparmname">
+        </td>
+        <td style="width: 20%">
+            <input class="easyui-combobox" fieldname="reloper" style="height: 20px;width: 100%"
+                   data-options="{{reloperData}},width:60,editable:false">
+        </td>
+        <td style="width: 30%" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" data-options="width:120" style="height: 20px;width: 100%">
+        </td>
+        <td style="width: 20%;text-align: center">
+            <a href="#" onclick="mainline.find_window_del_click(this)">删除</a>
+        </td>
+    </tr>
+</script> 
+  <div id="mlp_main_sayout" class="easyui-layout" data-options="fit:true,border:false"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-new-add-line'">新建</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-copy-line'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-search-line'">查找</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_print_new" href="javascript:void(0)" class="easyui-splitbutton" style="display: none" data-options="menu:'#printmm',plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_expt_list" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出列表</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-filter-line'">显示列</a> 
+     <span id="id_skt_stat" style="display: inline-block;float:right;padding-top: 3px;font-size: 14px"></span> 
+    </div> 
+    <div id="printmm" style="width:100px;"> 
+     <div id="id_bt_print_preview" data-options="iconCls:'ico-printer-line'">
+       打印预览 
+     </div> 
+     <div id="id_bt_print_design" data-options="iconCls:'ico-printer-line'">
+       编辑报表 
+     </div> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,remoteSort:false,fit:true,border:false,singleSelect: true"> 
+    </table> 
+   </div> 
+  </div> 
+  <div id="datainfo_window_id" class="easyui-window" data-options="modal:true,title:'详情',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-mylocation'" style="width:100%;height:100%;overflow:hidden"> 
+   <div id="cc" class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'north',split:false,border:true" style="height:40px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+      <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-save-line'">保存</a> 
+      <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-checkbox-circle-fill'">提交</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_unsubmit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-reply-line'">反审核</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-refresh-line'">刷新</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-delete-line'">删除</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-attachment-line'">上传附件</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_prev" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-prev'">上一条</a> 
+      <a id="id_bt_next" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-next'">下一条</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-logout-circle-r-line'">返回</a> 
+      <span id="wfspanid" style="display: none;margin-left: 20px"> <a id="bt_sumit_id" class="easyui-linkbutton" iconcls="ico-check-fill" style="" data-options="disabled:true,plain:false">提交</a> <a id="bt_reject_id" class="easyui-linkbutton" iconcls="icon-undo" style="" data-options="disabled:true">驳回</a> <a id="bt_break_id" class="easyui-linkbutton" iconcls="icon-no" style="" data-options="disabled:true">中断</a> <a id="bt_refer_id" class="easyui-linkbutton" iconcls="icon-redo" style="" data-options="disabled:true">转办</a> </span> 
+     </div> 
+    </div> 
+    <div data-options="region:'center',border:false" style="padding:0px;overflow-x: hidden;overflow-y: auto"> 
+     <div id="main_form_div_id" data-options="region:'center',border:false"> 
+      <table id="maindata_id" border="0" style=""> 
+       <tbody> 
+        <tr> 
+         <td cjoptions="fdname:'orgname'">机构</td> 
+         <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',buttonIcon:'icon-search',onClickButton:onSelectOrg,crequired:true,editable:false" style="height:20px;width: 300px"></td> 
+         <td cjoptions="fdname:'yrqname'">额度名称</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yrqname',crequired:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'salary_quota_canuse'">可用工资额度</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_canuse',crequired:true,formatter:persentformator" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'remark'">备注</td> 
+         <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"></td> 
+         <td cjoptions="fdname:'stat'">流程状态</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'salaryquotadate'">额度有效月份</td> 
+         <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'salaryquotadate',crequired:true,formatter:$dateformattostrrYYYY_MM,editable:false" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'creator'">制单人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'createtime'">制单时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'updator'">更新人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'updatetime'">更新时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td> 
+        </tr> 
+       </tbody> 
+      </table> 
+     </div> 
+     <div id="detail_main_grid_div"> 
+      <div class="datainfo_title">
+        明细数据 
+      </div> 
+      <div style="width: 100%;height: 300px"> 
+       <table id="detail_main_grid_id" data-options="rownumbers:true,remoteSort:false,fit:true"></table> 
+      </div> 
+     </div> 
+     <div id="dg_att_div"> 
+      <div class="datainfo_title">
+        附件 
+      </div> 
+      <div style="width: 100%;height: 200px"> 
+       <table id="dg_att_id" data-options="rownumbers:true,fitColumns:false,border:false,singleSelect: true,fit:true"></table> 
+       <div id="ContextMenu" class="easyui-menu"> 
+        <div id="id_bt_delatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_del'">
+          删除 
+        </div> 
+        <div id="id_bt_downloadatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_download'">
+          下载 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="main_tab_wf_div" style="width: 100%"> 
+      <div class="datainfo_title" onclick="setWFHideOrShow()">
+        流程 
+      </div> 
+      <div id="main_tab_wf_id" title="流程" style="width:100%;height:500px;overflow: hidden;"> 
+      </div> 
+     </div> 
+     <script type="text/javascript">
+                function setWFHideOrShow() {
+                    if ($('#main_tab_wf_id').css('display') == "none") {
+                        $('#main_tab_wf_id').css('display', '');
+                    } else {
+                        $('#main_tab_wf_id').css('display', 'none')
+                    }
+                }
+            </script> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="find_window_id" class="easyui-window" data-options="modal:true,title:'条件',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'ico-search-line'" style="width:400px;height:350px;;overflow: hidden"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false,title:' ',tools:'#toolbar_dg_find_window_parms_id'" style="padding:0px;margin: 0px auto"> 
+     <table id="dg_find_window_parms_id" style="width: 100%;height: auto"> 
+      <thead> 
+       <tr class="datagrid-header" style="height: 20px;padding: 0px;text-align: center "> 
+        <th style="width: 30%">项目</th> 
+        <th style="width: 20%">关系</th> 
+        <th style="width: 30%">项目值</th> 
+        <th style="width: 20%">操作</th> 
+       </tr> 
+      </thead> 
+      <tbody> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-right: 0px;border-bottom: 0px;overflow: hidden"> 
+     <a class="easyui-linkbutton" onclick="mainline.find_window_ok_click();" data-options="iconCls:'ico-check-fill'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick="$('#find_window_id').window('close');" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="toolbar_dg_find_window_parms_id" style="height:auto"> 
+   <a href="#" class="icon-add1" onclick="mainline.find_window_add_click()"></a> 
+  </div> 
+  <div id="common_divs_id" style="display: none"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,collapsible:false,iconCls:'ico-printer-line'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+     <li><span>fdsa</span></li> 
+    </ul> 
+    <div id="pw_list_select_toolbar" style="display: none"> 
+     <a id="pw_list_select_toolbar_btnew" href="javascript:void(0)" class="icon-ml_add"></a> 
+    </div> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'ico-filter-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px;overflow: hidden"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:80px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:80px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'ico-check-double-fill'" style="width:80px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'ico-refresh-line'" style="width:80px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'ico-file-transfer-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+
+    .datainfo_title {
+        height: 20px;
+        background-color: #E8EEFA;
+        color: #0e2d5f;
+        font-size: 12px;
+        line-height: 20px;
+        font-weight: bold;
+        padding-left: 10px;
+        border-bottom: 1px solid #DDDDDD;
+    }
+</style>  
+ </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>自动删除实体</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'adename', title: '实体名称', width: 150},
+            {field: 'adeclass', title: '实体类名', width: 300},
+            {field: 'delwhere', title: 'N天前', width: 80},
+            {field: 'useable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_auto_delenty",
+            JPAIdField: "adeid",
+            allowAtt: false,
+            allowWF: false,
+            allow_expt_list: true,
+            autoFind: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '570px',//窗体宽度  htMLPop有效
+            windowHeight: '350px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后\
+
+            },
+            onFind: function (parms) {
+
+            },
+            onNew: function (jsondata) {
+                jsondata.useable = 1;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+    </script>
+</head>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'adename'">实体名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'adename',crequired:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'adeclass'">实体类名</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'adeclass',crequired:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'delwhere'">N天前</td>
+        <td colspan="1"><input cjoptions="easyui_class:'easyui-textbox',fdname:'delwhere',crequired:true" style="height:50px;width: 120px"/></td>
+        <td cjoptions="fdname:'useable'">可用</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'useable',crequired:true,crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

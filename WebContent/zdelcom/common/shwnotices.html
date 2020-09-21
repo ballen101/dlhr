@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line.html" workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+        var comUrls = [
+            {
+                index: "dic464",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic470",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=470",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic2",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=2",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var search_csm_pw = undefined;
+        var listGridColumns = [
+            {field: 'noticecode', title: '通知编号', width: 64},
+            {field: 'noticetype', title: '类别', width: 64, formatter: comUrl_dic470.formator},
+            {field: 'title', title: '标题', width: 80},
+            {field: 'note', title: '通知概要', width: 64},
+            {field: 'usable', title: '可用', width: 64, formatter: comUrl_dic2.formator},
+            {field: 'stat', title: '状态', width: 64, formatter: comUrl_dic464.formator},
+            {field: 'creator', title: '发布人', width: 64},
+            {field: 'create_time', title: '发布时间', width: 64},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'update_time', title: '更新时间', width: 64}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.generic.Shwnotice",
+            JPAIdField: "noticeid",
+            lineHeight: 300,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                jsondata.stat = 1;
+                jsondata.usable = 1;
+            }
+        };
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <tr>
+        <td cjoptions="fdname:'noticecode'">通知编号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'noticecode',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'noticetype'">类别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'noticetype',required:true,comidx:'dic470'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'usable'">可用</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usable',comidx:'dic2'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stat',readonly:true,required:true,comidx:'dic464'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'title'">标题</td>
+        <td colspan="5"><input class="easyui-textbox" cjoptions="fdname:'title',required:true"
+                               style="height:20px;width: 500px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'note'">通知概要</td>
+        <td colspan="5"><input class="easyui-textbox" cjoptions="fdname:'note'" style="height:20px;width: 500px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">发布人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'create_time'">发布时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'create_time',readonly:true"
+                   data-options="formatter:$dateformattostr,parser:$date4str"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'update_time'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'update_time',readonly:true"
+                   data-options="formatter:$dateformattostr,parser:$date4str"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

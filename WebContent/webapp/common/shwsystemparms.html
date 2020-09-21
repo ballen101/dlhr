@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/json2.js"></script>
+    <title></title>
+
+
+    <script type="text/javascript">
+        var temFileTreeData = undefined;
+        $(document).ready(function () {
+                    $ajaxjsonget(_serUrl + "/web/common/getssparms.co", function (jsondata) {
+                        $('#userparms_grid').datagrid({
+                            data: jsondata,
+                            onDblClickRow: itemDBClick
+                        });
+                    }, function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("服务器开小差了哦！");
+                    })
+                }
+        );
+
+        function itemDBClick(rowIndex, rowData) {
+            $("#userparmdlg").dialog({title: rowData.parmname + " " + rowData.acaption});
+            $("#parmvalue_int").textbox("setValue", rowData.parmvalue);
+            $("#userparmdlg").dialog("open");
+        }
+
+        function dosaveparm() {
+            var gobj = $('#userparms_grid');
+            var arow = gobj.datagrid("getSelected");
+            if (!arow) return;
+            var idx = gobj.datagrid("getRowIndex", arow);
+            arow.parmvalue = $("#parmvalue_int").textbox("getValue");
+            var url = _serUrl + "/web/common/savessparms.co"
+            $ajaxjsonpost(url, JSON.stringify(arow), function (jsondata) {
+                gobj.datagrid("updateRow", {index: idx, row: jsondata});
+                gobj.datagrid("refreshRow", idx);
+                $('#userparmdlg').dialog('close');
+
+            }, function (msg) {
+                $.messager.alert('错误', '保存参数错误:' + msg, 'error');
+            });
+        }
+
+
+    </script>
+
+    <script type="text/javascript">
+        // var temFileTreeData = undefined;
+        $(document).ready(function () {
+                    setTimeout("loadiact()", 1000);
+                }
+        );
+
+        function loadiact() {
+            var url = _serUrl + "/web/system/getdblist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#database").combobox("loadData", jsdata);
+            }, function (msg) {
+                alert(msg);
+            });
+
+            $ajaxjsonget(_serUrl + "/web/htmltem/getTmfTree.co", function (jsdata) {
+                // temFileTreeData = jsdata;
+                // console.error(JSON.stringify(jsdata));
+                $("#htmltmps").combotree("loadData", jsdata);
+            }, function (msg) {
+                alert(msg);
+            });
+
+            var url = _serUrl + "/web/system/getWxAppList.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#wxappid").combobox("loadData", jsdata);
+            }, function (msg) {
+                alert(msg);
+            });
+
+        }
+
+        function resetseq() {
+            var data = {poolname: $("#database").combobox("getValue")};
+            var url = _serUrl + "/web/system/resetseq.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsondata) {
+                alert("ok:" + JSON.stringify(jsondata));
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsondata));
+            })
+        }
+
+        function reCreatHtmls() {
+            // if (!temFileTreeData) {
+            //     $.messager.alert('错误', '没有返回列表数据!', 'error');
+            //     return;
+            // }
+
+            var tree = $('#htmltmps').combotree('tree');	// 获取树对象
+            var nodes = tree.tree('getSelected');		// 获取选择的节点
+            if (!nodes) {
+                nodes = $('#htmltmps').combotree('tree');
+            }
+
+            if (!nodes) {
+                $.messager.alert('错误', '没有选择文件或文件夹!', 'error');
+                return;
+            }
+
+            //alert(n.text);
+            // var id = $("#htmltmps").combotree("getValue");
+            //var nodes = getNodeByid(temFileTreeData, id);
+            var data = (nodes) ? {node: nodes} : {};
+            var url = _serUrl + "/web/htmltem/reBuildHtmls.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                alert("ok:" + JSON.stringify(jsdata));
+            }, function (jsondata) {
+                alert("error:" + JSON.stringify(jsdata));
+            })
+        }
+
+        function getNodeByid(nodes, idv) {
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.id == idv) {
+                    if (node.children) {
+                        delete node.children;
+                    }
+                    return node;
+                }
+                if (node.children) {
+                    var rst = getNodeByid(node.children, idv);
+                    if (rst) {
+                        return rst;
+                    }
+                }
+            }
+            return undefined;
+        }
+
+        function reCreatWxMenu() {
+            var appid = $("#wxappid").combobox("getValue");
+            if ((appid == undefined) || (appid == null) || (appid.length == 0)) {
+                alert("请先选择APPID");
+                return;
+            }
+            var url = _serUrl + "/web/system/createwxmenu.co?appid=" + appid;
+            $ajaxjsonget(url, function (jsondata) {
+                alert(JSON.stringify(jsondata));
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+
+        function reSetMenuIDPath() {
+            var url = _serUrl + "/web/menu/reBuildAllMenuIDPath.co";
+            $ajaxjsonget(url, function (jsondata) {
+                alert(JSON.stringify(jsondata));
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+        function reSetOrgIdpath() {
+            var url = _serUrl + "/web/user/reBuildAllOrgIDPath.co";
+            $ajaxjsonget(url, function (jsondata) {
+                alert(JSON.stringify(jsondata));
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+        function reSetOrgExtName() {
+            var url = _serUrl + "/web/user/resetExtOrgName.co";
+            $ajaxjsonget(url, function (jsondata) {
+                alert(JSON.stringify(jsondata));
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+        function reloaddbpoolinfo() {
+            var url = _serUrl + "/web/common/poolsinfo.co";
+            var htm = "";
+            $ajaxjsonget(url, function (jsondata) {
+                for (var i = 0; i < jsondata.length; i++) {
+                    var pi = jsondata[i];
+                    htm = htm + "<div class='pt'><span style='font-weight: 700;margin-right: 20px'>" + pi.name + ":</span>schema:"
+                            + pi.schema + " &nbsp&nbsp default:" + pi['default'] + "&nbsp&nbsp sessions:" + pi.sessions + "</div>";
+                    var pis = pi.poolinfo;
+                    var phtm = "<div class='pd'>";
+                    for (var j = 0; j < pis.length; j++) {
+                        var info = pis[j];
+                        for (var e in info) {
+                            phtm = phtm + e + ":" + info[e] + ";";
+                        }
+                        phtm = phtm + "<br>";
+                        //phtm = phtm + "key:" + info.key + ";stat:" + info.stat + ";time:" + info.time + ";active:" + info.active + ",inbs:" + info.inbs + "<br>";
+                    }
+                    phtm = phtm + "</div>";
+                    htm = htm + phtm;
+                }
+                $("#dbpoolsinfo").html(htm);
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+        function sendmail() {
+            var url = _serUrl + "/web/common/sendDemoMail.co";
+            var data = {};
+            var txtmailto = $("#txtmailto").textbox("getValue");
+            if ($isEmpty(txtmailto)) {
+                alert("必须有收件人");
+                return;
+            }
+            data.mailto = txtmailto;
+            var txtmailcc = $("#txtmailcc").textbox("getValue");
+            if (!$isEmpty(txtmailto)) {
+                data.mailacc = txtmailcc;
+            }
+            var txtsubject = $("#txtsubject").textbox("getValue");
+            if (!$isEmpty(txtsubject)) {
+                data.subject = txtsubject;
+            }
+
+            var txtcontent = $("#txtcontent").textbox("getValue");
+            if ($isEmpty(txtcontent)) {
+                alert("必须有内容");
+                return;
+            }
+            data.content = txtcontent;
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                alert(JSON.stringify(jsdata));
+            }, function () {
+                alert("提交数据错误");
+            });
+
+        }
+
+    </script>
+    <style type="text/css">
+        .pt {
+            height: 20px;
+            line-height: 20px;
+            background-color: #CDCDCD;
+            padding: 5px;
+        }
+
+        .pd {
+            padding: 10px;
+            background-color: #F5F5F5;
+        }
+    </style>
+</head>
+<body>
+<div class="easyui-tabs" data-options="fit:true,plain:true,border:false,tabHeight:27,pill:true">
+    <div title="系统配置" style="padding:10px" data-options="">
+        <table style="height: 150px;font-size: 14px">
+            <tr>
+                <td>
+                    <label style="padding-left: 5px">重置ID序列 选择数据库链接池：</label>
+                </td>
+                <td>
+                    <input id="database" class="easyui-combobox" style="width:300px;"
+                           data-options="valueField:'poolname',textField:'poolname'"/>
+                </td>
+                <td>
+                    <a href="#" onclick="resetseq();" class="easyui-linkbutton" data-options=""
+                       style="width: 120px">重置序列</a>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label style="padding-left: 5px">重新生成静态HTML 选择源文件：</label>
+                </td>
+                <td>
+                    <select id="htmltmps" class="easyui-combotree" style="width:300px;">
+                    </select>
+                </td>
+                <td>
+                    <a href="#" onclick="reCreatHtmls();" class="easyui-linkbutton" data-options=""
+                       style="width: 120px">运行模板引擎</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label style="padding-left: 5px">选择微信APPID：</label>
+                </td>
+                <td>
+                    <input id="wxappid" class="easyui-combobox" data-options="valueField:'appid',textField:'appid'"
+                           style="width:300px;">
+                    </input>
+                </td>
+                <td>
+                    <a href="#" onclick="reCreatWxMenu();" class="easyui-linkbutton"
+                       data-options="" style="width: 120px">生成微信菜单</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <a href="#" onclick="reSetMenuIDPath();" class="easyui-linkbutton"
+                       data-options="" style="width: 120px">重置菜单IDPath</a>
+                </td>
+                <td colspan="1">
+                    <a href="#" onclick="reSetOrgIdpath();" class="easyui-linkbutton"
+                       data-options="" style="width: 120px">重置OrgIDPath</a>
+                </td>
+                <td colspan="1">
+                    <a href="#" onclick="reSetOrgExtName();" class="easyui-linkbutton"
+                       data-options="" style="width: 120px">重置OrgExtName</a>
+                </td>
+            </tr>
+        </table>
+        <table id="userparms_grid" class="easyui-datagrid" title="" style="width:100%"
+               data-options="singleSelect:true,border:false">
+            <thead>
+            <tr>
+                <th data-options="field:'parmname',width:150">参数名</th>
+                <th data-options="field:'parmvalue',width:300">参数值</th>
+                <th data-options="field:'acaption',width:300">参数说明</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div title="连接池信息" style="padding:10px">
+        <div style="height: 50px">
+            <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'" onclick="reloaddbpoolinfo()"
+               style="width:80px">刷新</a>
+        </div>
+        <div id="dbpoolsinfo">
+        </div>
+    </div>
+    <div title="邮件测试" style="padding: 20px">
+        <table>
+            <tr>
+                <td>
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'" onclick="sendmail()"
+                       style="width:80px">发送</a>
+                </td>
+            </tr>
+            <tr>
+                <td>收件人</td>
+                <td><input id="txtmailto" class="easyui-textbox" data-options="" style="width:300px"></td>
+            </tr>
+            <tr>
+                <td>抄送</td>
+                <td><input id="txtmailcc" class="easyui-textbox" data-options="" style="width:300px"></td>
+            </tr>
+            <tr>
+                <td>主题</td>
+                <td><input id="txtsubject" class="easyui-textbox" data-options="" style="width:300px"></td>
+            </tr>
+            <tr>
+                <td>内容</td>
+                <td><input id="txtcontent" class="easyui-textbox" data-options="multiline:true"
+                           style="width:300px;height: 100px"></td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+
+<div id="userparmdlg" class="easyui-dialog" title="" style="width:400px;height:200px;padding:2px"
+     data-options="iconCls: 'icon-save',
+                closed:true,
+                modal:true,
+                buttons: [{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    width:70,
+                    handler:function(){
+                        dosaveparm();
+                    }
+                },{
+                    text:'取消',
+                    width:70,
+                    handler:function(){
+                        $('#userparmdlg').dialog('close');
+                    }
+                }]
+            ">
+    <input id="parmvalue_int" class="easyui-textbox" data-options="multiline:true," style="width:100%;height: 100%">
+</div>
+</body>
+</html>

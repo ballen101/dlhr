@@ -1,0 +1,179 @@
+package com.hr.attd.ctr;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.util.Systemdate;
+import com.hr.attd.entity.Hrkq_leave_blance;
+import com.hr.base.entity.Hr_grade;
+import com.hr.perm.entity.Hr_employee;
+
+public class CtrHrkq_leave_blance {
+	/**
+	 * @param con
+	 * @param sid
+	 * @param sccode
+	 * @param lbname
+	 * @param stype
+	 * @param alllbtime
+	 * @param valdate
+	 * @param er_id
+	 * @param remark
+	 * @param wkym
+	 *            工龄
+	 * @return
+	 * @throws Exception
+	 */
+	public static Hrkq_leave_blance putLeave_blance(CDBConnection con, String sid, String sccode, String lbname, int stype, float alllbtime,
+			Date valdate, String er_id, String remark, Float wkym) throws Exception {
+		Hr_employee emp = new Hr_employee();
+		emp.findByID(er_id);
+		if (emp.isEmpty())
+			throw new Exception("没有找到ID为【" + er_id + "】的人事档案");
+		String sqlstr = "SELECT * FROM hrkq_leave_blance WHERE stype=" + stype + " and er_id=" + er_id + " AND sid =" + sid + " and sccode='" + sccode + "'";
+		Hrkq_leave_blance lb = new Hrkq_leave_blance();
+		lb.findBySQL(con, sqlstr, false);
+		float usedlbtime = (lb.isEmpty()) ? 0 : lb.usedlbtime.getAsFloat();
+		// String r = (lb.remark.isEmpty()) ? remark : lb.remark.getValue() + remark;
+
+		lb.lbname.setValue(lbname); // 标题
+		lb.stype.setAsInt(stype); // 源类型 1 年假 2 加班 3 值班 4出差
+		lb.sid.setValue(sid); // 源ID
+		lb.sccode.setValue(sccode); // 源编码/年假的年份
+		lb.er_id.setValue(er_id); // 人事ID
+		lb.employee_code.setValue(emp.employee_code.getValue()); // 工号
+		lb.employee_name.setValue(emp.employee_name.getValue());
+		lb.hiredday.setValue(emp.hiredday.getValue());
+		lb.wkym.setAsInt(new BigDecimal(wkym).setScale(0, BigDecimal.ROUND_HALF_UP).intValue());
+		//lb.wkym.setValue(1.1f);
+		lb.hg_name.setValue(emp.hg_name.getValue()); // 职等名称
+		lb.njsp_name.setValue(emp.sp_name.getValue());
+		lb.lv_num.setValue(emp.lv_num.getValue()); // 职级
+		lb.orgid.setValue(emp.orgid.getValue()); // 部门ID
+		lb.orgcode.setValue(emp.orgcode.getValue()); // 部门编码
+		lb.orgname.setValue(emp.orgname.getValue()); // 部门名称
+		lb.alllbtime.setAsFloat(alllbtime); // 可调休时间小时
+		lb.usedlbtime.setAsFloat(usedlbtime); // 已调休时间小时
+		lb.valdate.setAsDatetime(valdate); // 有效期
+		lb.remark.setValue(remark);
+		lb.idpath.setValue(emp.idpath.getValue()); // idpath		
+		lb.save(con);
+		return lb;
+	}
+
+	/**
+	 * @param con
+	 * @param emp
+	 * @param year2016
+	 * @param existsdoupdate
+	 *            存在则更新
+	 * @throws Exception
+	 */
+	public static void getYearLeave_blance(CDBConnection con, Hr_employee emp, String year, boolean existsdoupdate) throws Exception {// 获取年假
+		String yeartitle = String.valueOf(Integer.valueOf(year) - 1);
+		if (!existsdoupdate) {
+			Hrkq_leave_blance lb = new Hrkq_leave_blance();
+			String sqlstr = "SELECT * FROM hrkq_leave_blance WHERE er_id=" + emp.er_id.getValue() + " AND sccode='" + yeartitle + "'";
+			lb.findBySQL(sqlstr);
+			if (!lb.isEmpty())
+				return;
+		}
+		Date hiredday = emp.hiredday.getAsDatetime();
+		//System.out.println("year:" + year);
+		Date todate = Systemdate.getDateByStr(year + "-01-01");
+		Date valdate = Systemdate.getDateByStr((Integer.valueOf(year) + 1) + "-01-01 00:00:00");// 到期日期
+		float ym = getworkym(hiredday, todate);
+		int alllbtime = getylh(ym);
+		String r = Systemdate.getStrDateByFmt(hiredday, "yyMMdd") + "至" + Systemdate.getStrDateByFmt(todate, "yyMMdd");
+		putLeave_blance(con, "0", yeartitle, "年假", 1, alllbtime, valdate, emp.er_id.getValue(), r, ym);
+	}
+
+	// 满1年不满10年的，年休假5天；已满10年不满20年的，年休假10天；已满20年的，年休假15天
+	public static int getylh(Float ym) {
+		if (ym<1 )
+			
+			
+			return 0;
+		else if ((ym>= 1) && (ym < 10))
+			return 5 * 8;
+		else if ((ym>= 10) && (ym < 20))
+			return 10 * 8;
+		else if (ym >= 20)
+			return 15 * 8;
+		else
+			return 0;
+	}
+
+	// 计算工作年限 年月 1年11个月 返回 1.11
+	public static float getworkym(Date hiredday, Date todate) throws Exception {
+		if (todate.getTime() <= hiredday.getTime())
+			// throw new Exception("日期错误!");
+			return 0;
+
+		Calendar cf = Calendar.getInstance();
+		cf.setTime(hiredday);
+		Calendar ct = Calendar.getInstance();
+		ct.setTime(todate);
+		int ms = (ct.get(Calendar.YEAR) * 12 + ct.get(Calendar.MONTH) + 1) - (cf.get(Calendar.YEAR) * 12 + cf.get(Calendar.MONTH) + 1);
+		int y = (int) Math.floor(ms / 12);
+		int m = ms % 12;
+		int cd = ct.get(Calendar.DATE) - cf.get(Calendar.DATE);
+		if (cd > 0) {
+			if (cd >= 15) {
+				m = m + 1;
+			}
+			if (m > 12) {
+				y = y + 1;
+				m = m - 12;
+			}
+		} else if (cd < 0) {
+			if (cd < -15) {
+				m = m - 1;
+			}
+			if (m < 0) {
+				y = y - 1;
+				m = 0;
+			}
+			if (y < 0)
+				y = 0;
+		}
+		return Float.valueOf(y + "." + m);
+	}
+	public static String getworkymString(Date hiredday, Date todate) throws Exception {
+		if (todate.getTime() <= hiredday.getTime())
+			// throw new Exception("日期错误!");
+			return "0";
+
+		Calendar cf = Calendar.getInstance();
+		cf.setTime(hiredday);
+		Calendar ct = Calendar.getInstance();
+		ct.setTime(todate);
+		int ms = (ct.get(Calendar.YEAR) * 12 + ct.get(Calendar.MONTH) + 1) - (cf.get(Calendar.YEAR) * 12 + cf.get(Calendar.MONTH) + 1);
+		int y = (int) Math.floor(ms / 12);
+		int m = ms % 12;
+		int cd = ct.get(Calendar.DATE) - cf.get(Calendar.DATE);
+		if (cd > 0) {
+			if (cd >= 15) {
+				m = m + 1;
+			}
+			if (m > 12) {
+				y = y + 1;
+				m = m - 12;
+			}
+		} else if (cd < 0) {
+			if (cd < -15) {
+				m = m - 1;
+			}
+			if (m < 0) {
+				y = y - 1;
+				m = 0;
+			}
+			if (y < 0)
+				y = 0;
+		}
+		return y + "." + m;
+	}
+
+}

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<dbpools>	
+	
+<dbpool>
+		<name>dlhr</name>
+		<default>true</default>
+		<dbtype>2</dbtype>
+		<driver>com.mysql.jdbc.Driver</driver> <!-- oracle.jdbc.driver.OracleDriver  -->
+	  <url>jdbc:mysql://192.168.117.138:23306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true</url> 
+	  <schema>dlhr</schema>
+		<user>dlhr</user>
+		<password>dlhr2019</password>
+		<minsession>30</minsession>
+		<maxsession>200</maxsession>
+		<checkcontime>60</checkcontime>
+		<timeout>300</timeout>
+	</dbpool>
+	  
+  <!--dlhrread-->    
+  <dbpool> 
+    <name>dlhrread</name>  
+    <default>false</default>
+    <dbtype>2</dbtype>  
+    <driver>com.mysql.jdbc.Driver</driver> 
+	  <url>jdbc:mysql://192.168.117.192:3306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true</url> 
+	  <schema>dlhr</schema>
+		<user>root</user>
+		<password>donlim.com2019</password>
+		<minsession>30</minsession>
+		<maxsession>200</maxsession>
+		<checkcontime>60</checkcontime>
+		<timeout>300</timeout>
+  </dbpool>  
+
+  <!-- <dbpool>  -->
+    <!-- <name>dlhrread</name>   -->
+    <!-- <default>false</default> -->
+    <!-- <dbtype>2</dbtype>   -->
+    <!-- <driver>com.mysql.jdbc.Driver</driver> -->
+	  <!-- <url>jdbc:mysql://192.168.117.138:23306/dlhr?characterEncoding=utf-8&amp;autoReconnect=true</url>  -->
+	  <!-- <schema>dlhr</schema> -->
+		<!-- <user>dlhr</user> -->
+		<!-- <password>dlhr2019</password> -->
+		<!-- <minsession>30</minsession> -->
+		<!-- <maxsession>200</maxsession> -->
+		<!-- <checkcontime>60</checkcontime> -->
+		<!-- <timeout>300</timeout> -->
+  <!-- </dbpool>     -->
+  
+  
+	
+  <dbpool>
+    <name>oldtxmssql</name>
+    <default>false</default>
+    <dbtype>2</dbtype>
+    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver> <!-- oracle.jdbc.driver.OracleDriver  -->
+      <url>jdbc:sqlserver://192.168.117.140;databaseName=HRMS</url>
+    <schema>HRMS</schema>
+    <user>LH</user>
+    <password>dlhrsearch161116</password>
+    <minsession>5</minsession>
+    <maxsession>10</maxsession>
+    <checkcontime>60</checkcontime>
+    <timeout>300</timeout>
+  </dbpool>
+
+ <dbpool> 
+    <name>mssqlpx</name>  
+    <default>false</default>  
+    <dbtype>2</dbtype>  
+    <driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>  
+    <!-- oracle.jdbc.driver.OracleDriver  -->  
+    <url>jdbc:sqlserver://192.168.117.67;databaseName=BPR</url>  
+    <schema>BPR</schema>  
+    <user>TrainUser</user>  
+    <password>123456</password>  
+    <minsession>5</minsession>  
+    <maxsession>100</maxsession>  
+    <checkcontime>60</checkcontime>  
+    <timeout>300</timeout> 
+  </dbpool> 
+</dbpools>

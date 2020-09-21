@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ceai>
+	<name>web_navigator</name>
+	<eaiclass>com.icefall.eai.Web_navigator_EAI</eaiclass>
+	<enable>true</enable>
+	<eaitype>Poll</eaitype>   <!-- EAI 类型 Poll:轮询; NoticePoll:带通知的轮询; ParEAI:非轮询,由级联EAI触发 -->
+	<trans_type>row</trans_type><!-- 事务处理类型 row:行级事务处理  all: 一次调度一个事务  none:无事务处理  -->
+  <frequency>5</frequency>  <!-- 轮询时间间隔 秒 -->
+  <source>icefallweb</source> <!--源数据库连接池 -->
+  <target>yhcrm</target>	<!--目标数据库连接池 -->
+  <lastupdatefield></lastupdatefield> <!--最后更新时间的字段-->
+  <condts><!--sql语句执行附加条件-->
+  	<condt>
+  	  <field>navid</field><!--查询条件的字段-->
+  	  <oper>=</oper><!--字段运算符  >   <  =  like -->
+  	  <value>2</value><!--允许子类重载方法修改-->
+  	</condt>
+  </condts>
+  <s_tablename>web_navigator</s_tablename>  <!--源数据库表名-->
+  <t_tablename>web_navigator</t_tablename>  <!--目标数据库表名-->
+  <allow_insert>true</allow_insert> <!--是否允许插入，否则只更新-->
+  <childeais> <!-- 需要关联执行的子EAI -->
+  	<childeai>
+  		<name>web_navigatorline</name>
+  		<linkfields>
+  			<linkfield>
+  				<fieldname>navid</fieldname>   <!--源表关联字段 允许继承自标准CEAI的子类修改值-->
+  		    <cfieldname>navid</cfieldname> <!--子表关联字段 条件字段添加到 子EAI 源数据筛选条件 -->
+  			</linkfield>
+  		</linkfields>
+  	</childeai>
+  </childeais>
+  <eaimap>
+  	<keyfields>
+  		<keyfield>
+  			<s_keyfield>navid</s_keyfield> <!--允许继承自标准CEAI的子类修改值-->
+  			<d_keyfield>navid</d_keyfield>
+  		</keyfield>
+  	</keyfields>
+  	
+  	<fields>
+  		<field>
+  		  <s_fieldname>navname</s_fieldname> <!--允许继承自标准CEAI的子类修改值-->
+  		  <d_fieldname>navname</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>navherf</s_fieldname>
+  		  <d_fieldname>navherf</d_fieldname>
+  		</field>
+  	</fields>
+  </eaimap>
+  
+</ceai>

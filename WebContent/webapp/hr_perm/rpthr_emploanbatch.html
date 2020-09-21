@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic729 = {index: 'dic729',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"跨部门","dictvalue":"1"},{"language1":"跨单位","dictvalue":"2"},{"language1":"跨模块/制造群","dictvalue":"3"},{"language1":"部门内部","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic729.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic729; } if (comUrl_dic729.type == 'combobox') { if (comUrl_dic729.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic729.valueField]) { rst = rst + jsondata[i][comUrl_dic729.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic729.valueField]) return jsondata[i][comUrl_dic729.textField]; } } } if (comUrl_dic729.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic729.editor= {type: 'combobox', options: {valueField:comUrl_dic729.valueField, textField:comUrl_dic729.textField, data: comUrl_dic729.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic729", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=729", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                [
+                    {field: 'employee_code', title: '工号', width: 100},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                    {field: 'odorgname', title: '借调前部门', width: 150},
+                    {field: 'neworgname', title: '借调后部门', width: 150},
+                    {field: 'odsp_name', title: '职位', width: 64},
+                    {field: 'odhg_name', title: '职等', width: 64},
+                    {field: 'odlv_num', title: '职级', width: 64},
+                    {field: 'applaydate', title: '申请时间', findtype: 'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'loandate', title: '生效时间', findtype: 'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'returndate', title: '归还时间', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'neworgname', title: '借调后部门', width: 150},
+                    {field: 'loanreason', title: '借调原因', width: 200},
+                    {field: 'loantype', title: '调动范围', width: 100, formatter: comUrl_dic729.formator},
+                    {field: 'loancode', title: '编码', width: 120},
+                    {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+                    {field: 'note', title: '备注', width: 100, editor: 'text'}
+                ]
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/permrpt3/rpthr_emploanbatch.co"
+        };
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

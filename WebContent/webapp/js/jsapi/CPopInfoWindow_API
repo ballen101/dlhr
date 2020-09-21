@@ -1,0 +1,22 @@
+//CPopInfoWindow
+var options = {
+    windowfilter: '#windowid',
+    jsonData: null,//传入的数据；
+    onShow: function (jsondata) {
+    },
+    isNew: boolean,
+    afterGetData: function (jsondata) {  //从界面获取数据到JSON对象后 事件
+    },
+    onOK: function (jsondata) {//界面OK按钮按下事件 事件
+    },
+    onCancel: function () {//界面按钮Cancel事件，返回值将作为Message显示出来 事件
+
+    },
+    setFieldValue: function (fdname, value) {//方法 设置某字段值
+
+    },
+    onEditChanged: function (fdname, newValue, oldValue) { //事件  字段变化
+    }
+};
+setFieldReadOnly(fdname, readonly);
+getdata();

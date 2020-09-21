@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function closes() {
+            closed = true;
+            $("#loading").fadeOut("normal", function () {
+                $(this).remove();
+            });
+        }
+        var pc;
+        var closed = false;
+        $.parser.auto = false;
+        $.parser.onComplete = function () {
+            if (pc) clearTimeout(pc);
+            pc = setTimeout(closes, 1000);
+            initGrids();
+            $("#detailInfoPW").c_initDictionary();
+        }
+
+        $().ready(function () {
+            $.parser.parse();
+            setTimeout(function () {
+                if (!closed)
+                    closes();
+            }, 1000);
+        });
+
+        function initGrids() {
+            //var url=
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=tree";
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic5",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=5",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    $("#hr_employee_cretls").datagrid({
+                        columns: [[
+                            {field: 'cert_name', title: '名称', width: 120, editor: 'text'},
+                            {field: 'sign_date', title: '签发日期', width: 100, editor: 'datebox', formator: $dateformattostrrYYYY_MM_DD},
+                            {field: 'sign_org', title: '签发单位', width: 120, editor: 'text'},
+                            {
+                                field: 'expired_date',
+                                title: '到期日期',
+                                width: 100,
+                                editor: 'datebox',
+                                formator: $dateformattostrrYYYY_MM_DD
+                            },
+                            {
+                                field: 'is_remind',
+                                title: '是否预警',
+                                width: 64,
+                                editor: $C.grid.comFormaters['dic5'],
+                                formatter: $C.grid.comFormaters['dic5']
+                            },
+                            {
+                                field: 'picture_id', title: '附件', width: 64, formator: function (value, row) {
+
+                            }
+                            },
+                            {field: 'remark', title: '备注', width: 150, editor: 'text'}
+                        ]]
+                    });
+                    setTimeout(function () {
+                        $("#employee_code").next().find("input:first").css("background-color", "#E8EEFA");
+                        $("#extorgname").next().find("input:first").css("background-color", "#E8EEFA");
+                    }, 500);
+                }
+            });
+        }
+
+        var findedEmployee = undefined;
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $("#employee_name").textbox("setValue", row.employee_name);
+                        $("#employee_code").textbox("setValue", row.employee_code);
+                        $("#extorgname").textbox("setValue", row.extorgname);
+                        findedEmployee = row;
+                        findData(row)
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.show();
+        }
+
+
+        function findData(row) {
+            var url = _serUrl + "/web/hr/employee/getEmployeeCretl.co?er_id=" + row.er_id;
+            $ajaxjsonget(url, function (jsondata) {
+                        $("#hr_employee_cretls").datagrid("loadData", jsondata);
+                    },
+                    function (err) {
+                        $.messager.alert('错误', JSON.stringify(err), 'error');
+                    }
+            );
+        }
+
+        var picid=undefined;
+        var DetailDataInfoWindow = undefined;
+        function showDetailInof(tp) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                if (!findedEmployee) {
+                    $.messager.alert('错误', '请先选择员工', 'error');
+                    return;
+                }
+                isnew = true;
+                jsondata = {er_id: findedEmployee.er_id};//可加入初始化数据
+            } else {
+                var cretls = $('#hr_employee_cretls').datagrid('getSelected');
+                if (!cretls) {
+                    $.messager.alert('错误', '请选择证件', 'error');
+                    return;
+                }
+                if (tp == $C.action.Del) {//删除
+                    //delete from server
+                    var url = _serUrl + "/web/hr/employee/delEmployeeCretl.co?cert_id=" + cretls.cert_id;
+                    $.messager.confirm('提示', '确认删除?', function (r) {
+                        if (r) {
+                            $ajaxjsonpost(url, JSON.stringify(), function (jsondata) {
+                                if (jsondata.result == "OK") {
+                                    findData(findedEmployee);
+                                }
+                            }, function (err) {
+                                alert("删除错误!");
+                            });
+                        }
+                    });
+                    return;
+                }
+
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = cretls;
+                }
+            }
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#detailInfoPW',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+                    //
+                },
+                onOK: function (isnew, jsondata) {
+                    //do save
+                    jsondata.picture_id=picid;
+                  //  alert(JSON.stringify(jsondata)+"---------------"+jsondata);
+                    if (isnew) {
+                        jsondata = {isnew: true, jsondata: jsondata};
+                    } else {
+                        jsondata = {isnew: false, jsondata: jsondata};
+                    }
+                    //console.error(JSON.stringify(jsondata));
+                    var url = _serUrl + "/web/hr/employee/saveEmployeeCretl.co";
+                    $ajaxjsonpost(url, JSON.stringify(jsondata), function (jsondata) {
+                        findData(findedEmployee);
+                    }, function () {
+                        $.messager.alert('错误', '保存错误!', 'error');
+                    });
+                    return true;
+                },
+                afterGetData: function (jsondata) {
+                    // jsondata = $('#hr_employee_cretls').datagrid('getSelected');
+                    console.error(JSON.stringify(jsondata));
+                    showpic(jsondata.picture_id);
+                    return true;
+                }
+            };
+            if (!DetailDataInfoWindow)
+                DetailDataInfoWindow = new CPopInfoWindow(options);
+            else
+                DetailDataInfoWindow.extendOptions({
+                    isNew: isnew,
+                    jsonData: jsondata,
+                    afterGetData: function (jsondata) {
+                // jsondata = $('#hr_employee_cretls').datagrid('getSelected');
+                console.error(JSON.stringify(jsondata));
+                showpic(jsondata.picture_id);
+                return true;
+            }
+                });
+            DetailDataInfoWindow.show();
+        }
+
+        function showpic(pfid) {
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#img_picture_id").attr("src", url);
+            } else
+                $("#img_picture_id").attr("src", "");
+        }
+
+        function showpicWindow() {
+            var jsdata = $('#hr_employee_cretls').datagrid('getSelected');
+            var pfid = jsdata.picture_id;
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#show_img").attr("src", url);
+                $("#showiv_pw").window({title: jsdata.cert_name});
+                $("#showiv_pw").window("open");
+            }
+        }
+
+        function douploadpic() {
+            var cretl = $('#hr_employee_cretls').datagrid('getSelected');
+            if ((!cretl)||(cretl.length==0)) {
+                $.messager.alert('错误', '请保存证件资料', 'error');
+                return;
+            }
+           // alert(JSON.stringify(cretl));
+            $uploadfile(_serUrl + "/web/hr/employee/uploadEmployeeCretlPic.co?cert_id=" + cretl.cert_id, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        picid=jsdata.picture_id;
+                        showpic(jsdata.picture_id);
+                    });
+
+        }
+
+
+        function DrawImage(ImgD) {
+            var op = $("#showiv_pw").window("options");
+            var w = op.width - 10;
+            var h = op.height - 30;
+            var image = new Image();
+            image.src = ImgD.src;
+            if (image.width > 0 && image.height > 0) {
+                if (image.width / image.height >= w / h) {
+                    if (image.width > w) {
+                        ImgD.width = w;
+                        ImgD.height = (image.height * w) / image.width;
+                    } else {
+                        ImgD.width = image.width;
+                        ImgD.height = image.height;
+                    }
+                } else {
+                    if (image.height > h) {
+                        ImgD.height = h;
+                        ImgD.width = (image.width * h) / image.height;
+                    } else {
+                        ImgD.width = image.width;
+                        ImgD.height = image.height;
+                    }
+                }
+            }
+            if (ImgD.height < h) {
+                var pt = parseInt((h - ImgD.height) / 2);
+                $("#show_img_div").css("padding-top", pt + "px");
+            } else {
+                $("#show_img_div").css("padding-top", "0px");
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div class="easyui-layout" style="" data-options="fit:true">
+    <div data-options="region:'north',border:true" style="height:90px;padding: 10px;background-color: #F4F4F4">
+        <table>
+            <tr>
+                <td>选择员工 :</td>
+                <td colspan="3">
+                    <input id="employee_name" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton:onFindemployee,editable:false"
+                           style="height:20px;width: 150px"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="height: 10px"></td>
+            </tr>
+            <tr>
+                <td>工号</td>
+                <td>
+                    <input id="employee_code" class="easyui-textbox" data-options="readonly:true"
+                           style="height:20px;width: 150px"/>
+                </td>
+                <td>部门</td>
+                <td>
+                    <input id="extorgname" class="easyui-textbox" data-options="readonly:true"
+                           style="height:20px;width: 300px"/>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="hr_employee_cretls" class="easyui-datagrid"
+               cjoptions="fdname:'hr_employee_cretls'"
+               data-options="fit:true,border:false,toolbar:'#tb_hr_employee_cretls',singleSelect: true,
+                onDblClickRow:function(){showDetailInof($C.action.Edit)}">
+        </table>
+        <div id="tb_hr_employee_cretls" style="height:auto">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+               onclick="showDetailInof($C.action.New)"></a>
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+               onclick="showDetailInof($C.action.Edit)"></a>
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+               onclick="showDetailInof($C.action.Del)"></a>
+        </div>
+    </div>
+</div>
+
+
+<div id="detailInfoPW" class="easyui-window" title="详情" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table border="0" style="width: 100%;height: 100%">
+                <tr>
+                    <td cjoptions="fdname:'cert_name'">证件名称</td>
+                    <td><input class="easyui-textbox"  cjoptions="fdname:'cert_name',required:true" style="height:20px;width: 130px"/></td>
+                    <td cjoptions="fdname:'sign_org'">签发单位</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'sign_org',required:true" style="height:20px;width: 130px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'sign_date'">签发日期</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'sign_date'"data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 130px"/></td>
+                    <td cjoptions="fdname:'expired_date'">到期日期</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'expired_date'"data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 130px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'cert_type'">证件类型</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'cert_type'" style="height:20px;width: 130px"/></td>
+                    <td cjoptions="fdname:'is_remind'">是否预警</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'is_remind',dicgpid:5"
+                               data-options="editable:false"
+                               style="height:20px;width: 130px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'remark'">备注</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'remark'" style="height:20px;width: 130px"/></td>
+                    <td cjoptions="fdname:'picture_id'" >附件:</td>
+                    <td>
+                        <div style="display: inline;height:20px;width: 60px">
+                            <a href="#" onclick="showpicWindow()">查看图片</a>
+                        </div>
+                        <div style="display: inline;height:20px;width: 60px">
+                            <a href="#" onclick="douploadpic()">上传图片</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding:10px;background-color: #EBEBEB">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+<div id="showiv_pw" class="easyui-window"
+     data-options="collapsible:false,minimizable:false,maximizable:false,closed:true"
+     style="width:500px;height:450px;padding:0px;overflow: hidden">
+    <div id="show_img_div" class="box" style="background-color: #919191">
+        <img id="show_img" onload="DrawImage(this)" onclick="$('#showiv_pw').window('close');">
+    </div>
+</div>
+<div id="common_divs_id">
+    <div id="pw_uploadfile" class="easyui-window" title="上传文件"
+         data-options="modal:true,closed:true,iconCls:'icon-save'"
+         style="width:400px;height:400px;padding:0px;">
+        <iframe frameborder="0" style="width: 100%;height: 95%"></iframe>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+ <head> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <title>HR门户</title> 
+  <script type="text/javascript">
+        function addtab() {
+            var url = _serUrl + "/web/hr/Portals/getportalrole.co";
+            var maintab = $('#main_tabs');
+            $ajaxjsonget(url, function (jsdata) {
+                //console.log(JSON.stringify(jsdata));
+                var idx = 1;
+                if (parseInt(jsdata.role40) == 1) {
+                    var content = "<iframe id='frmrole40' frameborder='0' style='width:100%;height:100%'></iframe>";
+                    var tabop = {
+                        index: idx,
+                        title: "HR自助",
+                        content: content,
+                        fit: true,
+                        closable: false,
+                        selected: false
+                    };
+                    maintab.tabs('add', tabop);
+                    idx++;
+                }
+                if (parseInt(jsdata.role41) == 1) {
+                    var content1 = "<iframe id='frmrole41' frameborder='0'  style='width:100%;height:100%'></iframe>";
+                    var tabop1 = {
+                        style: {overflow: "hidden"},
+                        index: idx,
+                        title: "信息中心",
+                        content: content1,
+                        selected: false,
+                        fit: true,
+                        closable: false
+                    };
+                    maintab.tabs('add', tabop1);
+                }
+                maintab.tabs('select', "我的地盘");
+            }, function (err) {
+                alert(JSON.stringify(err));
+            }, false);
+        }
+
+        function ontabselect(title, index) {
+
+            if (title == '信息中心') {
+                var src = "hr_information_center.html";
+                if ($("#frmrole41").attr("src") != src)
+                    $("#frmrole41").attr("src", src);
+            }
+            if (title == '通讯录') {
+                var src = "hr_interfaceempaddr.html";
+                if ($("#frmtxl").attr("src") != src)
+                    $("#frmtxl").attr("src", src);
+            }
+            if (title == "用户设置") {
+                var src = "../common/userparms.html";
+                if ($("#useroption").attr("src") != src)
+                    $("#useroption").attr("src", src);
+            }
+            if (title == "代理设置") {
+                var src = "../common/shwuser_wf_agent.html";
+                if ($("#userproxy").attr("src") != src)
+                    $("#userproxy").attr("src", src);
+            }
+            if (title == "HR自助") {
+                var src = "hr_portals_self.html";
+                if ($("#frmrole40").attr("src") != src)
+                    $("#frmrole40").attr("src", src);
+            }
+            if (title == "操作说明") {
+                var src = "../common/portoal_shwntices.html";
+                if ($("#shwnotice").attr("src") != src)
+                    $("#shwnotice").attr("src", src);
+            }
+        }
+
+
+        //页面准备好之后触发事件
+        function $OnCorsairReady() {
+            setTimeout("addtab()", "500");
+        }
+
+    </script> 
+ </head> 
+ <body style="margin: 0 auto"> 
+  <div id="main_tabs" class="easyui-tabs" data-options="fit:true,border:false,plain:true,onSelect:ontabselect"> 
+   <div title="我的地盘" data-options="border:false,selected:true" style="padding:0px;overflow: hidden"> 
+    <iframe src="hr_personal_info.html" frameborder="0" style="width:100%;height:100%"> </iframe> 
+   </div> 
+   <div title="通讯录" data-options="border:false" style="padding:0px;overflow: hidden"> 
+    <iframe id="frmtxl" frameborder="0" style="width:100%;height:100%"> </iframe> 
+   </div> 
+   <div title="用户设置" data-options="border:false,selected:false" style="padding:0px;overflow: hidden"> 
+    <iframe id="useroption" frameborder="0" style="width:100%;height:100%"> </iframe> 
+   </div> 
+   <div title="代理设置" data-options="border:false,selected:false" style="padding:0px;overflow: hidden"> 
+    <iframe id="userproxy" frameborder="0" style="width:100%;height:100%"> </iframe> 
+   </div> 
+   <div title="操作说明" data-options="border:false,selected:false" style="padding:0px;overflow: hidden"> 
+    <iframe id="shwnotice" frameborder="0" style="width:100%;height:100%"> </iframe> 
+   </div> 
+  </div>  
+ </body>
+</html>

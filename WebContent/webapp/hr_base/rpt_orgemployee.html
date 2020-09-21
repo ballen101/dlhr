@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title>机构人事报表</title>
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            initGrids();
+            //getorgs();
+        }
+
+        function initGrids() {
+            //var url=
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic81",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=81",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    },
+                    {
+                        index: "cbxintype",
+                        type: "combobox",
+                        url: _serUrl + "/web/hr/employee/getepsts.co",
+                        valueField: 'statvalue',
+                        textField: 'language1'
+                    },
+                    {
+                        index: "dic84",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=84",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+                    $("#orggrid").treegrid({
+                        url: url,
+                        onClickRow: function (row) {
+                            findorginfos(row);
+                        }
+                    });
+                    $("#org_employee").datagrid({
+                        columns: [[
+                            {field: 'checked', title: '选择', checkbox: true, width: 80},
+                            {field: 'employee_code', title: '工号', width: 80},
+                            {field: 'id_number', title: '身份证', width: 100},
+                            {field: 'employee_name', title: '姓名', width: 80},
+                            {field: 'birthday', title: '出生日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'sex', title: '性别', width: 64, formatter: $C.grid.comFormaters['dic81']},
+                            {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'degree', title: '学历', width: 80, formatter: $C.grid.comFormaters['dic84']},
+                            {field: 'address', title: '现住址', width: 100},
+                            {field: 'telphone', title: '电话', width: 100},
+                            {
+                                field: 'empstatid',
+                                title: '人事状态',
+                                width: 80,
+                                formatter: $C.grid.comFormaters['cbxintype']
+                            },
+                            {field: 'sp_name', title: '职位', width: 80},
+                            {field: 'lv_num', title: '职级', sortable: true, width: 64},
+                            {field: 'hg_name', title: '职等', width: 64}
+                        ]]
+                    });
+                    $("#orgopgrid").treegrid({
+                        idField: 'ospid',
+                        treeField: 'sp_name',
+                        columns: [[
+                            {field: 'sp_name', title: '职位', width: 150},
+                            {field: 'ospcode', title: '编码', width: 100},
+                            {field: 'hwc_namezl', title: '职类', width: 64},
+                            {field: 'hg_name', title: '职等', width: 64},
+                            {field: 'lv_num', title: '职级', width: 64},
+                            {field: 'sp_code', title: '标准职位编码', width: 100},
+                            {field: 'quota', title: '编制数', width: 64},
+                            {field: 'empct', title: '实际数', width: 64},
+                            {field: 'cbnum', title: '超编', width: 64},
+                            {field: 'qbnum', title: '缺编', width: 64},
+                            {field: 'sp_exp', title: '说明', width: 150}
+                        ]]
+                    });
+                    $("#org_employeejz").datagrid({
+                        columns: [[
+                            {field: 'employee_code', title: '工号', width: 100},
+                            {field: 'id_number', title: '身份证号', width: 150},
+                            {field: 'employee_name', title: '姓名', width: 80},
+                            {field: 'startdate', title: '开始时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'enddate', title: '结束时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'odorgname', title: '主职部门', width: 150},
+                            {field: 'odsp_name', title: '主职职位', width: 80},
+                            {field: 'odhg_name', title: '主职职等', width: 64},
+                            {field: 'odlv_num', title: '主职职级', width: 64},
+                            {field: 'newsp_name', title: '兼职职位', width: 80},
+                            {field: 'newhg_name', title: '兼职职等', width: 64},
+                            {field: 'newlv_num', title: '兼职职级', width: 64},
+                            {field: 'ptreason', title: '兼职原因', width: 200}
+                        ]]
+                    });
+                    $("#org_employeejr").datagrid({
+                        columns: [[
+                            {field: 'employee_code', title: '工号', width: 100},
+                            {field: 'id_number', title: '身份证号', width: 150},
+                            {field: 'employee_name', title: '姓名', width: 80},
+                            {field: 'loandate', title: '开始时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'returndate', title: '归还时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'loanreason', title: '借调原因', width: 100},
+                            {field: 'odorgname', title: '编制部门', width: 64},
+                            {field: 'odsp_name', title: '职位', width: 64},
+                            {field: 'odhg_name', title: '职等', width: 64},
+                            {field: 'odlv_num', title: '职级', width: 64},
+                            {field: 'note', title: '备注', width: 100}
+                        ]]
+                    });
+                    $("#org_employeejc").datagrid({
+                        columns: [[
+                            {field: 'employee_code', title: '工号', width: 100},
+                            {field: 'id_number', title: '身份证号', width: 100},
+                            {field: 'employee_name', title: '姓名', width: 80},
+                            {field: 'loandate', title: '开始时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'returndate', title: '归还时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                            {field: 'loanreason', title: '借调原因', width: 100},
+                            {field: 'neworgname', title: '借入部门', width: 100},
+                            {field: 'odsp_name', title: '职位', width: 64},
+                            {field: 'odhg_name', title: '职等', width: 64},
+                            {field: 'odlv_num', title: '职级', width: 64},
+                            {field: 'note', title: '备注', width: 100}
+                        ]]
+                    });
+                }
+            });
+        }
+
+        function getorgs() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            $ajaxjsonget(url, function (jsondata) {
+                        jsondata[0].state = "";
+                        jsondata[0].iconCls = "application_home";
+                        setchildsnodeclose(jsondata[0]);
+                        $("#orggrid").treegrid({
+                            data: jsondata,
+                            onClickRow: function (row) {
+                                findorginfos(row);
+                            }
+                        });
+                    },
+                    function (err) {
+                        $.messager.alert('错误', JSON.stringify(err), 'error');
+                    }
+            );
+            function setchildsnodeclose(node) {
+                if (node.children != undefined) {
+                    for (var i = 0; i < node.children.length; i++) {
+                        var chdnode = node.children[i];
+                        if (chdnode.children != undefined) {
+                            chdnode.state = "closed";
+                            setchildsnodeclose(chdnode);
+                        }
+                    }
+                }
+            }
+        }
+
+        function findorginfos(row) {
+            var url = _serUrl + "/web/hr/baserpt/findOrgEmployee.co?orgid=" + row.orgid;
+            $ajaxjsonget(url, function (jsondata) {
+                $("#org_employee").datagrid("loadData", jsondata);
+                $("#org_employee").datagrid({data: jsondata});
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+
+
+            var urlp = _serUrl + "/web/hr/baserpt/findopquota.co?orgid=" + row.orgid;
+            $ajaxjsonget(urlp, function (jsdata) {
+                $("#orgopgrid").treegrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+
+            var urlp = _serUrl + "/web/hr/baserpt/findOrgEmployeejz.co?orgid=" + row.orgid;
+            $ajaxjsonget(urlp, function (jsdata) {
+                $("#org_employeejz").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+
+            var urlp = _serUrl + "/web/hr/baserpt/findOrgEmployeejr.co?orgid=" + row.orgid;
+            $ajaxjsonget(urlp, function (jsdata) {
+                $("#org_employeejr").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+
+            var urlp = _serUrl + "/web/hr/baserpt/findOrgEmployeejc.co?orgid=" + row.orgid;
+            $ajaxjsonget(urlp, function (jsdata) {
+                $("#org_employeejc").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+        }
+
+        var org_employee_toolbar = [{
+            text: '详情',
+            iconCls: 'icon-ml_detail',
+            handler: function () {
+                showEmpInof();
+            }
+        }];
+
+
+        function showEmpInof() {
+            var rows = $("#org_employee").datagrid("getChecked");
+            if (rows.length > 20) {
+                $.messager.alert('错误', '不显示超过20个的员工信息!', 'error');
+                return;
+            }
+            var empinfos = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                empinfos.push({
+                    er_id: row.er_id,
+                    employee_name: row.employee_name,
+                    orgname: row.orgname
+                });
+            }
+            if (empinfos.length > 0) {
+                var url = _serUrl + "/webapp/hr_perm/rpt_employeeinfo_ex.html?empinfos=" + encodeURIComponent(JSON.stringify(empinfos));
+                var win = window.open(url, "about:blank", "人事信息", "location=no,directories=no,scrollbars=yes,toolbar=yes,fullscreen=yes,directories=no,resizable =yes");
+                win.moveTo(0, 0);
+                win.resizeTo(screen.width + 20, screen.height);
+                win.focus();
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'west',border:false,split:true,collapsible:false"
+         style="width: 280px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+        <table id="orggrid" class="easyui-treegrid"
+               data-options="border:false,lines: true,idField: 'orgid',rownumbers: true,fitColumns: true,treeField: 'orgname',fit:true">
+            <thead>
+            <tr>
+                <th data-options="field:'orgname',hide:true" width="100%"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center'" style="padding:0px">
+        <div class="easyui-tabs" data-options="fit:true,border:false">
+            <div title="包含职位" data-options="" style="padding:0px">
+                <table id="orgopgrid" class="easyui-treegrid"
+                       data-options="border:false,idField: 'ospid',rownumbers: true,fitColumns: true,treeField: 'sp_name'">
+                </table>
+            </div>
+            <div title="包含员工" style="padding:0px;">
+                <table id="org_employee" class="easyui-datagrid" cjoptions=""
+                       data-options="fit:true,border:false,remoteSort:false,rownumbers:true,toolbar:org_employee_toolbar">
+                </table>
+            </div>
+            <div title="兼职员工" data-options="" style="padding:0px">
+                <table id="org_employeejz" class="easyui-datagrid" cjoptions=""
+                       data-options="fit:true,border:false,rownumbers:true,singleSelect: true">
+                </table>
+            </div>
+            <div title="借入员工" data-options="" style="padding:0px">
+                <table id="org_employeejr" class="easyui-datagrid" cjoptions=""
+                       data-options="fit:true,border:false,rownumbers:true,singleSelect: true">
+                </table>
+            </div>
+            <div title="借出员工" data-options="" style="padding:0px">
+                <table id="org_employeejc" class="easyui-datagrid" cjoptions=""
+                       data-options="fit:true,border:false,rownumbers:true,singleSelect: true">
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

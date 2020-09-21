@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1045",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1045",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1071",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1071",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1074",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1074",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1082",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1082",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'ljcode', title: '离职编码', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'orgname', title: '部门', width: 200},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'hwc_namezl', title: '职类', width: 64},
+            {field: 'id_number', title: '身份证', width: 150},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'birthday', title: '出生日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'hiredday', title: '入职日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'registeraddress', title: '户籍住址', width: 200},
+            {field: 'ljappdate', title: '申请离职日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期', findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'worktime', title: '司龄', width: 64},
+            {field: 'ljtype2', title: '离职类型', width: 80, formatter: comUrl_dic1045.formator},
+            {field: 'ljtype1', title: '离职类别', width: 80, formatter: comUrl_dic782.formator},
+            {field: 'ljreason', title: '离职原因', width: 64, formatter: comUrl_dic1049.formator},
+            {field: 'iscpst', title: '是否补偿', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'cpstarm', title: '补偿金额', width: 64},
+            {field: 'iscpt', title: '是否投诉', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isabrt', title: '是否仲裁', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'islawsuit', title: '是否诉讼', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isblacklist', title: '加封黑名单', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'addtype', title: '加封类型', width: 64, width: 100, formatter: comUrl_dic1071.formator},
+            {field: 'addtype1', title: '加封类别', width: 150, formatter: comUrl_dic1074.formator},
+            {field: 'blackreason', title: '加封原因', width: 120, formatter: comUrl_dic1082.formator},
+            {field: 'iscanced', title: '已撤销', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'pempstatid', title: '离职前状态', width: 80, formatter: comUrl_cbxintype.formator},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+        var mengtag = undefined;//1 员工 2 实习
+        frmOptions = {
+            findUrl: _serUrl + "/web/hr/leavejob/findleavelist.co",
+            JPAClass: "com.hr.perm.entity.Hr_leavejob",
+            JPAIdField: "ljid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '1050px',
+            windowHeight: '450px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            onCreate: function () {//创建对象前  mainline不可用
+                var parms = $getPageParms();
+                mengtag = parseInt(parms.menutag);
+                if ((mengtag != 1) && (mengtag != 2))
+                    throw "mengtag值错误"
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+                if (mengtag == 1)
+                    jsondata.ljtype = 2;
+                if (mengtag == 2)
+                    jsondata.ljtype = 1;
+                jsondata.ljappdate = (new Date()).format("yyyy-MM-dd");
+                //jsondata.ljdate = jsondata.ljappdate;
+                jsondata.iscpst = 2;
+                jsondata.cpstarm = 0.00;
+                jsondata.iscpt = 2;
+                jsondata.isabrt = 2;
+                jsondata.islawsuit = 2;
+                jsondata.isblacklist = 2;
+                jsondata.iscanced = 2;
+            },
+            beforeSave: function () {
+                var mdata = mainline.getMainData();
+                var iscpst = parseInt(mdata.iscpst);
+                var cpstarm = parseFloat(mdata.cpstarm);
+                if (iscpst == 1) {
+                    if (cpstarm == 0) {
+                        alert("补偿金额不能为0");
+                        throw new error("补偿金额不能为0");
+                    }
+                }
+                if (iscpst == 2) {
+                    if (cpstarm != 0) {
+                        alert("补偿金额务必为0");
+                        throw new error("补偿金额务必为0");
+                    }
+                }
+
+                var isblacklist = parseInt(mdata.isblacklist);
+                if (isNaN(isblacklist)) return;//不是数字
+                if (isblacklist == 1) {
+                    if ($isEmpty(mdata.addtype)) {
+                        $.messager.alert('错误', '需要填入加封类型!', 'error');
+                        throw new error("需要填入加封类型");
+                    }
+                    if ($isEmpty(mdata.addtype1)) {
+                        $.messager.alert('错误', '需要填入加封类别!', 'error');
+                        throw new error("需要填入加封类别");
+                    }
+                    if ($isEmpty(mdata.blackreason)) {
+                        $.messager.alert('错误', '需要填入加封原因!', 'error');
+                        throw new error("需要填入加封原因");
+                    }
+                }
+            },
+            onFind: function (parms) {
+                if (mengtag == 1) {
+                    var p = {parmname: 'ljtype', reloper: '=', parmvalue: 2};
+                }
+                if (mengtag == 2) {
+                    var p = {parmname: 'ljtype', reloper: '=', parmvalue: 1};
+                    parms.disidpath = true;
+                    parms.parms.push(p);
+                }
+            },
+            afterShowDetail: function () {
+                resetblackinfo();
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (mainline.isloadingdata()) return;
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+                if (fdname == "ljdate") {
+                    calcWorktime();
+                }
+                if (fdname == "ljtype2") {
+                    resetty();
+                    mainline.setFieldValue("ljtype1", undefined);
+                    mainline.setFieldValue("ljreason", undefined);
+                }
+                if (fdname == "ljtype1") {
+                    resetreason();
+                    if (parseInt(newValue) == 1) {
+                        mainline.setFieldValue('isblacklist', 1);
+                    }
+                    mainline.setFieldValue("ljreason", undefined);
+                }
+
+                if (fdname == "ljreason") {
+                    if ((parseInt(newValue) == 22) || (parseInt(newValue) == 23)) {//一类 二类
+                        mainline.setFieldValue('isblacklist', 1);
+                    }
+                    if ((parseInt(newValue) == 11)) {//合同期满公司终止劳动合同
+                        mainline.setFieldValue('isblacklist', 2);
+                    }
+                }
+
+                if (fdname == "isabrt") {
+                    if (parseInt(newValue) == 1) {
+                        mainline.setFieldValue('isblacklist', 1);
+                    }
+                }
+                if (fdname == "islawsuit") {
+                    if (parseInt(newValue) == 1) {
+                        mainline.setFieldValue('isblacklist', 1);
+                    }
+                }
+                if (fdname == "iscpt") {
+                    if (parseInt(newValue) == 1) {
+                        mainline.setFieldValue('isblacklist', 1);
+                    }
+                }
+                if (fdname == "addtype") {
+                    resetAddtype1();
+                }
+                if (fdname == "isblacklist") {
+                    resetblackinfo();
+                }
+            }
+        };
+
+        function calcWorktime() {
+            var ljdate = (new Date()).fromStr(mainline.getFieldValue("ljdate"));
+            var hiredday = (new Date()).fromStr(mainline.getFieldValue("hiredday"));
+            if (ljdate < hiredday) {
+                $.messager.alert('错误', '日期错误!', 'error');
+                mainline.setFieldValue("ljdate", "");
+                return;
+            }
+            var ms = (ljdate.getFullYear() * 12 + ljdate.getMonth()) - (hiredday.getFullYear() * 12 + hiredday.getMonth());
+            var y = Math.floor(ms / 12);
+            var m = ms % 12;
+            //alert(y + "-" + m);
+            var cd = ljdate.getDate() - hiredday.getDate();
+            //alert("cd:" + cd);
+            if (cd > 0) {
+                if (cd >= 15) {
+                    m = m + 1;
+                }
+                if (m > 12) {
+                    y = y + 1;
+                    m = m - 12;
+                }
+            }
+            if (cd < 0) {
+                if (cd < -15) {
+                    m = m - 1;
+                }
+                if (m < 0) {
+                    y = y - 1;
+                    m = 0;
+                }
+                if (y < 0)
+                    y = 0;
+            }
+            mainline.setFieldValue("worktime", y + "年" + m + "月");
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findLVEmoloyeeList.co?mengtag=" + mengtag;
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                singleAutoReturn: true,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('id_number', row.id_number);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('mnemonic_code', row.mnemonic_code);
+                        mainline.setFieldValue('empstatid', row.empstatid);
+                        mainline.setFieldValue('hiredday', row.hiredday);
+                        mainline.setFieldValue('registeraddress', row.registeraddress);
+                        mainline.setFieldValue('sex', row.sex);
+                        mainline.setFieldValue('birthday', row.birthday);
+                        mainline.setFieldValue('degree', row.degree);
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue('lv_id', row.lv_id);
+                        mainline.setFieldValue('lv_num', row.lv_num);
+                        mainline.setFieldValue('hg_id', row.hg_id);
+                        mainline.setFieldValue('hg_code', row.hg_code);
+                        mainline.setFieldValue('hg_name', row.hg_name);
+                        mainline.setFieldValue('ospid', row.ospid);
+                        mainline.setFieldValue('ospcode', row.ospcode);
+                        mainline.setFieldValue('sp_name', row.sp_name);
+                        mainline.setFieldValue('dhwc_namezl', row.dhwc_namezl);
+                        mainline.setFieldValue('pempstatid', row.empstatid);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue("hwc_namezl", row.hwc_namezl);
+
+                        /*  var url = _serUrl + "/web/user/getExtOrgName.co?orgid=" + row.orgid;
+                         $ajaxjsonget(url, function (jsdata) {
+                         mainline.setFieldValue('orgname', jsdata.extorgname);
+                         }, function (err) {
+                         alert(JSON.stringify(err));
+                         });*/
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show();
+        }
+        function resetty() {
+            var ljtype2 = mainline.getFieldValue("ljtype2");
+            ljtype2 = parseInt(ljtype2);
+            if (isNaN(ljtype2)) return;//不是数字
+            var fdljtype1 = mainline.getField("ljtype1");
+            switch (ljtype2) {
+                case 1://主动离职
+                    fdljtype1.combobox($getNewComboxParmsByComUrl(comUrl_dic782, [1, 2, 8]));
+                    break;
+                case 2://被动离职
+                    fdljtype1.combobox($getNewComboxParmsByComUrl(comUrl_dic782, [3, 4, 5, 8]));
+                    break;
+                case 3://协商离职
+                    fdljtype1.combobox($getNewComboxParmsByComUrl(comUrl_dic782, [6, 7]));
+                    break;
+            }
+        }
+
+        function resetreason() {
+            var ljtype1 = mainline.getFieldValue("ljtype1");
+            ljtype1 = parseInt(ljtype1);
+            var ljtype2 = mainline.getFieldValue("ljtype2");
+            ljtype2 = parseInt(ljtype2);
+            if (isNaN(ljtype1)) return;//不是数字
+            var ljreason = mainline.getField("ljreason");
+            switch (ljtype1) {
+                case 1://自离
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [1, 2, 21]));
+                    mainline.setFieldValue('isblacklist', 1);
+                    break;
+                case 2://辞职
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [3, 4, 5, 6, 24, 21]));
+                    break;
+                case 3://辞退
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [7, 8, 9, 10, 11, 25, 21]));
+                    mainline.setFieldValue('isblacklist', 1);
+                    break;
+                case 4://裁员
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [12, 13, 14, 21]));
+                    mainline.setFieldValue('isblacklist', 1);
+                    break;
+                case 5://退休
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [15, 16, 17, 21]));
+                    break;
+                case 6://补偿离职
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [18, 19, 21]));
+                    mainline.setFieldValue('isblacklist', 1);
+                    break;
+                case 7://无补偿离职
+                    ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [20, 21]));
+                    break;
+                case 8://招募中心自离
+                    if (ljtype2 == 1) {
+                        ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [23]));
+                    } else if (ljtype2 == 2) {
+                        ljreason.combobox($getNewComboxParmsByComUrl(comUrl_dic1049, [22]));
+                    }
+                    mainline.setFieldValue('isblacklist', 1);
+                    break;
+            }
+        }
+
+        function resetAddtype1() {
+            if (parseInt(mainline.getFieldValue("stat")) > 1)return;
+            var addtype = mainline.getFieldValue("addtype");
+            addtype = parseInt(addtype);
+            if (isNaN(addtype)) return;//不是数字
+            var addtype1_fd = mainline.getField("addtype1");
+            if (addtype == 1) {
+                addtype1_fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1074, [1, 2, 3, 4]));
+            }
+            if (addtype == 2) {
+                addtype1_fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1074, [5, 6, 7]));
+            }
+        }
+
+        function resetblackinfo() {
+            if (mainline.isloadingdata())return;
+            if (parseInt(mainline.getFieldValue("stat")) > 1)return;
+            var isblacklist = mainline.getFieldValue("isblacklist");
+            isblacklist = parseInt(isblacklist);
+            if (isNaN(isblacklist)) return;//不是数字
+            if (isblacklist == 1) {
+                mainline.setReadOnly("addtype", false);
+                mainline.setReadOnly("addtype1", false);
+                mainline.setReadOnly("blackreason", false);
+            }
+            if (isblacklist == 2) {
+                mainline.setFieldValue("addtype", undefined);
+                mainline.setFieldValue("addtype1", undefined);
+                mainline.setFieldValue("blackreason", undefined);
+                mainline.setReadOnly("addtype", true);
+                mainline.setReadOnly("addtype1", true);
+                mainline.setReadOnly("blackreason", true);
+            }
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ljcode'">离职编码</td>
+        <td colspan="7">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'ljcode',crequired:true,readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 80px"/>
+        </td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'sex',crequired:true,readonly:true,comidx:'dic81',editable:false"
+                style="height:20px;width: 60px"/>
+        </td>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',crequired:true,readonly:true"
+                   style="height:20px;width: 60px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'degree',readonly:true,comidx:'dic84',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'birthday'">出生年月</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'birthday',crequired:true,readonly:true,formatter:$dateformatorYYYY_MM"
+                style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 100%"/></td>
+        </td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100%"/>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'registeraddress'">户籍地址</td>
+        <td colspan="11">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'registeraddress',readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ljappdate'">申请日期</td>
+        <td colspan="1"><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'ljappdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ljdate'">离职日期</td>
+        <td colspan="1"><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'ljdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td colspan="2" cjoptions="fdname:'kqdate_end'">考勤截止日期(包含)</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'kqdate_end',formatter:$dateformattostrrYYYY_MM_DD,editable:false,crequired:true"
+                style="height:20px;width: 100px"/>
+        <td cjoptions="fdname:'worktime'">司龄</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'worktime',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ljtype2'">离职类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ljtype2',crequired:true,comidx:'dic1045',editable:false"
+                   style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'ljtype1'">离职类别</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'ljtype1',crequired:true,comidx:'dic782',editable:false"
+                style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'ljreason'">离职原因</td>
+        <td colspan="7">
+            <input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'ljreason',comidx:'dic1049',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'iscpst'">是否补偿</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'iscpst',crequired:true,comidx:'dic5',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'cpstarm'">补偿金额</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'cpstarm',crequired:true,min:0,precision:2"
+                   style="height:20px;width:100%"/>
+        </td>
+        <td cjoptions="fdname:'iscpt'">劳动投诉</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'iscpt',crequired:true,comidx:'dic5',editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'isabrt'">申请仲裁</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'isabrt',crequired:true,comidx:'dic5',editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'islawsuit'">申请诉讼</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'islawsuit',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'isblacklist'">加入黑名单</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'isblacklist',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100%"/></td>
+        <td>加封类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'addtype',comidx:'dic1071',editable:false" style="height:20px;width: 100%"/></td>
+        <td>加封类别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'addtype1',comidx:'dic1074',editable:false" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'blackreason'">加封原因</td>
+        <td colspan="5">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'blackreason',comidx:'dic1082',editable:false" style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'iscanced'">已撤销</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'iscanced',crequired:true,readonly:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'pempstatid'">离职前状态</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'pempstatid',crequired:true,readonly:true,comidx:'cbxintype',editable:false"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td colspan="2"><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td colspan="2"><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+    </tr>
+
+</table>
+</body>
+</html>

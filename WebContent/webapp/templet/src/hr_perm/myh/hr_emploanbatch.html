@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic729",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=729",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'loancode', title: '编码', width: 120},
+            {field: 'applaydate', title: '申请时间', findtype: 'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'loandate', title: '生效时间', findtype: 'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'odorgname', title: '借调前部门', width: 150},
+            {field: 'neworgname', title: '借调后部门', width: 150},
+            {field: 'returndate', title: '归还时间', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'loanreason', title: '借调原因', width: 200},
+            {field: 'loantype', title: '调动范围', width: 100, formatter: comUrl_dic729.formator},
+            {field: 'empnum', title: '人数', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 200}
+        ];
+
+
+        var gdLinesColumns = [
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'odorgname', title: '借调前部门', width: 150},
+            {field: 'odsp_name', title: '职位', width: 64},
+            {field: 'odhg_name', title: '职等', width: 64},
+            {field: 'odlv_num', title: '职级', width: 64},
+            {field: 'note', title: '备注', width: 100, editor: 'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_emploanbatch",
+            JPAIdField: "loanid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '90%',
+            windowHeight: '90%',
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hr_emploanbatch_lines",
+            datainfo_line_title: "借调详情",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            allowEmptyLine: false,//允许明细行为空保存
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+            },
+            onNew: function (jsondata) {
+                jsondata.applaydate = $dateformattostrrYYYY_MM_DD(new Date());
+            },
+            onAddLine: function (append) {//点击添加明细行
+                onFindemployee(append);
+                // append(rowdata);
+            },
+            beforeSave: function () {
+                mainline.setFieldValue("empnum", $("#detail_main_grid_id").datagrid("getData").rows.length);
+            },
+            onFind: function (parms) {
+
+            },
+            afterFindDetail: function () {
+
+            }
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/employeeloanbatch/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+
+        var select_employee_pw = undefined;
+        function onFindemployee(append) {
+            var orgid = mainline.getFieldValue("neworgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择借入机构", 'error');
+                return;
+            }
+            var orgid = mainline.getFieldValue("odorgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择借出机构", 'error');
+                return;
+            }
+
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co?orgid=" + orgid;
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    //{parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                            var erow = {};
+                            erow.er_id = row.er_id;
+                            erow.employee_code = row.employee_code;
+                            erow.id_number = row.id_number;
+                            erow.employee_name = row.employee_name;
+                            erow.sex = row.sex;
+                            erow.mnemonic_code = row.mnemonic_code;
+                            //erow.mnemonic_code = row.mnemonic_code;
+                            erow.email = row.email;
+                            erow.empstatid = row.empstatid;
+                            erow.hiredday = row.hiredday;
+                            erow.degree = row.degree;
+                            erow.odorgid = row.orgid;
+                            erow.odorgcode = row.orgcode;
+                            erow.odorgname = row.orgname;
+                            erow.odlv_id = row.lv_id;
+                            erow.odlv_num = row.lv_num;
+                            erow.odhg_id = row.hg_id;
+                            erow.odhg_code = row.hg_code;
+                            erow.odhg_name = row.hg_name;
+                            erow.odospid = row.ospid;
+                            erow.odospcode = row.ospcode;
+                            erow.odsp_name = row.sp_name;
+                            erow.oldhwc_namezl = row.dhwc_namezl;
+                            erow.neworgid = mainline.getFieldValue("neworgid");
+                            erow.neworgcode = mainline.getFieldValue("neworgcode");
+                            erow.neworgname = mainline.getFieldValue("neworgname");
+                            append(erow);
+                        }
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            } else
+                select_employee_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                    ]
+                });
+            select_employee_pw.show();
+        }
+
+        function onSelectOrg1() {
+            onSelectOrg(1);
+        }
+
+        function onSelectOrg2() {
+            onSelectOrg(2);
+        }
+        var selectType = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg(tp) {
+            var odorgid = mainline.getFieldValue("odorgid");
+            var neworgid = mainline.getFieldValue("neworgid");
+            selectType = tp;
+            if (tp == 1)
+                var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            if (tp == 2)
+                var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        mainline.clearGridViewData();
+                        var row = rows[0];
+                        if (selectType == 1) {
+                            if (neworgid == row.orgid) {
+                                alert("借调前后不能不能相同");
+                                return;
+                            }
+                            mainline.setFieldValue("odorgid", row.orgid);
+                            mainline.setFieldValue("odorgcode", row.code);
+                            mainline.setFieldValue("idpath", row.idpath);
+                            mainline.setFieldValue("odorgname", row.extorgname);
+                        }
+                        if (selectType == 2) {
+                            if (odorgid == row.orgid) {
+                                alert("借调前后不能不能相同");
+                                return;
+                            }
+                            mainline.setFieldValue("neworgid", row.orgid);
+                            mainline.setFieldValue("neworgcode", row.code);
+                            mainline.setFieldValue("neworgname", row.extorgname);
+                        }
+                    }
+                }
+            });
+            select_Org_pw.show(true);
+        }
+
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'loancode'">借调编码</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'loancode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'loantype'">调动范围</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'loantype',comidx:'dic729',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'loandate'">生效时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'loandate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'returndate'">归还时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'returndate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'odorgname'">借调前部门</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'odorgname',buttonIcon:'icon-search',onClickButton:onSelectOrg1,crequired:true,editable:false"
+                style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'neworgname'">借调后部门</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'neworgname',buttonIcon:'icon-search',onClickButton:onSelectOrg2,crequired:true,editable:false"
+                style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'loanreason'">借调原因</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'loanreason'" style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'applaydate'">申请时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'applaydate',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'empnum'">借调人数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'empnum',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:false"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

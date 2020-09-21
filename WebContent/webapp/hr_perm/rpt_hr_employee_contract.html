@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>合同到期提醒</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic764 = {index: 'dic764',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"有效","dictvalue":"1"},{"language1":"终止","dictvalue":"2"},{"language1":"过期","dictvalue":"3"},{"language1":"作废","dictvalue":"4"},{"language1":"解除","dictvalue":"5"},{"language1":"续签","dictvalue":"6"}], formator: function (value, row) { var jsondata = comUrl_dic764.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic764; } if (comUrl_dic764.type == 'combobox') { if (comUrl_dic764.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic764.valueField]) { rst = rst + jsondata[i][comUrl_dic764.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic764.valueField]) return jsondata[i][comUrl_dic764.textField]; } } } if (comUrl_dic764.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic764.editor= {type: 'combobox', options: {valueField:comUrl_dic764.valueField, textField:comUrl_dic764.textField, data: comUrl_dic764.jsondata}}; var comUrl_dic758 = {index: 'dic758',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"劳动合同","dictvalue":"1"},{"language1":"保密协议","dictvalue":"2"},{"language1":"竞业协议","dictvalue":"3"},{"language1":"劳务合同","dictvalue":"4"},{"language1":"劳务聘用协议书","dictvalue":"5"},{"language1":"实习协议","dictvalue":"6"},{"language1":"返聘合同","dictvalue":"7"},{"language1":"返聘协议","dictvalue":"8"},{"language1":"培训协议","dictvalue":"9"}], formator: function (value, row) { var jsondata = comUrl_dic758.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic758; } if (comUrl_dic758.type == 'combobox') { if (comUrl_dic758.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic758.valueField]) { rst = rst + jsondata[i][comUrl_dic758.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic758.valueField]) return jsondata[i][comUrl_dic758.textField]; } } } if (comUrl_dic758.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic758.editor= {type: 'combobox', options: {valueField:comUrl_dic758.valueField, textField:comUrl_dic758.textField, data: comUrl_dic758.jsondata}}; var comUrl_dic684 = {index: 'dic684',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"试用","dictvalue":"1"},{"language1":"考察","dictvalue":"2"},{"language1":"正式","dictvalue":"3"},{"language1":"借出","dictvalue":"4"},{"language1":"待离职","dictvalue":"5"},{"language1":"离职","dictvalue":"6"},{"language1":"黑名单","dictvalue":"7"},{"language1":"ZXC","dictvalue":"8"}], formator: function (value, row) { var jsondata = comUrl_dic684.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic684; } if (comUrl_dic684.type == 'combobox') { if (comUrl_dic684.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic684.valueField]) { rst = rst + jsondata[i][comUrl_dic684.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic684.valueField]) return jsondata[i][comUrl_dic684.textField]; } } } if (comUrl_dic684.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic684.editor= {type: 'combobox', options: {valueField:comUrl_dic684.valueField, textField:comUrl_dic684.textField, data: comUrl_dic684.jsondata}}; var comUrl_cbxintype = {index: 'cbxintype',type: 'combobox',multiple: false,valueField: 'statvalue',textField: 'language1',jsondata:[{"language1":"招募待入职","statvalue":"0"},{"language1":"实习","statvalue":"1"},{"language1":"试用","statvalue":"2"},{"language1":"考察","statvalue":"3"},{"language1":"正式","statvalue":"4"},{"language1":"借出","statvalue":"5"},{"language1":"待入职","statvalue":"6"},{"language1":"实习试用","statvalue":"7"},{"language1":"见习期","statvalue":"8"},{"language1":"待离职","statvalue":"11"},{"language1":"离职","statvalue":"12"},{"language1":"黑名单","statvalue":"13"}], formator: function (value, row) { var jsondata = comUrl_cbxintype.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_cbxintype; } if (comUrl_cbxintype.type == 'combobox') { if (comUrl_cbxintype.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_cbxintype.valueField]) { rst = rst + jsondata[i][comUrl_cbxintype.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_cbxintype.valueField]) return jsondata[i][comUrl_cbxintype.textField]; } } } if (comUrl_cbxintype.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_cbxintype.editor= {type: 'combobox', options: {valueField:comUrl_cbxintype.valueField, textField:comUrl_cbxintype.textField, data: comUrl_cbxintype.jsondata}}; var comUrls = [ { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic764", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=764", valueField: 'dictvalue', textField: 'language1' }, { index: "dic758", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=758", valueField: 'dictvalue', textField: 'language1' }, { index: "dic684", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=684", valueField: 'dictvalue', textField: 'language1' }, { index: "cbxintype", type: "combobox", url: "web/hr/employee/getepsts.co", valueField: 'statvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field:'con_number',title:'合同编号',width:120},
+                {field:'employee_code',title:'工号',width:100},
+                {field:'employee_name',title:'姓名',width:80},
+                {field:'orgname',title:'部门',width:300},
+                {field:'hiredday',title:'入职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'lv_num',title:'职级',width:60},
+                {field:'empstatid',title:'人事状态',width:80, formatter: comUrl_cbxintype.formator},
+                {field:'contract_type',title:'合同类型',width:100, formatter: comUrl_dic758.formator},
+                {field:'contractstat',title:'合同状态',width:80, formatter: comUrl_dic764.formator},
+                {field:'contract_name',title:'合同名称',width:150},
+                {field:'sign_date',title:'签订日期',width:130, formatter: $fieldDateFormatorYYYY_MM_DD},
+               // {field:'begin_date',title:'开始日期',width:130},
+                {field:'end_date',title:'截止日期',width:130, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'sign_number',title:'签订次数',width:60},
+                {field:'stat',title:'流程状态',width:80, formatter: comUrl_dic227.formator},
+                {field:'remark',title:'备注',width:150}
+            ]
+        };
+
+        var findColums = [
+            {field:'con_number',title:'合同编号',width:64},
+            {field:'employee_code',title:'工号',width:64},
+            {field:'employee_name',title:'姓名',width:64},
+            {field:'orgcode',title:'部门编码',width:64},
+            {field:'orgname',title:'部门名称',width:64},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'ospcode',title:'职位编码',width:64},
+            {field:'sp_name',title:'职位名称',width:64},
+            {field:'hiredday',title:'入职日期',width:64},
+            {field:'contract_name',title:'合同名称',width:64},
+            {field:'sign_date',title:'签订日期',width:64},
+            {field:'begin_date',title:'开始日期',width:64},
+            {field:'end_date',title:'截止日期',width:64}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL:_serUrl + "/web/hr/employeecontract/findExpireContracts.co",
+            beforeLoadData: function (jsdata) {
+
+            }
+        };
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

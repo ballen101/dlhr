@@ -1,0 +1,102 @@
+package com.hr.salary.ctr;
+
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.server.cjpa.CJPA;
+import com.corsair.server.cjpa.JPAController;
+import com.corsair.server.wordflow.Shwwf;
+import com.corsair.server.wordflow.Shwwfproc;
+import com.hr.attd.ctr.HrkqUtil;
+import com.hr.salary.entity.Hr_salary_positionwage;
+import com.hr.salary.entity.Hr_salary_yearraise;
+import com.hr.salary.entity.Hr_salary_yearraise_line;
+import com.hr.salary.entity.Hr_salary_yearraise_quota;
+
+public class CtrHr_salary_yearraise extends JPAController{
+
+	@Override
+	public void AfterWFStart(CJPA jpa, CDBConnection con, Shwwf wf,
+			boolean isFilished) throws Exception {
+		// TODO Auto-generated method stub
+		setYRQutaSubmitStat(jpa,con);
+		if(isFilished){
+			Hr_salary_yearraise yr=(Hr_salary_yearraise)jpa;
+			CtrSalaryCommon.newSalaryChangeLog(con,yr);
+		}
+	}
+
+	@Override
+	public void OnWfSubmit(CJPA jpa, CDBConnection con, Shwwf wf,
+			Shwwfproc proc, Shwwfproc nxtproc, boolean isFilished)
+			throws Exception {
+		// TODO Auto-generated method stub
+		setYRQutaSubmitStat(jpa,con);
+		if(isFilished){
+			Hr_salary_yearraise yr=(Hr_salary_yearraise)jpa;
+			CtrSalaryCommon.newSalaryChangeLog(con,yr);
+		}
+	}
+
+	@Override
+	public void BeforeWFStart(CJPA jpa, String wftempid, CDBConnection con)
+			throws Exception {
+		// TODO Auto-generated method stub
+		Hr_salary_yearraise yr=(Hr_salary_yearraise)jpa;
+		Hr_salary_yearraise_quota yrq=new Hr_salary_yearraise_quota();
+		yrq.findByID(yr.yrqid.getValue());
+		if(!yrq.isEmpty()){
+			if(yrq.usable.getAsInt()==2){
+				throw new Exception("id为【"+yrq.yrqid.getValue()+"】的年度调薪额度【"+yrq.yrqname.getValue()+"】已失效");
+			}
+			if(yrq.isused.getAsInt()==1){
+				throw new Exception("id为【"+yrq.yrqid.getValue()+"】的年度调薪额度【"+yrq.yrqname.getValue()+"】已被使用，不能再次提交");
+			}
+		}
+		int highnosubmit = Integer.valueOf(HrkqUtil.getParmValue("SA_YEARRAISE_HIGHNOSUBMIT"));// 为1时调薪后职位工资高于该职位工资标准不准提交
+		if(highnosubmit==1){
+			CJPALineData<Hr_salary_yearraise_line> yrls=yr.hr_salary_yearraise_lines;
+			for(int i=0;i<yrls.size();i++){
+				Hr_salary_yearraise_line yrl=(Hr_salary_yearraise_line)yrls.get(i);
+				Hr_salary_positionwage ptw=new Hr_salary_positionwage();
+				ptw.findBySQL("SELECT pw.* FROM `hr_salary_positionwage` pw,`hr_orgposition` op WHERE pw.stat=9 AND pw.usable=1 AND pw.ospid=op.sp_id AND op.ospid="+yrl.ospid.getValue());
+				if(!ptw.isEmpty()){
+					if(yrl.newposition_salary.getAsFloatDefault(0)>ptw.psl5.getAsFloatDefault(0)){
+						throw new Exception("员工【"+yrl.employee_code.getValue()+"】的调整后职位工资高于该职位工资标准");
+					}
+				}
+			}
+		}
+	}
+	
+	private void setYRQutaSubmitStat(CJPA jpa,  CDBConnection con) throws Exception{
+		Hr_salary_yearraise yr=(Hr_salary_yearraise)jpa;
+		Hr_salary_yearraise_quota yrq=new Hr_salary_yearraise_quota();
+		yrq.findByID(yr.yrqid.getValue());
+		if(!yrq.isEmpty()){
+			if(yrq.isused.getAsInt()==2){
+				yrq.isused.setAsInt(1);
+				yrq.save(con);
+			}
+		}
+	}
+
+	@Override
+	public void OnWfBreak(CJPA jpa, Shwwf wf, CDBConnection con)
+			throws Exception {
+		// TODO Auto-generated method stub
+		setYRQutaBreakStat(jpa,con);
+	}
+	
+	private void setYRQutaBreakStat(CJPA jpa,  CDBConnection con) throws Exception{
+		Hr_salary_yearraise yr=(Hr_salary_yearraise)jpa;
+		Hr_salary_yearraise_quota yrq=new Hr_salary_yearraise_quota();
+		yrq.findByID(yr.yrqid.getValue());
+		if(!yrq.isEmpty()){
+			if(yrq.isused.getAsInt()==1){
+				yrq.isused.setAsInt(2);
+				yrq.save(con);
+			}
+		}
+	}
+
+}

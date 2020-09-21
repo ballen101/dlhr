@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic931 = {index: 'dic931',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"国内出差","dictvalue":"1"},{"language1":"国外出差","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic931.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic931; } if (comUrl_dic931.type == 'combobox') { if (comUrl_dic931.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic931.valueField]) { rst = rst + jsondata[i][comUrl_dic931.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic931.valueField]) return jsondata[i][comUrl_dic931.textField]; } } } if (comUrl_dic931.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic931.editor= {type: 'combobox', options: {valueField:comUrl_dic931.valueField, textField:comUrl_dic931.textField, data: comUrl_dic931.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"制单","dictvalue":"1"},{"language1":"进行中","dictvalue":"2"},{"language1":"复议","dictvalue":"3"},{"language1":"二次回访","dictvalue":"4"},{"language1":"完成","dictvalue":"9"},{"language1":"关闭","dictvalue":"10"},{"language1":"作废","dictvalue":"12"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic1019 = {index: 'dic1019',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"年假","dictvalue":"1"},{"language1":"加班","dictvalue":"2"},{"language1":"值班","dictvalue":"3"},{"language1":"出差","dictvalue":"4"},{"language1":"特殊","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1019.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1019; } if (comUrl_dic1019.type == 'combobox') { if (comUrl_dic1019.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1019.valueField]) { rst = rst + jsondata[i][comUrl_dic1019.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1019.valueField]) return jsondata[i][comUrl_dic1019.textField]; } } } if (comUrl_dic1019.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1019.editor= {type: 'combobox', options: {valueField:comUrl_dic1019.valueField, textField:comUrl_dic1019.textField, data: comUrl_dic1019.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic931", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=931", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1019", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1019", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        function wotimeformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v)) return value;
+            return v.toFixed(1);
+        }
+
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '部门', width: 300},
+                {field: 'employee_code', title: '工号', width: 70},
+                {field: 'employee_name', title: '姓名', width: 70},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'sp_name', title: '职位', width: 64},
+                {field: 'wotime', title: '调休天数', width: 64, formatter: wotimeformatter},
+                {field: 'begin_date', title: '开始时间',sortable: true, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'end_date', title: '结束时间', sortable: true,width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'reason', title: '调休事由', width: 150},
+                {field: 'stype', title: '加班类型', width: 70, formatter:comUrl_dic1019.formator},
+             /*   {field: 'sccode', title: '加班年份', width: 64},*/
+                {field: 'creator', title: '申请人', width: 64},
+                {field: 'createtime', title: '申请时间', findtype: 'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'stat', title: '签批状态', width: 64, formatter: comUrl_dic227.formator},
+                {field: 'remark', title: '备注', width: 150}
+            ]
+        };
+
+        var findExtParms = [
+            {field: 'orgname', title: '部门', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'begin_date', title: '调休开始时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'end_date', title: '调休结束时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findExtParms,
+            coURL: _serUrl + "/web/hrkq/rpt1/findwkoffcount.co"
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

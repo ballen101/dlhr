@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_access">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic1263",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1263",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1405",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1405",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+
+        var listGridColumns = function () {
+            return [
+                {field: 'access_card_seq', title: '卡序列号1', notfind: true, width: 100},
+                {field: 'access_card_number', title: '卡号', width: 80},
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'employee_name', title: '姓名', width: 100},
+                {field: 'extorgname', title: '机构', width: 250},
+                {field: 'sex', title: '性别', width: 70, formatter: comUrl_dic81.formator},
+                {field: 'hiredday', title: '入职日期', notfind: true, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'sp_name', title: '职位', notfind: true, width: 100},
+                {field: 'lv_num', title: '职级', notfind: true, width: 80},
+                {field: 'publish_date', title: '发卡时间', notfind: true, width: 120},
+                {field: 'access_list_code', title: '门禁编码', notfind: true, width: 80},
+                {field: 'access_list_name', title: '门禁名称', notfind: true, width: 200},
+                {field:'deploy_area',title:'门禁区域',width:100},
+                {field: 'accredit_date', title: '更新时间', notfind: true, width: 150},
+                {field: 'card_stat', title: '卡状态', width: 80, formatter: comUrl_dic1263.formator},
+                {field: 'access_status', title: '授权状态', width: 100, formatter: comUrl_dic1405.formator},
+                {field: 'remarks', title: '备注', notfind: true, width: 300}
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/Access/rpt/getAccessSum.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '查询有效',
+                    iconCls: 'icon-task',
+                    handler: function () {
+                        dofind1();
+                    }
+                }
+            ]
+        };
+
+        function dofind1() {
+            var parms = [];
+            parms.push({
+                parmname: "access_status",
+                reloper: "=",
+                parmvalue: "1"
+            });
+            creport.do_find(parms);
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

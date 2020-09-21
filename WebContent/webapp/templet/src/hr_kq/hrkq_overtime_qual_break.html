@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic923",
+                type: "combobox",
+                multiple: true,
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic937",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=937",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic957",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=957",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'oqb_code', title: '终止编码', width: 80},
+            {field: 'over_reason', title: '终止原因', width: 100},
+            {field: 'oqbs_date', title: '终止时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'lv_num', title: '职级', width: 80},
+            {field: 'sp_name', title: '职位', width: 100},
+            {field: 'over_type', title: '加班类型', width: 100, formatter: comUrl_dic923.formator},
+            {field: 'begin_date', title: '开始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'end_date', title: '结束日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'dealtype', title: '加班处理', width: 100, formatter: comUrl_dic928.formator},
+            {field: 'permonlimit', title: '月度加班上限时数', width: 100},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_overtime_qual_break",
+            JPAIdField: "oqb_id",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesName: 'hrkq_overtime_qual_lines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "加班资格终止单",
+            allow_expt_list: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+
+            onCreate: function () {//创建对象前
+
+            },
+            onNew: function (jsondata) {
+                jsondata.oqbs_date = $dateformattostrrYYYY_MM_DD(new Date());
+                jsondata.stat = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == "orgid") || (fdname == "emplev")) {
+                    $("#detail_main_grid_id").datagrid("loadData", []);
+
+                }
+            }
+        };
+
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var url = _serUrl + "/web/hrkq/overtimeqb/finotapp4break.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'oq_code', title: '申请单号', width: 100},
+                    {field: 'begin_date', notfind: true, title: '开始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'end_date', notfind: true, title: '截止日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var md = mainline.getMainData();
+                        $.extend(md, row);
+                        mainline.showDetail();
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'oqb_code'">终止编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oqb_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'oqbs_date'">终止时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'oqbs_date',crequired:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindemployee"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'over_reason'">终止原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'over_reason'" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'oq_code'">资格申请编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oq_code',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'begin_date'">开始日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'begin_date',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false,readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'end_date'">截止日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'end_date',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'dealtype'">加班处理</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'dealtype',editable:false,readonly:true,comidx:'dic928',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'over_type'">加班类型</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'over_type',multiple:true,crequired:true,editable:false,comidx:'dic923',readonly:true" style="height:20px;width: 200px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 320px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+
+</table>
+</body>
+</html>

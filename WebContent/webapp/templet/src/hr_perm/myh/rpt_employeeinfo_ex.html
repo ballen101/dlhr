@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title>人事信息</title>
+
+    <script type="text/javascript">
+        //var _empinfos = undefined;
+
+
+        function $OnCorsairReady() {
+            /* if (!window._empinfos) {
+             alert("不能直接打开或刷新本页面");
+             window.close();
+             return;
+             }*/
+            var parms = $getPageParms();
+            if (!parms.empinfos) {
+                alert("没有人事参数");
+                window.close();
+                return;
+            }
+            var _empinfos = JSON.parse(parms.empinfos);
+            var tp = parms._tp;
+            if (!tp) tp = "";
+            for (var i = 0; i < _empinfos.length; i++) {
+                var empinfo = _empinfos[i];
+                var ifid = "if" + empinfo.er_id;
+                var url = _serUrl + "/webapp/hr_perm/rpt_employeeinfo.html?er_id=" + empinfo.er_id + "&tp=" + tp;
+                var htm = "<div class='easyui-panel' title='" + empinfo.orgname + ":" + empinfo.employee_name + "' style='width:100%;height:auto;padding:5px'"
+                        + " data-options='collapsible:true,headerCls:\"usertitle\"'>"
+                        + "<iframe id='" + ifid + "' frameborder='0' scrolling='no' marginheight='0' marginwidth='0' onLoad='iFrameHeight(\"" + ifid + "\")'"
+                        + " src='" + url + "' style='width: 100%;'>"
+                        + " 您的浏览器不支持iframe"
+                        + " </iframe>"
+                        + " </div><div style='height: 10px'></div>";
+                $(htm).appendTo("body");
+            }
+            $.parser.parse('body');
+        }
+        function iFrameHeight(if1) {
+            var ifm = document.getElementById(if1);
+            var subWeb = document.frames ? document.frames[if1].document : ifm.contentDocument;
+            if (ifm) {
+                ifm.contentWindow._callback = function (win) {
+                    ifm.height = subWeb.body.scrollHeight;
+                };
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        .usertitle {
+            background: #6C94CD;
+        }
+
+        .usertitle .panel-title {
+            background-color: #6C94CD;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body style="margin: 0 auto;padding: 0;background-color:transparent">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+</body>
+</html>

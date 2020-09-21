@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <title>我的调休一览表</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic1019 = {index: 'dic1019',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"年假","dictvalue":"1"},{"language1":"加班","dictvalue":"2"},{"language1":"值班","dictvalue":"3"},{"language1":"出差","dictvalue":"4"},{"language1":"特殊","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1019.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1019; } if (comUrl_dic1019.type == 'combobox') { if (comUrl_dic1019.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1019.valueField]) { rst = rst + jsondata[i][comUrl_dic1019.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1019.valueField]) return jsondata[i][comUrl_dic1019.textField]; } } } if (comUrl_dic1019.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1019.editor= {type: 'combobox', options: {valueField:comUrl_dic1019.valueField, textField:comUrl_dic1019.textField, data: comUrl_dic1019.jsondata}}; var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrls = [ { index: "dic1019", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1019", valueField: 'dictvalue', textField: 'language1' }, { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $(".maintable").find("input[readonly='readonly']").addClass("tabs-tool");
+                $("#ipt_employee_code").textbox("textbox").removeClass("tabs-tool");
+
+                $("#grd_ktx").datagrid({
+                    columns: [[
+                        {field: 'stype', title: '源类型', width: 64, formatter: comUrl_dic1019.formator},
+                        {field: 'sccode', title: '来源单号', width: 100},
+                        {field: 'bgtime', title: '来源开始日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'edtime', title: '来源截止日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'alllbtime', title: '天数', width: 60},
+                        {field: 'freetime', title: '剩余天数', width: 60},
+                        {field: 'valdate', title: '到期日期(到期当天不可使用)', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                        {field: 'extended', title: '是否展期', width: 64, formatter: comUrl_dic5.formator},
+                        {field: 'note', title: '备注', width: 150}
+                    ]]
+                });
+
+                $("#grd_ytx").datagrid({
+                    columns: [[
+                        {field: 'stype', title: '源类型', width: 64, formatter: comUrl_dic1019.formator},
+                        {field: 'sccode', title: '来源单号', width: 100},
+                        {field: 'bgtime', title: '来源开始日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'edtime', title: '来源截止日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'wotime', title: '调休天数', width: 60},
+                        {
+                            field: 'begin_date',
+                            title: '申请开始日期',
+                            width: 150,
+                            formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM
+                        },
+                        {field: 'end_date', title: '申请截止日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'note', title: '备注', width: 150}
+                    ]]
+                });
+
+                $("#grd_txgq").datagrid({
+                    columns: [[
+                        {field: 'stype', title: '源类型', width: 64, formatter: comUrl_dic1019.formator},
+                        {field: 'sccode', title: '来源单号', width: 100},
+                        {field: 'bgtime', title: '来源开始日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'edtime', title: '来源截止日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+                        {field: 'alllbtime', title: '天数', width: 60},
+                        {field: 'freetime', title: '剩余天数', width: 60},
+                        {field: 'valdate', title: '到期日期(到期当天不可使用)', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                        {field: 'extended', title: '是否展期', width: 64, formatter: comUrl_dic5.formator},
+                        {field: 'note', title: '备注', width: 150}
+                    ]]
+                });
+
+            }, 300);
+        });
+
+        function findrptdata(row) {
+            var url = _serUrl + "/web/hrkq/rpt2/perworkoff.co?er_id=" + row.er_id;
+            $ajaxjsonget(url, function (jsdata) {
+                var sumd = 0;
+                for (var i = 0; i < jsdata.ktx.length; i++) {
+                    sumd = sumd + parseFloat(jsdata.ktx[i].freetime);
+                }
+                sumrow = {freetime: sumd, stype: "合计:"};
+                var ktx = {
+                    rows: jsdata.ktx,
+                    footer: [sumrow]
+                }
+                $("#grd_ktx").datagrid("loadData", ktx);
+
+                $("#grd_ytx").datagrid("loadData", jsdata.ytx);
+                $("#grd_txgq").datagrid("loadData", jsdata.gq);
+                $("#ipt_employee_code").textbox("setValue", row.employee_code);
+                $("#ipt_orgname").textbox("setValue", row.orgname);
+                $("#ipt_employee_name").textbox("setValue", row.employee_name);
+                $("#ipt_sp_name").textbox("setValue", row.sp_name);
+                $("#ipt_hg_name").textbox("setValue", row.hg_name);
+                $("#ipt_lv_num").textbox("setValue", row.lv_num);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        findrptdata(row);
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    singleAutoReturn: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show();
+        }
+
+        function onempchg(newValue, oldValue) {
+            if (!$isEmpty(newValue)) {
+                onFindemployee(newValue);
+            }
+        }
+
+    </script> 
+  <style type="text/css">
+        .maintable {
+            color: #000000;
+            font-size: 12px;
+        }
+
+        .maintable td {
+            padding: 5px;
+        }
+
+
+    </style> 
+ </head> 
+ <body style="width: 100%;height: 100%;margin: 0 auto"> 
+  <table class="maintable"> 
+   <tbody> 
+    <tr> 
+     <td>工号</td> 
+     <td> <input id="ipt_employee_code" class="easyui-textbox" data-options="buttonIcon:'icon-search',onClickButton:onFindemployee,onChange:onempchg" style="height:20px;width: 100px"> </td> 
+     <td>机构</td> 
+     <td> <input id="ipt_orgname" class="easyui-textbox" data-options="readonly:true" style="height:20px;width: 200px"> </td> 
+     <td>姓名</td> 
+     <td> <input id="ipt_employee_name" class="easyui-textbox" data-options="readonly:true" style="height:20px;width: 100px"> </td> 
+    </tr> 
+    <tr> 
+     <td>职位</td> 
+     <td> <input id="ipt_sp_name" class="easyui-textbox" data-options="readonly:true" style="height:20px;width: 100px"> </td> 
+     <td>职等</td> 
+     <td> <input id="ipt_hg_name" class="easyui-textbox" data-options="readonly:true" style="height:20px;width: 100px"> </td> 
+     <td>职级</td> 
+     <td><input id="ipt_lv_num" class="easyui-textbox" data-options="readonly:true" style="height:20px;width: 100px"> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div style="height: 20px"></div> 
+  <div style="height: 420px;width: 100%;border: 0px solid #ABCDFF ;overflow:auto"> 
+   <table id="grd_ktx" class="easyui-datagrid" style="width:80%;min-height:100px;max-height: 200px" data-options="singleSelect:true,collapsible:true,title:'可调休记录',showFooter: true"> 
+   </table> 
+   <div style="height: 20px"></div> 
+   <table id="grd_ytx" class="easyui-datagrid" style="width:80%;min-height:100px;max-height: 200px" data-options="singleSelect:true,collapsible:true,title:'已调休记录'"> 
+   </table> 
+   <div style="height: 20px"></div> 
+   <table id="grd_txgq" class="easyui-datagrid" style="width:80%;min-height:100px;max-height: 200px" data-options="singleSelect:true,collapsible:true,title:'调休过期'"> 
+   </table> 
+  </div>  
+ </body>
+</html>

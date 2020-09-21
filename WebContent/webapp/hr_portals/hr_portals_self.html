@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+ <head> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline2.min.js"></script> 
+  <title>hr自助</title> 
+  <script type="text/javascript">
+        var comUrls = [
+            {
+                index: "dic1298",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1298",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1301",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1301",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+
+        //页面准备好之后触发事件
+        function $OnCorsairReady() {
+            loadweekbir();
+            loadmonthbir();
+            loadfullmember();
+            loaddelaymember();
+            loadmonthcontract();
+            loadlastmonthcontract();
+            loadcontract();
+            loadkcmember();
+            loaddelaykcmember();
+            loadsfz();
+            loadotherlisen();
+            loadschedule();
+
+            $(".menus_ui li").click(function () {
+                var url = $(this).attr("url");
+                if ($isEmpty(url)) {
+                    alert("没有设置路径 ");
+                    return;
+                }
+                if (!window.top.PerDeskClick) {
+                    alert("首页链接不能调用");
+                    return;
+                }
+                window.top.PerDeskClick($(this).html(), url, 0, 0, 0);
+            });
+        }
+        function loadmember() {
+            var url = _serUrl + "/web/hr/Portalsm/getEmpInfo.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#change_yes").html(jsdata.change_yes);
+                $("#extend").html(jsdata.extend);
+            }, function (err) {
+                if (err.errmsg.indexOf("无对应信息") < 0) {
+                    $("#change_yes").html(err.errmsg);
+                }
+            })
+        }
+
+        //本周生日名单
+        function loadweekbir() {
+            var url = _serUrl + "/web/hr/Portals/getweekbirthday.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#weekbir").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询周生日名单错误:' + err.errmsg, 'error');
+            })
+        }
+        //本月生日名单
+        function loadmonthbir() {
+            var url = _serUrl + "/web/hr/Portals/getmonthbirthday.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#monthbir").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询月生日名单错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //待转正名单
+        function loadfullmember() {
+            var url = _serUrl + "/web/hr/Portals/getfullmember.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#fullmember").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询待转正名单错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //延期转正名单
+        function loaddelaymember() {
+            var url = _serUrl + "/web/hr/Portals/getdelaymember.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#delaymember").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询待转正名单错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //本月合同到期清单
+        function loadmonthcontract() {
+            var url = _serUrl + "/web/hr/Portals/getmonthcontract.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#monthcontract").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询本月到期合同错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //考察到期清单
+        function loadkcmember() {
+            var url = _serUrl + "/web/hr/Portals/getkcmember.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#kcmember").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询考察清单错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //延期考察清单
+        function loaddelaykcmember() {
+            var url = _serUrl + "/web/hr/Portals/getdelaykcmember.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#delaykcmember").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询延期考察错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //下月合同到期清单
+        function loadlastmonthcontract() {
+            var url = _serUrl + "/web/hr/Portals/getlastmonthcontract.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#lastmonthcontract").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询下月到期合同错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //合同到期清单
+        function loadcontract() {
+            var url = _serUrl + "/web/hr/Portals/getcontract.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#contract").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询合同错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //身份证到期清单
+        function loadsfz() {
+            var url = _serUrl + "/web/hr/Portals/getsfz.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#sfz").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询身份证到期清单错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //其他证件到期清单
+        function loadotherlisen() {
+            var url = _serUrl + "/web/hr/Portals/getotherlieson.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#otherlisen").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询其他证件到期错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //排班清单
+        function loadschedule() {
+            var url = _serUrl + "/web/hr/Portals/getschedule.co?num=N";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#schedule").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '查询考勤未排班提醒错误:' + err.errmsg, 'error');
+            })
+        }
+
+        //员工生日模块
+        var select_weekbir_pw = undefined;
+        function onSelectWeekbir(tp) {
+            var url = undefined;
+            if (tp == '1') {
+                url = _serUrl + "/web/hr/Portals/getweekbirthday.co?num=Y";
+            } else {
+                url = _serUrl + "/web/hr/Portals/getmonthbirthday.co?num=Y";
+            }
+            var wo = {
+                id: "select_weekbir_pw",
+                //coURL: url,
+                orderStr: " birthday desc ",
+                idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'birthday', title: '生日', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ]
+            };
+            if (!select_weekbir_pw) {
+                select_weekbir_pw = new TSearchForm(wo);
+            }
+            select_weekbir_pw.extendOptions({
+                coURL: url
+            });
+            select_weekbir_pw.show();
+        }
+
+        //试用期管理
+        var select_syqgl_pw = undefined;
+        function onSelectSyqgl(tp) {
+            var url = undefined;
+            var gdListC = undefined;
+            if (tp == '1') {
+                url = _serUrl + "/web/hr/Portals/getfullmember.co?num=Y";
+                gdListC = [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'entrydate', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'promotionday', title: '转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ];
+            } else {
+                url = _serUrl + "/web/hr/Portals/getdelaymember.co?num=Y";
+                gdListC = [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'entrydate', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'delaypromotionday', title: '延期转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ];
+            }
+            var wo = {
+                id: "select_syqgl_pw",
+                //coURL: url,
+                idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var url = "hr_perm/hr_entry_prob.html";
+                        window.top.PerDeskClick("入职转正", url, 0, 0, 0);
+                    }
+                }
+            };
+            if (!select_syqgl_pw) {
+                select_syqgl_pw = new TSearchForm(wo);
+            }
+            select_syqgl_pw.extendOptions({
+                coURL: url,
+                gdListColumns: gdListC
+            });
+            select_syqgl_pw.show();
+        }
+
+
+        //考察期管理
+        var select_kcqgl_pw = undefined;
+        function onSelectKcqgl(tp) {
+            var url = undefined;
+            var gdListC = undefined;
+            if (tp == '1') {
+                url = _serUrl + "/web/hr/Portals/getkcmember.co?num=Y";
+                gdListC = [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'tranfcmpdate', title: '调动日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'probationdate', title: '转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ];
+            } else {
+                url = _serUrl + "/web/hr/Portals/getdelaykcmember.co?num=Y";
+                gdListC = [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'tranfcmpdate', title: '调动日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'delaypromotionday', title: '延期转正日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ];
+            }
+            var wo = {
+                id: "select_kcqgl_pw",
+                //coURL: url,
+                idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var url = "hr_perm/Hr_transfer_prob.html";
+                        window.top.PerDeskClick("考察转正", url, 0, 0, 0);
+                    }
+                }
+            };
+            if (!select_kcqgl_pw) {
+                select_kcqgl_pw = new TSearchForm(wo);
+            }
+            select_kcqgl_pw.extendOptions({
+                coURL: url,
+                gdListColumns: gdListC
+            });
+            select_kcqgl_pw.show();
+        }
+
+        //合同到期管理
+        var select_contract_pw = undefined;
+        function onSelectContract(tp) {
+            var url = undefined;
+            if (tp == '1') {
+                url = _serUrl + "/web/hr/Portals/getmonthcontract.co?num=Y";
+            } else if (tp == '2') {
+                url = _serUrl + "/web/hr/Portals/getlastmonthcontract.co?num=Y";
+            } else {
+                url = _serUrl + "/web/hr/Portals/getcontract.co?num=Y";
+            }
+            var wo = {
+                id: "select_contract_pw",
+                //coURL: url,
+                idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'sign_date', title: '签订日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'end_date', title: '到期日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ]
+            };
+            if (!select_contract_pw) {
+                select_contract_pw = new TSearchForm(wo);
+            }
+            select_contract_pw.extendOptions({
+                coURL: url,
+            });
+            select_contract_pw.show();
+        }
+
+        //证件到期管理
+        var select_zjyj_pw = undefined;
+        function onSelectZjyj(tp) {
+            var url = undefined;
+            if (tp == '1') {
+                url = _serUrl + "/web/hr/Portals/getsfz.co?num=Y";
+            } else {
+                url = _serUrl + "/web/hr/Portals/getotherlieson.co?num=Y";
+            }
+            var wo = {
+                id: "select_zjyj_pw",
+                //coURL: url,
+                //idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'ertname', title: '证件名称', width: 100},
+                    {field: 'cerstat', title: '有效状态', width: 100},
+                    {field: 'expired_date', title: '到期日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ]
+            };
+            if (!select_zjyj_pw) {
+                select_zjyj_pw = new TSearchForm(wo);
+            }
+            select_zjyj_pw.extendOptions({
+                coURL: url,
+            });
+            select_zjyj_pw.show();
+        }
+
+        //未排班提醒
+        var select_schdule_pw = undefined;
+        function onSelectSchdule() {
+            var url = _serUrl + "/web/hr/Portals/getschedule.co?num=Y";
+            var relOptions = {
+                data: [{id: '=', value: '等于'}]
+            };
+            var wo = {
+                id: "select_schdule_pw",
+                coURL: url,
+                //idField: 'er_id',
+                autoFind: true,//是否自动查询
+                width: "700px",//
+                height: "400px",//
+                extParms: [
+                    //{parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 100},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'yearmonth', title: '未排班月份', relOptions: relOptions, width: 100, formatter: $fieldDateFormatorYYYY_MM}
+                ],
+                beforeFind: function (fdparms) {
+                    //alert(JSON.stringify(fdparms.parms));
+                    return true;  //return false 将不执行查询
+                }
+            };
+            if (!select_schdule_pw) {
+                select_schdule_pw = new TSearchForm(wo);
+            }
+            select_schdule_pw.show();
+        }
+
+    </script> 
+  <style type="text/css">
+        #body table td {
+            padding: 2px 5px 2px 5px;
+            margin: 2px;
+            border: 0px;
+        }
+
+        .spec {
+            height: 5px;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .bunderdiv {
+            background-color: white;
+            background: none;
+            border: none;
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .bunderdiv1 {
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .fontct {
+            font-weight: 700;
+        }
+
+        .menus_ui {
+            width: 95%;
+        }
+
+        .menus_ui li {
+            width: 250px;
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            float: left;
+            padding: 1px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        .more {
+            cursor: pointer;
+            color: #0E2D5F;
+            text-decoration: underline;
+        }
+
+    </style> 
+ </head> 
+ <body style="margin: 0 auto"> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     员工生日 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            本周生日名单 
+          </div> </td> 
+         <td style="text-align: right"> <span id="weekb" class="more" onclick="onSelectWeekbir(1)">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            本月生日名单 
+          </div> </td> 
+         <td style="text-align: right"> <span id="monthb" onclick="onSelectWeekbir(2)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="weekbir" data-options="fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'hiredday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'birthday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">生日</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="monthbir" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:50">工号</th> 
+         <th data-options="field:'employee_name',width:50">姓名</th> 
+         <th data-options="field:'orgname',width:50">机构</th> 
+         <th data-options="field:'sp_name',width:50">职位</th> 
+         <th data-options="field:'hiredday',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'birthday',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">生日</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     试用期管理 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            待转正提醒 
+          </div> </td> 
+         <td style="text-align: right"> <span id="zztx" onclick="onSelectSyqgl(1)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            试用延期中 
+          </div> </td> 
+         <td style="text-align: right"> <span id="syyq" onclick="onSelectSyqgl(2)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="fullmember" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'entrydate',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'promotionday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">转正日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="delaymember" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:50">工号</th> 
+         <th data-options="field:'employee_name',width:50">姓名</th> 
+         <th data-options="field:'orgname',width:50">机构</th> 
+         <th data-options="field:'sp_name',width:50">职位</th> 
+         <th data-options="field:'entrydate',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'delaypromotionday',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">延期转正日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div style="padding: 10px;display: none"> 
+   <span id="change_yes"></span> 
+   <br> 
+   <span id="extend"></span> 
+  </div> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     考察期管理 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            待转正提醒 
+          </div> </td> 
+         <td style="text-align: right"> <span id="dzztx" onclick="onSelectKcqgl(1)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            考察延期中 
+          </div> </td> 
+         <td style="text-align: right"> <span id="kcyqz" onclick="onSelectKcqgl(2)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="kcmember" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'tranfcmpdate',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">调动日期</th> 
+         <th data-options="field:'probationdate',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">转正日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="delaykcmember" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:50">工号</th> 
+         <th data-options="field:'employee_name',width:50">姓名</th> 
+         <th data-options="field:'orgname',width:50">机构</th> 
+         <th data-options="field:'sp_name',width:50">职位</th> 
+         <th data-options="field:'tranfcmpdate',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">调动日期</th> 
+         <th data-options="field:'delaypromotionday',width:50,formatter: $fieldDateFormatorYYYY_MM_DD">延期转正日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     合同到期提醒 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            本月到期 
+          </div> </td> 
+         <td style="text-align: right"> <span id="tweekcontract" onclick="onSelectContract(1)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            下月到期 
+          </div> </td> 
+         <td style="text-align: right"> <span id="lweekcontract" onclick="onSelectContract(2)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="monthcontract" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'hiredday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'sign_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">签订日期</th> 
+         <th data-options="field:'end_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">到期日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="lastmonthcontract" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'hiredday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'sign_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">签订日期</th> 
+         <th data-options="field:'end_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">到期日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <table style="width: 100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 100%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            合同过期 
+          </div> </td> 
+         <td style="text-align: right"> <span id="allcontract" onclick="onSelectContract(3)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="contract" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'hiredday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'sign_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">签订日期</th> 
+         <th data-options="field:'end_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">到期日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     证照预警 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            身份证件 
+          </div> </td> 
+         <td style="text-align: right"> <span id="sfzj" onclick="onSelectZjyj(1)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            资格证件 
+          </div> </td> 
+         <td style="text-align: right"> <span id="zgzj" onclick="onSelectZjyj(2)" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="sfz" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'ertname',width:20">证件名称</th> 
+         <th data-options="field:'cerstat',width:20">有效状态</th> 
+         <th data-options="field:'expired_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">到期日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+     <td style="width: 50%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="otherlisen" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'ertname',width:20">证件名称</th> 
+         <th data-options="field:'cerstat',width:20">有效状态</th> 
+         <th data-options="field:'expired_date',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">到期日期</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+   </tbody> 
+  </table> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     考勤排班 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <table style="width:100%"> 
+   <tbody> 
+    <tr> 
+     <td style="width: 50%"> 
+      <table style="width:100%"> 
+       <tbody> 
+        <tr> 
+         <td style="width:20%"> 
+          <div class="panel-title panel-with-icon">
+            考勤排班提醒 
+          </div> </td> 
+         <td style="text-align: right"> <span id="schdulem" onclick="onSelectSchdule()" class="more">MORE>>></span> </td> 
+        </tr> 
+       </tbody> 
+      </table> </td> 
+    </tr> 
+    <tr> 
+     <td style="width:100%"> 
+      <table class="easyui-datagrid" style="width:100%;height:120px" id="schedule" data-options="url:'',fitColumns:true,singleSelect:true,striped:true"> 
+       <thead> 
+        <tr> 
+         <th data-options="field:'employee_code',width:20">工号</th> 
+         <th data-options="field:'employee_name',width:20">姓名</th> 
+         <th data-options="field:'orgname',width:20">机构</th> 
+         <th data-options="field:'sp_name',width:20">职位</th> 
+         <th data-options="field:'hiredday',width:20,formatter: $fieldDateFormatorYYYY_MM_DD">入职日期</th> 
+         <th data-options="field:'yearmonth',width:20">未排班月份</th> 
+        </tr> 
+       </thead> 
+      </table> </td> 
+    </tr> 
+    <!--
+    <tr>
+        <table style="width:100%">
+            <td style="width:100%">
+                <ul class="menus_ui">
+                    <li url="hr_kq/hrkq_workschmonth.html">考勤排班</li>
+                    <li url="hr_kq/hrkq_calc.html">考勤计算</li>
+                </ul>
+            </td>
+        </table>
+    </tr>
+    --> 
+   </tbody> 
+  </table> 
+  <div class="panel-header panel-header-noborder bunderdiv" style=""> 
+   <div class="panel-title panel-with-icon">
+     流程发起 
+   </div> 
+   <div class="panel-icon accordion-expand"></div> 
+  </div> 
+  <div style="width: 100%;height: auto;padding: 10px"> 
+   <ul class="menus_ui"> 
+    <li url="hr_perm/hr_employee_transfer.html">调动申请</li> 
+    <li url="hr_perm/hr_emptransferbatch.html">批量调动制单</li> 
+    <li url="hr_perm/hr_entry_prob.html">入职转正制单</li> 
+    <li url="hr_perm/hr_entrybatch_prob.html">批量转正制单</li> 
+    <li url="hr_perm/Hr_transfer_prob.html">调动转正制单</li> 
+    <li url="hr_perm/Hr_empptjob_app.html">兼职登记</li> 
+    <li url="hr_perm/hr_empptjob_break.html">兼职终止</li> 
+    <li url="hr_perm/hr_emploanbatch.html">借调制单</li> 
+    <li url="hr_perm/hr_leavejob.html">离职制单</li> 
+    <li url="hr_perm/hr_leavejobbatch.html">批量离职制单</li> 
+    <li url="hr_perm/hr_black_add.html">加封黑名单制单</li> 
+    <li url="hr_perm/hr_black_del.html">解封黑名单制单</li> 
+   </ul> 
+   <div style="clear:both"></div> 
+  </div>  
+ </body>
+</html>

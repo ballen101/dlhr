@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_salary">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic923 = {index: 'dic923',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"平时加班","dictvalue":"1"},{"language1":"休息日加班","dictvalue":"2"},{"language1":"法定假日加班","dictvalue":"3"},{"language1":"特殊加班日","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic923.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic923; } if (comUrl_dic923.type == 'combobox') { if (comUrl_dic923.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic923.valueField]) { rst = rst + jsondata[i][comUrl_dic923.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic923.valueField]) return jsondata[i][comUrl_dic923.textField]; } } } if (comUrl_dic923.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic923.editor= {type: 'combobox', options: {valueField:comUrl_dic923.valueField, textField:comUrl_dic923.textField, data: comUrl_dic923.jsondata}}; var comUrl_dic928 = {index: 'dic928',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"调休","dictvalue":"1"},{"language1":"计算加班费","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic928.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic928; } if (comUrl_dic928.type == 'combobox') { if (comUrl_dic928.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic928.valueField]) { rst = rst + jsondata[i][comUrl_dic928.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic928.valueField]) return jsondata[i][comUrl_dic928.textField]; } } } if (comUrl_dic928.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic928.editor= {type: 'combobox', options: {valueField:comUrl_dic928.valueField, textField:comUrl_dic928.textField, data: comUrl_dic928.jsondata}}; var comUrl_dic1433 = {index: 'dic1433',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"6天制","dictvalue":"1"},{"language1":"5.5天制","dictvalue":"2"},{"language1":"5天制","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic1433.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1433; } if (comUrl_dic1433.type == 'combobox') { if (comUrl_dic1433.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1433.valueField]) { rst = rst + jsondata[i][comUrl_dic1433.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1433.valueField]) return jsondata[i][comUrl_dic1433.textField]; } } } if (comUrl_dic1433.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1433.editor= {type: 'combobox', options: {valueField:comUrl_dic1433.valueField, textField:comUrl_dic1433.textField, data: comUrl_dic1433.jsondata}}; var comUrl_dic1437 = {index: 'dic1437',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"P1级","dictvalue":"1"},{"language1":"P2级(经理级)","dictvalue":"2"},{"language1":"P2级(非经理级)","dictvalue":"3"},{"language1":"P3级","dictvalue":"4"},{"language1":"未纳入绩效考核","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1437.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1437; } if (comUrl_dic1437.type == 'combobox') { if (comUrl_dic1437.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1437.valueField]) { rst = rst + jsondata[i][comUrl_dic1437.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1437.valueField]) return jsondata[i][comUrl_dic1437.textField]; } } } if (comUrl_dic1437.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1437.editor= {type: 'combobox', options: {valueField:comUrl_dic1437.valueField, textField:comUrl_dic1437.textField, data: comUrl_dic1437.jsondata}}; var comUrl_dic1482 = {index: 'dic1482',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"导入","dictvalue":"1"},{"language1":"实习登记","dictvalue":"2"},{"language1":"入职定薪","dictvalue":"3"},{"language1":"调动核薪","dictvalue":"4"},{"language1":"入职转正调薪","dictvalue":"5"},{"language1":"调动转正调薪","dictvalue":"6"},{"language1":"个人特殊调薪","dictvalue":"7"},{"language1":"兼职津贴调薪","dictvalue":"8"},{"language1":"批量特殊调薪","dictvalue":"9"},{"language1":"技术津贴调薪","dictvalue":"10"},{"language1":"岗位津贴调薪","dictvalue":"11"},{"language1":"年度调薪","dictvalue":"12"},{"language1":"实习生入职","dictvalue":"13"},{"language1":"实习生转正","dictvalue":"14"},{"language1":"实习生分配","dictvalue":"15"}], formator: function (value, row) { var jsondata = comUrl_dic1482.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1482; } if (comUrl_dic1482.type == 'combobox') { if (comUrl_dic1482.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1482.valueField]) { rst = rst + jsondata[i][comUrl_dic1482.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1482.valueField]) return jsondata[i][comUrl_dic1482.textField]; } } } if (comUrl_dic1482.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1482.editor= {type: 'combobox', options: {valueField:comUrl_dic1482.valueField, textField:comUrl_dic1482.textField, data: comUrl_dic1482.jsondata}}; var comUrls = [ { index: "dic923", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=923", valueField: 'dictvalue', textField: 'language1' }, { index: "dic928", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=928", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1433", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1433", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1437", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1437", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1482", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1482", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+
+        comUrl_dic923.formator = function (value, row) {
+            var jsondata = comUrl_dic923.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic923;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                [
+                    {field:'submitdate',rowspan: 2,title:'提报年月',width:64},
+                    {field:'employee_code',rowspan: 2,title:'工号',width:70},
+                    {field:'employee_name',rowspan: 2,title:'姓名',width:70},
+                    {field:'orgname',rowspan: 2,title:'部门',width:250},
+                    {field:'sp_name',rowspan: 2,title:'职位',width:80},
+                    {field:'lv_num',rowspan: 2,title:'职级',width:50},
+                    {field:'hiredday',rowspan: 2,title:'入职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field:'stype',rowspan: 2,title:'异动类型',width:100, formatter: comUrl_dic1482.formator},
+                    {title: '调薪前',  colspan: 9, width: 150},
+                    {title: '调薪后',  colspan: 9, width: 150},
+                    {field:'sacrage',rowspan: 2,title:'调薪金额',width:64},
+                    {field:'lchgdate',rowspan: 2,title:'生效月份',width:64, formatter: $fieldDateFormatorYYYY_MM},
+                    {field: 'remark',rowspan: 2, title: '备注', width: 100}
+                ],
+                    [
+                        {field:'oldstru_name',title:'工资结构',relOptions: relOptions,width:100},
+                        {field:'oldposition_salary',title:'职位工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldbase_salary',title:'基本工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldotwage',title:'固定加班工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldtech_salary',title:'技能工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldachi_salary',title:'绩效工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldtech_allowance',title:'技术津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldparttimesubs',title:'兼职津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'oldpostsubs',title:'岗位津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+
+                        {field:'newstru_name',title:'工资结构',relOptions: relOptions,width:100},
+                        {field:'newposition_salary',title:'职位工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newbase_salary',title:'基本工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newotwage',title:'固定加班工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newtech_salary',title:'技能工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newachi_salary',title:'绩效工资',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newtech_allowance',title:'调技术津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newparttimesubs',title:'兼职津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+                        {field:'newpostsubs',title:'岗位津贴',relOptions: relOptions,width:80, formatter:zeroformator},
+                    ]
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var YMrelOptions = {
+            data: [{id: '=', value: '等于'},{id: '<=', value: '小于等于'},{id: '>=', value: '大于等于'}]
+        };
+
+        var findColums = [
+            {field: 'submitdate', title: '提报年月', notnull: true, relOptions: YMrelOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'orgcode', title: '机构编码',  relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field: 'employee_name', title: '姓名', width: 70},
+            {field:'sp_name',title:'职位',width:80}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrsalary/command/getSubmitSalaryChgsLists.co",
+            extButtons: [//扩展按钮
+
+            ]
+        };
+
+        function impexcelbt() {
+            var url = _serUrl + "/web/hrsalary/command/getHasAdminAccess4Sa.co";
+            $ajaxjsonget(url, function (jsdata) {
+                if (parseInt(jsdata.accessed) == 2) {//没有权限
+                    alert("当前登录用户没有权限使用该功能");
+                    return;
+                }
+                impexcel();
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/list/impsalarylistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+        function exportExcelModel() {
+            var tp = 1;
+            var jpaclass="com.hr.salary.entity.Hr_salary_list";
+            var url = _serUrl + "/web/common/exportExcelModel.co?jpaclass=" + jpaclass + "&tp=" + tp;
+            window.open(url);
+        }
+
+        function floatsformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value;
+            }else{
+                dt=znum;
+            }
+            return dt;
+        }
+
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

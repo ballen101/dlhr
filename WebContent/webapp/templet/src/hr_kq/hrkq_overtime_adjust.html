@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/otherjs/easuiextends.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic957",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=957",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'ot_code', title: '加班单号', width: 120},
+            {field: 'orgname', title: '部门', width: 120},
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'lv_num', title: '职级', width: 80},
+            {field: 'sp_name', title: '职位', width: 100},
+            {field: 'over_type', title: '加班类型', width: 100, formatter: comUrl_dic923.formator},
+			 {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {
+                field: 'createtime',
+                title: '制单时间',
+                findtype: 'datetime',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'updator', title: '更新人', width: 64},
+            {
+                field: 'updatetime',
+                title: '更新时间',
+                findtype: 'datetime',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            }
+			
+			
+			
+        ];
+
+        var datetimeedior = {
+            type: "datetimebox_disableseconnds",
+            options: "formatter: $dateformattostrrYYYY_MM_DD_HH_MM"
+        };
+
+
+        var gdLinesColumns = [
+            {field: 'begin_date', title: '开始时间', width: 150, formatter: jbtimeformator},
+            {field: 'end_date', title: '结束时间', width: 150, formatter: jbtimeformator},
+            {field: 'alterbegin_date', title: '调整开始时间', width: 150, editor: datetimeedior, formatter: jbtimeformator},
+            {field: 'alterend_date', title: '调整结束时间', width: 150, editor: datetimeedior, formatter: jbtimeformator}
+        ];
+
+        var maxhour = undefined;
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_overtime_adjust",
+            JPAIdField: "otad_id",
+            allowAtt: false,
+            allowWF: true,
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "加班调整单",
+            allow_expt_list: true,
+            gdLinesName: 'hrkq_overtime_adjust_lines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_line_title: "加班时间调整",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                // initGrid();
+                maxhour = getAttparm('LXOVERTIMELMIT');
+            },
+            onNew: function (jsondata) {
+                jsondata.dealtype = 1;
+                // jsondata.apply_date = new Date().format("yyyy-MM-dd");
+
+            },
+            onSave: function (postData) {
+                var data = postData.jpadata;
+                if (!checkdata(data))
+                    throw new Error("抛出错误终止数据保存");
+                return true;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == "ot_id") || (fdname == "er_id")) {
+
+                    $("#detail_main_grid_id").datagrid("loadData", []);
+
+                }
+            },
+            onAddLine: function (append) {//点击添加明细行
+                // onSelectOTemployee(append);
+            }
+        };
+
+        function getAttparm(pname) {
+            var rst = undefined;
+            var url = _serUrl + "/web/hrkq/cmn/getAttParm.co?parmcode=" + pname;
+            $ajaxjsonget(url, function (jsdata) {
+                rst = parseInt(jsdata.value);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            }, false);
+            return rst;
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var ot_id = mainline.getFieldValue("ot_id");
+            if ((!ot_id) || (ot_id.length == 0)) {
+                $.messager.alert('错误', "先选择加班申请单", 'error');
+                return;
+            }
+
+            var wo = {
+                id: "select_employee_pw",
+                JPAClass: "com.hr.attd.entity.Hrkq_overtime_line",
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'otl_id',
+                showTitle: true,
+                extParms: [
+                    {parmname: 'ot_id', reloper: '=', parmvalue: ot_id}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 100},
+                    {field: 'orgname', title: '部门', width: 130},
+                    {field: 'employee_name', title: '姓名', width: 80},
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        //alert(rows.get(0));
+                        var row = rows[0];
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('emplev', row.emplev);
+                        mainline.setFieldValue('lv_id', row.lv_id);
+                        mainline.setFieldValue('lv_num', row.lv_num);
+                        mainline.setFieldValue('ospid', row.ospid);
+                        mainline.setFieldValue('ospcode', row.ospcode);
+                        mainline.setFieldValue('sp_name', row.sp_name);
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        var url = _serUrl + "/web/hrkq/overtime/findOverTimeHours.co?otl_id=" + row.otl_id;
+                        $ajaxjsonget(url, function (jsdata) {
+                            $("#detail_main_grid_id").datagrid("loadData", jsdata);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            } else
+                select_employee_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'ot_id', reloper: '=', parmvalue: ot_id}
+                    ],//扩展参数
+                });
+            select_employee_pw.show();
+        }
+
+
+        var select_OTorder_pw = undefined;
+        function onSelectOTorder() {
+            var wo = {
+                id: "select_OTorder_pw",
+                JPAClass: "com.hr.attd.entity.Hrkq_overtime",
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'ot_id',
+                showTitle: true,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'ot_code', title: '加班单号', width: 90},
+                    {field: 'orgname', title: '机构', width: 130},
+                    {field: 'creator', title: '申请工号', width: 80},
+                    {field: 'createtime', title: '申请时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        //alert(rows.get(0));
+                        var row = rows[0];
+                        mainline.setFieldValue('ot_id', row.ot_id);
+                        mainline.setFieldValue('ot_code', row.ot_code);
+                        mainline.setFieldValue('deductoff', row.deductoff);
+                        mainline.setFieldValue('over_type', row.over_type);
+                        mainline.setFieldValue('check_type', row.check_type);
+                        mainline.setFieldValue('dealtype', row.dealtype);
+                        mainline.setFieldValue('otrate', row.otrate);
+                        mainline.setFieldValue('otreason', row.otreason);
+                        mainline.setFieldValue('isoffday', row.isoffday);
+                        mainline.setFieldValue('orghrlev', row.orghrlev);
+                        mainline.setFieldValue('emplev', row.emplev);
+                        // mainline.setFieldValue('orgid', row.orgid);
+                        // mainline.setFieldValue('orgcode', row.orgcode);
+                        // mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+
+                    }
+                }
+            };
+            if (!select_OTorder_pw) {
+                select_OTorder_pw = new TSearchForm(wo);
+            }
+            select_OTorder_pw.show();
+        }
+
+
+        function checkdata(data) {
+            /* var data = mainline.getMainData();
+             if (data.hrkq_overtime_lines.length == 0) {
+             alert("申请单未包含员工");
+             return;
+             }
+             for (var i = 0; i < data.hrkq_overtime_lines.length; i++) {
+             var lrow = data.hrkq_overtime_lines[i];
+             if (!lrow.hrkq_overtime_hours || (lrow.hrkq_overtime_hours.length == 0)) {
+             alert("加班人员【" + lrow.employee_name + "】未设置加班时间");
+             return;
+             } else {
+             for (var j = 0; j < lrow.hrkq_overtime_hours.length; j++) {
+             var llrow = lrow.hrkq_overtime_hours[j];
+             var begin_date = llrow.begin_date;
+             var end_date = llrow.end_date;
+             if ((!begin_date) || (begin_date.length == 0) || (!end_date) || (end_date.length == 0)) {
+             alert("加班人员【" + lrow.employee_name + "】加班时间不允许为空");
+             return;
+             }
+             begin_date = $date4str(begin_date);
+             end_date = $date4str(end_date);
+             if ((!begin_date) || (!end_date)) {
+             alert("加班人员【" + lrow.employee_name + "】加班时间格式错误");
+             return;
+             }
+             if ((end_date.getTime() - begin_date.getTime()) >= (24 * 60 * 60 * 1000)) {
+             alert("加班人员【" + lrow.employee_name + "】加班时间不允许跨天");
+             return;
+             }
+             if ((end_date.getTime() - begin_date.getTime()) <= (30 * 60 * 1000)) {
+             alert("加班人员【" + lrow.employee_name + "】加班时间必须大于30分钟");
+             return;
+             }
+             if ((!llrow.deductoff) || (llrow.deductoff.length == 0))
+             llrow.deductoff = 0;
+             llrow.er_id = lrow.er_id;
+             llrow.employee_code = lrow.employee_code;
+             llrow.employee_name = lrow.employee_name;
+             }
+             }
+             }*/
+            for (var i = 0; i < data.hrkq_overtime_adjust_lines.length; i++) {
+                var llrow = data.hrkq_overtime_adjust_lines[i];
+                var begin_date = llrow.alterbegin_date;
+                var end_date = llrow.alterend_date;
+                if ($isEmpty(begin_date)) {
+                    alert("加班人员【" + llrow.employee_name + "】加班时间不允许为空");
+                    return;
+                }
+                if ($isEmpty(end_date)) {
+                    alert("加班人员【" + llrow.employee_name + "】加班时间不允许为空");
+                    return;
+                }
+                begin_date = $date4str(begin_date);
+                end_date = $date4str(end_date);
+                if ((!begin_date) || (!end_date)) {
+                    alert("加班人员【" + llrow.employee_name + "】加班时间格式错误");
+                    return;
+                }
+                var othours = (end_date.getTime() - begin_date.getTime()) / (1000 * 60 * 60);
+                if (othours > maxhour) {
+                    alert("加班人员【" + llrow.employee_name + "】连续加班时间不大于【" + maxhour + "】小时");
+                    return;
+                }
+                if (othours < 0) {
+                    alert("加班人员【" + llrow.employee_name + "】加班时段，开始时间大于截止时间");
+                    return;
+                }
+            }
+            return true;
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm");
+        }
+
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ot_code'">加班单号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ot_code',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOTorder,editable:false" style="height:20px;width: 110px"/>
+        </td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindemployee"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'emplev'">人事层级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'emplev',crequired:true,comidx:'dic957',editable:false,readonly:true" style="height:20px;width: 120px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'over_type'">加班类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'over_type',editable:false,comidx:'dic923',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'dealtype'">加班处理</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'dealtype',editable:false,comidx:'dic928',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'otrate'">加班倍率</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'otrate',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'check_type'">是否免打卡</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'check_type',comidx:'dic5',editable:false,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'otreason'">加班事由</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'otreason',crequired:true,readonly:true" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'stat'">签批状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

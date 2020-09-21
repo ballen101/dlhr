@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            setTimeout(" initGrids()", 1000);
+        }
+
+
+        function initGrids() {
+            //var url=
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=tree";
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic5",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=5",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+                    $("#orggrid").treegrid({
+                        url: url,
+                        onClickRow: function (row) {
+                            findempaddr(row.orgid);
+                        }
+                    });
+                }
+            });
+        }
+
+        function findempaddr(orgid, employee_code) {
+            $("#empaddr_grid").datagrid({
+                columns: [[
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'sp_name', title: '职位', width: 100},
+                    {field: 'lv_num', title: '职级', width: 100},
+                    {field: 'english_name', title: '英文名', width: 100},
+                    {field: 'orgname', title: '机构', width: 250},
+                    {field: 'phone_tlecomfix', title: '电信固话', width: 100},
+                    {field: 'phone_tlecominside', title: '电信内线', width: 100},
+                    {field: 'phone_mobilefix', title: '移动固话', width: 100},
+                    {field: 'phone_mobileinside', title: '移动内线', width: 100},
+                    {field: 'phone_mobile', title: '移动电话', width: 100},
+                    {field: 'phone189', title: '189号码', width: 100},
+                    {field: 'phone189short', title: '189短号', width: 100}
+                ]]
+            });
+            var url = _serUrl + "/web/hr/Portalsm/getEmpAddrInfos.co?orgid=" + orgid;
+            $ajaxjsonget(url, function (jsdata) {
+                $("#empaddr_grid").datagrid("loadData", jsdata);
+                var rows = $("#empaddr_grid").datagrid("getRows");
+                if (!$isEmpty(employee_code)) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (row.employee_code == employee_code) {
+                            var idx = $("#empaddr_grid").datagrid("getRowIndex", row);
+                            $("#empaddr_grid").datagrid("selectRow", idx);
+                            return;
+                        }
+                    }
+                }
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+
+        var select_empaddr_pw = undefined;
+        function onFindEmpAddr() {
+            var url = _serUrl + "/web/hr/Portalsm/getEmpAddrInfos.co";
+            var wo = {
+                id: "select_empaddr_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 80},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'english_name', title: '英文名', width: 100},
+                    {field: 'orgname', title: '机构', width: 250},
+                    {field: 'phone_tlecomfix', title: '电信固话', width: 100},
+                    {field: 'phone_tlecominside', title: '电信内线', width: 100},
+                    {field: 'phone_mobilefix', title: '移动固话', width: 100},
+                    {field: 'phone_mobileinside', title: '移动内线', width: 100},
+                    {field: 'phone_mobile', title: '移动电话', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        findempaddr(row.orgid, row.employee_code);
+                    }
+                }
+            };
+            if (!select_empaddr_pw) {
+                select_empaddr_pw = new TSearchForm(wo);
+            }
+            select_empaddr_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false,split:true,collapsible:false"
+         style="width: 280px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+        <table id="orggrid" class="easyui-treegrid"
+               data-options="border:false,lines: true,idField: 'orgid',rownumbers: true,fitColumns: true,treeField: 'orgname',fit:true">
+            <thead>
+            <tr>
+                <th data-options="field:'orgname',hide:true" width="100%"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center',title:'通讯录'" style="padding:0px">
+        <table id="empaddr_grid" class="easyui-datagrid"
+               data-options="border:false,rownumbers: true,singleSelect:true,toolbar:'#toolbarempaddr'">
+        </table>
+    </div>
+</div>
+
+<div id="toolbarempaddr" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true"
+       onclick="onFindEmpAddr();">查询</a>
+</div>
+
+
+</body>
+</html>

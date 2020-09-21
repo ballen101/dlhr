@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_asset">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'asset_allot_num',title:'调拨单号',width:100},
+            {field:'deploy_area_from',title:'调出区域',width:80},
+            {field:'deploy_restaurant_from',title:'调出餐厅',width:80},
+            {field:'deploy_area_to',title:'调入区域',width:150},
+            {field:'deploy_restaurant_to',title:'调入餐厅',width:80},
+            {field:'stat',title:'单据状态',width:64, formatter: comUrl_dic227.formator},
+            {field:'creator',title:'创建人',width:64},
+            {field:'createtime',title:'创建时间',width:130},
+            {field:'updator',title:'修改人',width:64},
+            {field:'updatetime',title:'修改时间',width:130},
+            {field:'remark',title:'备注',width:300}
+        ];
+        var gdLinesColumns = [
+            {field:'asset_item_code',title:'资产编码',width:120},
+            {field:'asset_item_name',title:'资产名称',width:150},
+            {field:'asset_type_code',title:'资产类型编码',width:120},
+            {field:'asset_type_name',title:'资产类型',width:150},
+            {field:'brand',title:'品牌',width:64},
+            {field:'model',title:'型号',width:64},
+            {field:'uom',title:'单位',width:64,formatter: comUrl_dic9.formator},
+            {field:'acquired_date',title:'购置日期',width:130,formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'deploy_qty',title:'调出数量',width:64,editor:'numberbox',crequired:true},
+            {field:'deployto_qty',title:'调入数量',width:64},
+            {field:'allot_from_date',title:'调出日期',width:130,editor:'datebox',formatter: $fieldDateFormatorYYYY_MM_DD,crequired:true},
+            {field:'allot_to_date',title:'调入日期',width:130,formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'service_life',title:'报废年限',width:64},
+            {field:'original_value',title:'原值',width:64},
+            {field:'net_value',title:'净值',width:64},
+            {field:'keep_own',title:'保管人',width:64},
+            {field:'remark',title:'备注',width:300,editor:'text'}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.asset.entity.Hr_asset_allot_h",
+            JPAIdField: "asset_allot_id",
+            allowAtt: true,
+            allowWF: true,
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "资产调拨",
+            allow_expt_list: true,
+            gdLinesName: 'hr_asset_allot_ds',
+            datainfo_line_title: "资产调拨明细",
+            windowWidth: '800px',
+            windowHeight: '450px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            allowEmptyLine: false,
+            OnReady: function () {   //都准备好后
+                // initGrid();
+            },
+            onNew: function (jsondata) {
+
+            },
+            beforeSave: function () {
+                if (mainline.getFieldValue("deploy_restaurantid_from")==mainline.getFieldValue("deploy_restaurantid_to")){
+                    $.messager.alert('错误', "调入餐厅与调出餐厅不能相同！", 'error');
+                    throw "调入餐厅与调出餐厅相同,终止保存";
+                }
+            },
+            onAddLine: function (append) {//点击添加明细行
+                //onFinditem(append);
+                onFindar(append);
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+                //赋值行表中的调入数量和调入日期
+                row.deployto_qty=row.deploy_qty;
+                row.allot_to_date=row.allot_from_date;
+                $("#detail_main_grid_id").datagrid("updateRow",{index:index,row:row});
+                $("#detail_main_grid_id").datagrid("refreshRow",index);
+            },
+            onSave: function (jsondata) {
+                //控制如果没有明细数据，不允许保存单头
+                /*var detailgrid = document.getElementById('#detail_main_grid_id');
+                if (!detailgrid){
+                    $.messager.alert('提示', "未录入调拨明细信息，不允许保存数据", 'warning');
+                    return false;
+                }*/
+                if(mainline.getFieldValue('deploy_restaurant_from')==mainline.getFieldValue('deploy_restaurant_to')){
+                    $.messager.alert('错误', "调出餐厅不能同调入餐厅相同!", 'error');
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        //查询调出餐厅数据
+        var select_ct_pw=undefined;
+        function onFindCtr() {
+            var wo = {
+                id: "select_ct_pw",
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room", //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ctid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'ctr_code', title: '餐厅编码', width: 100},
+                    {field: 'ctr_name', title: '餐厅名称', width: 150, notfind:true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("deploy_restaurantid_from", row.ctr_id);//设置界面值
+                        mainline.setFieldValue("deploy_restaurant_from", row.ctr_name);
+                        mainline.setFieldValue("deploy_area_from", row.address);
+                        mainline.setFieldValue("idpath",row.idpath);
+                    }
+                }
+            };
+            if (!select_ct_pw) {
+                select_ct_pw = new TSearchForm(wo);
+            }
+            select_ct_pw.show();
+        }
+
+        //查询调入餐厅数据
+        var select_ctto_pw=undefined;
+        function onFindCtrto() {
+            var wo = {
+                id: "select_ctto_pw",
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room", //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ctid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'ctr_code', title: '餐厅编码', width: 100},
+                    {field: 'ctr_name', title: '餐厅名称', width: 150, notfind:true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("deploy_restaurantid_to", row.ctr_id);//设置界面值
+                        mainline.setFieldValue("deploy_restaurant_to", row.ctr_name);
+                        mainline.setFieldValue("deploy_area_to", row.address);
+                    }
+                }
+            };
+            if (!select_ctto_pw) {
+                select_ctto_pw = new TSearchForm(wo);
+            }
+            select_ctto_pw.show();
+        }
+
+        //通过登记记录查询物料数据
+        var select_ar_pw=undefined;
+        function onFindar(append) {
+            var pctid = mainline.getFieldValue('deploy_restaurantid_from');
+            var url = _serUrl + "/web/hr/Asset/findAssetReList.co?pctid="+pctid;
+            var wo = {
+                id: "select_ar_pw",
+                coURL: url,
+                multiRow: true,
+                idField: 'asset_register_id',
+                autoFind: true,//是否自动查询
+                gdListColumns: [
+                    {field: 'asset_register_num', title: '资产登记号', width: 80},
+                    {field: 'asset_item_code', title: '资产编号', width: 80},
+                    {field: 'asset_item_name', title: '资产名称', width: 120,notfind:true},
+                    {field: 'asset_type_code', title: '资产类型编号', width: 90},
+                    {field: 'asset_type_name', title: '资产类型名称', width: 120, notfind:true}
+                ],
+                extParms: [
+                    //{parmname: 'effective_flag', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                onResult: function (rows) {
+                    for(var i=0;i<rows.length;i++){
+                        var row=rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id",row.asset_register_id,"asset_register_id")) {
+                            var aaline = {};
+                            aaline.asset_item_id = row.asset_item_id;
+                            aaline.asset_item_code = row.asset_item_code;
+                            aaline.asset_item_name = row.asset_item_name;
+                            aaline.asset_type_id = row.asset_type_id;
+                            aaline.asset_type_code = row.asset_type_code;
+                            aaline.brand = row.brand;
+                            aaline.model = row.model;
+                            aaline.asset_type_name = row.asset_type_name;
+                            aaline.original_value = row.original_value;
+                            aaline.net_value = row.net_value;
+                            aaline.service_life = row.service_life;
+                            aaline.acquired_date = row.acquired_date;
+                            aaline.keep_own = row.keep_own;
+                            aaline.uom = row.uom;
+                            append(aaline);
+                        }
+                    }
+                }
+            };
+            if (!select_ar_pw) {
+                select_ar_pw = new TSearchForm(wo);
+            }
+            select_ar_pw.extendOptions({
+                coURL: url
+            });
+            select_ar_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'asset_allot_num'">调拨单号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_allot_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deploy_restaurant_from'">调出餐厅</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_restaurant_from',buttonIcon:'icon-search',onClickButton:onFindCtr,editable:false,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deploy_area_from'">调出区域</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area_from',readonly:true" style="height:20px;width: 200px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deploy_restaurant_to'">调入餐厅</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_restaurant_to',buttonIcon:'icon-search',onClickButton:onFindCtrto,editable:false,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deploy_area_to'">调入区域</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area_to',readonly:true" style="height:20px;width: 200px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stat'">单据状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">修改人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">修改时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

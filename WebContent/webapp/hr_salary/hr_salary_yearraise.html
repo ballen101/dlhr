@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline2.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cpopinfo2.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"是"},{"dictvalue":"2","language1":"否"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic227 = {index: 'dic227',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"制单"},{"dictvalue":"2","language1":"进行中"},{"dictvalue":"3","language1":"复议"},{"dictvalue":"4","language1":"二次回访"},{"dictvalue":"9","language1":"完成"},{"dictvalue":"10","language1":"关闭"},{"dictvalue":"12","language1":"作废"}], formator: function (value, row) { var jsondata = comUrl_dic227.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic227; } if (comUrl_dic227.type == 'combobox') { if (comUrl_dic227.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic227.valueField]) { rst = rst + jsondata[i][comUrl_dic227.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic227.valueField]) return jsondata[i][comUrl_dic227.textField]; } } } if (comUrl_dic227.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic227.editor= {type: 'combobox', options: {valueField:comUrl_dic227.valueField, textField:comUrl_dic227.textField, data: comUrl_dic227.jsondata}}; var comUrl_dic1450 = {index: 'dic1450',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"兼职津贴"},{"dictvalue":"2","language1":"技术津贴"},{"dictvalue":"3","language1":"高温津贴"},{"dictvalue":"4","language1":"岗位津贴"}], formator: function (value, row) { var jsondata = comUrl_dic1450.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1450; } if (comUrl_dic1450.type == 'combobox') { if (comUrl_dic1450.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1450.valueField]) { rst = rst + jsondata[i][comUrl_dic1450.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1450.valueField]) return jsondata[i][comUrl_dic1450.textField]; } } } if (comUrl_dic1450.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1450.editor= {type: 'combobox', options: {valueField:comUrl_dic1450.valueField, textField:comUrl_dic1450.textField, data: comUrl_dic1450.jsondata}}; var comUrl_dic1455 = {index: 'dic1455',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"产品开发"},{"dictvalue":"2","language1":"产品工程"},{"dictvalue":"3","language1":"IE"},{"dictvalue":"4","language1":"工业设计"},{"dictvalue":"5","language1":"手板制作"},{"dictvalue":"6","language1":"认证测试"},{"dictvalue":"7","language1":"品质检验"},{"dictvalue":"8","language1":"模具设计/制作/维修"},{"dictvalue":"9","language1":"电子电机开发"},{"dictvalue":"10","language1":"信息化系统"},{"dictvalue":"11","language1":"物流模块"},{"dictvalue":"12","language1":"自动化"}], formator: function (value, row) { var jsondata = comUrl_dic1455.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1455; } if (comUrl_dic1455.type == 'combobox') { if (comUrl_dic1455.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1455.valueField]) { rst = rst + jsondata[i][comUrl_dic1455.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1455.valueField]) return jsondata[i][comUrl_dic1455.textField]; } } } if (comUrl_dic1455.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1455.editor= {type: 'combobox', options: {valueField:comUrl_dic1455.valueField, textField:comUrl_dic1455.textField, data: comUrl_dic1455.jsondata}}; var comUrl_dic999 = {index: 'dic999',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"入职定薪"},{"dictvalue":"2","language1":"调动核薪"},{"dictvalue":"3","language1":"转正调薪"},{"dictvalue":"4","language1":"年度调薪"},{"dictvalue":"5","language1":"特殊调薪"}], formator: function (value, row) { var jsondata = comUrl_dic999.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic999; } if (comUrl_dic999.type == 'combobox') { if (comUrl_dic999.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic999.valueField]) { rst = rst + jsondata[i][comUrl_dic999.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic999.valueField]) return jsondata[i][comUrl_dic999.textField]; } } } if (comUrl_dic999.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic999.editor= {type: 'combobox', options: {valueField:comUrl_dic999.valueField, textField:comUrl_dic999.textField, data: comUrl_dic999.jsondata}}; var comUrl_dic1399 = {index: 'dic1399',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"每周休息1天"},{"dictvalue":"2","language1":"每周休息1.5天"},{"dictvalue":"3","language1":"每周休息2天"}], formator: function (value, row) { var jsondata = comUrl_dic1399.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1399; } if (comUrl_dic1399.type == 'combobox') { if (comUrl_dic1399.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1399.valueField]) { rst = rst + jsondata[i][comUrl_dic1399.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1399.valueField]) return jsondata[i][comUrl_dic1399.textField]; } } } if (comUrl_dic1399.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1399.editor= {type: 'combobox', options: {valueField:comUrl_dic1399.valueField, textField:comUrl_dic1399.textField, data: comUrl_dic1399.jsondata}}; var comUrl_dic1437 = {index: 'dic1437',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"1","language1":"P1级"},{"dictvalue":"2","language1":"P2级(经理级)"},{"dictvalue":"4","language1":"P3级"},{"dictvalue":"5","language1":"未纳入绩效考核"}], formator: function (value, row) { var jsondata = comUrl_dic1437.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1437; } if (comUrl_dic1437.type == 'combobox') { if (comUrl_dic1437.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1437.valueField]) { rst = rst + jsondata[i][comUrl_dic1437.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1437.valueField]) return jsondata[i][comUrl_dic1437.textField]; } } } if (comUrl_dic1437.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1437.editor= {type: 'combobox', options: {valueField:comUrl_dic1437.valueField, textField:comUrl_dic1437.textField, data: comUrl_dic1437.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"dictvalue":"2","language1":"硕士及以上"},{"dictvalue":"3","language1":"本科"},{"dictvalue":"4","language1":"大专"},{"dictvalue":"5","language1":"高中"},{"dictvalue":"6","language1":"中专"},{"dictvalue":"7","language1":"中技"},{"dictvalue":"8","language1":"初中"},{"dictvalue":"9","language1":"小学"},{"dictvalue":"10","language1":"无"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic227", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=227", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1450", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1450", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1455", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1455", valueField: 'dictvalue', textField: 'language1' }, { index: "dic999", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=999", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1399", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1399", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1437", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1437", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 1; var allowAtt = false; var allowWF = true;</script> 
+  <script type="text/javascript">
+        var listGridColumns = [
+            {field:'yrcode',title:'编码',width:120},
+            {field:'chgtype',title:'调薪类型',width:80, formatter: comUrl_dic999.formator},
+            {field:'orgname',title:'机构',width:300},
+            {field:'salarydate',title:'调薪月份',width:64, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'ttsachag',title:'调薪金额合计',width:80},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+                [
+                    {field:'employee_code',rowspan: 3,title:'工号',width:60},
+                    {field:'employee_name',rowspan: 3,title:'姓名',width:80},
+                    {field:'orgname',rowspan: 3,title:'部门',width:200},
+                    {field:'sp_name',rowspan: 3,title:'职位',width:100},
+                    {field:'lv_num',rowspan: 3,title:'职级',width:40},
+                    {field:'hiredday',rowspan: 3,title:'入职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field:'degree',rowspan: 3,title:'学历',width:40, formatter: comUrl_dic84.formator},
+                    {title: '调薪前工资明细',  colspan: 7, width: 150},
+                    {title: '调薪后工资明细',  colspan: 7, width: 150},
+					{field:'pbtsarylev',rowspan: 3,title:'调薪金额',width:64, formatter:zeroformator},
+					{field:'pbtsarylev_chgtech',rowspan: 3,title:'调整幅度',width:64,formatter:persentformator},
+                    {title: '最近一年调薪记录',  colspan: 6, width: 150},
+                    {field:'lastyqqdays',rowspan: 3,title:'最近一年请假天数',width:120,editor:'text'},
+                    {field:'lastavgallowance',rowspan: 3,title:'最近一年平均绩效系数',width:120,editor:'text'},
+                    {field:'remark',rowspan: 3,title:'备注',width:64}
+                ],
+            [
+                {field:'oldstru_name',rowspan: 2,title:'工资结构',width:64},
+                {field:'oldposition_salary',rowspan: 2,title:'职位工资',width:64, formatter:zeroformator},
+                {field:'oldbase_salary',rowspan: 2,title:'基本工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'oldotwage',rowspan: 2,title:'固定加班工资',width:80, formatter:zeroformator,hidden:true},
+                {field:'oldtech_salary',rowspan: 2,title:'技能工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'oldachi_salary',rowspan: 2,title:'绩效工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'oldtech_allowance',rowspan: 2,title:'技术津贴',width:64, formatter:zeroformator},
+
+                {field:'newstru_name',rowspan: 2,title:'工资结构',width:64},
+                {field:'newposition_salary',rowspan: 2,title:'职位工资',width:64, formatter:zeroformator},
+                {field:'newbase_salary',rowspan: 2,title:'基本工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'newotwage',rowspan: 2,title:'固定加班工资',width:80, formatter:zeroformator,hidden:true},
+                {field:'newtech_salary',rowspan: 2,title:'技能工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'newachi_salary',rowspan: 2,title:'绩效工资',width:64, formatter:zeroformator,hidden:true},
+                {field:'newtech_allowance',rowspan: 2,title:'技术津贴',width:64, formatter:zeroformator},
+                {title: '入职转正调薪',  colspan: 2, width: 150},
+                {title: '调动转正调薪',  colspan: 2, width: 150},
+                {title: '特殊调薪',  colspan: 2, width: 150}
+            ],
+                [
+                    {field:'dateentry',title:'月份',width:64},
+                    {field:'chgentry',title:'金额',width:64, formatter:zeroformator},
+                    {field:'datetransfer',title:'月份',width:64},
+                    {field:'chgtransfer',title:'金额',width:64, formatter:zeroformator},
+                    {field:'datespec',title:'月份',width:64},
+                    {field:'chgspec',title:'金额',width:64, formatter:zeroformator}
+                ]
+        ];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.salary.entity.Hr_salary_yearraise",
+            JPAIdField: "yrid",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:false,//作废
+            gdLinesName: 'hr_salary_yearraise_lines',   //行Grid ID对应到json 明细行属性 名
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "年度调薪",
+            allow_expt_list: true,
+             datainfo_line_title: "年度调薪名单",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            /*extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],*/
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        implistexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                // tb.push("-");
+                // tb.push({
+                //     text: '职位工资标准',
+                //     iconCls: 'icon-ml_find',
+                //     handler: function () {
+                //         showposteage();
+                //     }
+                // });
+                // tb.push("-");
+                // tb.push({
+                //     text: '实际工资水平',
+                //     iconCls: 'icon-ml_find',
+                //     handler: function () {
+                //         showOrgSalary();
+                //     }
+                // });
+                tb.push("-");
+                tb.push({
+                    text: '按机构生成调薪名单',
+                    iconCls: 'icon-ml_find',
+                    handler: function () {
+                        onSelectOrg1();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+                $parserDatebox2YearMonth(mainline.getField('salarydate'));
+            },
+            onAddLine: function (append) {//点击添加明细行
+                showOptionInfo($C.action.New);
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+
+            },
+            onLineGridDBClickRow: function (row) {
+                showOptionInfo($C.action.Edit, row);
+                onFindSalaryStruc(row.newstru_id);
+                return false; //false 将不调用edit方法
+            },
+            onNew: function (jsondata) {
+               // jsondata.subsdate = new Date();
+                jsondata.chgtype = 4;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+				if(fdname=='salarydate'){
+					mainline.setFieldValue("orgname",'');
+				    mainline.setFieldValue("yrqname",'');
+					
+				}
+                if (fdname == 'orgname') {
+                    $("#detail_main_grid_id").datagrid("loadData", []);
+                }
+            },
+            beforeSave: function () {
+                if (!checkdata())
+                    throw new Error("数据检查失败，终止保存!");
+            }
+        };
+        function onAddLineData() {
+            showOptionInfo($C.action.New);
+        }
+        function findsalary_quotacode(salary_quotacode) {
+            var url = _serUrl + "/web/hr/employeetransfer/findWageSysTohr.co?salary_quotacode=" + salary_quotacode;
+            $ajaxjsonget(url, function (jsdata) {
+                mainline.setFieldValue("salary_quota_stand", jsdata.wage);
+                mainline.setFieldValue("salary_quota_used", jsdata.usedwage);
+                mainline.setFieldValue("salary_quota_canuse", jsdata.balance);
+                mainline.setFieldValue("salary_quota_appy", jsdata.money);
+                if ((parseFloat(jsdata.balance)) < 0)
+                    mainline.setFieldValue("salary_quota_ovsp", 1);
+                else
+                    mainline.setFieldValue("salary_quota_ovsp", 2);
+            }, function (err) {
+                mainline.setFieldValue("salary_quotacode", undefined);
+                alert(JSON.stringify(err));
+            });
+        }
+
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrct/canteen/impcardreaderlistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var salarydate = mainline.getFieldValue("salarydate");
+            if ((!salarydate) || (salarydate.length == 0)) {
+                $.messager.alert('错误', "请先选择调薪月份！", 'error');
+                return;
+            }
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                coURL:url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                    onFindSalaryQuota();
+                }
+            });
+            select_Org_pw.show(true);
+        }
+
+        var select_Org1_pw = undefined;
+        function onSelectOrg1() {
+            var idpath = mainline.getFieldValue("idpath");
+            if ((!idpath) || (idpath.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var orgs = mainline.getFieldValue("qutaorgs");
+            if ((!orgs) || (orgs.length == 0)) {
+                $.messager.alert('错误', "请先选择工资额度！", 'error');
+                return;
+            }
+			
+			var salarydate = mainline.getFieldValue("salarydate");
+			if ((!salarydate) || (salarydate.length == 0)) {
+			    $.messager.alert('错误', "请先选择调薪月份！", 'error');
+				return;
+			}
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list";
+            var wo = {
+                id: "select_Org1_pw",
+                coURL: url,
+                orderStr: " idpath asc ",
+                multiRow: true,
+                isTree: false,
+                idField: 'orgid',
+                pidField: 'superid',
+               // treeField: 'code',
+                autoFind: true,//是否自动查询
+                showTitle: true,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'extorgname', title: '机构', width: 300}
+                ]
+            };
+            if (!select_Org1_pw) {
+                select_Org1_pw = new TSearchForm(wo);
+            }
+            select_Org1_pw.extendOptions({
+                coURL:url,
+                orderStr: " idpath asc ",
+                extParms: [
+                    {parmname: 'idpath', reloper: 'like', parmvalue: idpath}
+                ],//扩展参数
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var qutaorgs="";
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            qutaorgs=qutaorgs+row.orgid+",";
+                        }
+                        qutaorgs=qutaorgs.substring(0,qutaorgs.length-1);
+                        var url = _serUrl + "/web/hrsalary/command/getYearRaiseOrgEmps.co?qutaorgs=" + qutaorgs+"&salarydate="+salarydate;
+                        $ajaxjsonget(url, function (jsdata) {
+                            for (var i = 0; i < jsdata.rows.length; i++) {
+                                var row = jsdata.rows[i];
+                                if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                    $("#detail_main_grid_id").datagrid("appendRow", row);
+                                }
+                            }
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            });
+            select_Org1_pw.show(true);
+        }
+
+        var orgminwagestandard = "";
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var qutaorgs = mainline.getFieldValue("qutaorgs");
+            if ((!qutaorgs) || (qutaorgs.length == 0)) {
+                $.messager.alert('错误', "请先选择标准工资额度！", 'error');
+                return;
+            }
+			var salarydate = mainline.getFieldValue("salarydate");
+			if ((!salarydate) || (salarydate.length == 0)) {
+			    $.messager.alert('错误', "请先选择调薪月份！", 'error');
+				return;
+			}
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid+"&qutaorgs="+qutaorgs;
+            var url = _serUrl + "/web/hrsalary/command/findYearRaiseEmoloyeeList.co" + orgp;
+            var dt = new Date();
+            dt.setMonth( dt.getMonth()-6 );
+            dt = dt.format("yyyy-MM-dd");
+            var extp=[];
+            //extp.push({parmname: 'hiredday', reloper: '<=', parmvalue: dt});
+            extp.push({parmname: 'pay_way', reloper: '=', parmvalue: '月薪'});
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 300},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ]
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            if (employee_code) {
+                extp.push({parmname: 'employee_code', reloper: '=', parmvalue: employee_code});
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms:extp
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extp
+                });
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                            if (OptionInfoWindow) {
+                                OptionInfoWindow.setFieldValue('er_id', row.er_id);
+                                OptionInfoWindow.setFieldValue('employee_code', row.employee_code);
+                                OptionInfoWindow.setFieldValue('employee_name', row.employee_name);
+                                OptionInfoWindow.setFieldValue('ospid', row.ospid);
+                                OptionInfoWindow.setFieldValue('ospcode', row.ospcode);
+                                OptionInfoWindow.setFieldValue('sp_name', row.sp_name);
+                                OptionInfoWindow.setFieldValue('hiredday', row.hiredday);
+                                OptionInfoWindow.setFieldValue('orgid', row.orgid);
+                                OptionInfoWindow.setFieldValue('orgcode', row.orgcode);
+                                OptionInfoWindow.setFieldValue('orgname', row.orgname);
+                                OptionInfoWindow.setFieldValue('idpath', row.idpath);
+                                OptionInfoWindow.setFieldValue('lv_id', row.lv_id);
+                                OptionInfoWindow.setFieldValue('lv_num', row.lv_num);
+                                OptionInfoWindow.setFieldValue('hwc_namezq', row.hwc_namezq);
+                                OptionInfoWindow.setFieldValue('hwc_namezz', row.hwc_namezz);
+                                OptionInfoWindow.setFieldValue("sex", row.sex);
+                                OptionInfoWindow.setFieldValue("telphone", row.telphone);
+                                OptionInfoWindow.setFieldValue("degree", row.degree);
+                                OptionInfoWindow.setFieldValue("nativeplace", row.nativeplace);
+                                OptionInfoWindow.setFieldValue("registertype", row.registertype);
+                                OptionInfoWindow.setFieldValue("pay_type", row.pay_way);
+                                OptionInfoWindow.setFieldValue("id_number", row.id_number);
+                                OptionInfoWindow.setFieldValue("registeraddress", row.registeraddress);
+                                OptionInfoWindow.setFieldValue("torgname", row.transorg);
+                                OptionInfoWindow.setFieldValue("sorgname", row.dispunit);
+                                OptionInfoWindow.setFieldValue("sign_org", row.sign_org);
+                                OptionInfoWindow.setFieldValue("sign_date", row.sign_date);
+                                OptionInfoWindow.setFieldValue("expired_date", row.expired_date);
+                                OptionInfoWindow.setFieldValue("birthday", row.birthday);
+                                var omsurl = _serUrl + "/web/hrsalary/command/getOrgMinStandard.co?orgid=" + row.orgid;
+                                $ajaxjsonget(omsurl, function (jsdata) {
+                                    orgminwagestandard=jsdata.rows[0].minstandard;
+                                }, function (err) {
+                                    orgminwagestandard=0;
+                                });
+                                var url = _serUrl + "/web/hr/sa/getCur_salary_chglg.co?er_id=" + row.er_id;
+                                $ajaxjsonget(url, function (jsdata) {
+                                    OptionInfoWindow.setFieldValue('oldstru_id', jsdata.newstru_id);
+                                    OptionInfoWindow.setFieldValue('oldstru_name', jsdata.newstru_name);
+                                    OptionInfoWindow.setFieldValue('oldchecklev', jsdata.newchecklev);
+                                    OptionInfoWindow.setFieldValue('oldattendtype', jsdata.newattendtype);
+                                    OptionInfoWindow.setFieldValue('oldposition_salary', parseFloat(jsdata.newposition_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('oldbase_salary', parseFloat(jsdata.newbase_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('oldotwage', parseFloat(jsdata.newotwage).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('oldtech_salary', parseFloat(jsdata.newtech_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('oldachi_salary', parseFloat(jsdata.newachi_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('oldtech_allowance', parseFloat(jsdata.newtech_allowance).toFixed(2));
+
+                                    OptionInfoWindow.setFieldValue('newstru_id', jsdata.newstru_id);
+                                    OptionInfoWindow.setFieldValue('newstru_name', jsdata.newstru_name);
+                                    OptionInfoWindow.setFieldValue('newchecklev', jsdata.newchecklev);
+                                    OptionInfoWindow.setFieldValue('newattendtype', jsdata.newattendtype);
+                                    OptionInfoWindow.setFieldValue('newposition_salary', parseFloat(jsdata.newposition_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('newbase_salary', parseFloat(jsdata.newbase_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('newotwage', parseFloat(jsdata.newotwage).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('newtech_salary', parseFloat(jsdata.newtech_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('newachi_salary', parseFloat(jsdata.newachi_salary).toFixed(2));
+                                    OptionInfoWindow.setFieldValue('newtech_allowance', parseFloat(jsdata.newtech_allowance).toFixed(2));
+                                    onFindSalaryStruc(jsdata.newstru_id);
+                                }, function (err) {
+                                    alert(JSON.stringify(err));
+                                });
+
+                                var lasturl = _serUrl + "/web/hrsalary/command/getLastYearSalaryChglg.co?er_id=" + row.er_id+"&salarydate="+salarydate;
+                                $ajaxjsonget(lasturl, function (jsdata) {
+                                    OptionInfoWindow.setFieldValue('dateentry', jsdata.dateentry);
+                                    OptionInfoWindow.setFieldValue('chgentry', jsdata.chgentry);
+                                    OptionInfoWindow.setFieldValue('datetransfer', jsdata.datetransfer);
+                                    OptionInfoWindow.setFieldValue('chgtransfer', jsdata.chgtransfer);
+                                    OptionInfoWindow.setFieldValue('datespec', jsdata.datespec);
+                                    OptionInfoWindow.setFieldValue('chgspec', jsdata.chgspec);
+                                }, function (err) {
+                                    alert(JSON.stringify(err));
+                                });
+
+                                var lyexurl = _serUrl + "/web/hrsalary/command/getLastYearEXPoint.co?er_id=" + row.er_id+"&salarydate="+salarydate;
+                                $ajaxjsonget(lyexurl, function (jsdata) {
+                                    OptionInfoWindow.setFieldValue('lastavgallowance', jsdata.expoint);
+                                }, function (err) {
+                                    alert(JSON.stringify(err));
+                                });
+                                var lyhurl = _serUrl + "/web/hrsalary/command/getLastYearHolidays.co?er_id=" + row.er_id+"&salarydate="+salarydate;
+                                $ajaxjsonget(lyhurl, function (jsdata) {
+                                    OptionInfoWindow.setFieldValue('lastyqqdays', jsdata.hdays);
+                                }, function (err) {
+                                    alert(JSON.stringify(err));
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+            select_employee_pw.show(true);
+        }
+
+        var select_onFindSalaryQuota_pw = undefined;
+        function onFindSalaryQuota() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+
+            var salarydate = mainline.getFieldValue("salarydate");
+            if ((!salarydate) || (salarydate.length == 0)) {
+                $.messager.alert('错误', "请先选择调薪月份！", 'error');
+                return;
+            }
+            var url=_serUrl + "/web/hrsalary/command/getYearRaiseQuato.co?orgid=" + orgid+"&salarydate="+salarydate;
+            var wo = {
+                coURL:url ,
+                id: "select_onFindSalaryQuota_pw",
+                JPAClass: "com.hr.salary.entity.Hr_salary_yearraise_quota",  //对应后台JPAClass名
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: true,//是否自动查询
+                singleAutoReturn: false,
+                notFindAutoReturn: false,//没数据自动返回
+                gdListColumns: [
+                    {field:'orgname',title:'部门',width:250},
+                    {field:'yrqname',title:'额度名称',width:64},
+                    {field:'salary_quota_canuse',title:'可用工资额度',width:64},
+                    {field:'salaryquotadate',title:'额度使用月份',width:64, formatter: $fieldDateFormatorYYYY_MM},
+                    {field:'usable',title:'有效',width:64, formatter: comUrl_dic5.formator}
+                ],
+                onFind: function (parms) {
+                    if (parms) {
+                        var parms = parms.parms;
+                        for (var i = 0; i < parms.length; i++) {
+                            var parm = parms[i];
+                            if (parm.parmname == "salaryquotadate") {
+                                parm.parmvalue = parm.parmvalue + "-01";
+                            }
+                        }
+                    }
+                }
+            };
+            if (!select_onFindSalaryQuota_pw) {
+                select_onFindSalaryQuota_pw = new TSearchForm(wo);
+            }
+            select_onFindSalaryQuota_pw.extendOptions({
+                coURL:url,
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: 1},
+                    {parmname: 'isused', reloper: '=', parmvalue: 2}
+                ],
+                onResult: function (rows) {
+                    var mainquta="";
+                    var mainqutacanuse=0;
+                    var orgs="";
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        var quta = row.yrqname;
+                        var qutacanuse= (isNaN(parseFloat(row.salary_quota_canuse))) ? 0 : parseFloat(row.salary_quota_canuse);
+                        mainquta=mainquta+quta;
+                        mainqutacanuse=mainqutacanuse+qutacanuse;
+                        orgs=orgs+row.orgid+",";
+                        mainline.setFieldValue("yrqid", row.yrqid);
+                    }
+                    orgs=orgs.substring(0,orgs.length-1);
+                    mainline.setFieldValue("qutaorgs", orgs);
+                    mainline.setFieldValue("yrqname", mainquta);
+                    mainline.setFieldValue("salary_quota_canuse", mainqutacanuse);
+                }
+            });
+            select_onFindSalaryQuota_pw.show(true);
+        }
+
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+
+                };
+                isnew = true;
+            } else {
+                var row = data;
+                if (tp == $C.action.Del) {//删除
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#guestlinepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        mainline.addLineData(undefined, jsondata);
+                    } else {
+                        mainline.updateLineData(undefined, jsondata);
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                    if ((fdname == 'oldposition_salary') || (fdname == 'oldbase_salary') || (fdname == 'oldtech_salary') || (fdname == 'oldachi_salary') || (fdname == 'oldtech_allowance')|| (fdname == 'oldotwage')
+                            || (fdname == 'newposition_salary')|| (fdname == 'newtech_allowance')) {
+                        calcsalary();
+                    }
+                    if ( (fdname == 'newbase_salary') || (fdname == 'newtech_salary') || (fdname == 'newachi_salary') || (fdname == 'newotwage')) {
+                        calcsalarystruitems();
+                    }
+                    if (fdname == 'employee_code') {
+                        var employee_code = (OptionInfoWindow.getField("employee_code")).textbox("getValue");
+                        if (!$isEmpty(employee_code)) {
+                            onFindemployee(employee_code);
+                        }
+                    }
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            OptionInfoWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoWindow.show();
+        }
+
+        function persentformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(2);
+            return v + "%";
+        }
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(2);
+            return v;
+        }
+
+        var selected_salary_structure = undefined;
+        var select_findSalaryStruc_pw = undefined;
+        function onFindSalaryStruc(struid) {
+            if ((!struid) || (struid.length == 0)) {
+                selected_salary_structure.basewage =0;
+                selected_salary_structure.otwage = 0;
+                selected_salary_structure.skillwage = 0;
+                selected_salary_structure.meritwage = 0;
+                return;
+            }
+
+            var wo = {
+                coURL: _serUrl + "/web/hr/sa/getSalaryStruce.co",
+                id: "select_findSalaryStruc_pw",
+                JPAClass: "com.hr.salary.entity.Hr_salary_structure",  //对应后台JPAClass名
+                orderStr: " stru_id asc ",
+                multiRow: false,
+                idField: 'stru_id',
+                autoFind: true,//是否自动查询
+                singleAutoReturn: true,
+                notFindAutoReturn: true,//没数据自动返回
+                gdListColumns: [
+                    {field: 'stru_code', title: '编码', width: 120},
+                    {field: 'stru_name', title: '名称', width: 120},
+                    {field: 'kqtype', title: '出勤机制', width: 100, formatter: comUrl_dic1399.formator},
+                    {field: 'checklev', title: '绩效考核层级', width: 100, formatter: comUrl_dic1437.formator},
+                    {field: 'basewage', title: '基本工资', width: 100, formatter: persentformator},
+                    {field: 'otwage', title: '固定加班工资', width: 100, formatter: persentformator},
+                    {field: 'skillwage', title: '技能工资', width: 100, formatter: persentformator},
+                    {field: 'meritwage', title: '绩效工资', width: 100, formatter: persentformator}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var strutype=row.strutype;
+                        strutype=parseInt(strutype);
+                        if(strutype==1){
+                            selected_salary_structure = row;
+                            selected_salary_structure.basewage = (isNaN(parseFloat(selected_salary_structure.basewage))) ? 0 : parseFloat(selected_salary_structure.basewage);
+                            selected_salary_structure.otwage = (isNaN(parseFloat(selected_salary_structure.otwage))) ? 0 : parseFloat(selected_salary_structure.otwage);
+                            selected_salary_structure.skillwage = (isNaN(parseFloat(selected_salary_structure.skillwage))) ? 0 : parseFloat(selected_salary_structure.skillwage);
+                            selected_salary_structure.meritwage = (isNaN(parseFloat(selected_salary_structure.meritwage))) ? 0 : parseFloat(selected_salary_structure.meritwage);
+                            (OptionInfoWindow.getField("newbase_salary")).textbox('readonly',true);
+                            (OptionInfoWindow.getField("newtech_salary")).textbox('readonly',true);
+                            (OptionInfoWindow.getField("newotwage")).textbox('readonly',true);
+                            (OptionInfoWindow.getField("newachi_salary")).textbox('readonly',true);
+                            calcsalary();
+                        }else{
+                            selected_salary_structure=undefined;
+                            (OptionInfoWindow.getField("newbase_salary")).textbox({'readonly':false});
+                            (OptionInfoWindow.getField("newtech_salary")).textbox({'readonly':false});
+                            (OptionInfoWindow.getField("newotwage")).textbox({'readonly':false});
+                            (OptionInfoWindow.getField("newachi_salary")).textbox({'readonly':false});
+                        }
+                        OptionInfoWindow.setFieldValue("newstru_id", row.stru_id);
+                        OptionInfoWindow.setFieldValue("newstru_name", row.stru_name);
+                        OptionInfoWindow.setFieldValue("newattendtype", row.kqtype);
+                        OptionInfoWindow.setFieldValue("newchecklev", row.checklev);
+                    }
+                }
+            };
+            if (!select_findSalaryStruc_pw) {
+                select_findSalaryStruc_pw = new TSearchForm(wo);
+            }
+            select_findSalaryStruc_pw.extendOptions({
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: 9},
+                   {parmname: 'stru_id', reloper: '=', parmvalue: struid},
+                  //  {parmname: 'checklev', reloper: '=', parmvalue: checklev}
+                ]
+            });
+            select_findSalaryStruc_pw.show();
+        }
+
+        function calcsalarystruitems() {
+            //调整前
+
+            var oldbase_salary = parseFloat(OptionInfoWindow.getFieldValue("oldbase_salary"));
+            var oldotwage = parseFloat(OptionInfoWindow.getFieldValue("oldotwage"));
+            var oldtech_salary = parseFloat(OptionInfoWindow.getFieldValue("oldtech_salary"));
+            var oldachi_salary = parseFloat(OptionInfoWindow.getFieldValue("oldachi_salary"));
+            var oldtech_allowance = parseFloat(OptionInfoWindow.getFieldValue("oldtech_allowance"));
+
+            //调整后
+
+            var newbase_salary =  parseFloat(OptionInfoWindow.getFieldValue("newbase_salary"));
+            var newotwage = parseFloat(OptionInfoWindow.getFieldValue("newotwage"));
+            var newtech_salary =  parseFloat(OptionInfoWindow.getFieldValue("newtech_salary"));
+            var newachi_salary =  parseFloat(OptionInfoWindow.getFieldValue("newachi_salary"));
+
+
+            if (isNaN(oldbase_salary) || (oldbase_salary == undefined) || (oldbase_salary == 0)) oldbase_salary = 0;
+            if (isNaN(oldotwage) || (oldotwage == undefined) || (oldotwage == 0)) oldotwage = 0;
+            if (isNaN(oldtech_salary) || (oldtech_salary == undefined) || (oldtech_salary == 0)) oldtech_salary = 0;
+            if (isNaN(oldachi_salary) || (oldachi_salary == undefined) || (oldachi_salary == 0)) oldachi_salary = 0;
+            if (isNaN(oldtech_allowance) || (oldtech_allowance == undefined) || (oldtech_allowance == 0)) oldtech_allowance = 0;
+
+            if (isNaN(newbase_salary) || (newbase_salary == undefined) || (newbase_salary == 0)) newbase_salary = 0;
+            if (isNaN(newotwage) || (newotwage == undefined) || (newotwage == 0)) newotwage = 0;
+            if (isNaN(newtech_salary) || (newtech_salary == undefined) || (newtech_salary == 0)) newtech_salary = 0;
+            if (isNaN(newachi_salary) || (newachi_salary == undefined) || (newachi_salary == 0)) newachi_salary = 0;
+
+            var chgbase_salary = newbase_salary - oldbase_salary;
+            var chgotwage = newotwage - oldotwage;
+            var chgtech_salary = newtech_salary - oldtech_salary;
+            var chgachi_salary = newachi_salary - oldachi_salary;
+
+            chgbase_salary=chgbase_salary.toFixed(0);
+            chgotwage= chgotwage.toFixed(0);
+            chgtech_salary= chgtech_salary.toFixed(0);
+            chgachi_salary= chgachi_salary.toFixed(0);
+
+            if(chgbase_salary==-0)chgbase_salary=0;
+            if(chgotwage==-0)chgotwage=0;
+            if(chgtech_salary==-0)chgtech_salary=0;
+            if(chgachi_salary==-0)chgachi_salary=0;
+            if(!selected_salary_structure){
+                var np=newbase_salary+newotwage+newtech_salary+newachi_salary;
+                OptionInfoWindow.setFieldValue("newposition_salary", np);
+            }
+            OptionInfoWindow.setFieldValue("chgbase_salary", chgbase_salary);
+            OptionInfoWindow.setFieldValue("chgotwage", chgotwage);
+            OptionInfoWindow.setFieldValue("chgtech_salary", chgtech_salary);
+            OptionInfoWindow.setFieldValue("chgachi_salary", chgachi_salary);
+        }
+
+        function calcsalary() {
+            if (!selected_salary_structure) {
+                //alert("选择工资结构");
+                return;
+            }
+
+            //调整前
+            var oldposition_salary = parseFloat(OptionInfoWindow.getFieldValue("oldposition_salary"));
+            var oldbase_salary = parseFloat(OptionInfoWindow.getFieldValue("oldbase_salary"));
+            var oldotwage = parseFloat(OptionInfoWindow.getFieldValue("oldotwage"));
+            var oldtech_salary = parseFloat(OptionInfoWindow.getFieldValue("oldtech_salary"));
+            var oldachi_salary = parseFloat(OptionInfoWindow.getFieldValue("oldachi_salary"));
+            var oldtech_allowance = parseFloat(OptionInfoWindow.getFieldValue("oldtech_allowance"));
+
+            //调整后
+            var newposition_salary = parseFloat(OptionInfoWindow.getFieldValue("newposition_salary"));
+            var newbase_salary = newposition_salary * selected_salary_structure.basewage / 100;
+            var newotwage = newposition_salary * selected_salary_structure.otwage / 100;
+            var newtech_salary = newposition_salary * selected_salary_structure.skillwage / 100;
+            var newachi_salary = newposition_salary * selected_salary_structure.meritwage / 100;
+
+            var newtech_allowance = parseFloat(OptionInfoWindow.getFieldValue("newtech_allowance"));
+
+
+            if (isNaN(oldposition_salary) || (oldposition_salary == undefined) || (oldposition_salary == 0)) oldposition_salary = 0;
+            if (isNaN(oldbase_salary) || (oldbase_salary == undefined) || (oldbase_salary == 0)) oldbase_salary = 0;
+            if (isNaN(oldotwage) || (oldotwage == undefined) || (oldotwage == 0)) oldotwage = 0;
+            if (isNaN(oldtech_salary) || (oldtech_salary == undefined) || (oldtech_salary == 0)) oldtech_salary = 0;
+            if (isNaN(oldachi_salary) || (oldachi_salary == undefined) || (oldachi_salary == 0)) oldachi_salary = 0;
+            if (isNaN(oldtech_allowance) || (oldtech_allowance == undefined) || (oldtech_allowance == 0)) oldtech_allowance = 0;
+            if (isNaN(newposition_salary) || (newposition_salary == undefined) || (newposition_salary == 0)) newposition_salary = 0;
+            if (isNaN(newbase_salary) || (newbase_salary == undefined) || (newbase_salary == 0)) newbase_salary = 0;
+            if (isNaN(newotwage) || (newotwage == undefined) || (newotwage == 0)) newotwage = 0;
+            if (isNaN(newtech_salary) || (newtech_salary == undefined) || (newtech_salary == 0)) newtech_salary = 0;
+            if (isNaN(newachi_salary) || (newachi_salary == undefined) || (newachi_salary == 0)) newachi_salary = 0;
+            if (isNaN(newtech_allowance) || (newtech_allowance == undefined) || (newtech_allowance == 0)) newtech_allowance = 0;
+
+            orgminwagestandard=parseFloat(orgminwagestandard);
+            if(orgminwagestandard>0){
+                if(orgminwagestandard>newbase_salary){
+                    if((newbase_salary+newotwage)>orgminwagestandard){
+                        newotwage=newbase_salary+newotwage-orgminwagestandard;
+                        newbase_salary=orgminwagestandard;
+                    }else if((newbase_salary+newotwage+newtech_salary)>orgminwagestandard){
+                        newtech_salary=newbase_salary+newotwage+newtech_salary-orgminwagestandard;
+                        newotwage=0;
+                        newbase_salary=orgminwagestandard;
+                    }else if((newbase_salary+newotwage+newtech_salary+newachi_salary)>orgminwagestandard){
+                        newachi_salary=newbase_salary+newotwage+newtech_salary+newachi_salary-orgminwagestandard;
+                        newtech_salary=0;
+                        newotwage=0;
+                        newbase_salary=orgminwagestandard;
+                    }else{
+                        newbase_salary=newposition_salary;
+                        newachi_salary=0;
+                        newtech_salary=0;
+                        newotwage=0;
+                    }
+                }
+            }
+
+            var chgposition_salary = newposition_salary - oldposition_salary;
+            var chgbase_salary = newbase_salary - oldbase_salary;
+            var chgotwage = newotwage - oldotwage;
+            var chgtech_salary = newtech_salary - oldtech_salary;
+            var chgachi_salary = newachi_salary - oldachi_salary;
+            var chgtech_allowance = newtech_allowance - oldtech_allowance;
+
+            //var pbtsarylev = chgposition_salary;//+ chgbase_salary + chgtech_salary + chgachi_salary + chgtech_allowance;
+            var pbtsarylev = chgposition_salary + chgtech_allowance;
+            var pbtsarylev_chgtech=0;
+            if((pbtsarylev==0)||(oldposition_salary==0)){
+                pbtsarylev_chgtech=0;
+            }else{
+                pbtsarylev_chgtech=(pbtsarylev/(oldposition_salary+oldtech_allowance)).toFixed(4)*100;
+            }
+
+            //chgposition_salary = parseFloat(chgposition_salary.toFixed(4)) * 100;
+            //chgbase_salary = parseFloat(chgbase_salary.toFixed(4)) * 100;
+            //chgtech_salary = parseFloat(chgtech_salary.toFixed(4)) * 100;
+            //chgachi_salary = parseFloat(chgachi_salary.toFixed(4)) * 100;
+            //chgtech_allowance = parseFloat(chgtech_allowance.toFixed(4)) * 100;
+
+            /*选人后自动带出
+             mainline.setFieldValue("oldposition_salary", oldposition_salary.toFixed(2));
+             mainline.setFieldValue("oldbase_salary", oldbase_salary.toFixed(2));
+             mainline.setFieldValue("oldotwage", oldotwage.toFixed(2));
+             mainline.setFieldValue("oldtech_salary", oldtech_salary.toFixed(2));
+             mainline.setFieldValue("oldachi_salary", oldachi_salary.toFixed(2));
+             mainline.setFieldValue("oldtech_allowance", oldtech_allowance.toFixed(2));
+             */
+            OptionInfoWindow.setFieldValue("newposition_salary", newposition_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("newbase_salary", newbase_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("newotwage", newotwage.toFixed(2));
+            OptionInfoWindow.setFieldValue("newtech_salary", newtech_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("newachi_salary", newachi_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("newtech_allowance", newtech_allowance.toFixed(2));
+
+            OptionInfoWindow.setFieldValue("chgposition_salary", chgposition_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("chgbase_salary", chgbase_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("chgotwage", chgotwage.toFixed(2));
+            OptionInfoWindow.setFieldValue("chgtech_salary", chgtech_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("chgachi_salary", chgachi_salary.toFixed(2));
+            OptionInfoWindow.setFieldValue("chgtech_allowance", chgtech_allowance.toFixed(2));
+            OptionInfoWindow.setFieldValue("pbtsarylev", pbtsarylev.toFixed(2));
+            OptionInfoWindow.setFieldValue("pbtsarylev_chgtech", pbtsarylev_chgtech.toFixed(2));
+        }
+
+
+        function implistexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择机构", 'error');
+                return;
+            }
+            var qutaorgs = mainline.getFieldValue("qutaorgs");
+            if ((!qutaorgs) || (qutaorgs.length == 0)) {
+                $.messager.alert('错误', "请先选择标准工资额度！", 'error');
+                return;
+            }
+			var salarydate = mainline.getFieldValue("salarydate");
+			if ((!salarydate) || (salarydate.length == 0)) {
+			    $.messager.alert('错误', "请先选择调薪月份！", 'error');
+			    return;
+			}
+			
+            $uploadfile(_serUrl + "/web/hrsalary/command/impyearriase_listexcel.co?orgid=" + orgid+"&qutaorgs="+qutaorgs+"&salarydate="+salarydate, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+						//datachanged=true;
+						if(mainline.getFieldValue("remark")!=null){
+							mainline.setFieldValue("remark",mainline.getFieldValue("remark")+" ");
+						}else{
+							mainline.setFieldValue("remark"," ");
+						}
+						
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+        function showposteage() {
+            var selectrow = $("#detail_main_grid_id").datagrid("getSelected");
+            if ((!selectrow) || (selectrow.length == 0)) {
+                $.messager.alert('错误', "先选择名单", 'error');
+                return;
+            }
+
+            var url = _serUrl + "/web/hrsalary/command/getPostWage.co?ospid="+selectrow.ospid;
+            $ajaxjsonget(url, function (jsdata) {
+                showOptionPostInfo($C.action.Edit,jsdata);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        var OptionInfoPostWindow = undefined;
+        function showOptionPostInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            var row = data.rows[0];
+            if(row==undefined){
+                row=[];
+            }
+            if (tp == $C.action.Edit) {//编辑
+                isnew = false;
+                jsondata = row;
+            }
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#postwagepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    return false;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+
+                }
+            };
+            if (!OptionInfoPostWindow)
+                OptionInfoPostWindow = new CPopInfoWindow(options);
+            OptionInfoPostWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoPostWindow.show(true);
+        }
+
+        function showOrgSalary() {
+            var selectrow = $("#detail_main_grid_id").datagrid("getSelected");
+            if ((!selectrow) || (selectrow.length == 0)) {
+                $.messager.alert('错误', "先选择名单", 'error');
+                return;
+            }
+
+           var nowmonth = mainline.getFieldValue("createtime");
+           if ((!nowmonth) || (nowmonth.length == 0)) {
+               nowmonth = new Date().format("yyyy-MM-dd");
+               ;
+           }
+            var url = _serUrl + "/web/hrsalary/command/getPosAvgSalarys.co?ospid="+selectrow.ospid+"&yearmonth="+nowmonth;
+            $ajaxjsonget(url, function (jsdata) {
+                showOptionOrgSalaryInfo($C.action.Edit,jsdata);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        var OptionInfoOrgSaWindow = undefined;
+        function showOptionOrgSalaryInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            var row = data.rows[0];
+            if(row==undefined){
+                row=[];
+            }
+            if (tp == $C.action.Edit) {//编辑
+                isnew = false;
+                jsondata = row;
+            }
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#orgsalarypw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    return false;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+
+                }
+            };
+            if (!OptionInfoOrgSaWindow)
+                OptionInfoOrgSaWindow = new CPopInfoWindow(options);
+            OptionInfoOrgSaWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoOrgSaWindow.show(true);
+        }
+
+        function checkdata() {
+            var qcu = mainline.getFieldValue("salary_quota_canuse");
+            if ((!qcu) || (qcu.length == 0)) {
+                $.messager.alert('错误', "先输入可用工资额度", 'error');
+                return;
+            }
+            qcu = parseFloat(qcu);
+            var ttrp=0;
+			var num=0;
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            for (var i =0;i<rows.length;i++) {
+                var row = rows[i];
+                if((!row.newstru_id)||(row.newstru_id.length==0)){
+                    $.messager.alert('错误', "调薪后工作结构不能为空", 'error');
+                    return;
+                }
+				num=parseFloat(row.pbtsarylev).toFixed(2)
+                ttrp+=Number(num);
+                if (ttrp > qcu) {
+                    alert("本次调薪金额大于可用工资额度");
+                    return false;
+                }
+            }
+            mainline.setFieldValue('ttsachag', ttrp.toFixed(2));
+            return true;
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div id="guestlinepw" class="easyui-window" title="年度调薪名单" data-options="iconCls:'icon-save',closed:true,modal:true" style="width: 900px;height:300px;padding:0px;"> 
+   <div class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'center',border:false" style="padding:5px;"> 
+     <table> 
+      <tbody> 
+       <tr> 
+        <td cjoptions="fdname:'employee_code'">工号</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'employee_name'">姓名</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'orgname'">机构</td> 
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 300px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'sp_name'">职位</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'lv_num'">职级</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'hiredday'">入职日期</td> 
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'oldstru_name'">调薪前工资结构</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldstru_name',readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'oldposition_salary'">调薪前职位工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldposition_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'oldtech_allowance'">调薪前技术津贴</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldtech_allowance',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'oldbase_salary'">调薪前基本工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldbase_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'oldotwage'">调薪前固定加班工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldotwage',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'oldtech_salary'">调薪前技能工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldtech_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'oldachi_salary'">调薪前绩效工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldachi_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'newstru_name'">调薪后工资结构</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newstru_name',readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'newposition_salary'">调薪后职位工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newposition_salary',formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'newtech_allowance'">调薪后技术津贴</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newtech_allowance',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'newbase_salary'">调薪后基本工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newbase_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'newotwage'">调薪后固定加班工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newotwage',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'newtech_salary'">调薪后技能工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newtech_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'newachi_salary'">调薪后绩效工资</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newachi_salary',readonly:true,formatter:zeroformator" style="height:20px;width: 100px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'lastyqqdays'">最近一年请假天数</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lastyqqdays',readonly:true" style="height:20px;width: 100px"></td> 
+        <td cjoptions="fdname:'lastavgallowance'">最近一年平均绩效系数</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lastavgallowance',readonly:true" style="height:20px;width: 100px"></td> 
+       </tr> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:true" style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none"> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="postwagepw" class="easyui-window" title="职位工资标准" data-options="iconCls:'icon-save',closed:true,modal:true" style="width: 900px;height: 150px;padding:5px;"> 
+   <div class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'center',border:false" style="padding:10px;"> 
+     <table border="1" cellspacing="0" cellpadding="0"> 
+      <tbody> 
+       <tr> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'sp_name'">职位</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'lv_num'">职级</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezl'">职类</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezq'">职群</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezz'">职种</td> 
+        <td colspan="5" style="text-align: center">职位工资标准</td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'psl5'" style="text-align: center">S5</td> 
+        <td cjoptions="fdname:'psl4'" style="text-align: center">S4</td> 
+        <td cjoptions="fdname:'psl3'" style="text-align: center">S3</td> 
+        <td cjoptions="fdname:'psl2'" style="text-align: center">S2</td> 
+        <td cjoptions="fdname:'psl1'" style="text-align: center">S1</td> 
+       </tr> 
+       <tr> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 130px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 50px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 50px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',readonly:true" style="height:20px;width: 100px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',readonly:true" style="height:20px;width: 100px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'psl5',readonly:true,formatter:zeroformator" style="height:20px;width: 80px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'psl4',readonly:true,formatter:zeroformator" style="height:20px;width: 80px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'psl3',readonly:true,formatter:zeroformator" style="height:20px;width: 80px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'psl2',readonly:true,formatter:zeroformator" style="height:20px;width: 80px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'psl1',readonly:true,formatter:zeroformator" style="height:20px;width: 80px;text-align: center"></td> 
+       </tr> 
+      </tbody> 
+     </table> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="orgsalarypw" class="easyui-window" title="在职人员工资水平" data-options="iconCls:'icon-save',closed:true,modal:true" style="width: 1100px;height: 150px;padding:5px;"> 
+   <div class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'center',border:false" style="padding:10px;"> 
+     <table border="1" cellspacing="0" cellpadding="0"> 
+      <tbody> 
+       <tr> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezl'">职类</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezq'">职群</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'hwc_namezz'">职种</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'pos'">职位</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'lv_num'">职级</td> 
+        <td colspan="8" style="text-align: center">在职人员工资水平</td> 
+        <td rowspan="2" style="text-align: center" cjoptions="fdname:'nums'">在职人数</td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'avgpos'" style="text-align: center">平均值</td> 
+        <td cjoptions="fdname:'minpos'" style="text-align: center">最低值</td> 
+        <td cjoptions="fdname:'pw10'" style="text-align: center">10分位值</td> 
+        <td cjoptions="fdname:'pw25'" style="text-align: center">25分位值</td> 
+        <td cjoptions="fdname:'pstwg'" style="text-align: center">50分位值</td> 
+        <td cjoptions="fdname:'pw75'" style="text-align: center">75分位值</td> 
+        <td cjoptions="fdname:'pw90'" style="text-align: center">90分位值</td> 
+        <td cjoptions="fdname:'maxpos'" style="text-align: center">最高值</td> 
+       </tr> 
+       <tr> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 50px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',readonly:true" style="height:20px;width: 100px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',readonly:true" style="height:20px;width: 100px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pos',readonly:true" style="height:20px;width: 130px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 50px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'avgpos',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'minpos',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pw10',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pw25',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pstwg',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pw75',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pw90',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'maxpos',readonly:true" style="height:20px;width: 70px;text-align: center"></td> 
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'nums',readonly:true" style="height:20px;width: 60px;text-align: center"></td> 
+       </tr> 
+      </tbody> 
+     </table> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <script id="findline" type="text/html">
+    <tr style="height: 20px;padding: 0px" id="{{rowid}}">
+        <td style="width: 30%">
+            <input class="easyui-combobox" fieldname="parmname" style="height: 20px;width: 100%"
+                   data-options="{{parmnameData}},width:120,onSelect:mainline.find_window_selectparmname">
+        </td>
+        <td style="width: 20%">
+            <input class="easyui-combobox" fieldname="reloper" style="height: 20px;width: 100%"
+                   data-options="{{reloperData}},width:60,editable:false">
+        </td>
+        <td style="width: 30%" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" data-options="width:120" style="height: 20px;width: 100%">
+        </td>
+        <td style="width: 20%;text-align: center">
+            <a href="#" onclick="mainline.find_window_del_click(this)">删除</a>
+        </td>
+    </tr>
+</script> 
+  <div id="mlp_main_sayout" class="easyui-layout" data-options="fit:true,border:false"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-new-add-line'">新建</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-copy-line'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-search-line'">查找</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_print_new" href="javascript:void(0)" class="easyui-splitbutton" style="display: none" data-options="menu:'#printmm',plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_expt_list" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出列表</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-filter-line'">显示列</a> 
+     <span id="id_skt_stat" style="display: inline-block;float:right;padding-top: 3px;font-size: 14px"></span> 
+    </div> 
+    <div id="printmm" style="width:100px;"> 
+     <div id="id_bt_print_preview" data-options="iconCls:'ico-printer-line'">
+       打印预览 
+     </div> 
+     <div id="id_bt_print_design" data-options="iconCls:'ico-printer-line'">
+       编辑报表 
+     </div> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,remoteSort:false,fit:true,border:false,singleSelect: true"> 
+    </table> 
+   </div> 
+  </div> 
+  <div id="datainfo_window_id" class="easyui-window" data-options="modal:true,title:'详情',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-mylocation'" style="width:100%;height:100%;overflow:hidden"> 
+   <div id="cc" class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'north',split:false,border:true" style="height:40px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+      <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-save-line'">保存</a> 
+      <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-checkbox-circle-fill'">提交</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_unsubmit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-reply-line'">反审核</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-refresh-line'">刷新</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-delete-line'">删除</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-attachment-line'">上传附件</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_prev" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-prev'">上一条</a> 
+      <a id="id_bt_next" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-next'">下一条</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-logout-circle-r-line'">返回</a> 
+      <span id="wfspanid" style="display: none;margin-left: 20px"> <a id="bt_sumit_id" class="easyui-linkbutton" iconcls="ico-check-fill" style="" data-options="disabled:true,plain:false">提交</a> <a id="bt_reject_id" class="easyui-linkbutton" iconcls="icon-undo" style="" data-options="disabled:true">驳回</a> <a id="bt_break_id" class="easyui-linkbutton" iconcls="icon-no" style="" data-options="disabled:true">中断</a> <a id="bt_refer_id" class="easyui-linkbutton" iconcls="icon-redo" style="" data-options="disabled:true">转办</a> </span> 
+     </div> 
+    </div> 
+    <div data-options="region:'center',border:false" style="padding:0px;overflow-x: hidden;overflow-y: auto"> 
+     <div id="main_form_div_id"> 
+      <table id="maindata_id" border="0" style=""> 
+       <tbody> 
+        <tr> 
+         <td cjoptions="fdname:'yrcode'">编码</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yrcode',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'chgtype'">调薪类型</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'chgtype',crequired:true,readonly:true,comidx:'dic999'" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'salarydate'">调薪月份</td> 
+         <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'salarydate',crequired:true,formatter:$dateformattostrrYYYY_MM,editable:false" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'stat'">流程状态</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'orgname'">机构</td> 
+         <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',buttonIcon:'icon-search',onClickButton:onSelectOrg,crequired:true" style="height:20px;width: 300px"></td> 
+         <td cjoptions="fdname:'yrqname'">额度单位名称</td> 
+         <td colspan="4"><input cjoptions="easyui_class:'easyui-textbox',fdname:'yrqname',crequired:true,buttonIcon:'icon-search',onClickButton:onFindSalaryQuota,editable:false" style="height:20px;width: 300px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'remark'">备注</td> 
+         <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"></td> 
+         <td cjoptions="fdname:'salary_quota_canuse'">可用工资额度</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_canuse',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'ttsachag'">使用额度合计</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ttsachag',readonly:true" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'creator'">制单人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'createtime'">制单时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'updator'">更新人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'updatetime'">更新时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td colspan="5"><input type="button" class="easyui-linkbutton" style="width:100px;height:30px" value="职位工资标准" onclick="showposteage()"><input type="button" class="easyui-linkbutton" style="width:100px;height:30px" value="实际工资水平" onclick="showOrgSalary()"></td> 
+        </tr> 
+       </tbody> 
+      </table> 
+     </div> 
+     <div id="detail_main_grid_div"> 
+      <div class="datainfo_title">
+        明细数据 
+      </div> 
+      <div style="width: 100%;height: 300px"> 
+       <table id="detail_main_grid_id" data-options="rownumbers:true,remoteSort:false,fit:true"></table> 
+      </div> 
+     </div> 
+     <div id="dg_att_div"> 
+      <div class="datainfo_title">
+        附件 
+      </div> 
+      <div style="width: 100%;height: 200px"> 
+       <table id="dg_att_id" data-options="rownumbers:true,fitColumns:false,border:false,singleSelect: true,fit:true"></table> 
+       <div id="ContextMenu" class="easyui-menu"> 
+        <div id="id_bt_delatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_del'">
+          删除 
+        </div> 
+        <div id="id_bt_downloadatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_download'">
+          下载 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="main_tab_wf_div" style="width: 100%"> 
+      <div class="datainfo_title" onclick="setWFHideOrShow()">
+        流程 
+      </div> 
+      <div id="main_tab_wf_id" title="流程" style="width:100%;height:500px;overflow: hidden;"> 
+      </div> 
+     </div> 
+     <script type="text/javascript">
+                function setWFHideOrShow() {
+                    if ($('#main_tab_wf_id').css('display') == "none") {
+                        $('#main_tab_wf_id').css('display', '');
+                    } else {
+                        $('#main_tab_wf_id').css('display', 'none')
+                    }
+                }
+            </script> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="find_window_id" class="easyui-window" data-options="modal:true,title:'条件',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'ico-search-line'" style="width:400px;height:350px;;overflow: hidden"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false,title:' ',tools:'#toolbar_dg_find_window_parms_id'" style="padding:0px;margin: 0px auto"> 
+     <table id="dg_find_window_parms_id" style="width: 100%;height: auto"> 
+      <thead> 
+       <tr class="datagrid-header" style="height: 20px;padding: 0px;text-align: center "> 
+        <th style="width: 30%">项目</th> 
+        <th style="width: 20%">关系</th> 
+        <th style="width: 30%">项目值</th> 
+        <th style="width: 20%">操作</th> 
+       </tr> 
+      </thead> 
+      <tbody> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-right: 0px;border-bottom: 0px;overflow: hidden"> 
+     <a class="easyui-linkbutton" onclick="mainline.find_window_ok_click();" data-options="iconCls:'ico-check-fill'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick="$('#find_window_id').window('close');" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="toolbar_dg_find_window_parms_id" style="height:auto"> 
+   <a href="#" class="icon-add1" onclick="mainline.find_window_add_click()"></a> 
+  </div> 
+  <div id="common_divs_id" style="display: none"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,collapsible:false,iconCls:'ico-printer-line'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+     <li><span>fdsa</span></li> 
+    </ul> 
+    <div id="pw_list_select_toolbar" style="display: none"> 
+     <a id="pw_list_select_toolbar_btnew" href="javascript:void(0)" class="icon-ml_add"></a> 
+    </div> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'ico-filter-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px;overflow: hidden"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:80px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:80px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'ico-check-double-fill'" style="width:80px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'ico-refresh-line'" style="width:80px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'ico-file-transfer-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+
+    .datainfo_title {
+        height: 20px;
+        background-color: #E8EEFA;
+        color: #0e2d5f;
+        font-size: 12px;
+        line-height: 20px;
+        font-weight: bold;
+        padding-left: 10px;
+        border-bottom: 1px solid #DDDDDD;
+    }
+</style>  
+ </body>
+</html>

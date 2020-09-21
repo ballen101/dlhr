@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript">
+
+        function $OnCorsairReady() {
+            getNotices();
+        }
+
+        function getNotices() {
+            $ajaxjsonget($C.cos.notices(), function (data) {
+                console.error(JSON.stringify(data));
+                var nots = data;
+                var dts = new Array();
+                for (var i = 0; i < nots.length; i++) {
+                    var nt = nots[i];
+                    var dt = {};
+                    dt.display = "(" + nt.create_time + ")" + nt.title;
+                    dt.rowdata = JSON.stringify(nt);
+                    dts.push(dt);
+                }
+                $('#mainnotice_grid_id').datagrid({
+                    data: dts,
+                    onClickRow: function (rowIndex, rowData) {
+                        var nt = JSON.parse(rowData.rowdata);
+                        $("#noticetitle_label")[0].innerHTML = nt.title;
+                        if ((nt.attid == null) || (nt.attid == undefined) || (nt.attid.length == 0)) {
+                            $.messager.alert('提示', '本通知无附件', 'info');
+                        } else {
+                            showatts(nt);
+                            $('#main_page_noticeinfo_id').window('open');
+                        }
+                    }
+                });
+                //$('.datagrid-header-inner').hide();
+                //$('.datagrid-pager.pagination').remove();
+            }, function (XMLHttpRequest, textStatus, errorThrown) {
+                $.messager.alert('错误', '获取通知列表错误！', 'error');
+            });
+        }
+
+        function showatts(nt) {
+            $ajaxjsonget($C.cos.getattach() + "?id=" + nt.attid, function (data) {
+                var attts = data.shw_attach_lines;
+                var dts = new Array();
+                for (var i = 0; i < attts.length; i++) {
+                    var att = attts[i];
+                    var dt = {};
+                    dt.display = (i + 1) + "." + att.displayfname + "(" + att.filesize + "m)";
+                    dt.rowdata = JSON.stringify(att);
+                    dts.push(dt);
+                }
+                $('#mainnotice_att_grid_id').datagrid({
+                    data: dts,
+                    onDblClickRow: function (rowIndex, rowData) {
+                        downattfile();
+                    }
+                })
+            }, function (XMLHttpRequest, textStatus, errorThrown) {
+                $.messager.alert('错误', '获取通知附件列表错误！', 'error');
+            });
+        }
+
+        function downattfile() {
+            var row = $('#mainnotice_att_grid_id').datagrid('getSelected');
+            if (row) {
+                var attf = JSON.parse(row.rowdata);
+                var furl = $C.cos.downattfile() + "?pfid=" + attf.pfid;
+                window.open(furl);
+            } else {
+                $.messager.alert('错误', '选择需要下载的附件!', 'error');
+            }
+        }
+
+    </script>
+</head>
+<body style="margin: 0 auto">
+
+<div class="easyui-panel" title="" data-options="iconCls:'icon-message',border:false,fit:true">
+    <table id="mainnotice_grid_id" class="easyui-datagrid" style="width:100%;height:100%;border-style: none"
+           data-options="iconCls:'icon-save',singleSelect:true,fitColumns:true,title:false,border:false">
+        <thead>
+        <tr>
+            <th data-options="field:'display',width:300,align:'left'"></th>
+            <th data-options="field:'rowdata',width:300,align:'left',hidden:true"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div id="main_page_noticeinfo_id" class="easyui-window" title="" style="width:300px;height:350px;text-align: center"
+     data-options="collapsible:false,minimizable:false,maximizable:false,closed:true,resizable:false,modal:true">
+
+    <table style="width: 95%;height: 100%;margin: 0 auto">
+        <tr style="height: 20px;text-align: left">
+            <td style=""><label id="noticetitle_label" style="font-weight: 700;"></label></td>
+        </tr>
+        <tr>
+            <td style="width: 100%">
+                <table id="mainnotice_att_grid_id" class="easyui-datagrid"
+                       style="width:98%;height:95%;border-style: none;border: 0px;margin: 0px"
+                       data-options="singleSelect:true,fitColumns:true">
+                    <thead>
+                    <tr>
+                        <th data-options="field:'display',width:300,align:'left'">附件</th>
+                        <th data-options="field:'rowdata',width:300,align:'left',hidden:true"></th>
+                    </tr>
+                    </thead>
+                </table>
+            </td>
+        </tr>
+        <tr style="height: 40px;background:#E5EDEF;text-align: right">
+            <td>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)"
+                   onclick="javascript:downattfile()" style="width:80px">下载</a>
+                <a class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)"
+                   onclick="javascript:$('#main_page_noticeinfo_id').window('close');" style="width:80px">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="id_short_menus_tt">
+    <a id="id_short_menus_tt_edit" href="javascript:void(0)" class="icon-edit" onclick="doEditShortMenus()"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'description', title: '状态描述', width: 64},
+            {field: 'statvalue', title: '状态值', width: 64},
+            {field: 'stattype', title: '状态类型', width: 64},
+            {field: 'language1', title: '中文名', width: 64},
+            {field: 'language2', title: '英文名', width: 64},
+            {field: 'language3', title: '繁体名', width: 64},
+            {field: 'isquota', title: '占编制', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isstaffefficiency', title: '占人事效率', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'issxenprob', title: '允许实习入职转正', width: 120, formatter: comUrl_dic5.formator},
+            {field: 'isptemprob', title: '允许普通入职转正', width: 120, formatter: comUrl_dic5.formator},
+            {field: 'isjxprob', title: '允许考察转正', width: 120, formatter: comUrl_dic5.formator},
+            {field: 'allowtransfer', title: '允许调动', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'transferstat', title: '调动后的状态', width: 64, formatter: comUrl_cbxintype.formator},
+            {field: 'allowsxlv', title: '允许实习离职', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'allowlv', title: '允许离职', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'allowsxfp', title: '允许实习分配', width: 100, formatter: comUrl_dic5.formator},
+            {field: 'needctrct', title: '需签劳动合同', width: 100, formatter: comUrl_dic5.formator},
+            {field: 'neetkq', title: '需要考勤', width: 100, formatter: comUrl_dic5.formator},
+            {field: 'usable', title: '可用', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 64},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 64},
+            {field: 'note', title: '备注', width: 64}
+
+        ];
+
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_employeestat",
+            JPAIdField: "empstatid",
+            allowAtt: false,
+            allowWF: false,
+            autoFind: true,
+            //  gdLinesName: 'hr_prolevels',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "人员状态维护",
+            // datainfo_line_title: "包含职级",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            },
+            onFind: function (parms) {
+                parms.order = ' statvalue asc ';
+            }
+        };
+
+
+    </script>
+
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'language1'">中文名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language1'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'language2'">英文名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language2'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'language3'">繁体名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language3'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stattype'">状态类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stattype'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'description'">状态描述</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'description',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'statvalue'">状态值</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'statvalue',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'isquota'">占编制</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isquota',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'isstaffefficiency'">占人事效率</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isstaffefficiency',comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'issxenprob'">允许实习入职转正</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'issxenprob',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'isptemprob'">允许普通入职转正</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isptemprob',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'isjxprob'">允许考察转正</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isjxprob',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'allowtransfer'">允许调动</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'allowtransfer',required:true,comidx:'dic5'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'transferstat'">调动后的状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'transferstat',comidx:'cbxintype'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'allowsxlv'">允许实习离职</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'allowsxlv',required:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'allowlv'">允许离职</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'allowlv',required:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'allowsxfp'">允许实习分配</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'allowsxfp',required:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'needctrct'">需签劳动合同</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'needctrct',required:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'neetkq'">需要考勤</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'neetkq',required:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'note'">备注</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'note'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usable'">可用</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usable',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

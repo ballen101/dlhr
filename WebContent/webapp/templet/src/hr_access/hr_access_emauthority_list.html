@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_access">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns=[
+                    {field:'source',title:'来源',width:64},
+                    {field:'source_num',title:'来源单号',width:64},
+                    {field:'change_reason',title:'调整原因',width:64},
+                    {field:'employee_code',title:'工号',width:64},
+                    {field:'employee_name',title:'员工姓名',width:64},
+                    {field:'sex',title:'性别',width:64,formatter: comUrl_dic81.formator},
+                    {field:'access_card_number',title:'卡号',width:64},
+                    {field:'access_card_seq',title:'卡序列号',width:64},
+                    {field:'hiredday',title:'入职日期',width:64,formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field:'orgid',title:'机构ID',width:64},
+                    {field:'orgname',title:'机构名称',width:64},
+                    {field:'orgcode',title:'机构编码',width:64},
+                    {field:'extorgname',title:'机构全称',width:64},
+                    {field:'hwc_namezl',title:'职类',width:64},
+                    {field:'lv_num',title:'职级',width:64},
+                    {field:'access_list_code',title:'门禁编码',width:64},
+                    {field:'access_list_model',title:'门禁型号',width:64},
+                    {field:'access_list_name',title:'门禁名称',width:64},
+                    {field:'deploy_area',title:'门禁区域',width:64},
+                    {field:'access_place',title:'门禁位置',width:64},
+                    {field:'pass_time',title:'通行时段',width:100},
+                    {field:'access_status',title:'状态',width:64,formatter: comUrl_dic227.formator},
+                    {field:'accrediter',title:'授权人',width:64},
+                    {field:'accredit_date',title:'授权时间',width:64},
+                    {field:'remarks',title:'备注',width:64}
+                ];
+        frmOptions = {
+            JPAClass: "com.hr.access.entity.Hr_access_emauthority_list",
+            JPAIdField: "emauthority_list_id",
+            allowAtt: false,
+            allowWF: false,
+            allow_new: false,
+            allow_del: false,
+            allow_print: true,
+            datainfo_pw_title: "员工门禁流水",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '300px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'source'">来源</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'source',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'source_num'">来源单号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'source_num',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'change_reason'">调整原因</td>
+        <td colspan = "3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'change_reason',readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">员工姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',readonly:true,comidx:'dic81'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_card_number',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'access_card_seq'">卡序列号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_card_seq',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">机构编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgcode',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'extorgname'">机构全称</td>
+        <td colspan = "3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'extorgname',readonly:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'access_list_code'">门禁编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_code',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'access_list_model'">门禁型号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_model',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_list_name'">门禁名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deploy_area'">门禁区域</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_place'">门禁位置</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_place',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'pass_time'">通行时段</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pass_time',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_status'">状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_status',readonly:true,comidx:'dic227'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'accrediter'">授权人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'accrediter',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'accredit_date'">授权时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'accredit_date',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan = "7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks',readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+</table>
+</body>
+</html>

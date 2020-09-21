@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_base">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <title>InterFace Demo</title> 
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $("#parms2").val("[{\"parmname\":\"id_number\",\"reloper\":\"=\",\"parmvalue\":\"522529199504081639\"}]");
+        $("#parms3").val("[{\"parmname\":\"orgname\",\"reloper\":\"=\",\"parmvalue\":\"总裁办\"},{\"parmname\":\"code\",\"reloper\":\"=\",\"parmvalue\":\"00000002\"}]");
+    });
+
+    function getURLStr() {
+        var contextPath = document.location.pathname;
+        var index = contextPath.substr(1).indexOf("/");
+        contextPath = contextPath.substr(0, index + 1);
+        return "http://" + location.host + contextPath;
+    }
+
+    function dologin() {
+        var url = getURLStr() + "/web/login/dologin.co?username=" + $("#username").val() + "&userpass=" + $("#psw").val();
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (jsondata) {
+                $("#logresult").val(JSON.stringify(jsondata));
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#logresult").val("错误！");
+            }
+        });
+    }
+
+    function dofindorg() {
+        var url = getURLStr() + "/web/hr/interface/ifOrg.co?1=1";
+        url = ($("#token1").val().length > 0) ? url + "&token=" + $("#token1").val() : url;
+        url = ($("#parms1").val().length > 0) ? url + "&parms=" + $("#parms1").val() : url;
+        url = ($("#fields1").val().length > 0) ? url + "&fields=" + $("#fields1").val() : url;
+        url = ($("#page1").val().length > 0) ? url + "&page=" + $("#page1").val() : url;
+        url = ($("#rows1").val().length > 0) ? url + "&rows=" + $("#rows1").val() : url;
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (jsondata) {
+                $("#logresult").val(JSON.stringify(jsondata));
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#logresult").val("错误！");
+            }
+        });
+    }
+
+    function dofindemp() {
+        var url = getURLStr() + "/web/hr/interface/ifEmp.co?1=1";
+        url = ($("#token2").val().length > 0) ? url + "&token=" + $("#token2").val() : url;
+        url = ($("#parms2").val().length > 0) ? url + "&parms=" + $("#parms2").val() : url;
+        url = ($("#fields2").val().length > 0) ? url + "&fields=" + $("#fields2").val() : url;
+        url = ($("#page2").val().length > 0) ? url + "&page=" + $("#page2").val() : url;
+        url = ($("#rows2").val().length > 0) ? url + "&rows=" + $("#rows2").val() : url;
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (jsondata) {
+                $("#logresult").val(JSON.stringify(jsondata));
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#logresult").val("错误！");
+            }
+        });
+    }
+
+</script> 
+  <style type="text/css">
+    body {
+        font-size: 12px;
+        margin: 0px auto;
+        padding: 10px;
+    }
+
+    .bt {
+        width: 80px;
+        height: 20px;
+        line-height: 20px;
+        background-color: #D26900;
+        color: white;
+        padding: 2px;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+</style> 
+ </head> 
+ <body> 
+  <div style="padding: 10px"> 
+   <div style=" border:1px solid #1A7BC9;"> 
+    <div style="padding: 5px;background-color: #1a7bc9;line-height: 15px;height: 15px;color: white;">
+      Login DEMO 
+    </div> 
+    <table> 
+     <tbody> 
+      <tr> 
+       <td>username： <input id="username" style="width: 100px"></td> 
+       <td>psw： <input id="psw" type="password" style="width: 100px"></td> 
+       <td> 
+        <div class="bt" onclick="dologin()">
+          login 
+        </div> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+   <div style=" border:1px solid #1A7BC9;margin-top: 5px"> 
+    <div style="padding: 5px;background-color: #1a7bc9;line-height: 15px;height: 15px;color: white;">
+      Find org DEMO 
+    </div> 
+    <table style="width: 90%"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 50px">token</td> 
+       <td colspan="3"><input id="token1" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td>page</td> 
+       <td><input id="page1" style="width: 100%" value="1"></td> 
+       <td>rows(1000以内)</td> 
+       <td><input id="rows1" style="width: 100%" value="200"></td> 
+      </tr> 
+      <tr> 
+       <td>parms</td> 
+       <td colspan="3"><input id="parms1" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td>fields</td> 
+       <td colspan="3"><input id="fields1" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td colspan="2"> 
+        <div class="bt" onclick="dofindorg()">
+          Get 
+        </div> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+   <div style=" border:1px solid #1A7BC9;margin-top: 5px"> 
+    <div style="padding: 5px;background-color: #1a7bc9;line-height: 15px;height: 15px;color: white;">
+      Emp DEMO 
+    </div> 
+    <table style="width: 90%"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 50px">token</td> 
+       <td colspan="3"><input id="token2" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td>page</td> 
+       <td><input id="page2" style="width: 100%" value="1"></td> 
+       <td>rows(1000以内)</td> 
+       <td><input id="rows2" style="width: 100%" value="200"></td> 
+      </tr> 
+      <tr> 
+       <td>parms</td> 
+       <td colspan="3"><input id="parms2" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td>fields</td> 
+       <td colspan="3"><input id="fields2" style="width: 100%"></td> 
+      </tr> 
+      <tr> 
+       <td colspan="2"> 
+        <div class="bt" onclick="dofindemp()">
+          Get 
+        </div> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <div style="padding: 10px">
+    Result data from server： 
+  </div> 
+  <div style="padding: 10px"> 
+   <textarea id="logresult" style="height: 200px;width: 80%"></textarea> </div> </body> </html> 
+  </div>  
+ </body>
+</html>

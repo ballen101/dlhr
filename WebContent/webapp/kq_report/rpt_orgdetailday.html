@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html workpath="webapp/kq_report">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic1045 = {index: 'dic1045',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"主动离职","dictvalue":"1"},{"language1":"被动离职","dictvalue":"2"},{"language1":"协商离职","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic1045.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1045; } if (comUrl_dic1045.type == 'combobox') { if (comUrl_dic1045.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1045.valueField]) { rst = rst + jsondata[i][comUrl_dic1045.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1045.valueField]) return jsondata[i][comUrl_dic1045.textField]; } } } if (comUrl_dic1045.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1045.editor= {type: 'combobox', options: {valueField:comUrl_dic1045.valueField, textField:comUrl_dic1045.textField, data: comUrl_dic1045.jsondata}}; var comUrl_dic1049 = {index: 'dic1049',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"无故连续旷工三天或请假到期后三天未续假未打卡（没有考勤记录）","dictvalue":"1"},{"language1":"终止劳动关系时不履行解除手续；或解除手续没有办理完毕而离开单位","dictvalue":"2"},{"language1":"个人原因提出","dictvalue":"3"},{"language1":"不适应本职工作岗位 ","dictvalue":"4"},{"language1":"薪资福利达不到要求","dictvalue":"5"},{"language1":"合同期满员工不再续签","dictvalue":"6"},{"language1":"不能胜任工作，经调岗或培训仍不能胜任工作","dictvalue":"7"},{"language1":"违反国家法律法规 ","dictvalue":"8"},{"language1":"严重违反公司规章制度 ","dictvalue":"9"},{"language1":"提供虚假信息和伪造证件 ","dictvalue":"10"},{"language1":"合同期满公司终止劳动合同","dictvalue":"11"},{"language1":"优化性裁员","dictvalue":"12"},{"language1":"结构性裁员","dictvalue":"13"},{"language1":"经济性裁员","dictvalue":"14"},{"language1":"正常退休","dictvalue":"15"},{"language1":"因病提前退休","dictvalue":"16"},{"language1":"特殊工种退休","dictvalue":"17"},{"language1":"正常补偿范围内协商离职而取得经济补偿","dictvalue":"18"},{"language1":"恶意协商离职超出正常离职补偿范围索要并取得经济补偿","dictvalue":"19"},{"language1":"协商离职，离职人员未要求经济补偿或经协商后同意不要求补偿","dictvalue":"20"},{"language1":"其它","dictvalue":"21"},{"language1":"一类","dictvalue":"22"},{"language1":"二类","dictvalue":"23"},{"language1":"死亡","dictvalue":"24"},{"language1":"精神行为异常或态度恶劣","dictvalue":"25"}], formator: function (value, row) { var jsondata = comUrl_dic1049.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1049; } if (comUrl_dic1049.type == 'combobox') { if (comUrl_dic1049.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1049.valueField]) { rst = rst + jsondata[i][comUrl_dic1049.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1049.valueField]) return jsondata[i][comUrl_dic1049.textField]; } } } if (comUrl_dic1049.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1049.editor= {type: 'combobox', options: {valueField:comUrl_dic1049.valueField, textField:comUrl_dic1049.textField, data: comUrl_dic1049.jsondata}}; var comUrl_dic782 = {index: 'dic782',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"自离","dictvalue":"1"},{"language1":"辞职","dictvalue":"2"},{"language1":"辞退","dictvalue":"3"},{"language1":"裁员","dictvalue":"4"},{"language1":"退休","dictvalue":"5"},{"language1":"补偿离职","dictvalue":"6"},{"language1":"无补偿离职","dictvalue":"7"},{"language1":"招募中心自离","dictvalue":"8"}], formator: function (value, row) { var jsondata = comUrl_dic782.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic782; } if (comUrl_dic782.type == 'combobox') { if (comUrl_dic782.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic782.valueField]) { rst = rst + jsondata[i][comUrl_dic782.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic782.valueField]) return jsondata[i][comUrl_dic782.textField]; } } } if (comUrl_dic782.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic782.editor= {type: 'combobox', options: {valueField:comUrl_dic782.valueField, textField:comUrl_dic782.textField, data: comUrl_dic782.jsondata}}; var comUrls = [ { index: "dic1045", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1045", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1049", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1049", valueField: 'dictvalue', textField: 'language1' }, { index: "dic782", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=782", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var listGridColumns = function () {
+            return [
+              {field: 'date', title: '日期', notfind: true, width: 100},
+              {field: 'employee_code', title: '工号', notfind: true, width: 80},
+              {field: 'employee_name', title: '姓名', notfind: true, width: 80},
+              {field: 'orgname', title: '部门名称', notfind: true, width: 200},
+              {field: 'description', title: '人事状态', notfind: true, width: 80},
+              {field: 'hiredday', title: '入职日期', notfind: true, width: 80},
+              {field: 'sp_name', title: '职位', notfind: true, width: 80},
+              {field: 'lv_num', title: '职级', notfind: true, width: 80},
+              {field: 'status', title: '缺勤状态', notfind: true, width: 80},
+                {field: 'remark', title: '缺勤明细', notfind: true, width: 80}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {
+                field: 'orgcode',
+                title: '机构编码',
+                notnull: true,
+                relOptions: relOptions,
+                cjoptions: orgfdiptions,
+                width: 100
+            },
+            {
+                field: 'dqdate',
+                title: '考勤日期',
+                notnull: true,
+                relOptions: relOptions,
+                formatter: $fieldDateFormatorYYYY_MM_DD,
+                width: 100
+            },
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'hg_name', title: '职等', width: 60},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hwc_namezl', title: '职类', width: 60},
+            {field: 'sp_name', title: '职位', width: 60}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrkq/report/findorgdetialkqdayreport.co"
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

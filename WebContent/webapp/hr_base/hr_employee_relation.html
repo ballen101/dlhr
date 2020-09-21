@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        function closes() {
+            closed = true;
+            $("#loading").fadeOut("normal", function () {
+                $(this).remove();
+            });
+        }
+        var pc;
+        var closed = false;
+        $.parser.auto = false;
+        $.parser.onComplete = function () {
+            if (pc) clearTimeout(pc);
+            pc = setTimeout(closes, 1000);
+            initGrids();
+            $("#detailInfoPW").c_initDictionary();
+        }
+
+        $().ready(function () {
+            $.parser.parse();
+            setTimeout(function () {
+                if (!closed)
+                    closes();
+            }, 1000);
+        });
+        var relatons={};
+        function initGrids() {
+            //var url=
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=tree";
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic5",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=5",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    $("#hr_employee_relations").datagrid({
+                        columns: [[ {field: 'hrvname', title: '关系名称', width: 200},
+                            {field: 'rorgname', title: '机构', width: 150},
+                            {field: 'employee_code', title: '工号', width: 120},
+                            {field: 'remployee_name', title: '员工姓名', width: 120},
+                            {field: 'out_name', title: '外部人员', width: 120, editor: 'text'},
+                            {field: 'rsp_name', title: '职位', width: 120},
+                            {
+                                field: 'intime', title: '入职时间', width: 100,
+                                editor: 'datebox',
+                                formator: $dateformattostrrYYYY_MM_DD
+                            },
+                            {
+                                field: 'outtime', title: '离职时间', width: 100,
+                                editor: 'datebox',
+                                formator: $dateformattostrrYYYY_MM_DD
+                            },
+                            {field: 'remark', title: '备注', width: 150, editor: 'text'}]]
+                    });
+                    setTimeout(function () {
+                        $("#employee_code").next().find("input:first").css("background-color", "#E8EEFA");
+                        $("#extorgname").next().find("input:first").css("background-color", "#E8EEFA");
+                    }, 500);
+                }
+            });
+        }
+
+        var findedEmployee = undefined;
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $("#employee_name").textbox("setValue", row.employee_name);
+                        $("#employee_code").textbox("setValue", row.employee_code);
+                        $("#extorgname").textbox("setValue", row.extorgname);
+                        findedEmployee = row;
+                        findData(row)
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.show();
+        }
+
+
+        function findData(row) {
+            var url = _serUrl + "/web/hr/employee/getEmployeeRelation.co?er_id=" + row.er_id;
+            $ajaxjsonget(url, function (jsondata) {
+                        $("#hr_employee_relations").datagrid("loadData", jsondata);
+                    },
+                    function (err) {
+                        $.messager.alert('错误', JSON.stringify(err), 'error');
+                    }
+            );
+        }
+
+        var DetailDataInfoWindow = undefined;
+        function showDetailInof(tp) {
+            var isnew = false;
+          //  var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                if (!findedEmployee) {
+                    $.messager.alert('错误', '请先选择员工', 'error');
+                    return;
+                }
+                isnew = true;
+                relatons = {er_id: findedEmployee.er_id};//可加入初始化数据
+            } else {
+                var relation = $('#hr_employee_relations').treegrid('getSelected');
+                if (!relation) {
+                    $.messager.alert('错误', '请选择关联关系', 'error');
+                    return;
+                }
+                if (tp == $C.action.Del) {//删除
+                    //delete from server
+                    var url = _serUrl + "/web/hr/employee/delEmployeeRelation.co?empr_id=" + relation.empr_id;
+                    $.messager.confirm('提示', '确认删除?', function (r) {
+                        if (r) {
+                            $ajaxjsonpost(url, JSON.stringify(), function (jsondata) {
+                                if (jsondata.result == "OK") {
+                                    findData(findedEmployee);
+                                }
+                            }, function (err) {
+                                alert("删除错误!");
+                            });
+                        }
+                    });
+                    return;
+                }
+
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    relatons = relation;
+                }
+            }
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = relatons;
+            var options = {
+                windowfilter: '#detailInfoPW',
+                isNew: isnew,
+                jsonData: relatons,
+                onShow: function (jsondata) {
+                    //
+                },
+                onOK: function (isnew, jsondata) {
+                    //do save
+                    if (isnew) {
+                        jsondata = {isnew: true, jsondata: relatons};
+                    } else {
+                        jsondata = {isnew: false, jsondata: relatons};
+                    }
+                    console.error(JSON.stringify(jsondata));
+                    var url = _serUrl + "/web/hr/employee/saveEmployeeRelation.co";
+                    $ajaxjsonpost(url, JSON.stringify(jsondata), function (jsondata) {
+                        findData(findedEmployee);
+                    }, function () {
+                        $.messager.alert('错误', '保存错误!', 'error');
+                    });
+                    return true;
+                }
+            };
+            if (!DetailDataInfoWindow)
+                DetailDataInfoWindow = new CPopInfoWindow(options);
+            else
+                DetailDataInfoWindow.extendOptions({
+                    isNew: isnew,
+                    jsonData: relatons
+                });
+            DetailDataInfoWindow.show();
+        }
+
+
+        var select_Relation_pw = undefined;
+        function onSelectRelation() {
+                var wo = {
+                    id: "select_Relation_pw",
+                    JPAClass: "com.hr.base.entity.Hr_relative",  //对应后台JPAClass名
+                    multiRow: false,
+                    isTree: true,
+                    idField: 'hrvid',
+                    pidField: 'pid',
+                    treeField: 'hrvname',
+                    autoFind: false,//是否自动查询
+                    orderStr: " hrvid asc ",//排序的
+                    extParms: [
+                        {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                    ],//扩展参数
+                    gdListColumns: [
+                        {field: 'hrvname', title: '关系', width: 300}
+                    ],
+                    onResult: function (rows) {
+                        if (rows.length > 0) {
+                            var row = rows[0];
+                            if (parseInt(row.hrvlevel) == 0) {
+                                $.messager.alert('错误', '请选择详细的关联关系!', 'error');
+                                return;
+                            }
+                         //   var jsondata=[];
+                            relatons.hrvid = row.hrvid;
+                            relatons.hrvcode = row.hrvcode;
+                            relatons.hrvname = row.hrvname;
+                            relatons.hrvlevel = row.hrvlevel;
+                            DetailDataInfoWindow.extendOptions({
+                                //isNew: isnew,
+                                jsonData: relatons
+                            });
+                            DetailDataInfoWindow.show(true);
+                        }
+                    }
+                };
+                if (!select_Relation_pw) {
+                    select_Relation_pw = new TSearchForm(wo);
+                }
+                select_Relation_pw.show();
+
+
+
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                       // var srow=[];
+                        relatons.rorgid=undefined;
+                        relatons.rorgid = row.orgid;
+                        relatons.rorgcode = row.code;
+                        relatons.rorgname = row.orgname;
+                        DetailDataInfoWindow.extendOptions({
+                            //isNew: isnew,
+                            jsonData: relatons
+                        });
+                        DetailDataInfoWindow.show(true);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var select_OrgEmployee = undefined;
+        function onSelectEmployee() {
+            if ((!relatons.rorgid) || (relatons.rorgid.length == 0)) {
+                $.messager.alert('错误', '先选择机构!', 'error');
+                return;
+            }
+            var wo = {
+                id: "select_OrgUser",
+                JPAClass: "com.hr.perm.entity.Hr_employee",  //对应后台JPAClass名
+                multiRow: false,
+                isTree: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: relatons.rorgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'employee_code', title: '编码', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        relatons.rer_id = row.er_id;
+                        relatons.rer_code = row.er_code;
+                        relatons.employee_code = row.employee_code;
+                        relatons.remployee_name = row.employee_name;
+                        relatons.rospid = row.ospid;
+                        relatons.rospcode = row.ospcode;
+                        relatons.rsp_name = row.sp_name;
+                        //入职时间  离职时间？
+                        DetailDataInfoWindow.extendOptions({
+                            //isNew: isnew,
+                            jsonData: relatons
+                        });
+                        DetailDataInfoWindow.show(true);
+                    }
+                }
+            };
+            if (!select_OrgEmployee) {
+                select_OrgEmployee = new TSearchForm(wo);
+            }else{
+                select_OrgEmployee.extendOptions({
+                    extParms: [
+                        {parmname: 'orgid', reloper: '=', parmvalue: relatons.rorgid}
+                    ]
+                });
+            }
+            select_OrgEmployee.show(true);
+        }
+    </script>
+</head>
+<body>
+<div class="easyui-layout" style="" data-options="fit:true">
+    <div data-options="region:'north',border:true" style="height:90px;padding: 10px;background-color: #F4F4F4">
+        <table>
+            <tr>
+                <td>选择员工 :</td>
+                <td colspan="3">
+                    <input id="employee_name" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton:onFindemployee,editable:false"
+                           style="height:20px;width: 150px"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="height: 10px"></td>
+            </tr>
+            <tr>
+                <td>工号</td>
+                <td>
+                    <input id="employee_code" class="easyui-textbox" data-options="readonly:true"
+                           style="height:20px;width: 150px"/>
+                </td>
+                <td>部门</td>
+                <td>
+                    <input id="extorgname" class="easyui-textbox" data-options="readonly:true"
+                           style="height:20px;width: 300px"/>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div data-options="region:'center',border:false">
+        <table id="hr_employee_relations" class="easyui-datagrid"
+               cjoptions="fdname:'hr_employee_relations'"
+               data-options="fit:true,border:false,toolbar:'#tb_hr_employee_relations',singleSelect: true,
+                onDblClickRow:function(){showDetailInof($C.action.Edit)}">
+        </table>
+        <div id="tb_hr_employee_relations" style="height:auto">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+               onclick="showDetailInof($C.action.New)"></a>
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+               onclick="showDetailInof($C.action.Edit)"></a>
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+               onclick="showDetailInof($C.action.Del)"></a>
+        </div>
+    </div>
+</div>
+
+
+<div id="detailInfoPW" class="easyui-window" title="详情" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 450px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table border="0" style="width: 100%;height: 100%">
+                <tr>
+                    <td cjoptions="fdname:'hrvname'">关系名称</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'hrvname'"
+                               data-options="buttonIcon:'icon-search',onClickButton:onSelectRelation,editable:false"
+                               style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'rorgname'">机构</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'rorgname'"
+                               data-options="buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                               style="height:20px;width: 120px"/></td>
+                </tr>
+
+                <tr>
+                    <td cjoptions="fdname:'employee_code'">员工工号</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'employee_code',readonly:true" style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'remployee_name'">姓名</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'remployee_name'"
+                               data-options="buttonIcon:'icon-search',onClickButton:onSelectEmployee,editable:false"
+                               style="height:20px;width: 120px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'out_name'">外部人员</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'out_name'" style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'rsp_name'">职位名称</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'rsp_name'" style="height:20px;width: 120px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'intime'">入职时间</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'intime'"data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 120px"/></td>
+                    <td cjoptions="fdname:'outtime'">离职时间</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'outtime'"data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 120px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'remark'">备注</td>
+                    <td><input class="easyui-textbox" cjoptions="fdname:'remark'" style="height:20px;width: 120px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding:10px;background-color: #EBEBEB">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

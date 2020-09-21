@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ceai>
+	<name>web_navigatorline</name>
+	<eaiclass></eaiclass>
+	<enable>true</enable>
+	<eaitype>ParEAI</eaitype>   <!-- EAI 类型 Poll:轮询; NoticePoll:带通知的轮询; ParEAI:非轮询,由级联EAI触发 -->
+	<trans_type>none</trans_type><!-- 事务处理类型 row:行级事务处理  disp: 一次调度一个事务  none:无事务处理   -->
+  <frequency>5</frequency>  <!-- 轮询时间间隔 秒 -->
+  <source>icefallweb</source> <!--源数据库连接池-->
+  <target>yhcrm</target>	<!--目标数据库连接池-->
+  <condts><!--sql语句执行附加条件-->
+  	
+  </condts>
+  <s_tablename>web_navigatorline</s_tablename>  <!--源数据库表名-->
+  <t_tablename>web_navigatorline</t_tablename>  <!--目标数据库表名-->
+  <allow_insert>true</allow_insert> <!--是否允许插入，否则只更新-->
+  
+  <eaimap>
+  	<keyfields>
+  		<keyfield>
+  			<s_keyfield>tid</s_keyfield> <!--允许继承自标准CEAI的子类修改值-->
+  			<d_keyfield>tid</d_keyfield>
+  		</keyfield>
+  	</keyfields>
+  	
+  	<fields>
+  		<field>
+  		  <s_fieldname>aaa</s_fieldname> <!--允许继承自标准CEAI的子类修改值-->
+  		  <d_fieldname>aaa</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>bbb</s_fieldname>
+  		  <d_fieldname>bbb</d_fieldname>
+  		</field>
+  	</fields>
+  </eaimap>
+  
+</ceai>

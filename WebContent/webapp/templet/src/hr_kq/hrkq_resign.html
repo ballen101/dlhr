@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+	<head lang="en">
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+		<script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+		<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+		</script>
+		<script type="text/javascript" src="../js/cjquery.min.js"></script>
+		<script type="text/javascript" src="../js/icefall.min.js"></script>
+		<script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+		<script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+		<script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+		<script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+		<title></title>
+		<script type="text/javascript" style="cserver_js">
+			var comUrls = [{
+					index: "dic227",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=227",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic1007",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=1007",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic5",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=5",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic968",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=968",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				},
+				{
+					index: "dic941",
+					type: "combobox",
+					url: "/web/dict/getdictvalues.co?dicid=941",
+					valueField: 'dictvalue',
+					textField: 'language1'
+				}
+			];
+			var formtype = 1;
+			var allowAtt = true;
+			var allowWF = true;
+		</script>
+		<script type="text/javascript">
+			var listGridColumns = [{
+					field: 'rescode',
+					title: '补签编码',
+					width: 100
+				},
+				{
+					field: 'resdate',
+					title: '考勤月度',
+					width: 80,
+					formatter: $fieldDateFormatorYYYY_MM
+				},
+				{
+					field: 'employee_code',
+					title: '工号',
+					width: 60
+				},
+				{
+					field: 'employee_name',
+					title: '姓名',
+					width: 60
+				},
+				{
+					field: 'orgname',
+					title: '机构',
+					width: 150
+				},
+				{
+					field: 'sp_name',
+					title: '职位',
+					width: 80
+				},
+				{
+					field: 'lv_num',
+					title: '职级',
+					width: 50
+				},
+				{
+					field: 'res_type',
+					title: '补签类别',
+					width: 64,
+					formatter: comUrl_dic941.formator
+				},
+				{
+					field: 'emplev',
+					title: '人事层级',
+					width: 80,
+					formatter: comUrl_dic1007.formator
+				},
+				{
+					field: 'res_times',
+					title: '累计补签次数',
+					width: 80
+				},
+				{
+					field: 'remark',
+					title: '备注',
+					width: 120
+				},
+				{
+					field: 'stat',
+					title: '流程状态',
+					width: 64,
+					formatter: comUrl_dic227.formator
+				},
+				{
+					field: 'creator',
+					title: '制单人',
+					width: 80
+				},
+				{
+					field: 'createtime',
+					title: '制单时间',
+					findtype: 'datetime',
+					width: 120
+				},
+				{
+					field: 'updator',
+					title: '更新人',
+					width: 80
+				},
+				{
+					field: 'updatetime',
+					title: '更新时间',
+					findtype: 'datetime',
+					width: 120
+				}
+			];
+
+			var editorDate = {
+				type: "datebox",
+				options: "editable:false"
+			};
+			var editorTime = {
+				type: "timespinner"
+			};
+
+			var gdLinesColumns = [{
+					field: 'kqdate',
+					title: '考勤日期',
+					width: 80,
+					formatter: $fieldDateFormatorYYYY_MM_DD
+				},
+				{
+					field: 'bcno',
+					title: '班次号',
+					width: 64
+				},
+				{
+					field: 'rgtime',
+					title: '班次时间',
+					width: 80
+				},
+				{
+					field: 'isreg',
+					title: '是否签卡',
+					width: 64,
+					editor: comUrl_dic5.editor,
+					formatter: comUrl_dic5.formator
+				},
+				{
+					field: 'resreson',
+					title: '补签原因',
+					width: 150,
+					editor: "text"
+				}
+			];
+			var resionday = 6;
+			var cutDBDate = undefined;
+			frmOptions = {
+				JPAClass: "com.hr.attd.entity.Hrkq_resign",
+				JPAIdField: "resid",
+				allowAtt: true,
+				allowWF: true,
+				allow_void: true,
+				windowWidth: '100%',
+				windowHeight: '100%',
+				wfWindowHeight: "600px",
+				datainfo_line_title: "补签明细",
+				gdLinesColumns: gdLinesColumns,
+				gdLinesName: "hrkq_resignlines",
+				htmlTemeType: HtmlTempType.htMLPop,
+				allowEmptyLine: false, //允许明细行为空保存
+				allow_copy: false,
+				allow_expt_list: true,
+				disableButtonType: _NUBType.hide,
+				OnReady: function() { //都准备好后
+					resionday = parseInt(getAttparm("RESIONMONTHDAYBEFORE"));
+					//alert(resionday);
+					var tb = mainline.lineToolBar();
+					tb.splice(0, 1);
+					/*  tb.push({
+					 text: '选择排班',
+					 iconCls: 'icon-task',
+					 handler: function () {
+					 selectpb();
+					 }
+					 });*/
+					var bt = {
+						text: '考勤异常',
+						iconCls: 'icon-task',
+						handler: function() {
+							onFindKQYC();
+						}
+					};
+
+					tb.splice(0, 0, bt);
+					$("#detail_main_grid_id").datagrid({
+						toolbar: tb
+					});
+					$parserDatebox2YearMonth(mainline.getField("resdate"));
+					$getDBTime(function(dt) {
+						cutDBDate = dt;
+					});
+				},
+				onNew: function(jsondata) {
+					jsondata.res_type = 2;
+				},
+				onSave: function(postData) {
+					var data = postData.jpadata;
+					return checkdata(data);
+					//不要调用默认保存
+				},
+				onFind: function(parms) {
+					var ps = parms.parms;
+					for (var i = 0; i < ps.length; i++) {
+						var p = ps[i];
+						if (p.parmname == 'resdate')
+							p.parmvalue = p.parmvalue + "-01";
+					}
+				},
+				afterFindDetail: function() {
+
+				},
+				onEditChanged: function(fdname, newValue, oldValue) {
+					if ("resdate" == fdname) {
+						var resdate = mainline.getFieldValue("resdate");
+						if (!$isEmpty(resdate)) {
+							onAutoFindKQYC();
+						}
+					}
+					if ("res_type" == fdname) {
+						//cmtimes = undefined;
+					}
+
+					if ("emplev" == fdname) {
+
+					}
+					if (fdname == 'employee_code') {
+						var employee_code = mainline.getFieldValue("employee_code"); //  (mainline.getField("")).textbox("getValue");
+						if (!$isEmpty(employee_code)) {
+							onFindemployee(employee_code);
+						}
+					}
+				},
+				afterEditGrid: function(filter, index, row, changes) {
+					//calcResigntimes();
+				},
+				extButtons: [ //扩展按钮
+					{
+						text: '导入Excel',
+						iconCls: 'icon-importexcel',
+						handler: function() {
+							impexcel();
+						}
+					},
+					{
+						text: '导出导入模板',
+						iconCls: 'icon-exportexcel',
+						handler: function() {
+							var url = _serUrl + "/ExcelModels/Hrkq_resign/excelmodel/批量补签导出导入模板.xls";
+							window.open(url);
+						}
+					}
+				]
+			};
+
+			function impexcel() {
+				$uploadfile(_serUrl + "/web/hrkq/cmn/impresignbatchexcel.co", null,
+					function(err) {
+						$.messager.alert('错误', err, 'error');
+					},
+					function(jsdata) {
+						alert("成功导入" + jsdata.rst + "条数据");
+					});
+			}
+
+			function getAttparm(pname) {
+				var rst = undefined;
+				var url = _serUrl + "/web/hrkq/cmn/getAttParm.co?parmcode=" + pname;
+				$ajaxjsonget(url, function(jsdata) {
+					rst = jsdata.value;
+				}, function(err) {
+					alert(JSON.stringify(err));
+				}, false);
+				return rst;
+			}
+
+			function selectpb() {
+
+			}
+
+			function onAutoFindKQYC() {
+				var er_id = mainline.getFieldValue("er_id");
+				if ((!er_id) || (er_id.length == 0)) {
+					$.messager.alert('错误', "请先选择人事资料！", 'error');
+					return;
+				}
+				var resdate = mainline.getFieldValue("resdate");
+				if ((!resdate) || (resdate.length == 0)) {
+					$.messager.alert('错误', "先选择考勤月度", 'error');
+					return;
+				}
+				var resdates = (new Date()).fromStr($dateformattostrrYYYY_MM_DD(resdate));
+				if (cutDBDate.getMonth() - resdates.getMonth() > 1) {
+					$.messager.alert('错误', "最多只能补签上月的", 'error');
+					return;
+				}
+				resdate = resdate + "-01";
+				var tdate = $date4str(resdate).addMonth(1).format("yyyy-MM-dd");
+				var extp = [];
+				extp.push({
+					parmname: 'er_id',
+					reloper: '=',
+					parmvalue: er_id
+				});
+				extp.push({
+					parmname: 'kqdate',
+					reloper: '>=',
+					parmvalue: resdate
+				});
+				extp.push({
+					parmname: 'kqdate',
+					reloper: '<',
+					parmvalue: tdate
+				});
+				extp.push({
+					parmname: 'parmname_sqlwhere',
+					reloper: '=',
+					parmvalue: "(isabnom=1) and (frst=4 or trst=4)"
+				}); //指定为传SQL语句
+				var url = _serUrl + "/web/hrkq/cmn/findkqcalcrst4resign.co?parms=" + encodeURIComponent(JSON.stringify(extp)) +
+					"&order= resdate desc ";
+				$("#detail_main_grid_id").datagrid("loadData", []);
+				$ajaxjsonget(url, function(jsdata) {
+					var rows = jsdata.rows;
+					if (rows.length == 0) {
+						$.messager.alert("提示", '月度无考勤异常');
+					}
+					for (var i = 0; i < rows.length; i++) {
+						var row = rows[i];
+						appendrgrow(row);
+					}
+				}, function(err) {
+					alert(JSON.stringify(err));
+				});
+			}
+
+			var select_kqyc_pw = undefined;
+
+			function onFindKQYC() {
+				var er_id = mainline.getFieldValue("er_id");
+				if ((!er_id) || (er_id.length == 0)) {
+					$.messager.alert('错误', "请先选择人事资料！", 'error');
+					return;
+				}
+
+				var resdate = mainline.getFieldValue("resdate");
+				if ((!resdate) || (resdate.length == 0)) {
+					$.messager.alert('错误', "先选择考勤月度", 'error');
+					return;
+				}
+				var resdates = (new Date()).fromStr($dateformattostrrYYYY_MM_DD(resdate));
+				if (cutDBDate.getMonth() - resdates.getMonth() > 1) {
+					$.messager.alert('错误', "最多只能补签上月的", 'error');
+					return;
+				}
+				resdate = resdate + "-01";
+				var tdate = $date4str(resdate).addMonth(1).format("yyyy-MM-dd");
+				var extp = [];
+				extp.push({
+					parmname: 'er_id',
+					reloper: '=',
+					parmvalue: er_id
+				});
+				extp.push({
+					parmname: 'kqdate',
+					reloper: '>=',
+					parmvalue: resdate
+				});
+				extp.push({
+					parmname: 'kqdate',
+					reloper: '<',
+					parmvalue: tdate
+				});
+				extp.push({
+					parmname: 'parmname_sqlwhere',
+					reloper: '=',
+					parmvalue: "(isabnom=1) and (frst=4 or trst=4)"
+				}); //指定为传SQL语句
+				// var url = _serUrl + "/web/hrkq/rpt1/findkqcalcrst.co";//findkqcalcrst4resign
+				$("#detail_main_grid_id").datagrid("loadData", []);
+				var url = _serUrl + "/web/hrkq/cmn/findkqcalcrst4resign.co"; //findkqcalcrst4resign
+				var wo = {
+					width: "500px", //
+					height: "500px", //
+					id: "select_kqyc_pw",
+					coURL: url,
+					orderStr: " resdate desc ",
+					multiRow: true,
+					idField: 'bckqid',
+					autoFind: true, //是否自动查询
+					gdListColumns: [{
+							field: 'kqdate',
+							title: '考勤日期',
+							width: 100,
+							formatter: $fieldDateFormatorYYYY_MM_DD
+						},
+						{
+							field: 'scdname',
+							title: '班制',
+							width: 64
+						},
+						{
+							field: 'bcno',
+							title: '班次号',
+							width: 64
+						},
+						{
+							field: 'frtime',
+							title: '上班时间',
+							width: 64
+						},
+						{
+							field: 'frst',
+							title: '上班考勤',
+							width: 64,
+							formatter: comUrl_dic968.formator
+						},
+						{
+							field: 'totime',
+							title: '下班时间',
+							width: 64
+						},
+						{
+							field: 'trst',
+							title: '下班考勤',
+							width: 64,
+							formatter: comUrl_dic968.formator
+						}
+					],
+					onResult: function(rows) {
+						$("#detail_main_grid_id").datagrid("loadData", []);
+						for (var i = 0; i < rows.length; i++) {
+							var row = rows[i];
+							appendrgrow(row);
+						}
+					}
+				};
+				if (!select_kqyc_pw) {
+					select_kqyc_pw = new TSearchForm(wo);
+				}
+				select_kqyc_pw.extendOptions({
+					coURL: url,
+					extParms: extp //扩展参数
+				});
+				select_kqyc_pw.show();
+			}
+
+			function appendrgrow(row) {
+				//console.error("row.frst:" + row.frst);
+				if (parseInt(row.frst) == 4) { //!= 1   只有未打开允许补签 moyh 191212
+					var kqdate = row.kqdate;
+					var time = row.frtime;
+					//var tk = parkqdate(kqdate, time);  moyh 181011 由于补签带出考勤异常处需要用考勤日期+班制ID作为条件筛选，所以考勤日期不能变，具体补签的时间，补签生效时候再换算
+					//alert(JSON.stringify(tk));
+					//kqdate = tk.kqdate;
+					//time = tk.time;
+					if (!$C.grid.getRowByFields("#detail_main_grid_id", [kqdate, 1, row.sclid, 1], ["kqdate", "ltype", "sclid", "sxb"])) {
+						var nr = {
+							kqdate: kqdate,
+							ltype: 1,
+							sclid: row.sclid,
+							sxb: 1,
+							bcno: row.bcno,
+							rgtime: time,
+							isreg: 1
+						};
+						$("#detail_main_grid_id").datagrid("appendRow", nr);
+					}
+				}
+				//console.error("row.trst:" + row.trst);
+				if (parseInt(row.trst) == 4) { //!= 1   只有未打开允许补签 moyh 191212
+					var kqdate = row.kqdate;
+					var time = row.totime;
+					//var tk = parkqdate(kqdate, time); moyh 181011 由于补签带出考勤异常处需要用考勤日期+班制ID作为条件筛选，所以考勤日期不能变，具体补签的时间，补签生效时候再换算
+					// alert(JSON.stringify(tk));
+					//kqdate = tk.kqdate;
+					//time = tk.time;
+					if (!$C.grid.getRowByFields("#detail_main_grid_id", [kqdate, 1, row.sclid, 2], ["kqdate", "ltype", "sclid", "sxb"])) {
+						var nr = {
+							kqdate: kqdate,
+							ltype: 1,
+							sclid: row.sclid,
+							sxb: 2,
+							bcno: row.bcno,
+							rgtime: time,
+							isreg: 1
+						};
+						$("#detail_main_grid_id").datagrid("appendRow", nr);
+					}
+				}
+			}
+
+			function parkqdate(kqdate, time) {
+				var rdate = new Date().fromStr(kqdate);
+				var rtime = time;
+				//alert(time);
+				var p = rtime.substring(0, 1).toUpperCase();
+				if (p == "Y") { //前一天
+					rdate.setDate(rdate.getDate() - 1);
+					rtime = time.substring(1, time.length);
+				} else if (p == "T") { //后一天
+					rdate.setDate(rdate.getDate() + 1);
+					rtime = time.substring(1, time.length)
+				}
+				return {
+					kqdate: $dateformattostrrYYYY_MM_DD(rdate),
+					time: rtime
+				};
+			}
+
+			/* var cmtimes = undefined;
+			 function calcResigntimes() {
+			 var resdate = mainline.getFieldValue("resdate");
+			 var res_type = mainline.getFieldValue("res_type");
+			 var er_id = mainline.getFieldValue("er_id");
+			 if ($isEmpty(resdate) || $isEmpty(res_type) || $isEmpty(er_id))
+			 return;
+			 if (cmtimes != undefined) {
+			 docalcResigntimes();
+			 } else {
+			 var url = _serUrl + "/web/hrkq/swcd/getMonthReSignTimes.co?resdate=" + resdate + "&res_type=" + res_type + "&er_id=" + er_id;
+			 $ajaxjsonget(url, function (jsdata) {
+			 cmtimes = jsdata.rst;
+			 docalcResigntimes();
+			 }, function (err) {
+			 alert(JSON.stringify(err));
+			 });
+			 }
+			 }
+			 function docalcResigntimes() {
+			 cmtimes = parseInt(cmtimes);
+			 var rows = $("#detail_main_grid_id").datagrid("getRows");
+			 var cts = 0;
+			 for (var i = 0; i < rows.length; i++) {
+			 var row = rows[i];
+			 if (parseInt(row.isreg) == 1)
+			 cts++;
+			 }
+			 mainline.setFieldValue("res_times", cmtimes + cts);
+			 }*/
+
+			function checkdata(data) {
+				if (cutDBDate == undefined) {
+					alert("获取服务器时间错误，请刷新重试!");
+					return;
+				}
+				var resdate = (new Date()).fromStr(data.resdate);
+				var dt = cutDBDate;
+				var firsttime = undefined;
+				for (var i = 0; i < data.hrkq_resignlines.length; i++) {
+					var l = data.hrkq_resignlines[i];
+					var isreg = parseInt(l.isreg);
+					if (isreg == 1) {
+						firsttime = l.rgtime;
+					}
+				}
+				if (firsttime == undefined) {
+					alert("至少有一个班次补签");
+					return;
+				}
+				var fdt = (new Date()).fromStr($dateformattostrrYYYY_MM_DD(resdate) + " " + firsttime);
+				if ((dt.getTime() - fdt.getTime()) / (1000 * 60 * 60) <= 4) {
+					alert("补签时间必须在班次打卡时间4小时后");
+					return;
+				}
+
+
+				var d = dt.getDate(); //服务器时间
+				var rm = resdate.getFullYear() + "-" + resdate.getMonth();
+				var cm = dt.getFullYear() + "-" + dt.getMonth();
+				if (resionday > 0) {
+
+
+					if (d <= resionday) {
+						// if(dt.getMonth()-resdate.getMonth()>1){
+						// 	 alert("只能补签上月的");
+						// }
+					} else {
+						if (rm != cm) {
+							alert("超过" + resionday + "号只能补本月的");
+							return;
+						}
+					}
+				}
+				if (!bcrgchk(data)) return;
+				return true;
+			}
+
+			function bcrgchk(data) {
+				var ls = data.hrkq_resignlines;
+				for (var i = 0; i < ls.length; i++) {
+					var l1 = ls[i];
+					var isreg1 = parseInt(l1.isreg);
+					if (isreg1 == 1) {
+						for (var j = i + 1; j < ls.length; j++) {
+							l2 = ls[j];
+							var isreg2 = parseInt(l2.isreg);
+							if (isreg2 == 1) {
+								if ((l1.sclid == l2.sclid) && (l1.kqdate == l2.kqdate) && (l1.ltype == l2.ltype)) {
+									alert("同一班次两次考勤不能同时补签");
+									return false;
+								}
+							}
+						}
+					}
+				}
+				return true;
+			}
+
+			var select_Org_pw = undefined;
+
+			function onSelectOrg() {
+				//var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+				var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+				var wo = {
+					id: "select_Org_pw",
+					coURL: url,
+					orderStr: " orgid asc ",
+					multiRow: false,
+					isTree: true,
+					idField: 'orgid',
+					pidField: 'superid',
+					treeField: 'code',
+					showTitle: false,
+					extParms: [{
+						parmname: 'stat',
+						reloper: '=',
+						parmvalue: '1'
+					}], //扩展参数
+					width: "500px", //
+					height: "400px", //
+					gdListColumns: [{
+							field: 'code',
+							title: '编码',
+							width: 120
+						},
+						{
+							field: 'orgname',
+							title: '机构',
+							width: 100
+						}
+					],
+					onResult: function(rows) {
+						if (rows.length > 0) {
+							var row = rows[0];
+							mainline.setFieldValue('orgid', row.orgid);
+							mainline.setFieldValue('orgcode', row.code);
+							mainline.setFieldValue('orgname', row.extorgname);
+							mainline.setFieldValue('idpath', row.idpath);
+
+							mainline.setFieldValue("er_id", "");
+							mainline.setFieldValue("employee_code", "");
+							mainline.setFieldValue("employee_name", "");
+							mainline.setFieldValue("ospid", "");
+							mainline.setFieldValue("lv_num", "");
+
+							var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+							$ajaxjsonget(url, function(jsdata) {
+								mainline.setFieldValue('orghrlev', jsdata.hrlev);
+							}, function(err) {
+								alert(JSON.stringify(err));
+							});
+						}
+					}
+				};
+				if (!select_Org_pw) {
+					select_Org_pw = new TSearchForm(wo);
+				}
+				select_Org_pw.show();
+			}
+
+
+			function setEmpLevParms(row) {
+				var lv_num = parseFloat(row.lv_num);
+				if (isNaN(lv_num)) {
+					alert("人事职级错误，请核查人事资料!");
+					return false;
+				}
+				var fd = mainline.getField("emplev");
+				if (lv_num <= 2) {
+					fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1007, [1]));
+					mainline.setFieldValue("emplev", 1);
+				}
+				if ((lv_num >= 2.0) && (lv_num < 3)) {
+					fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1007, [2]));
+					mainline.setFieldValue("emplev", 2);
+				}
+				if ((lv_num >= 3) && (lv_num < 4)) {
+					fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1007, [3]));
+					mainline.setFieldValue("emplev", 3);
+				}
+				if (lv_num >= 4) {
+					fd.combobox($getNewComboxParmsByComUrl(comUrl_dic1007, [4]));
+					mainline.setFieldValue("emplev", 4);
+				}
+				return true;
+			}
+
+			var select_employee_pw = undefined;
+
+			function onFindemployee(employee_code) {
+				mainline.clearGridViewData();
+
+				var orgid = mainline.getFieldValue("orgid");
+				var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "&orgid=" + orgid;
+				var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co?includelv=true" + orgp; //includelv包含离职
+				var wo = {
+					id: "select_employee_pw",
+					coURL: url,
+					orderStr: " orgid asc ",
+					multiRow: false,
+					idField: 'er_id',
+					autoFind: false, //是否自动查询
+					singleAutoReturn: true,
+					gdListColumns: [{
+							field: 'employee_code',
+							title: '工号',
+							width: 120
+						},
+						{
+							field: 'orgname',
+							title: '机构',
+							width: 120
+						},
+						{
+							field: 'employee_name',
+							title: '姓名',
+							width: 100
+						}
+					],
+					onResult: function(rows) {
+						if (rows.length > 0) {
+							var row = rows[0];
+							if (!setEmpLevParms(row)) return;
+							mainline.setFieldValue('er_id', row.er_id);
+							mainline.setFieldValue('employee_code', row.employee_code);
+							mainline.setFieldValue('employee_name', row.employee_name);
+							mainline.setFieldValue('ospid', row.ospid);
+							mainline.setFieldValue('ospcode', row.ospcode);
+							mainline.setFieldValue('sp_name', row.sp_name);
+							mainline.setFieldValue('lv_num', row.lv_num);
+
+							mainline.setFieldValue('orgid', row.orgid);
+							mainline.setFieldValue('orgcode', row.orgcode);
+							mainline.setFieldValue('orgname', row.orgname);
+							mainline.setFieldValue('idpath', row.idpath);
+
+							mainline.setFieldValue("resdate", "");
+
+							var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+							$ajaxjsonget(url, function(jsdata) {
+								mainline.setFieldValue('orghrlev', jsdata.hrlev);
+							}, function(err) {
+								alert(JSON.stringify(err));
+							});
+						}
+					}
+				};
+				if (!select_employee_pw) {
+					select_employee_pw = new TSearchForm(wo);
+				}
+
+				if (employee_code) {
+					select_employee_pw.extendOptions({
+						autoFind: true,
+						extParms: [{
+							parmname: 'employee_code',
+							reloper: '=',
+							parmvalue: employee_code
+						}]
+					});
+				} else {
+					select_employee_pw.extendOptions({
+						autoFind: false,
+						extParms: []
+					});
+				}
+				select_employee_pw.show(true);
+			}
+			/*
+			 function findpb() {
+			 var er_id = mainline.getFieldValue("er_id");
+			 if ((!er_id) || (er_id.length == 0)) {
+			 $.messager.alert('错误', "先选择员工", 'error');
+			 return;
+			 }
+			 var resdate = mainline.getFieldValue("resdate");
+			 if ((!resdate) || (resdate.length == 0)) {
+			 $.messager.alert('错误', "先选择考勤日期", 'error');
+			 return;
+			 }
+			 var url = _serUrl + "/web/hrkq/wscm/findschedline.co?er_id=" + er_id + "&resdate=" + resdate;
+			 $ajaxjsonget(url, function (jsdata) {
+			 //alert(JSON.stringify(jsdata));
+			 mainline.setFieldValue('scid', jsdata.scid);
+			 mainline.setFieldValue('scdname', jsdata.scdname);
+			 var ls = jsdata.hrkq_sched_lines;
+			 var rows = [];
+			 for (var i = 0; i < ls.length; i++) {
+			 var l = ls[i];
+			 var row = {
+			 bcno: l.bcno,
+			 rgtime: l.frtime,
+			 sclid: l.sclid,
+			 sxb: 1,
+			 isreg: 2
+			 };
+			 rows.push(row);
+			 var row = {
+			 bcno: l.bcno,
+			 rgtime: l.totime,
+			 sclid: l.sclid,
+			 sxb: 2,
+			 isreg: 2
+			 };
+			 rows.push(row);
+			 }
+
+			 $("#detail_main_grid_id").datagrid("loadData", rows);
+
+			 }, function (err) {
+			 alert(JSON.stringify(err));
+			 });
+			 }
+			 */
+		</script>
+	</head>
+	<body>
+		<table id="maindata_id" border="0" style="">
+			<tr>
+				<td cjoptions="fdname:'rescode'">补签编码</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'rescode',readonly:true,crequired:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'stat'">流程状态</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+					 style="height:20px;width: 100px" />
+				</td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'employee_code'">工号</td>
+				<td>
+					<input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee,editable:true"
+					 style="height:20px;width: 100px" />
+				</td>
+				<td cjoptions="fdname:'orgname'">机构</td>
+				<td colspan="3">
+					<input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+					 style="height:20px;width: 310px" />
+				</td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'employee_name'">姓名</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true,crequired:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'sp_name'">职位名称</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'lv_num'">职级</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true" style="height:20px;width: 100px" /></td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'res_type'">补签类别</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'res_type',crequired:true,editable:false,comidx:'dic941'"
+					 style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'res_times'">累计补签次数</td>
+				<td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'res_times',readonly:true,crequired:true" style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'emplev'">职位级别</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'emplev',crequired:true,editable:false,comidx:'dic1007'"
+					 style="height:20px;width: 100px" /></td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'resdate'">考勤月度</td>
+				<td><input cjoptions="easyui_class:'easyui-datebox',fdname:'resdate',crequired:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD"
+					 style="height:20px;width: 100px" /></td>
+				<td cjoptions="fdname:'remark'">备注</td>
+				<td colspan="3">
+					<input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 310px" />
+				</td>
+			</tr>
+			<tr>
+				<td cjoptions="fdname:'creator'">制单人</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px" />
+				</td>
+				<td cjoptions="fdname:'createtime'">制单时间</td>
+				<td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+					 style="height:20px;width: 120px" /></td>
+				<td cjoptions="fdname:'updator'">更新人</td>
+				<td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px" />
+				</td>
+				<td cjoptions="fdname:'updatetime'">更新时间</td>
+				<td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+					 style="height:20px;width: 120px" /></td>
+			</tr>
+		</table>
+	</body>
+</html>

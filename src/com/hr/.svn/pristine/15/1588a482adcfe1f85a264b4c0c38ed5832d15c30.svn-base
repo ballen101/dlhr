@@ -1,0 +1,127 @@
+package com.hr.salary.entity;
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.server.cjpa.CJPA;
+import java.sql.Types;
+
+@CEntity(caption="批量特殊调薪明细单",tablename="Hr_salary_specchgsa_batch_line")
+public class Hr_salary_specchgsa_batch_line extends CJPA {
+	@CFieldinfo(fieldname ="scsblid",iskey=true,notnull=true,precision=20,scale=0,caption="批量特殊调薪明细ID",datetype=Types.INTEGER)
+	public CField scsblid;  //批量特殊调薪明细ID
+	@CFieldinfo(fieldname ="scsbid",notnull=true,precision=20,scale=0,caption="批量特殊调薪ID",datetype=Types.INTEGER)
+	public CField scsbid;  //批量特殊调薪ID
+	@CFieldinfo(fieldname ="er_id",notnull=true,precision=20,scale=0,caption="档案ID",datetype=Types.INTEGER)
+	public CField er_id;  //档案ID
+	@CFieldinfo(fieldname ="employee_code",notnull=true,precision=16,scale=0,caption="工号",datetype=Types.VARCHAR)
+	public CField employee_code;  //工号
+	@CFieldinfo(fieldname ="employee_name",notnull=true,precision=64,scale=0,caption="姓名",datetype=Types.VARCHAR)
+	public CField employee_name;  //姓名
+	@CFieldinfo(fieldname ="orgid",notnull=true,precision=10,scale=0,caption="部门ID",datetype=Types.INTEGER)
+	public CField orgid;  //部门ID
+	@CFieldinfo(fieldname ="orgcode",notnull=true,precision=16,scale=0,caption="部门编码",datetype=Types.VARCHAR)
+	public CField orgcode;  //部门编码
+	@CFieldinfo(fieldname ="orgname",notnull=true,precision=128,scale=0,caption="部门名称",datetype=Types.VARCHAR)
+	public CField orgname;  //部门名称
+	@CFieldinfo(fieldname ="orghrlev",notnull=true,precision=1,scale=0,caption="机构人事层级",defvalue="0",datetype=Types.INTEGER)
+	public CField orghrlev;  //机构人事层级
+	@CFieldinfo(fieldname ="lv_id",precision=10,scale=0,caption="职级ID",datetype=Types.INTEGER)
+	public CField lv_id;  //职级ID
+	@CFieldinfo(fieldname ="lv_num",precision=4,scale=1,caption="职级",datetype=Types.DECIMAL)
+	public CField lv_num;  //职级
+	@CFieldinfo(fieldname ="ospid",precision=20,scale=0,caption="职位ID",datetype=Types.INTEGER)
+	public CField ospid;  //职位ID
+	@CFieldinfo(fieldname ="ospcode",precision=16,scale=0,caption="职位编码",datetype=Types.VARCHAR)
+	public CField ospcode;  //职位编码
+	@CFieldinfo(fieldname ="sp_name",precision=128,scale=0,caption="职位名称",datetype=Types.VARCHAR)
+	public CField sp_name;  //职位名称
+	@CFieldinfo(fieldname ="hiredday",precision=19,scale=0,caption="入职日期",datetype=Types.TIMESTAMP)
+	public CField hiredday;  //入职日期
+	@CFieldinfo(fieldname ="oldstru_id",precision=20,scale=0,caption="工资结构ID",datetype=Types.BIGINT)
+	public CField oldstru_id;  //工资结构ID
+	@CFieldinfo(fieldname ="oldstru_name",precision=64,scale=0,caption="工资结构名",datetype=Types.VARCHAR)
+	public CField oldstru_name;  //工资结构名
+	@CFieldinfo(fieldname ="oldkqtype",precision=1,scale=0,caption="出勤机制",datetype=Types.INTEGER)
+	public CField oldkqtype;  //出勤机制
+	@CFieldinfo(fieldname ="oldchecklev",precision=1,scale=0,caption="绩效考核层级",datetype=Types.INTEGER)
+	public CField oldchecklev;  //绩效考核层级
+	@CFieldinfo(fieldname ="newstru_id",precision=20,scale=0,caption="工资结构ID",datetype=Types.BIGINT)
+	public CField newstru_id;  //工资结构ID
+	@CFieldinfo(fieldname ="newstru_name",precision=64,scale=0,caption="工资结构名",datetype=Types.VARCHAR)
+	public CField newstru_name;  //工资结构名
+	@CFieldinfo(fieldname ="newkqtype",precision=1,scale=0,caption="出勤机制",datetype=Types.INTEGER)
+	public CField newkqtype;  //出勤机制
+	@CFieldinfo(fieldname ="newchecklev",precision=1,scale=0,caption="绩效考核层级",datetype=Types.INTEGER)
+	public CField newchecklev;  //绩效考核层级
+	@CFieldinfo(fieldname ="oldposition_salary",precision=10,scale=2,caption="调薪前职位工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldposition_salary;  //调薪前职位工资
+	@CFieldinfo(fieldname ="oldbase_salary",precision=10,scale=2,caption="调薪前基本工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldbase_salary;  //调薪前基本工资
+	@CFieldinfo(fieldname ="oldtech_salary",precision=10,scale=2,caption="调薪前技能工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldtech_salary;  //调薪前技能工资
+	@CFieldinfo(fieldname ="oldachi_salary",precision=10,scale=2,caption="调薪前绩效工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldachi_salary;  //调薪前绩效工资
+	@CFieldinfo(fieldname ="oldtech_allowance",precision=10,scale=2,caption="调薪前技术津贴",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldtech_allowance;  //调薪前技术津贴
+	@CFieldinfo(fieldname ="oldotwage",precision=10,scale=2,caption="调薪前固定加班工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField oldotwage;  //调薪前固定加班工资
+	@CFieldinfo(fieldname ="newposition_salary",precision=10,scale=2,caption="调薪后职位工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newposition_salary;  //调薪后职位工资
+	@CFieldinfo(fieldname ="newbase_salary",precision=10,scale=2,caption="调薪后基本工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newbase_salary;  //调薪后基本工资
+	@CFieldinfo(fieldname ="newtech_salary",precision=10,scale=2,caption="调薪后技能工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newtech_salary;  //调薪后技能工资
+	@CFieldinfo(fieldname ="newachi_salary",precision=10,scale=2,caption="调薪后绩效工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newachi_salary;  //调薪后绩效工资
+	@CFieldinfo(fieldname ="newotwage",precision=10,scale=2,caption="调薪后固定加班工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newotwage;  //调薪后固定加班工资
+	@CFieldinfo(fieldname ="newtech_allowance",precision=10,scale=2,caption="调薪后技术津贴",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField newtech_allowance;  //调薪后技术津贴
+	@CFieldinfo(fieldname ="chgposition_salary",precision=10,scale=2,caption="调整幅度职位工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgposition_salary;  //调整幅度职位工资
+	@CFieldinfo(fieldname ="chgbase_salary",precision=10,scale=2,caption="调整幅度基本工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgbase_salary;  //调整幅度基本工资
+	@CFieldinfo(fieldname ="chgtech_salary",precision=10,scale=2,caption="调整幅度技能工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgtech_salary;  //调整幅度技能工资
+	@CFieldinfo(fieldname ="chgachi_salary",precision=10,scale=2,caption="调整幅度绩效工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgachi_salary;  //调整幅度绩效工资
+	@CFieldinfo(fieldname ="chgotwage",precision=10,scale=2,caption="调整幅度固定加班工资",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgotwage;  //调整幅度固定加班工资
+	@CFieldinfo(fieldname ="chgtech_allowance",precision=10,scale=2,caption="调整幅度技术津贴",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField chgtech_allowance;  //调整幅度技术津贴
+	@CFieldinfo(fieldname ="pbtsarylev",precision=10,scale=2,caption="调薪金额",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField pbtsarylev;  //调薪金额
+	@CFieldinfo(fieldname ="overf_salary",precision=10,scale=2,caption="超标金额",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField overf_salary;  //超标金额
+	@CFieldinfo(fieldname ="overf_salary_chgtech",precision=10,scale=2,caption="超标比例",defvalue="0.00",datetype=Types.DECIMAL)
+	public CField overf_salary_chgtech;  //超标比例
+	@CFieldinfo(fieldname ="remark",precision=512,scale=0,caption="备注",datetype=Types.VARCHAR)
+	public CField remark;  //备注
+	@CFieldinfo(fieldname ="idpath",notnull=true,precision=256,scale=0,caption="idpath",datetype=Types.VARCHAR)
+	public CField idpath;  //idpath
+	@CFieldinfo(fieldname ="pbtsarylev_chgtech",precision=10,scale=2,caption="调整幅度",datetype=Types.DECIMAL)
+	public CField pbtsarylev_chgtech;  //调整幅度
+	public String SqlWhere; //查询附加条件
+	public int MaxCount; //查询最大数量
+
+     //自关联数据定义
+
+
+	public Hr_salary_specchgsa_batch_line() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {//类初始化调用的方法
+		super.InitObject();
+		return true;
+	} 
+
+	@Override
+	public boolean FinalObject() { //类释放前调用的方法
+		super.FinalObject(); 
+		return true; 
+	} 
+} 
+

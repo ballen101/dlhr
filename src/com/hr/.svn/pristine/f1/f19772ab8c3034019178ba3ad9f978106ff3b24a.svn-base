@@ -1,0 +1,313 @@
+package com.hr.perm.entity;
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.cjpa.util.CLinkFieldInfo;
+import com.corsair.cjpa.util.LinkFieldItem;
+import com.corsair.server.cjpa.CJPA;
+import com.corsair.server.generic.Shw_attach;
+import com.hr.perm.ctr.CtrHr_employee_transfer;
+
+import java.sql.Types;
+
+@CEntity(caption = "人事调动", controller = CtrHr_employee_transfer.class)
+public class Hr_employee_transfer extends CJPA {
+	@CFieldinfo(fieldname = "emptranf_id", iskey = true, notnull = true, precision = 20, scale = 0, caption = "调动单ID", datetype = Types.INTEGER)
+	public CField emptranf_id; // 调动单ID
+	@CFieldinfo(fieldname = "emptranfcode", codeid = 56, notnull = true, precision = 15, scale = 0, caption = "调用编码", datetype = Types.VARCHAR)
+	public CField emptranfcode; // 调用编码
+	@CFieldinfo(fieldname = "er_id", notnull = true, precision = 20, scale = 0, caption = "人事ID", datetype = Types.INTEGER)
+	public CField er_id; // 人事ID
+	@CFieldinfo(fieldname = "employee_code", notnull = true, precision = 16, scale = 0, caption = "工号", datetype = Types.VARCHAR)
+	public CField employee_code; // 工号
+	@CFieldinfo(fieldname = "id_number", notnull = true, precision = 20, scale = 0, caption = "身份证号", datetype = Types.VARCHAR)
+	public CField id_number; // 身份证号
+	@CFieldinfo(fieldname = "employee_name", notnull = true, precision = 64, scale = 0, caption = "姓名", datetype = Types.VARCHAR)
+	public CField employee_name; // 姓名
+	@CFieldinfo(fieldname = "mnemonic_code", precision = 8, scale = 0, caption = "助记码", datetype = Types.VARCHAR)
+	public CField mnemonic_code; // 助记码
+	@CFieldinfo(fieldname = "email", precision = 128, scale = 0, caption = "邮箱/微信", datetype = Types.VARCHAR)
+	public CField email; // 邮箱/微信
+	@CFieldinfo(fieldname = "empstatid", precision = 1, scale = 0, caption = "人员状态", datetype = Types.INTEGER)
+	public CField empstatid; // 人员状态
+	@CFieldinfo(fieldname = "telphone", precision = 32, scale = 0, caption = "电话", datetype = Types.VARCHAR)
+	public CField telphone; // 电话
+	@CFieldinfo(fieldname = "tranfcmpdate", precision = 19, scale = 0, caption = "调动生效日期", datetype = Types.TIMESTAMP)
+	public CField tranfcmpdate; // 调动生效日期
+	@CFieldinfo(fieldname = "appdate", precision = 19, scale = 0, caption = "调动申请日期", datetype = Types.TIMESTAMP)
+	public CField appdate; // 调动申请日期
+	@CFieldinfo(fieldname = "hiredday", precision = 19, scale = 0, caption = "聘用日期", datetype = Types.TIMESTAMP)
+	public CField hiredday; // 聘用日期
+	@CFieldinfo(fieldname = "degree", precision = 11, scale = 0, caption = "学历", datetype = Types.INTEGER)
+	public CField degree; // 学历
+	@CFieldinfo(fieldname = "tranflev", precision = 2, scale = 0, caption = "调动层级", datetype = Types.INTEGER)
+	public CField tranflev; // 调动层级
+	@CFieldinfo(fieldname = "tranftype1", precision = 2, scale = 0, caption = "调动类型   1晋升调动 2降职调动 3同职种平级调动 4跨职种平级调动 ", datetype = Types.INTEGER)
+	public CField tranftype1; // 调动类型 1晋升调动 2降职调动 3同职种平级调动 4跨职种平级调动
+	@CFieldinfo(fieldname = "tranftype2", precision = 2, scale = 0, caption = "调动性质   1公司安排 2个人申请 3梦职场调动 4内部招聘 ", datetype = Types.INTEGER)
+	public CField tranftype2; // 调动性质 1公司安排 2个人申请 3梦职场调动 4内部招聘
+	@CFieldinfo(fieldname = "tranftype3", precision = 3, scale = 0, caption = "调动范围 1内部调用 2 跨单位 3 跨模块/制造群", datetype = Types.INTEGER)
+	public CField tranftype3; // 调动范围 1内部调用 2 跨单位 3 跨模块/制造群
+	@CFieldinfo(fieldname = "tranfreason", precision = 128, scale = 0, caption = "调动原因", datetype = Types.VARCHAR)
+	public CField tranfreason; // 调动原因
+	@CFieldinfo(fieldname = "probation", precision = 2, scale = 0, caption = "考察期", datetype = Types.INTEGER)
+	public CField probation; // 考察期
+	@CFieldinfo(fieldname = "probationdate", precision = 10, scale = 0, caption = "考察到期日期", datetype = Types.DATE)
+	public CField probationdate; // 考察到期日期
+	@CFieldinfo(fieldname = "ispromotioned", notnull = true, precision = 1, scale = 0, caption = "已转正", defvalue = "2", datetype = Types.INTEGER)
+	public CField ispromotioned; // 已转正
+	@CFieldinfo(fieldname = "odorgid", notnull = true, precision = 10, scale = 0, caption = "调动前部门ID", datetype = Types.INTEGER)
+	public CField odorgid; // 调动前部门ID
+	@CFieldinfo(fieldname = "odorgcode", notnull = true, precision = 16, scale = 0, caption = "调动前部门编码", datetype = Types.VARCHAR)
+	public CField odorgcode; // 调动前部门编码
+	@CFieldinfo(fieldname = "odorgname", notnull = true, precision = 128, scale = 0, caption = "调动前部门名称", datetype = Types.VARCHAR)
+	public CField odorgname; // 调动前部门名称
+	@CFieldinfo(fieldname = "odorghrlev", notnull = true, precision = 1, scale = 0, caption = "调调动前部门人事层级", defvalue = "0", datetype = Types.INTEGER)
+	public CField odorghrlev; // 调调动前部门人事层级
+	@CFieldinfo(fieldname = "odlv_id", precision = 10, scale = 0, caption = "调动前职级ID", datetype = Types.INTEGER)
+	public CField odlv_id; // 调动前职级ID
+	@CFieldinfo(fieldname = "odlv_num", precision = 4, scale = 1, caption = "调动前职级", datetype = Types.DECIMAL)
+	public CField odlv_num; // 调动前职级
+	@CFieldinfo(fieldname = "odhg_id", precision = 10, scale = 0, caption = "调动前职等ID", datetype = Types.INTEGER)
+	public CField odhg_id; // 调动前职等ID
+	@CFieldinfo(fieldname = "odhg_code", precision = 16, scale = 0, caption = "调动前职等编码", datetype = Types.VARCHAR)
+	public CField odhg_code; // 调动前职等编码
+	@CFieldinfo(fieldname = "odhg_name", precision = 128, scale = 0, caption = "调动前职等名称", datetype = Types.VARCHAR)
+	public CField odhg_name; // 调动前职等名称
+	@CFieldinfo(fieldname = "odospid", precision = 20, scale = 0, caption = "调动前职位ID", datetype = Types.INTEGER)
+	public CField odospid; // 调动前职位ID
+	@CFieldinfo(fieldname = "odospcode", precision = 16, scale = 0, caption = "调动前职位编码", datetype = Types.VARCHAR)
+	public CField odospcode; // 调动前职位编码
+	@CFieldinfo(fieldname = "odsp_name", precision = 128, scale = 0, caption = "调动前职位名称", datetype = Types.VARCHAR)
+	public CField odsp_name; // 调动前职位名称
+	@CFieldinfo(fieldname = "odattendtype", precision = 32, scale = 0, caption = "调动前出勤类别", datetype = Types.VARCHAR)
+	public CField odattendtype; // 调动前出勤类别
+	@CFieldinfo(fieldname = "oldcalsalarytype", precision = 32, scale = 0, caption = "调动前计薪方式", datetype = Types.VARCHAR)
+	public CField oldcalsalarytype; // 调动前计薪方式
+	@CFieldinfo(fieldname = "oldhwc_namezl", precision = 32, scale = 0, caption = "调动前职类", datetype = Types.VARCHAR)
+	public CField oldhwc_namezl; // 调动前职类
+	@CFieldinfo(fieldname = "oldhwc_namezq", precision = 32, scale = 0, caption = "调动前职群", datetype = Types.VARCHAR)
+	public CField oldhwc_namezq; // 调动前职群
+	@CFieldinfo(fieldname = "oldhwc_namezz", precision = 32, scale = 0, caption = "调动前职种", datetype = Types.VARCHAR)
+	public CField oldhwc_namezz; // 调动前职种
+	@CFieldinfo(fieldname = "oldstru_id", precision = 10, scale = 0, caption = "调薪前工资结构ID", datetype = Types.INTEGER)
+	public CField oldstru_id; // 调薪前工资结构ID
+	@CFieldinfo(fieldname = "oldstru_name", precision = 32, scale = 0, caption = "调薪前工资结构名", datetype = Types.VARCHAR)
+	public CField oldstru_name; // 调薪前工资结构名
+	@CFieldinfo(fieldname = "oldchecklev", precision = 1, scale = 0, caption = "调薪前绩效考核层级", datetype = Types.INTEGER)
+	public CField oldchecklev; // 调薪前绩效考核层级
+	@CFieldinfo(fieldname = "oldposition_salary", precision = 10, scale = 2, caption = "调动前职位工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldposition_salary; // 调动前职位工资
+	@CFieldinfo(fieldname = "oldbase_salary", precision = 10, scale = 2, caption = "调动前基本工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldbase_salary; // 调动前基本工资
+	@CFieldinfo(fieldname = "oldotwage", precision = 10, scale = 2, caption = "调薪前固定加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldotwage; // 调薪前固定加班工资
+	@CFieldinfo(fieldname = "oldtech_salary", precision = 10, scale = 2, caption = "调动前技能工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldtech_salary; // 调动前技能工资
+	@CFieldinfo(fieldname = "oldachi_salary", precision = 10, scale = 2, caption = "调动前绩效工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldachi_salary; // 调动前绩效工资
+	@CFieldinfo(fieldname = "oldtech_allowance", precision = 10, scale = 2, caption = "调动前技术津贴", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldtech_allowance; // 调动前技术津贴
+	@CFieldinfo(fieldname = "oldavg_salary", precision = 10, scale = 2, caption = "调动前平均工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldavg_salary; // 调动前平均工资
+	@CFieldinfo(fieldname = "oldovt_salary", precision = 10, scale = 2, caption = "调动前加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField oldovt_salary; // 调动前加班工资
+	@CFieldinfo(fieldname = "oldemnature", precision = 32, scale = 0, caption = "调动前人员性质", datetype = Types.VARCHAR)
+	public CField oldemnature; // 调动前人员性质
+	@CFieldinfo(fieldname = "neworgid", notnull = true, precision = 10, scale = 0, caption = "调动后部门ID", datetype = Types.INTEGER)
+	public CField neworgid; // 调动后部门ID
+	@CFieldinfo(fieldname = "neworgcode", notnull = true, precision = 16, scale = 0, caption = "调动后部门编码", datetype = Types.VARCHAR)
+	public CField neworgcode; // 调动后部门编码
+	@CFieldinfo(fieldname = "neworgname", notnull = true, precision = 128, scale = 0, caption = "调动后部门名称", datetype = Types.VARCHAR)
+	public CField neworgname; // 调动后部门名称
+	@CFieldinfo(fieldname = "neworghrlev", notnull = true, precision = 1, scale = 0, caption = "调动后部门人事层级", defvalue = "0", datetype = Types.INTEGER)
+	public CField neworghrlev; // 调动后部门人事层级
+	@CFieldinfo(fieldname = "newlv_id", precision = 10, scale = 0, caption = "调动后职级ID", datetype = Types.INTEGER)
+	public CField newlv_id; // 调动后职级ID
+	@CFieldinfo(fieldname = "newlv_num", precision = 4, scale = 1, caption = "调动后职级", datetype = Types.DECIMAL)
+	public CField newlv_num; // 调动后职级
+	@CFieldinfo(fieldname = "newhg_id", precision = 10, scale = 0, caption = "调动后职等ID", datetype = Types.INTEGER)
+	public CField newhg_id; // 调动后职等ID
+	@CFieldinfo(fieldname = "newhg_code", precision = 16, scale = 0, caption = "调动后职等编码", datetype = Types.VARCHAR)
+	public CField newhg_code; // 调动后职等编码
+	@CFieldinfo(fieldname = "newhg_name", precision = 128, scale = 0, caption = "调动后职等名称", datetype = Types.VARCHAR)
+	public CField newhg_name; // 调动后职等名称
+	@CFieldinfo(fieldname = "newospid", precision = 20, scale = 0, caption = "调动后职位ID", datetype = Types.INTEGER)
+	public CField newospid; // 调动后职位ID
+	@CFieldinfo(fieldname = "newospcode", precision = 16, scale = 0, caption = "调动后职位编码", datetype = Types.VARCHAR)
+	public CField newospcode; // 调动后职位编码
+	@CFieldinfo(fieldname = "newsp_name", precision = 128, scale = 0, caption = "调动后职位名称", datetype = Types.VARCHAR)
+	public CField newsp_name; // 调动后职位名称
+	@CFieldinfo(fieldname = "newattendtype", precision = 32, scale = 0, caption = "调动后出勤类别", datetype = Types.VARCHAR)
+	public CField newattendtype; // 调动后出勤类别
+	@CFieldinfo(fieldname = "newcalsalarytype", precision = 32, scale = 0, caption = "调动后计薪方式", datetype = Types.VARCHAR)
+	public CField newcalsalarytype; // 调动后计薪方式
+	@CFieldinfo(fieldname = "newhwc_namezl", precision = 32, scale = 0, caption = "调动后职类", datetype = Types.VARCHAR)
+	public CField newhwc_namezl; // 调动后职类
+	@CFieldinfo(fieldname = "newhwc_namezq", precision = 32, scale = 0, caption = "调动后职群", datetype = Types.VARCHAR)
+	public CField newhwc_namezq; // 调动后职群
+	@CFieldinfo(fieldname = "newhwc_namezz", precision = 32, scale = 0, caption = "调动后职种", datetype = Types.VARCHAR)
+	public CField newhwc_namezz; // 调动后职种
+	@CFieldinfo(fieldname = "newemnature", precision = 32, scale = 0, caption = "调动后人员性质", datetype = Types.VARCHAR)
+	public CField newemnature; // 调动后人员性质
+	@CFieldinfo(fieldname = "newstru_id", precision = 10, scale = 0, caption = "调薪后工资结构ID", datetype = Types.INTEGER)
+	public CField newstru_id; // 调薪后工资结构ID
+	@CFieldinfo(fieldname = "newstru_name", precision = 32, scale = 0, caption = "调薪后工资结构名", datetype = Types.VARCHAR)
+	public CField newstru_name; // 调薪后工资结构名
+	@CFieldinfo(fieldname = "newchecklev", precision = 1, scale = 0, caption = "调薪后绩效考核层级", datetype = Types.INTEGER)
+	public CField newchecklev; // 调薪后绩效考核层级
+	@CFieldinfo(fieldname = "newposition_salary", precision = 10, scale = 2, caption = "调动后职位工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newposition_salary; // 调动后职位工资
+	@CFieldinfo(fieldname = "newbase_salary", precision = 10, scale = 2, caption = "调动后基本工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newbase_salary; // 调动后基本工资
+	@CFieldinfo(fieldname = "newotwage", precision = 10, scale = 2, caption = "调薪后固定加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newotwage; // 调薪后固定加班工资
+	@CFieldinfo(fieldname = "newtech_salary", precision = 10, scale = 2, caption = "调动后技能工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newtech_salary; // 调动后技能工资
+	@CFieldinfo(fieldname = "newachi_salary", precision = 10, scale = 2, caption = "调动后绩效工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newachi_salary; // 调动后绩效工资
+	@CFieldinfo(fieldname = "newtech_allowance", precision = 10, scale = 2, caption = "调动后技术津贴", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newtech_allowance; // 调动后技术津贴
+	@CFieldinfo(fieldname = "newavg_salary", precision = 10, scale = 2, caption = "调动后平均工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newavg_salary; // 调动后平均工资
+	@CFieldinfo(fieldname = "newovt_salary", precision = 10, scale = 2, caption = "调动后加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField newovt_salary; // 调动后加班工资
+	@CFieldinfo(fieldname = "chgposition_salary", precision = 10, scale = 2, caption = "调整职位工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgposition_salary; // 调整职位工资
+	@CFieldinfo(fieldname = "chgbase_salary", precision = 10, scale = 2, caption = "调整基本工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgbase_salary; // 调整基本工资
+	@CFieldinfo(fieldname = "chgotwage", precision = 10, scale = 2, caption = "调整固定加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgotwage; // 调整固定加班工资
+	@CFieldinfo(fieldname = "chgtech_salary", precision = 10, scale = 2, caption = "调整技能工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgtech_salary; // 调整技能工资
+	@CFieldinfo(fieldname = "chgachi_salary", precision = 10, scale = 2, caption = "调整绩效工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgachi_salary; // 调整绩效工资
+	@CFieldinfo(fieldname = "chgtech_allowance", precision = 10, scale = 2, caption = "调整技术津贴", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgtech_allowance; // 调整技术津贴
+	@CFieldinfo(fieldname = "chgavg_salary", precision = 10, scale = 2, caption = "调整平均工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgavg_salary; // 调整平均工资
+	@CFieldinfo(fieldname = "chgovt_salary", precision = 10, scale = 2, caption = "调整加班工资", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField chgovt_salary; // 调整加班工资
+	@CFieldinfo(fieldname = "salary_qcnotnull", precision = 1, scale = 0, caption = "工资额度是否必填", defvalue = "2", datetype = Types.INTEGER)
+	public CField salary_qcnotnull; // 工资额度是否必填
+	@CFieldinfo(fieldname = "salary_quotacode", precision = 16, scale = 0, caption = "可用工资额度证明编号", datetype = Types.VARCHAR)
+	public CField salary_quotacode; // 可用工资额度证明编号
+	@CFieldinfo(fieldname = "salary_quota_stand", precision = 10, scale = 2, caption = "标准工资额度", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField salary_quota_stand; // 标准工资额度
+	@CFieldinfo(fieldname = "salary_quota_appy", precision = 10, scale = 1, caption = "申请工资额度", defvalue = "0.0", datetype = Types.DECIMAL)
+	public CField salary_quota_appy; // 申请工资额度
+	@CFieldinfo(fieldname = "salary_quota_canuse", precision = 10, scale = 2, caption = "可用工资额度", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField salary_quota_canuse; // 可用工资额度
+	@CFieldinfo(fieldname = "salary_quota_used", precision = 10, scale = 2, caption = "己用工资额度", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField salary_quota_used; // 己用工资额度
+	@CFieldinfo(fieldname = "salary_quota_blance", precision = 10, scale = 2, caption = "可用工资余额", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField salary_quota_blance; // 可用工资余额
+	@CFieldinfo(fieldname = "salary_quota_ovsp", precision = 1, scale = 0, caption = "超额度审批", datetype = Types.INTEGER)
+	public CField salary_quota_ovsp; // 超额度审批
+	@CFieldinfo(fieldname = "salarydate", precision = 10, scale = 0, caption = "核薪生效日期", datetype = Types.DATE)
+	public CField salarydate; // 核薪生效日期
+	@CFieldinfo(fieldname = "istp", precision = 1, scale = 0, caption = "是否特批", defvalue = "2", datetype = Types.INTEGER)
+	public CField istp; // 是否特批
+	@CFieldinfo(fieldname = "tranamt", precision = 10, scale = 2, caption = "调拨金额", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField tranamt; // 调拨金额
+	@CFieldinfo(fieldname = "exam_title", precision = 64, scale = 0, caption = "考试课题", datetype = Types.VARCHAR)
+	public CField exam_title; // 考试课题
+	@CFieldinfo(fieldname = "exam_time", precision = 19, scale = 0, caption = "考试时间", datetype = Types.TIMESTAMP)
+	public CField exam_time; // 考试时间
+	@CFieldinfo(fieldname = "exam_score", precision = 10, scale = 2, caption = "考试分数", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField exam_score; // 考试分数
+	@CFieldinfo(fieldname = "mupexam_time", precision = 19, scale = 0, caption = "补考时间", datetype = Types.TIMESTAMP)
+	public CField mupexam_time; // 补考时间
+	@CFieldinfo(fieldname = "mupexam_score", precision = 10, scale = 2, caption = "补考分数", defvalue = "0.00", datetype = Types.DECIMAL)
+	public CField mupexam_score; // 补考分数
+	@CFieldinfo(fieldname = "exam_note", precision = 32, scale = 0, caption = "考试备注", datetype = Types.VARCHAR)
+	public CField exam_note; // 考试备注
+	@CFieldinfo(fieldname = "remark", precision = 512, scale = 0, caption = "备注", datetype = Types.VARCHAR)
+	public CField remark; // 备注
+	@CFieldinfo(fieldname = "quota_over", precision = 1, scale = 0, caption = "是否超编", defvalue = "2", datetype = Types.INTEGER)
+	public CField quota_over; // 是否超编
+	@CFieldinfo(fieldname = "quota_over_rst", precision = 1, scale = 0, caption = "超编审批结果 1 允许增加编制调动 ps是否自动生成编制调整单 2 超编调动 3 不允许调动", defvalue = "0", datetype = Types.INTEGER)
+	public CField quota_over_rst; // 超编审批结果 1 允许增加编制调动 ps是否自动生成编制调整单 2 超编调动 3 不允许调动
+	@CFieldinfo(fieldname = "isdreamposition", precision = 1, scale = 0, caption = "是否梦职场调入", defvalue = "2", datetype = Types.INTEGER)
+	public CField isdreamposition; // 是否梦职场调入
+	@CFieldinfo(fieldname = "isdreamemploye", precision = 1, scale = 0, caption = "是否梦职场储备员工", defvalue = "2", datetype = Types.INTEGER)
+	public CField isdreamemploye; // 是否梦职场储备员工
+	@CFieldinfo(fieldname = "tranftype4", precision = 1, scale = 0, caption = "调动类别", datetype = Types.INTEGER)
+	public CField tranftype4; // 调动类别
+	@CFieldinfo(fieldname = "isexistsrl", precision = 1, scale = 0, caption = "关联关系 有关联关系 无关联关系", datetype = Types.INTEGER)
+	public CField isexistsrl; // 关联关系 有关联关系 无关联关系
+	@CFieldinfo(fieldname = "rlmgms", precision = 1, scale = 0, caption = "管控措施 不需管控 终止调动 申请豁免", datetype = Types.INTEGER)
+	public CField rlmgms; // 管控措施 不需管控 终止调动 申请豁免
+	@CFieldinfo(fieldname = "ismangerl", precision = 1, scale = 0, caption = "是否构成需要管控的管理关系类别", datetype = Types.INTEGER)
+	public CField ismangerl; // 是否构成需要管控的管理关系类别
+	@CFieldinfo(fieldname = "isapprlhm", precision = 1, scale = 0, caption = "是否申请关联关系豁免", datetype = Types.INTEGER)
+	public CField isapprlhm; // 是否申请关联关系豁免
+	@CFieldinfo(fieldname = "isapprlhmsp", precision = 1, scale = 0, caption = "关联关系豁免申请是否得到审批", datetype = Types.INTEGER)
+	public CField isapprlhmsp; // 关联关系豁免申请是否得到审批
+	@CFieldinfo(fieldname = "quotastand", precision = 3, scale = 0, caption = "标准配置人数", datetype = Types.INTEGER)
+	public CField quotastand; // 标准配置人数
+	@CFieldinfo(fieldname = "quotasj", precision = 3, scale = 0, caption = "实际配置人数", datetype = Types.INTEGER)
+	public CField quotasj; // 实际配置人数
+	@CFieldinfo(fieldname = "quotacq", precision = 3, scale = 0, caption = "超缺编人数(正数表示超编、负数表示缺编)", datetype = Types.INTEGER)
+	public CField quotacq; // 超缺编人数(正数表示超编、负数表示缺编)
+	@CFieldinfo(fieldname = "isallowdrmin", precision = 1, scale = 0, caption = "是否同意特批调动至梦职场职位", datetype = Types.INTEGER)
+	public CField isallowdrmin; // 是否同意特批调动至梦职场职位
+	@CFieldinfo(fieldname = "wfid", precision = 20, scale = 0, caption = "wfid", datetype = Types.INTEGER)
+	public CField wfid; // wfid
+	@CFieldinfo(fieldname = "attid", precision = 20, scale = 0, caption = "attid", datetype = Types.INTEGER)
+	public CField attid; // attid
+	@CFieldinfo(fieldname = "stat", notnull = true, precision = 2, scale = 0, caption = "流程状态", datetype = Types.INTEGER)
+	public CField stat; // 流程状态
+	@CFieldinfo(fieldname = "idpath", notnull = true, precision = 256, scale = 0, caption = "idpath", datetype = Types.VARCHAR)
+	public CField idpath; // idpath
+	@CFieldinfo(fieldname = "entid", notnull = true, precision = 5, scale = 0, caption = "entid", datetype = Types.INTEGER)
+	public CField entid; // entid
+	@CFieldinfo(fieldname = "creator", notnull = true, precision = 32, scale = 0, caption = "创建人", datetype = Types.VARCHAR)
+	public CField creator; // 创建人
+	@CFieldinfo(fieldname = "createtime", notnull = true, precision = 19, scale = 0, caption = "创建时间", datetype = Types.TIMESTAMP)
+	public CField createtime; // 创建时间
+	@CFieldinfo(fieldname = "updator", precision = 32, scale = 0, caption = "更新人", datetype = Types.VARCHAR)
+	public CField updator; // 更新人
+	@CFieldinfo(fieldname = "updatetime", precision = 19, scale = 0, caption = "更新时间", datetype = Types.TIMESTAMP)
+	public CField updatetime; // 更新时间
+	@CFieldinfo(fieldname = "attribute1", precision = 32, scale = 0, caption = "备用字段1", datetype = Types.VARCHAR)
+	public CField attribute1; // 备用字段1
+	@CFieldinfo(fieldname = "attribute2", precision = 32, scale = 0, caption = "备用字段2", datetype = Types.VARCHAR)
+	public CField attribute2; // 备用字段2
+	@CFieldinfo(fieldname = "attribute3", precision = 32, scale = 0, caption = "备用字段3", datetype = Types.VARCHAR)
+	public CField attribute3; // 备用字段3
+	@CFieldinfo(fieldname = "attribute4", precision = 32, scale = 0, caption = "备用字段4", datetype = Types.VARCHAR)
+	public CField attribute4; // 备用字段4
+	@CFieldinfo(fieldname = "attribute5", precision = 32, scale = 0, caption = "备用字段5", datetype = Types.VARCHAR)
+	public CField attribute5; // 备用字段5
+	@CFieldinfo(fieldname = "oldhg_remark", precision = 32, scale = 0, caption = "调动前职位名称", datetype = Types.VARCHAR)
+	public CField oldhg_remark; // 调动前职位备注
+	@CFieldinfo(fieldname = "newhg_remark", precision = 32, scale = 0, caption = "调动前职位名称", datetype = Types.VARCHAR)
+	public CField newhg_remark; // 调动后职位备注
+	public String SqlWhere; // 查询附加条件
+	public int MaxCount; // 查询最大数量
+
+	// 自关联数据定义
+	@CLinkFieldInfo(jpaclass = Shw_attach.class, linkFields = { @LinkFieldItem(lfield = "attid", mfield = "attid") })
+	public CJPALineData<Shw_attach> shw_attachs;
+	@CLinkFieldInfo(jpaclass = Hr_employee_transfer_rl.class, linkFields = { @LinkFieldItem(lfield = "emptranf_id", mfield = "emptranf_id"),
+			@LinkFieldItem(lfield = "emptranfcode", mfield = "emptranfcode") })
+	public CJPALineData<Hr_employee_transfer_rl> hr_employee_transfer_rls;
+
+	public Hr_employee_transfer() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {// 类初始化调用的方法
+		super.InitObject();
+		return true;
+	}
+
+	@Override
+	public boolean FinalObject() { // 类释放前调用的方法
+		super.FinalObject();
+		return true;
+	}
+}

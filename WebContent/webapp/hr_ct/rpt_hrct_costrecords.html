@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ct">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic965 = {index: 'dic965',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"打卡","dictvalue":"1"},{"language1":"签卡","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic965.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic965; } if (comUrl_dic965.type == 'combobox') { if (comUrl_dic965.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic965.valueField]) { rst = rst + jsondata[i][comUrl_dic965.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic965.valueField]) return jsondata[i][comUrl_dic965.textField]; } } } if (comUrl_dic965.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic965.editor= {type: 'combobox', options: {valueField:comUrl_dic965.valueField, textField:comUrl_dic965.textField, data: comUrl_dic965.jsondata}}; var comUrls = [ { index: "dic965", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=965", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var listGridColumns = function () {
+            return [
+                {field:'rfkh',title:'卡号',width:70},
+                {field:'employee_code',title:'工号',width:70},
+                {field:'employee_name',title:'姓名',width:70},
+                {field:'orgname',title:'部门',width:300},
+                {field:'sp_name',title:'职位',width:80},
+                {field:'lv_num',title:'职级',width:50},
+                {field:'ctr_name',title:'用餐餐厅',width:120},
+                {field:'ctcr_name',title:'卡机名',width:80},
+                {field:'xfsj',title:'刷卡时间',width:140, formatter: $fieldDateFormator},
+               // {field:'mc_name',title:'餐类',width:60},
+               // {field:'cost',title:'消费金额',width:64},
+                {field: 'remark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: 'like', value: '包含'}]
+        };
+        var bgOptions = {
+            data: [{id: '>=', value: '大于等于'}]
+        };
+        var edOptions = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+
+        var findExtParms = [
+            {field:'rfkh',title:'卡号',width:80},
+            {field:'employee_code',title:'工号',width:100},
+            {field:'employee_name',title:'姓名',width:100},
+            {field:'orgname',title:'部门',width:150, relOptions: relOptions, cjoptions: orgfdiptions},
+            {field:'sp_name',title:'职位',width:150},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'ctr_name',title:'用餐餐厅',width:120},
+            {field:'ctcr_name',title:'卡机名',width:64},
+            {field:'xfbg',title:'开始时间',width:100, notnull: true,relOptions: bgOptions, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'xfed',title:'截止时间',width:100, notnull: true,relOptions: edOptions, formatter: $fieldDateFormatorYYYY_MM_DD},
+           // {field:'mc_name',title:'餐类',width:64},
+           // {field:'cost',title:'消费金额',width:64},
+            {field: 'remark', title: '备注', width: 100}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findExtParms,
+            coURL: _serUrl + "/web/hrct/costrecord/findcostrecordlist.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '同步消费记录',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        addbt();
+                    }
+                },
+                {
+                    text: '转换原始记录',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        addtransbt();
+                    }
+                }
+            ]
+        };
+
+        function addbt() {
+            $('#pw_matsyncs_id').window('open');
+        }
+
+        function dosync() {
+            var dt = $("#syndate").datebox('getValue');
+            var code = $("#syncode").textbox('getValue');
+            dt = $date4str(dt).format("yyyy-MM-dd");
+            var url = _serUrl + "/web/hrct/costrecord/syncCostrecords.co?bgdate=" + dt + "&eddate=" + dt;
+            if((code!=null)&&(code.length>0)&&(code!="")){
+                var url = url + "&code=" + code;
+            }
+            $ajaxjsonget(url, function (jsdata) {
+                alert(jsdata.rst);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        function addtransbt() {
+            $('#pw_mattranscs_id').window('open');
+        }
+
+        function dotrans() {
+            var dt = $("#transdata").datebox('getValue');
+            var code = $("#transcode").textbox('getValue');
+            dt = $date4str(dt).format("yyyy-MM-dd");
+            var url = _serUrl + "/web/hrct/costrecord/syncNewCostrecords.co?bgdate=" + dt + "&eddate=" + dt;
+            if((code!=null)&&(code.length>0)&&(code!="")){
+                var url = url + "&code=" + code;
+            }
+            $ajaxjsonget(url, function (jsdata) {
+                alert(jsdata.rst);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+			var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.orgname);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div style="display: none"> 
+   <div id="pw_matsyncs_id" class="easyui-window" title="选择日期" data-options="iconCls:'icon-save',closed:true,modal:true,collapsible:false" style="width: 200px;height: 150px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center',border:false" style="padding:5px;"> 
+      <label for="syndate">日期</label> 
+      <input id="syndate" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str" style="width: 100px;height: 20px"> 
+      <br> 
+      <label for="syncode">工号</label> 
+      <input id="syncode" type="text" class="easyui-textbox" data-options="" style="width: 100px;height: 20px;margin-top: 5px"> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;height: 40px;padding:5px 0 0;"> 
+      <a class="easyui-linkbutton" onclick="dosync()" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+      <a class="easyui-linkbutton" onclick="$('#pw_matsyncs_id').window('close')" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <div style="display: none"> 
+   <div id="pw_mattranscs_id" class="easyui-window" title="选择日期" data-options="iconCls:'icon-save',closed:true,modal:true,collapsible:false" style="width: 200px;height: 150px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center',border:false" style="padding:5px;"> 
+      <label for="transdata">日期</label> 
+      <input id="transdata" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str" style="width: 100px;height: 20px"> 
+      <br> 
+      <label for="transcode">工号</label> 
+      <input id="transcode" type="text" class="easyui-textbox" data-options="" style="width: 100px;height: 20px;margin-top: 5px"> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;height: 40px;padding:5px 0 0;"> 
+      <a class="easyui-linkbutton" onclick="dotrans()" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+      <a class="easyui-linkbutton" onclick="$('#pw_mattranscs_id').window('close')" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+     </div> 
+    </div> 
+   </div> 
+  </div>  
+ </body>
+</html>

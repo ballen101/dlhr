@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic968 = {index: 'dic968',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"正常","dictvalue":"1"},{"language1":"迟到","dictvalue":"2"},{"language1":"早退","dictvalue":"3"},{"language1":"无打卡","dictvalue":"4"},{"language1":"出差","dictvalue":"5"},{"language1":"请假","dictvalue":"6"},{"language1":"调休","dictvalue":"7"},{"language1":"签卡","dictvalue":"8"},{"language1":"旷工(迟到)","dictvalue":"9"},{"language1":"早退(迟到)","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic968.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic968; } if (comUrl_dic968.type == 'combobox') { if (comUrl_dic968.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic968.valueField]) { rst = rst + jsondata[i][comUrl_dic968.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic968.valueField]) return jsondata[i][comUrl_dic968.textField]; } } } if (comUrl_dic968.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic968.editor= {type: 'combobox', options: {valueField:comUrl_dic968.valueField, textField:comUrl_dic968.textField, data: comUrl_dic968.jsondata}}; var comUrls = [ { index: "dic968", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=968", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        function wotimeformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v)) return value;
+            return v.toFixed(1);
+        }
+
+        var listGridColumns = function () {
+            return [
+                {field: 'kqdate', title: '考勤日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'scdname', title: '班制', width: 100},
+                {field: 'bcno', title: '班次号', width: 64},
+                {field: 'frtime', title: '上班时间', width: 100},
+                {field: 'frst', title: '上班考勤', width: 100, formatter: comUrl_dic968.formator},
+                {field: 'totime', title: '下班时间', width: 100},
+                {field: 'trst', title: '下班考勤', width: 100, formatter: comUrl_dic968.formator}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findExtParms = [
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'dqdate', title: '考勤日期', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'employee_name', title: '姓名', width: 64},
+        ];
+
+        var ups = $getPageParms();
+        var spcetype = (ups.spcetype == undefined) ? 0 : ups.spcetype;
+        var url = _serUrl + "/web/hrkq/cmn/findkqcalcrst4resign.co?spcetype=" + spcetype;
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findExtParms,
+            coURL: url,
+            onFind: function (parms) {
+                var p = undefined;
+                for (var i = 0; i < parms.length; i++) {
+                    p = parms[i];
+                    if (p.parmname == "dqdate") {
+                        parms.splice(i, 1);
+                        break;
+                    } else p = undefined;
+                }
+                var resdate = p.parmvalue + "-01";
+                var tdate = $date4str(resdate).addMonth(1).format("yyyy-MM-dd");
+
+                parms.push({parmname: 'kqdate', reloper: '>=', parmvalue: resdate});
+                parms.push({parmname: 'kqdate', reloper: '<', parmvalue: tdate});
+                parms.push({parmname: 'parmname_sqlwhere', reloper: '=', parmvalue: "(isabnom=1) and (frst=4 or trst=4)"});   //指定为传SQL语句
+            }
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

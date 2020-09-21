@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic719",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=719",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic901",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=901",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic705",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=705",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1189",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1189",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic724",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=724",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                [
+                    {field: 'emptranfcode', rowspan: 2, title: '调动单编码', width: 100},
+                    {field: 'employee_code', title: '工号', rowspan: 2, width: 80},
+                    {field: 'employee_name', title: '姓名', rowspan: 2, width: 80},
+                    {field: 'degree', title: '学历', rowspan: 2, width: 60, formatter: comUrl_dic84.formator},
+                    {field: 'hiredday', title: '入职日期', rowspan: 2, findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'tranftype2', title: '调动性质', rowspan: 2, width: 80, formatter: comUrl_dic724.formator},
+                    {field: 'tranftype4', title: '调动类型', rowspan: 2, width: 80, formatter: comUrl_dic1189.formator},
+                    {field: 'tranftype1', title: '调动类别', rowspan: 2, width: 80, formatter: comUrl_dic719.formator},
+                    {field: 'tranfreason', title: '调动原因', rowspan: 2, width: 150},
+                    {title: '调动前', colspan: 7},
+                    {title: '调动后', colspan: 7},
+                    {field: 'createtime', title: '调动申请日期', rowspan: 2, findtype: 'date', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'tranfcmpdate', title: '调动生效日期', rowspan: 2, findtype: 'date', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'probation', title: '考察期', rowspan: 2, width: 80, formatter: comUrl_dic705.formator},
+                    {field: 'probationdate', title: '预计转正日期', rowspan: 2, findtype: 'date', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field:'salary_qcnotnull',title:'工资额度必填', rowspan: 2,width:80,formatter: comUrl_dic5.formator},
+                    {field:'salary_quotacode',title:'额度编号', rowspan: 2,width:80},
+                    {field:'salary_quota_stand',title:'标准工资额度', rowspan: 2,width:80},
+                    {field:'salary_quota_appy',title:'申请工资额度', rowspan: 2,width:80},
+                    {field:'salary_quota_canuse',title:'可用工资额度', rowspan: 2,width:80},
+                    {field:'salary_quota_used',title:'已用工资额度', rowspan: 2,width:80},
+                    {field:'salary_quota_ovsp',title:'超额度审批', rowspan: 2,width:80}
+                ],
+                [
+                    {field: 'odorgname', title: '部门', width: 200},
+                    {field: 'odsp_name', title: '职位', width: 80},
+                    {field: 'oldhwc_namezl', title: '职类', width: 60},
+                    {field: 'odhg_name', title: '职等', width: 64},
+                    {field: 'odlv_num', title: '职级', width: 50},
+                    {field: 'odattendtype', title: '出勤类别', width: 64},
+                    {field: 'oldcalsalarytype', title: '计薪方式', width: 64, formatter: comUrl_dic901.formator},
+                    {field: 'neworgname', title: '部门', width: 200},
+                    {field: 'newsp_name', title: '职位', width: 80},
+                    {field: 'newhwc_namezl', title: '职类', width: 60},
+                    {field: 'newhg_name', title: '职等', width: 64},
+                    {field: 'newlv_num', title: '职级', width: 50},
+                    {field: 'newattendtype', title: '出勤类别', width: 64},
+                    {field: 'newdcalsalarytype', title: '计薪方式', width: 64, formatter: comUrl_dic901.formator}
+                ]
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/permrpt3/emptransfer_list.co?tp=1"
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

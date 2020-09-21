@@ -1,0 +1,48 @@
+package com.hr.inface.entity;
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.server.cjpa.CJPA;
+import java.sql.Types;
+
+@CEntity(dbpool = "oldtxmssql", tablename = "view_Hrms_TXkq")
+public class TXkqView_Hrms extends CJPA {
+	@CFieldinfo(fieldname = "KqId", notnull = true, precision = 10, scale = 0, caption = "KqId", datetype = Types.INTEGER)
+	public CField KqId; // KqId
+	@CFieldinfo(fieldname = "EmpID", notnull = true, precision = 10, scale = 0, caption = "EmpID", datetype = Types.INTEGER)
+	public CField EmpID; // EmpID
+	@CFieldinfo(fieldname = "Dept", precision = 24, scale = 0, caption = "Dept", datetype = Types.VARCHAR)
+	public CField Dept; // Dept
+	@CFieldinfo(fieldname = "CardNo", notnull = true, precision = 12, scale = 0, caption = "CardNo", datetype = Types.CHAR)
+	public CField CardNo; // CardNo
+	@CFieldinfo(fieldname = "Code", notnull = true, precision = 12, scale = 0, caption = "Code", datetype = Types.CHAR)
+	public CField Code; // Code
+	@CFieldinfo(fieldname = "Name", precision = 100, scale = 0, caption = "Name", datetype = Types.VARCHAR)
+	public CField Name; // Name
+	@CFieldinfo(fieldname = "State", notnull = true, precision = 3, scale = 0, caption = "State", datetype = Types.TINYINT)
+	public CField State; // State
+	@CFieldinfo(fieldname = "machno", notnull = true, precision = 12, scale = 0, caption = "machno", datetype = Types.CHAR)
+	public CField machno; // machno
+	@CFieldinfo(fieldname = "FDateTime", notnull = true, precision = 23, scale = 3, caption = "FDateTime", datetype = Types.TIMESTAMP)
+	public CField FDateTime; // FDateTime
+	public String SqlWhere; // 查询附加条件
+	public int MaxCount; // 查询最大数量
+
+	// 自关联数据定义
+
+	public TXkqView_Hrms() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {// 类初始化调用的方法
+		super.InitObject();
+		return true;
+	}
+
+	@Override
+	public boolean FinalObject() { // 类释放前调用的方法
+		super.FinalObject();
+		return true;
+	}
+}

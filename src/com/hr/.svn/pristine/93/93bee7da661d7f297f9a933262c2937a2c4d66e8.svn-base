@@ -1,0 +1,340 @@
+package com.hr.salary.co;
+
+import net.sf.json.JSONObject;
+
+import java.util.HashMap;
+
+import com.corsair.dbpool.CDBConnection;
+import com.corsair.dbpool.DBPools;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.retention.ACO;
+import com.corsair.server.retention.ACOAction;
+import com.corsair.server.util.CReport;
+import com.corsair.server.util.CorUtil;
+import com.hr.perm.entity.Hr_employee;
+import com.hr.perm.entity.Hr_employee_transfer;
+import com.hr.perm.entity.Hr_entry;
+import com.hr.perm.entity.Hr_entry_prob;
+import com.hr.perm.entity.Hr_transfer_prob;
+import com.hr.salary.ctr.CtrSalaryCommon;
+import com.hr.salary.entity.Hr_salary_chgbill;
+import com.hr.salary.entity.Hr_salary_chglg;
+import com.hr.salary.entity.Hr_salary_specchgsa;
+import com.hr.salary.entity.Hr_salary_structure;
+import com.hr.salary.entity.Hrsa_access;
+import com.hr.util.HRUtil;
+
+@ACO(coname = "web.hr.sa")
+public class Cosacommon {
+
+	@ACOAction(eventname = "getHasAccess4Sa", Authentication = true, notes = "是否有薪资查询权限")
+	public String getHasAccess4Sa() throws Exception {
+		JSONObject rst = new JSONObject();
+		rst.put("ha", hasaccess4sa());
+		return rst.toString();
+	}
+
+	public static boolean hasaccess4sa() throws Exception {
+		String userid = CSContext.getUserID();
+		String sqlstr = "select * from hrsa_access where userid=" + userid;
+		Hrsa_access ac = new Hrsa_access();
+		ac.findBySQL(sqlstr);
+		if (ac.isEmpty())
+			return false;
+		if (ac.actived.getAsIntDefault(0) != 1)
+			return false;
+		return true;
+	}
+
+	public static boolean hasaccess4saex(String er_id, String extidpath) throws Exception {
+		CDBConnection con = DBPools.defaultPool().getCon("hasaccess4saex");
+		try {
+			return hasaccess4saex(con, er_id, extidpath);
+		} finally {
+			con.close();
+		}
+	}
+
+	public static boolean hasaccess4saex(CDBConnection con, String er_id, String extidpath) throws Exception {
+		Hr_employee emp = new Hr_employee();
+		String sqlstr = "SELECT * FROM hr_employee WHERE employee_code='" + CSContext.getUserName() + "'";
+		emp.findBySQL(con,sqlstr, false);
+		if (!emp.isEmpty()) {
+			if (er_id.equalsIgnoreCase(emp.er_id.getValue()))
+				return true; // 本人
+		}
+		if (!HRUtil.hasRoles("71,19")) {// 薪酬管理员
+			return false; // 不是薪酬管理员
+		}
+		sqlstr = "SELECT ifnull(count(*),0) ct FROM hr_employee WHERE er_id=" + er_id + CSContext.getIdpathwhere();
+		if (Integer.valueOf(con.openSql2List(sqlstr).get(0).get("ct")) > 0)
+			return true;// 是管辖范围内的
+
+		// 扩展idpath
+		if ((extidpath != null) && (!extidpath.isEmpty())) {
+			String[] idps = CSContext.getUserIdpaths();
+			for (String idp : idps) {
+				if (extidpath.length() >= idp.length()) {
+					String nidp = extidpath.substring(0, idp.length());
+					if (idp.equalsIgnoreCase(nidp))
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@ACOAction(eventname = "getSalaryStruce", Authentication = true, notes = "获取薪资结构")
+	public String getSalaryStruce() throws Exception {
+		String sqlstr = "select * from hr_salary_structure where stat=9";
+		String[] ignParms = { "idpath"};// 忽略的查询条件
+		return new CReport(sqlstr, null).findReport(ignParms, null);
+	}
+
+	@ACOAction(eventname = "getCur_salary_chglg", Authentication = true, notes = "获取最新工资变更记录")
+	public String getCur_salary_chglg() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		String er_id = CorUtil.hashMap2Str(urlparms, "er_id", "需要参数er_id");
+		//// 检查权限
+		JSONObject jo = new JSONObject();
+		if (!hasaccess4saex(er_id, null)) {
+			jo.put("accessed", 2);
+			return jo.toString();
+		} else {
+			jo.put("accessed", 1);
+			return CtrSalaryCommon.getCur_salary_chglg(er_id).toString();
+		}
+	}
+
+	@ACOAction(eventname = "get_salary_chgblill", Authentication = true, notes = "获取表单薪资变动")
+	public String get_salary_chgblill() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		int tp = Integer.valueOf(CorUtil.hashMap2Str(urlparms, "tp", "需要参数tp"));// 1 入职表单 2 入职转正表单 3调动表单 5调动转正表单
+		String id = CorUtil.hashMap2Str(urlparms, "id", "需要参数id");
+		Hr_salary_chgbill cb = new Hr_salary_chgbill();
+		String extidpath = "";// 其它idpath 便于非管理关系人查看薪资
+		String er_id = null;
+		int scatype = 0, stype = 0;
+		if (tp == 1) {
+			Hr_entry ent = new Hr_entry();
+			ent.findByID(id);
+			if (ent.isEmpty())
+				throw new Exception("id为【" + id + "】的入职表单不存在");
+			er_id = ent.er_id.getValue();
+			scatype = 1;
+			stype = 3;
+		}
+		if (tp == 2) {
+			Hr_entry_prob jpa = new Hr_entry_prob();
+			jpa.findByID(id);
+			if (jpa.isEmpty())
+				throw new Exception("id为【" + id + "】的入职转正表单不存在");
+			er_id = jpa.er_id.getValue();
+			scatype = 3;
+			stype = 5;
+		}
+		if (tp == 3) {
+			Hr_employee_transfer jpa = new Hr_employee_transfer();
+			jpa.findByID(id);
+			if (jpa.isEmpty())
+				throw new Exception("id为【" + id + "】的调动表单不存在");
+			Shworg org = new Shworg();
+			org.findByID(jpa.neworgid.getValue());
+			extidpath = org.idpath.getValue();
+			er_id = jpa.er_id.getValue();
+			scatype = 2;
+			stype = 4;
+		}
+		if (tp == 4) {
+			Hr_transfer_prob jpa = new Hr_transfer_prob();
+			jpa.findByID(id);
+			if (jpa.isEmpty())
+				throw new Exception("id为【" + id + "】的调动转正表单不存在");
+			er_id = jpa.er_id.getValue();
+			scatype = 3;
+			stype = 6;
+		}
+		if (tp == 5) {
+			Hr_salary_specchgsa jpa = new Hr_salary_specchgsa();
+			jpa.findByID(id);
+			if (jpa.isEmpty())
+				throw new Exception("id为【" + id + "】的个人特殊调薪表单不存在");
+			er_id = jpa.er_id.getValue();
+			scatype = 5;
+			stype = 7;
+		}
+
+		JSONObject jo = new JSONObject();
+		//// 检查权限
+		if (!hasaccess4saex(er_id, extidpath)) {
+			jo.put("accessed", 2);
+			return jo.toString();
+		} else
+			jo.put("accessed", 1);
+		String sqlstr = "SELECT * FROM hr_salary_chgbill WHERE scatype=" + scatype + " AND stype=" + stype + " AND sid=" + id;
+		cb.findBySQL(sqlstr);
+		sqlstr = "select * from hr_salary_structure where stat=9 and stru_id=" + cb.newstru_id.getValue();
+		Hr_salary_structure new_hr_salary_structure = new Hr_salary_structure();
+		new_hr_salary_structure.findBySQL(sqlstr);
+		jo.put("chgbill", cb.toJsonObj());
+		jo.put("newstruc", new_hr_salary_structure.toJsonObj());
+		return jo.toString();
+	}
+
+	/**
+	 * 入职表单保存 薪资信息
+	 * 
+	 * @param ent
+	 * @throws Exception
+	 */
+	public static void save_salary_chgblill(CDBConnection con, Hr_entry ent, JSONObject jo) throws Exception {
+		if (!jo.has("newstru_id") || (jo.getString("newstru_id").isEmpty())) {
+			System.out.println("入职表单，薪资结构ID为空，放弃保存薪资结构");
+			return;
+		}
+		if (!hasaccess4saex(con, ent.er_id.getValue(), null)) {//// 检查权限
+			return;
+		}
+		savesalarychgblill(con, jo, ent.er_id.getValue(), 1, 3, ent.entry_id.getValue(),
+				ent.entry_code.getValue(), ent.entrydate.getValue(), "入职定薪");
+
+		// String sqlstr = "SELECT * FROM hr_salary_chgbill WHERE scatype=1 AND stype=3 AND sid=" + ent.entry_id.getValue();
+		// Hr_salary_chgbill cb = new Hr_salary_chgbill();
+		// cb.findBySQL(con, sqlstr, false);
+		// cb.er_id.setValue(ent.er_id.getValue()); // 人事ID
+		// cb.scatype.setValue(1); // // 1 入职定薪、2调动核薪、3 转正调薪、4 年度调薪、5 特殊调薪 6调动转正 7 兼职8津贴
+		// cb.stype.setValue(3); // 来源类别 1 历史数据、2 实习登记、3 入职表单、4 调动表单、5 入职转正、6 调动转正、7个人特殊调薪 8兼职、9批量特殊调薪、10技术津贴、11岗位津贴、12年度调薪....
+		// cb.sid.setValue(ent.entry_id.getValue()); // 来源ID
+		// cb.scode.setValue(ent.entry_code.getValue()); // 来源单号
+		// cb.oldstru_id.setValue(null); // 调薪前工资结构ID
+		// cb.oldstru_name.setValue(null); // 调薪前工资结构名
+		// cb.oldchecklev.setValue(null); // 调薪前绩效考核层级
+		// cb.oldattendtype.setValue(null); // 调薪前出勤类别
+		// cb.oldcalsalarytype.setValue(null); // 调薪前计薪方式
+		// cb.oldposition_salary.setValue(null); // 调薪前职位工资
+		// cb.oldbase_salary.setValue(0); // 调薪前基本工资
+		// cb.oldtech_salary.setValue(0); // 调薪前技能工资
+		// cb.oldachi_salary.setValue(0); // 调薪前绩效工资
+		// cb.oldotwage.setValue(0); // 调薪前固定加班工资
+		// cb.oldtech_allowance.setValue(0); // 调薪前技术津贴
+		// cb.oldparttimesubs.setValue(0); // 调薪前兼职津贴
+		// cb.oldpostsubs.setValue(0); // 调薪前岗位津贴
+		// cb.oldavg_salary.setValue(0); // 调薪前平均工资
+		// cb.newstru_id.setValue(oj.getString("newstru_id")); // 调薪后工资结构ID
+		// cb.newstru_name.setValue(oj.getString("newstru_name")); // 调薪后工资结构名
+		// cb.newchecklev.setValue(oj.getString("newchecklev")); // 调薪后绩效考核层级
+		// cb.newattendtype.setValue(oj.getString("newattendtype")); // 调薪后出勤类别
+		// cb.newcalsalarytype.setValue(oj.getString("newattendtype")); // 调薪后计薪方式
+		// cb.newposition_salary.setValue(oj.getString("newposition_salary")); // 调薪后职位工资
+		// cb.newbase_salary.setValue(oj.getString("newbase_salary")); // 调薪后基本工资
+		// cb.newtech_salary.setValue(oj.getString("newtech_salary")); // 调薪后技能工资
+		// cb.newachi_salary.setValue(oj.getString("newachi_salary")); // 调薪后绩效工资
+		// cb.newotwage.setValue(oj.getString("newotwage")); // 调薪后固定加班工资
+		// cb.newtech_allowance.setValue(oj.getString("newtech_allowance")); // 调薪后技术津贴
+		// cb.newparttimesubs.setValue(0); // 调薪后兼职津贴
+		// cb.newpostsubs.setValue(0); // 调薪后岗位津贴
+		// cb.sacrage.setValue(0); // 调薪幅度
+		// cb.chgdate.setValue(ent.entrydate.getValue()); // 调薪日期
+		// cb.chgreason.setValue("入职定薪"); // 调薪原因
+		// cb.remark.setValue(null); // 备注
+		// cb.save(con);
+	}
+
+	public static void save_salary_chgblill(CDBConnection con, Hr_entry_prob ep, JSONObject jo) throws Exception {
+		if (!jo.has("newstru_id") || (jo.getString("newstru_id").isEmpty()))
+			return;
+		if (!hasaccess4saex(con, ep.er_id.getValue(), null)) {//// 检查权限
+			return;
+		}
+		savesalarychgblill(con, jo, ep.er_id.getValue(), 3, 5, ep.pbtid.getValue(),
+				ep.pbtcode.getValue(), ep.salarydate.getValue(), "入职转正调薪");
+	}
+
+	public static void save_salary_chgblill(CDBConnection con, Hr_employee_transfer ep, JSONObject jo) throws Exception {
+		if (!jo.has("newstru_id") || (jo.getString("newstru_id").isEmpty()))
+			return;
+		if (!hasaccess4saex(con, ep.er_id.getValue(), null)) {//// 检查权限
+			return;
+		}
+		savesalarychgblill(con, jo, ep.er_id.getValue(), 2, 4, ep.emptranf_id.getValue(),
+				ep.emptranfcode.getValue(), ep.salarydate.getValue(), "调动调薪");
+	}
+
+	public static void save_salary_chgblill(CDBConnection con, Hr_transfer_prob ep, JSONObject jo) throws Exception {
+		if (!jo.has("newstru_id") || (jo.getString("newstru_id").isEmpty()))
+			return;
+		if (!hasaccess4saex(con, ep.er_id.getValue(), null)) {//// 检查权限
+			return;
+		}
+		savesalarychgblill(con, jo, ep.er_id.getValue(), 3, 6, ep.pbtid.getValue(),
+				ep.pbtcode.getValue(), ep.salarydate.getValue(), "调动转正调薪");
+	}
+	
+	public static void save_salary_chgblill(CDBConnection con, Hr_salary_specchgsa scs, JSONObject jo) throws Exception {
+		if (!jo.has("newstru_id") || (jo.getString("newstru_id").isEmpty()))
+			return;
+		if (!hasaccess4saex(con, scs.er_id.getValue(), null)) {//// 检查权限
+			return;
+		}
+		savesalarychgblill(con, jo, scs.er_id.getValue(), 5, 7, scs.scsid.getValue(),
+				scs.scscode.getValue(), scs.salarydate.getValue(), "个人特殊调薪");
+	}
+
+	private static void savesalarychgblill(CDBConnection con, JSONObject jo, String er_id, int scatype, int stype,
+			String sid, String scode, String chgdate, String chgreason) throws Exception {
+		String sqlstr = "SELECT * FROM hr_salary_chgbill WHERE scatype=" + scatype + " AND stype=" + stype + " AND sid=" + sid;
+		Hr_salary_chgbill cb = new Hr_salary_chgbill();
+		cb.findBySQL(con, sqlstr, false);
+		cb.er_id.setValue(er_id); // 人事ID
+		cb.scatype.setValue(scatype); // // 1 入职定薪、2调动核薪、3 转正调薪、4 年度调薪、5 特殊调薪 6调动转正 7 兼职8津贴
+		cb.stype.setValue(stype); // 来源类别 1 历史数据、2 实习登记、3 入职表单、4 调动表单、5 入职转正、6 调动转正、7个人特殊调薪 8兼职、9批量特殊调薪、10技术津贴、11岗位津贴、12年度调薪....
+		cb.sid.setValue(sid); // 来源ID
+		cb.scode.setValue(scode); // 来源单号
+		cb.oldstru_id.setValue(getJSValue(jo, "oldstru_id")); // 调薪前工资结构ID
+		cb.oldstru_name.setValue(getJSValue(jo, "oldstru_name")); // 调薪前工资结构名
+		cb.oldchecklev.setValue(getJSValue(jo, "oldchecklev")); // 调薪前绩效考核层级
+		cb.oldattendtype.setValue(getJSValue(jo, "oldattendtype")); // 调薪前出勤类别
+		cb.oldcalsalarytype.setValue(getJSValue(jo, "oldcalsalarytype")); // 调薪前计薪方式
+		cb.oldposition_salary.setValue(getJSValue(jo, "oldposition_salary")); // 调薪前职位工资
+		cb.oldbase_salary.setValue(getJSValue(jo, "oldbase_salary")); // 调薪前基本工资
+		cb.oldtech_salary.setValue(getJSValue(jo, "oldtech_salary")); // 调薪前技能工资
+		cb.oldachi_salary.setValue(getJSValue(jo, "oldachi_salary")); // 调薪前绩效工资
+		cb.oldotwage.setValue(getJSValue(jo, "oldotwage")); // 调薪前固定加班工资
+		cb.oldtech_allowance.setValue(getJSValue(jo, "oldtech_allowance")); // 调薪前技术津贴
+		cb.oldparttimesubs.setValue(getJSValue(jo, "oldparttimesubs")); // 调薪前兼职津贴
+		cb.oldpostsubs.setValue(getJSValue(jo, "oldpostsubs")); // 调薪前岗位津贴
+		cb.oldovt_salary.setValue(getJSValue(jo, "oldovt_salary")); // 调薪前加班工资
+		cb.oldavg_salary.setValue(getJSValue(jo, "oldavg_salary")); // 调薪前平均工资
+
+		cb.newstru_id.setValue(getJSValue(jo, "newstru_id")); // 调薪后工资结构ID
+		cb.newstru_name.setValue(getJSValue(jo, "newstru_name")); // 调薪后工资结构名
+		cb.newchecklev.setValue(getJSValue(jo, "newchecklev")); // 调薪后绩效考核层级
+		cb.newattendtype.setValue(getJSValue(jo, "newattendtype")); // 调薪后出勤类别
+		cb.newcalsalarytype.setValue(getJSValue(jo, "newcalsalarytype")); // 调薪后计薪方式
+		cb.newposition_salary.setValue(getJSValue(jo, "newposition_salary")); // 调薪后职位工资
+		cb.newbase_salary.setValue(getJSValue(jo, "newbase_salary")); // 调薪后基本工资
+		cb.newtech_salary.setValue(getJSValue(jo, "newtech_salary")); // 调薪后技能工资
+		cb.newachi_salary.setValue(getJSValue(jo, "newachi_salary")); // 调薪后绩效工资
+		cb.newotwage.setValue(getJSValue(jo, "newotwage")); // 调薪后固定加班工资
+		cb.newtech_allowance.setValue(getJSValue(jo, "newtech_allowance")); // 调薪后技术津贴
+		cb.newparttimesubs.setValue(getJSValue(jo, "newparttimesubs")); // 调薪后兼职津贴
+		cb.newpostsubs.setValue(getJSValue(jo, "newpostsubs")); // 调薪后岗位津贴
+		cb.newovt_salary.setValue(getJSValue(jo, "newovt_salary")); // 调薪后加班工资
+		cb.newavg_salary.setValue(getJSValue(jo, "newavg_salary")); // 调薪后平均工资
+		cb.sacrage.setValue(getJSValue(jo, "sacrage")); // 调薪幅度
+
+		cb.chgdate.setValue(chgdate); // 调薪日期
+		cb.chgreason.setValue(chgreason); // 调薪原因
+		cb.remark.setValue(null); // 备注
+		cb.save(con);
+	}
+
+	private static String getJSValue(JSONObject jo, String fdname) {
+		if (jo.has(fdname))
+			return jo.getString(fdname);
+		else
+			return null;
+	}
+
+}

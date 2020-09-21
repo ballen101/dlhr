@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_ct">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic764",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=764",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic771",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=771",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'ctcr_code',title:'卡机编号',width:100},
+            {field:'ctcr_name',title:'卡机名称',width:120},
+            {field:'mc_name',title:'餐类名称',width:64},
+            {field:'mealbegin',title:'用餐开始时间',width:80},
+            {field:'mealend',title:'用餐结束时间',width:80},
+           // {field:'ctms_name',title:'餐制名称',width:100},
+            {field:'price',title:'餐标',width:64},
+           // {field:'subsidies',title:'补贴金额',width:64},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [];
+
+        frmOptions = {
+            JPAClass: "com.hr.canteen.entity.Hr_canteen_cardrelatems",
+            JPAIdField: "crms_id",
+            allowAtt: true,
+            allowWF: true,
+            //  gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "卡机餐制关联",
+            allow_expt_list: true,
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+
+               // jsondata.signyears = 3;
+              // var ed = gap(jsondata.sign_date,3);
+             //   jsondata.end_date = ed;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            }
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrct/canteen/impcardrelatemealsystemexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_CTRoom_pw = undefined;
+        function onFindCTRoom() {
+           // var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var url= _serUrl + "/web/hrct/canteen/findctroomlist.co";
+            var wo = {
+                id: "select_version_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room",  //对应后台JPAClass名
+                orderStr: " ctr_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctr_id',
+              //  pidField: 'superid',
+               // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'ctr_name', title: '餐厅名称', width: 120},
+                    {field: 'address', title: '地点', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ctr_id', row.ctr_id);
+                        mainline.setFieldValue('ctr_code', row.ctr_code);
+                        mainline.setFieldValue('ctr_name', row.ctr_name);
+                    }
+                }
+            };
+            if (!select_CTRoom_pw) {
+                select_CTRoom_pw = new TSearchForm(wo);
+            }
+            select_CTRoom_pw.show();
+        }
+
+        var select_mealclass_pw = undefined;
+        function onFindMealClass() {
+            var url =_serUrl + "/web/hrct/canteen/findmealclasslist.co";
+            var wo = {
+                id: "select_mealclass_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_mealclass",  //对应后台JPAClass名
+                orderStr: " mc_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'mc_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'},
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}//,{parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'mc_name', title: '餐类', width: 120},
+                    {field: 'mealbegin', title: '用餐时间', width: 100},
+                    {field: 'mealend', title: '结束时间', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('mc_id', row.mc_id);
+                        mainline.setFieldValue('mc_code', row.mc_code);
+                        mainline.setFieldValue('mc_name', row.mc_name);
+                        mainline.setFieldValue('classtype', row.classtype);
+                        mainline.setFieldValue('mealbegin', row.mealbegin);
+                        mainline.setFieldValue('mealend', row.mealend);
+                    }
+                }
+            };
+            if (!select_mealclass_pw) {
+                select_mealclass_pw = new TSearchForm(wo);
+            }else{
+                select_mealclass_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'stat', reloper: '=', parmvalue: '9'},
+                        {parmname: 'usable', reloper: '=', parmvalue: '1'}//,{parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                    ]//扩展参数
+                })
+            }
+            select_mealclass_pw.show(true);
+        }
+
+        var select_mealsystem_pw = undefined;
+        function onFindMealSystem() {
+            var mc= mainline.getFieldValue("mc_id");
+            if ((!mc) || (mc.length == 0)) {
+                $.messager.alert('错误', "请先选择餐类！", 'error');
+                return;
+            }
+            var url =_serUrl + "/web/hrct/canteen/findmealsystemlist.co";
+            var wo = {
+                id: "select_mealsystem_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_mealsystem",  //对应后台JPAClass名
+                orderStr: " ctms_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctms_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'},{parmname: 'mc_id', reloper: '=', parmvalue: mc}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'mc_name', title: '餐类', width: 60},
+                    {field: 'ctms_name', title: '餐制', width: 120},
+                    {field: 'price', title: '餐标', width: 100},
+                    {field: 'subsidies', title: '补贴', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ctms_id', row.ctms_id);
+                        mainline.setFieldValue('ctms_code', row.ctms_code);
+                        mainline.setFieldValue('ctms_name', row.ctms_name);
+                        mainline.setFieldValue('price', row.price);
+                        mainline.setFieldValue('subsidies', row.subsidies);
+                    }
+                }
+            };
+            if (!select_mealsystem_pw) {
+                select_mealsystem_pw = new TSearchForm(wo);
+            }else{
+                select_mealsystem_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'stat', reloper: '=', parmvalue: '9'},{parmname: 'mc_id', reloper: '=', parmvalue: mc}
+                    ]//扩展参数
+                })
+            }
+            select_mealsystem_pw.show(true);
+        }
+
+        var select_cardreader_pw = undefined;
+        function onFindCardReader() {
+            var url =_serUrl + "/web/hrct/canteen/findcardreaderlist.co";
+            var wo = {
+                id: "select_cardreader_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_cardreader",  //对应后台JPAClass名
+                orderStr: " ctcr_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctcr_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'},
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}//,{parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'ctcr_code', title: '卡机编号', width: 100},
+                    {field: 'ctcr_name', title: '卡机名', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ctcr_id', row.ctcr_id);
+                        mainline.setFieldValue('ctcr_code', row.ctcr_code);
+                        mainline.setFieldValue('ctcr_name', row.ctcr_name);
+                        mainline.setFieldValue('ctr_id', row.ctr_id);
+                        mainline.setFieldValue('ctr_code', row.ctr_code);
+                        mainline.setFieldValue('ctr_name', row.ctr_name);
+                    }
+                }
+            };
+            if (!select_cardreader_pw) {
+                select_cardreader_pw = new TSearchForm(wo);
+            }else{
+                select_cardreader_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'stat', reloper: '=', parmvalue: '9'},
+                        {parmname: 'usable', reloper: '=', parmvalue: '1'}//,{parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                    ]//扩展参数
+                })
+            }
+            select_cardreader_pw.show(true);
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ctcr_code'">卡机编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctcr_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ctcr_name'">卡机名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctcr_name',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindCardReader" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'mc_name'">对应餐类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mc_name',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindMealClass" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'price'">餐标</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'price',crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'mealbegin'">用餐开始时间</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mealbegin',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'mealend'">用餐结束时间</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mealend',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

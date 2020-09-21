@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_asset">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+         ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'asset_item_code',title:'资产编码',width:120},
+            {field:'asset_item_name',title:'资产名称',width:150},
+            {field:'asset_type_code',title:'资产类型编码',width:120},
+            {field:'uom',title:'单位',formatter: comUrl_dic9.formator,width:100},
+            {field:'stat',title:'表单状态',width:64, formatter: comUrl_dic227.formator},
+            {field:'remarks',title:'备注',width:300},
+            {field:'creator',title:'创建人',width:64},
+            {field:'createtime',title:'创建时间',width:130},
+            {field:'updator',title:'修改人',width:64},
+            {field:'updatetime',title:'修改时间',width:130},
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.asset.entity.Hr_asset_item",
+            JPAIdField: "asset_item_id",
+            allowAtt: false,
+            allowWF: true,
+            datainfo_pw_title: "资产编码",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '300px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+        //查询资产类型
+        var select_assettype_pw=undefined;
+        function onFindtype() {
+            //var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_assettype_pw",
+                JPAClass: "com.hr.asset.entity.Hr_asset_type",  //对应后台JPAClass名
+                //coURL: url,
+                //orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'assettypeid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'asset_type_name', title: '类型名称', width: 150},
+                    {field: 'asset_type_code', title: '类型编码', width: 100}
+                ],
+                extParms: [
+                    {parmname: 'effective_flag', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("asset_type_id", row.asset_type_id);//设置界面值
+                        mainline.setFieldValue("asset_type_code", row.asset_type_code);
+                        mainline.setFieldValue("asset_type_name", row.asset_type_name);
+                        //mainline.setFieldValue("idpath",row.idpath);
+                    }
+                }
+            };
+            if (!select_assettype_pw) {
+                select_assettype_pw = new TSearchForm(wo);
+            }
+            select_assettype_pw.show();
+        }
+        //Excel导入
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Asset/ImpItemExcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'asset_item_code'">资产编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_item_code',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_item_name'">资产名称</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_item_name',crequired:true" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'asset_type_code'">资产类型编码</td>
+        <td ><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_type_code',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_type_name'">资产类型名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_type_name',buttonIcon:'icon-search',onClickButton:onFindtype,editable:false,crequired:true" style="height:20px;width:100%"/></td>
+        <td cjoptions="fdname:'uom'">单位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'uom',crequired:true,comidx:'dic9'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stat'">表单状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks'" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">修改人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">修改日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

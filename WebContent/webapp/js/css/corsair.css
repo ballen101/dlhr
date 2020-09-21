@@ -1,0 +1,858 @@
+.corsair-panel {
+    color: #000000;
+    font-size: 12px;
+}
+
+.cpanel-header {
+    height: 18px;
+    color: #0e2d5f;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    background: #E0ECFF;
+    border-color: #95b8e7;
+    border-width: 0 0 1px;
+    padding: 5px;
+}
+
+.corsair-label {
+    height: 18px;
+    line-height: 18px;
+    margin: 0 2px 0 2px;
+    padding: 0 2px 0 2px;
+    font-size: 12px;
+    border: 0 none;
+    outline-style: none;
+    resize: none;
+    vertical-align: top;
+    white-space: normal;
+    border-bottom: 1px solid #8ACAEA;
+}
+
+.corsair_link_button {
+    height: 18px;
+    line-height: 18px;
+    padding: 2px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.application_home {
+    background: url('icons/application_home.png') no-repeat center center;
+}
+
+.icon-mylocation {
+    background: url('icons/user_home.png') no-repeat center center;
+}
+
+.icon-xietongmg {
+    background: url('icons/organization.png') no-repeat center center;
+}
+
+.icon-companyset {
+    background: url('icons/monitor_link.png') no-repeat center center;
+}
+
+.icon-systemset {
+    background: url('icons/cog.png') no-repeat center center;
+}
+
+.icon-service {
+    background: url('icons/server_chart.png') no-repeat center center;
+}
+
+.icon-office {
+    background: url('icons/page_white_office.png') no-repeat center center;
+}
+
+.icon-sailmg {
+    background: url('icons/cart_full.png') no-repeat center center;
+}
+
+.icon-mywork {
+    background: url('icons/monitor.png') no-repeat center center;
+}
+
+.icon-myoptions {
+    background: url('icons/wrench.png') no-repeat center center;
+}
+
+.icon-yewuchuli {
+    background: url('icons/report.png') no-repeat center center;
+}
+
+.icon-baseoptions {
+    background: url('icons/wrench.png') no-repeat center center;
+}
+
+.icon-reports {
+    background: url('icons/chart_pie.png') no-repeat center center;
+}
+
+.icon-worktixing {
+    background: url('icons/information.png') no-repeat center center;
+}
+
+.icon-orgationset {
+    background: url('icons/chart_organisation.png') no-repeat center center;
+}
+
+.icon-usergroupmt {
+    background: url('icons/group.png') no-repeat center center;
+}
+
+.icon-companypostion {
+    background: url('icons/award_star_bronze_3.png') no-repeat center center;
+}
+
+.icon-workflow {
+    background: url('icons/arrow_switch.png') no-repeat center center;
+}
+
+.icon-monitor_edit {
+    background: url('icons/monitor_edit.png') no-repeat center center;
+}
+
+.icon-edit {
+    background: url('icons/edit.png') no-repeat center center;
+}
+
+.icon-undo {
+    background: url('icons/undo.png') no-repeat center center;
+}
+
+.icon-factory {
+    background: url('icons/factory.png') no-repeat center center;
+}
+
+.icon-datadictionary {
+    background: url('icons/database_wrench.png') no-repeat center center;
+}
+
+.icon-menuedit {
+    background: url('icons/award_star_bronze_3.png') no-repeat center center;
+}
+
+.icon-user {
+    background: url('icons/user.png') no-repeat center center;
+}
+
+.icon-userdisabled {
+    background: url('icons/userdisabled.png') no-repeat center center;
+}
+
+.icon-user_group {
+    background: url('icons/user_group.png') no-repeat center center;
+}
+
+.icon-text_ab {
+    background: url('icons/text_ab.png') no-repeat center center;
+}
+
+.icon-folder_page {
+    background: url('icons/folder_page.png') no-repeat center center;
+}
+
+.icon-folder {
+    background: url('icons/folder.png') no-repeat center center;
+}
+
+.icon-folderuser {
+    background: url('icons/folder_user.png') no-repeat center center;
+}
+
+.icon-folderlink {
+    background: url('icons/folder_link.png') no-repeat center center;
+}
+
+.icon-text_horizontalrule {
+    background: url('icons/text_horizontalrule.png') no-repeat center center;
+}
+
+.icon-ml_add {
+    background: url('icons/ml_add.png') no-repeat center center;
+}
+
+.icon-ml_save {
+    background: url('icons/ml_save.png') no-repeat center center;
+}
+
+.icon-ml_find {
+    background: url('icons/ml_find.png') no-repeat center center;
+}
+
+.icon-ml_detail {
+    background: url('icons/ml_detail.png') no-repeat center center;
+}
+
+.icon-ml_del {
+    background: url('icons/ml_del.png') no-repeat center center;
+}
+
+.icon-ml_attach {
+    background: url('icons/ml_attach.png') no-repeat center center;
+}
+
+.icon-ml_print {
+    background: url('icons/ml_print.png') no-repeat center center;
+}
+
+.icon-ml_excel {
+    background: url('icons/ml_excel.png') no-repeat center center;
+}
+
+.icon-exportexcel {
+    background: url('icons/exportexcel.png') no-repeat center center;
+}
+
+.icon-importexcel {
+    background: url('icons/importexcel.png') no-repeat center center;
+}
+
+.icon-exit {
+    background: url('icons/exit.png') no-repeat center center;
+}
+
+.icon-notexit {
+    background: url('icons/notexit.png') no-repeat center center;
+}
+
+.icon-arrow-right-disable {
+    background: url('icons/arrow-right-disable.png') no-repeat center center;
+}
+
+.icon-arrow-right-enable {
+    background: url('icons/arrow-right-enable.png') no-repeat center center;
+}
+
+.icon-arrow-left-disable {
+    background: url('icons/arrow-left-disable.png') no-repeat center center;
+}
+
+.icon-arrow-left-enable {
+    background: url('icons/arrow-left-enable.png') no-repeat center center;
+}
+
+.icon-splitter-h-dis {
+    background: url('icons/splitter-h-dis.png') no-repeat center center;
+}
+
+.icon-blank {
+    background: url('icons/blank.png') no-repeat center center;
+}
+
+.icon-mini-search {
+    background: url('icons/mini-search.png') no-repeat center center;
+}
+
+.icon-star {
+    background: url('icons/star.png') no-repeat center center;
+}
+
+.icon-ml_upload {
+    background: url('icons/ml_upload.png') no-repeat center center;
+}
+
+.icon-ml_download {
+    background: url('icons/ml_download.png') no-repeat center center;
+}
+
+.icon-add1 {
+    background: url('icons/add1.png') no-repeat center center;
+}
+
+.icon-add2 {
+    background: url('icons/add2.png') no-repeat center center;
+}
+
+.icon-submit {
+    background: url('icons/submit.png') no-repeat center center;
+}
+
+.icon-copy {
+    background: url('icons/copy.png') no-repeat center center;
+}
+
+.icon-paste {
+    background: url('icons/paste.png') no-repeat center center;
+}
+
+.icon-wait {
+    background: url('icons/wait.gif') no-repeat left center;
+}
+
+.icon-selectall {
+    background: url('icons/selectall.png') no-repeat left center;
+}
+
+.icon-message {
+    background: url('icons/message.png') no-repeat left center;
+}
+
+.icon-shortcut {
+    background: url('icons/shortcut.png') no-repeat left center;
+}
+
+.icon-task {
+    background: url('icons/task.png') no-repeat left center;
+}
+
+/*file 32*/
+.icon-file-ai32 {
+    background: url('icons/filetype/32/ai.png') no-repeat left center;
+}
+
+.icon-file-air32 {
+    background: url('icons/filetype/32/air.png') no-repeat left center;
+}
+
+.icon-file-asm32 {
+    background: url('icons/filetype/32/asm.png') no-repeat left center;
+}
+
+.icon-file-avi32 {
+    background: url('icons/filetype/32/avi.png') no-repeat left center;
+}
+
+.icon-file-chm32 {
+    background: url('icons/filetype/32/chm.png') no-repeat left center;
+}
+
+.icon-file-cmd32 {
+    background: url('icons/filetype/32/cmd.png') no-repeat left center;
+}
+
+.icon-file-code32 {
+    background: url('icons/filetype/32/code.png') no-repeat left center;
+}
+
+.icon-file-cpp32 {
+    background: url('icons/filetype/32/cpp.png') no-repeat left center;
+}
+
+.icon-file-cs32 {
+    background: url('icons/filetype/32/cs.png') no-repeat left center;
+}
+
+.icon-file-css32 {
+    background: url('icons/filetype/32/css.png') no-repeat left center;
+}
+
+.icon-file-dll32 {
+    background: url('icons/filetype/32/dll.png') no-repeat left center;
+}
+
+.icon-file-dmg32 {
+    background: url('icons/filetype/32/dmg.png') no-repeat left center;
+}
+
+.icon-file-doc32 {
+    background: url('icons/filetype/32/doc.png') no-repeat left center;
+}
+
+.icon-file-exe32 {
+    background: url('icons/filetype/32/exe.png') no-repeat left center;
+}
+
+.icon-file-file32 {
+    background: url('icons/filetype/32/file.png') no-repeat left center;
+}
+
+.icon-file-fla32 {
+    background: url('icons/filetype/32/fla.png') no-repeat left center;
+}
+
+.icon-file-flv32 {
+    background: url('icons/filetype/32/flv.png') no-repeat left center;
+}
+
+.icon-file-folder32 {
+    background: url('icons/filetype/32/folder.png') no-repeat left center;
+}
+
+.icon-file-h32 {
+    background: url('icons/filetype/32/h.png') no-repeat left center;
+}
+
+.icon-file-html32 {
+    background: url('icons/filetype/32/html.png') no-repeat left center;
+}
+
+.icon-file-ini32 {
+    background: url('icons/filetype/32/ini.png') no-repeat left center;
+}
+
+.icon-file-ipa32 {
+    background: url('icons/filetype/32/ipa.png') no-repeat left center;
+}
+
+.icon-file-iso32 {
+    background: url('icons/filetype/32/iso.png') no-repeat left center;
+}
+
+.icon-file-java32 {
+    background: url('icons/filetype/32/java.png') no-repeat left center;
+}
+
+.icon-file-jpg32 {
+    background: url('icons/filetype/32/jpg.png') no-repeat left center;
+}
+
+.icon-file-js32 {
+    background: url('icons/filetype/32/js.png') no-repeat left center;
+}
+
+.icon-file-key32 {
+    background: url('icons/filetype/32/key.png') no-repeat left center;
+}
+
+.icon-file-makefile32 {
+    background: url('icons/filetype/32/makefile.png') no-repeat left center;
+}
+
+.icon-file-mp332 {
+    background: url('icons/filetype/32/mp3.png') no-repeat left center;
+}
+
+.icon-file-numbers32 {
+    background: url('icons/filetype/32/numbers.png') no-repeat left center;
+}
+
+.icon-file-oexe32 {
+    background: url('icons/filetype/32/oexe.png') no-repeat left center;
+}
+
+.icon-file-package32 {
+    background: url('icons/filetype/32/package.png') no-repeat left center;
+}
+
+.icon-file-pages32 {
+    background: url('icons/filetype/32/pages.png') no-repeat left center;
+}
+
+.icon-file-pdf32 {
+    background: url('icons/filetype/32/pdf.png') no-repeat left center;
+}
+
+.icon-file-php32 {
+    background: url('icons/filetype/32/php.png') no-repeat left center;
+}
+
+.icon-file-ppt32 {
+    background: url('icons/filetype/32/ppt.png') no-repeat left center;
+}
+
+.icon-file-psd32 {
+    background: url('icons/filetype/32/psd.png') no-repeat left center;
+}
+
+.icon-file-py32 {
+    background: url('icons/filetype/32/py.png') no-repeat left center;
+}
+
+.icon-file-rar32 {
+    background: url('icons/filetype/32/rar.png') no-repeat left center;
+}
+
+.icon-file-rb32 {
+    background: url('icons/filetype/32/rb.png') no-repeat left center;
+}
+
+.icon-file-recycle_image32 {
+    background: url('icons/filetype/32/recycle_image.png') no-repeat left center;
+}
+
+.icon-file-share_image32 {
+    background: url('icons/filetype/32/share_image.png') no-repeat left center;
+}
+
+.icon-file-sln32 {
+    background: url('icons/filetype/32/sln.png') no-repeat left center;
+}
+
+.icon-file-sql32 {
+    background: url('icons/filetype/32/sql.png') no-repeat left center;
+}
+
+.icon-file-svg32 {
+    background: url('icons/filetype/32/svg.png') no-repeat left center;
+}
+
+.icon-file-swf32 {
+    background: url('icons/filetype/32/swf.png') no-repeat left center;
+}
+
+.icon-file-ttf32 {
+    background: url('icons/filetype/32/ttf.png') no-repeat left center;
+}
+
+.icon-file-txt32 {
+    background: url('icons/filetype/32/txt.png') no-repeat left center;
+}
+
+.icon-file-xls32 {
+    background: url('icons/filetype/32/xls.png') no-repeat left center;
+}
+
+.icon-file-xml32 {
+    background: url('icons/filetype/32/xml.png') no-repeat left center;
+}
+
+.icon-file-zip32 {
+    background: url('icons/filetype/32/zip.png') no-repeat left center;
+}
+
+/*file 16*/
+.icon-file-ai16 {
+    background: url('icons/filetype/16/ai.png') no-repeat left center;
+}
+
+.icon-file-air16 {
+    background: url('icons/filetype/16/air.png') no-repeat left center;
+}
+
+.icon-file-asm16 {
+    background: url('icons/filetype/16/asm.png') no-repeat left center;
+}
+
+.icon-file-avi16 {
+    background: url('icons/filetype/16/avi.png') no-repeat left center;
+}
+
+.icon-file-chm16 {
+    background: url('icons/filetype/16/chm.png') no-repeat left center;
+}
+
+.icon-file-cmd16 {
+    background: url('icons/filetype/16/cmd.png') no-repeat left center;
+}
+
+.icon-file-code16 {
+    background: url('icons/filetype/16/code.png') no-repeat left center;
+}
+
+.icon-file-cpp16 {
+    background: url('icons/filetype/16/cpp.png') no-repeat left center;
+}
+
+.icon-file-cs16 {
+    background: url('icons/filetype/16/cs.png') no-repeat left center;
+}
+
+.icon-file-css16 {
+    background: url('icons/filetype/16/css.png') no-repeat left center;
+}
+
+.icon-file-dll16 {
+    background: url('icons/filetype/16/dll.png') no-repeat left center;
+}
+
+.icon-file-dmg16 {
+    background: url('icons/filetype/16/dmg.png') no-repeat left center;
+}
+
+.icon-file-doc16 {
+    background: url('icons/filetype/16/doc.png') no-repeat left center;
+}
+
+.icon-file-exe16 {
+    background: url('icons/filetype/16/exe.png') no-repeat left center;
+}
+
+.icon-file-file16 {
+    background: url('icons/filetype/16/file.png') no-repeat left center;
+}
+
+.icon-file-fla16 {
+    background: url('icons/filetype/16/fla.png') no-repeat left center;
+}
+
+.icon-file-flv16 {
+    background: url('icons/filetype/16/flv.png') no-repeat left center;
+}
+
+.icon-file-folder16 {
+    background: url('icons/filetype/16/folder.png') no-repeat left center;
+}
+
+.icon-file-h16 {
+    background: url('icons/filetype/16/h.png') no-repeat left center;
+}
+
+.icon-file-html16 {
+    background: url('icons/filetype/16/html.png') no-repeat left center;
+}
+
+.icon-file-ini16 {
+    background: url('icons/filetype/16/ini.png') no-repeat left center;
+}
+
+.icon-file-ipa16 {
+    background: url('icons/filetype/16/ipa.png') no-repeat left center;
+}
+
+.icon-file-iso16 {
+    background: url('icons/filetype/16/iso.png') no-repeat left center;
+}
+
+.icon-file-java16 {
+    background: url('icons/filetype/16/java.png') no-repeat left center;
+}
+
+.icon-file-jpg16 {
+    background: url('icons/filetype/16/jpg.png') no-repeat left center;
+}
+
+.icon-file-js16 {
+    background: url('icons/filetype/16/js.png') no-repeat left center;
+}
+
+.icon-file-key16 {
+    background: url('icons/filetype/16/key.png') no-repeat left center;
+}
+
+.icon-file-makefile16 {
+    background: url('icons/filetype/16/makefile.png') no-repeat left center;
+}
+
+.icon-file-mp316 {
+    background: url('icons/filetype/16/mp3.png') no-repeat left center;
+}
+
+.icon-file-numbers16 {
+    background: url('icons/filetype/16/numbers.png') no-repeat left center;
+}
+
+.icon-file-oexe16 {
+    background: url('icons/filetype/16/oexe.png') no-repeat left center;
+}
+
+.icon-file-package16 {
+    background: url('icons/filetype/16/package.png') no-repeat left center;
+}
+
+.icon-file-pages16 {
+    background: url('icons/filetype/16/pages.png') no-repeat left center;
+}
+
+.icon-file-pdf16 {
+    background: url('icons/filetype/16/pdf.png') no-repeat left center;
+}
+
+.icon-file-php16 {
+    background: url('icons/filetype/16/php.png') no-repeat left center;
+}
+
+.icon-file-ppt16 {
+    background: url('icons/filetype/16/ppt.png') no-repeat left center;
+}
+
+.icon-file-psd16 {
+    background: url('icons/filetype/16/psd.png') no-repeat left center;
+}
+
+.icon-file-py16 {
+    background: url('icons/filetype/16/py.png') no-repeat left center;
+}
+
+.icon-file-rar16 {
+    background: url('icons/filetype/16/rar.png') no-repeat left center;
+}
+
+.icon-file-rb16 {
+    background: url('icons/filetype/16/rb.png') no-repeat left center;
+}
+
+.icon-file-recycle_image16 {
+    background: url('icons/filetype/16/recycle_image.png') no-repeat left center;
+}
+
+.icon-file-share_image16 {
+    background: url('icons/filetype/16/share_image.png') no-repeat left center;
+}
+
+.icon-file-sln16 {
+    background: url('icons/filetype/16/sln.png') no-repeat left center;
+}
+
+.icon-file-sql16 {
+    background: url('icons/filetype/16/sql.png') no-repeat left center;
+}
+
+.icon-file-svg16 {
+    background: url('icons/filetype/16/svg.png') no-repeat left center;
+}
+
+.icon-file-swf16 {
+    background: url('icons/filetype/16/swf.png') no-repeat left center;
+}
+
+.icon-file-ttf16 {
+    background: url('icons/filetype/16/ttf.png') no-repeat left center;
+}
+
+.icon-file-txt16 {
+    background: url('icons/filetype/16/txt.png') no-repeat left center;
+}
+
+.icon-file-xls16 {
+    background: url('icons/filetype/16/xls.png') no-repeat left center;
+}
+
+.icon-file-xml16 {
+    background: url('icons/filetype/16/xml.png') no-repeat left center;
+}
+
+.icon-file-zip16 {
+    background: url('icons/filetype/16/zip.png') no-repeat left center;
+}
+
+/*file*/
+.ico_unknow {
+    background: url('icons/filetype/unknow.png') no-repeat left center;
+}
+
+.ico_excel {
+    background: url('icons/filetype/excel.png') no-repeat left center;
+}
+
+.ico_pdf {
+    background: url('icons/filetype/pdf.png') no-repeat left center;
+}
+
+.ico_pic {
+    background: url('icons/filetype/pic.png') no-repeat left center;
+}
+
+.ico_ppt {
+    background: url('icons/filetype/ppt.png') no-repeat left center;
+}
+
+.ico_swf {
+    background: url('icons/filetype/swf.png') no-repeat left center;
+}
+
+.ico_text {
+    background: url('icons/filetype/text.png') no-repeat left center;
+}
+
+.ico_video {
+    background: url('icons/filetype/video.png') no-repeat left center;
+}
+
+.ico_word {
+    background: url('icons/filetype/word.png') no-repeat left center;
+}
+
+.ico_zip {
+    background: url('icons/filetype/zip.png') no-repeat left center;
+}
+
+.ico_scan {
+    background: url('icons/scan.png') no-repeat left center;
+}
+
+.ico_tovoid {
+    background: url('icons/tovoid.png') no-repeat left center;
+}
+
+.ico_disabled {
+    background: url('icons/disabled.png') no-repeat left center;
+}
+
+.money_dollar {
+    background: url('icons/money_dollar.png') no-repeat left center;
+}
+
+.ico-refresh-line {
+    background: url('icons/refresh-line.png') no-repeat left center;
+}
+
+.ico-search-line {
+    background: url('icons/search-line.png') no-repeat left center;
+}
+
+.ico-file-transfer-fill {
+    background: url('icons/file-transfer-fill.png') no-repeat left center;
+}
+
+.ico-file-transfer-line {
+    background: url('icons/file-transfer-line.png') no-repeat left center;
+}
+
+.ico-new-add-line {
+    background: url('icons/new-add-line.png') no-repeat left center;
+}
+
+.ico-copy-line {
+    background: url('icons/copy-line.png') no-repeat left center;
+}
+
+.ico-save-line {
+    background: url('icons/save-line.png') no-repeat left center;
+}
+
+.ico-reply-line {
+    background: url('icons/reply-line.png') no-repeat left center;
+}
+
+.ico-printer-line {
+    background: url('icons/printer-line.png') no-repeat left center;
+}
+
+.ico-logout-circle-r-line {
+    background: url('icons/logout-circle-r-line.png') no-repeat left center;
+}
+
+.ico-filter-line {
+    background: url('icons/filter-line.png') no-repeat left center;
+}
+
+.ico-checkbox-circle-fill {
+    background: url('icons/checkbox-circle-fill.png') no-repeat left center;
+}
+
+.ico-delete-line {
+    background: url('icons/delete-line.png') no-repeat left center;
+}
+
+.ico-attachment-line {
+    background: url('icons/attachment-line.png') no-repeat left center;
+}
+
+.ico-cancel {
+    background: url('icons/cancel.png') no-repeat left center;
+}
+
+.ico-check-fill {
+    background: url('icons/check-fill.png') no-repeat left center;
+}
+
+.ico-check-double-fill {
+    background: url('icons/check-double-fill.png') no-repeat left center;
+}
+
+.ico-message-3-line {
+    background: url('icons/message-3-line.png') no-repeat left center;
+}
+
+.ico-remove_box {
+    background: url('icons/remove_box.png') no-repeat left center;
+}
+
+.ico-delete-all {
+     background: url('icons/delete-bin-7-fill.png') no-repeat left center;
+ }
+
+.ico-lock-2-line {
+    background: url('icons/lock-2-line.png') no-repeat left center;
+}
+
+.ico-lock-unlock-line {
+    background: url('icons/lock-unlock-line.png') no-repeat left center;
+}
+
+
+
+

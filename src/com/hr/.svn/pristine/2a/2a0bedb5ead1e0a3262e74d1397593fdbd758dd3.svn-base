@@ -1,0 +1,46 @@
+package com.hr.attd.entity;
+
+import com.corsair.cjpa.CField;
+import com.corsair.cjpa.util.CEntity;
+import com.corsair.cjpa.util.CFieldinfo;
+import com.corsair.server.cjpa.CJPA;
+import java.sql.Types;
+
+@CEntity()
+public class Hrkq_swcdlst extends CJPA {
+	@CFieldinfo(fieldname = "skid", iskey = true, notnull = true, caption = "打卡ID", datetype = Types.INTEGER)
+	public CField skid; // ID
+	@CFieldinfo(fieldname = "machineno", precision = 6, scale = 0, caption = "机器号", datetype = Types.INTEGER)
+	public CField machineno; // 机器号
+	@CFieldinfo(fieldname = "readerno", precision = 2, scale = 0, caption = "读头", datetype = Types.INTEGER)
+	public CField readerno; // 读头 补签时候作为补签明细表ID
+	@CFieldinfo(fieldname = "empno", notnull = true, caption = "工号", datetype = Types.VARCHAR)
+	public CField empno; // 工号
+	@CFieldinfo(fieldname = "card_number", caption = "卡号", datetype = Types.VARCHAR)
+	public CField card_number; // 卡号
+	@CFieldinfo(fieldname = "skdate", notnull = true, caption = "yyyy-MM-dd hh:mm:ss", datetype = Types.TIMESTAMP)
+	public CField skdate; // yyyy-MM-dd hh:mm:ss
+	@CFieldinfo(fieldname = "sktype", caption = "1 刷卡 2 签卡", datetype = Types.INTEGER)
+	public CField sktype; // 1 刷卡 2 签卡
+	@CFieldinfo(fieldname = "synid", notnull = true, caption = "旧ID 同步条件", datetype = Types.VARCHAR)
+	public CField synid; // 旧ID 同步条件
+	public String SqlWhere; // 查询附加条件
+	public int MaxCount; // 查询最大数量
+
+	// 自关联数据定义
+
+	public Hrkq_swcdlst() throws Exception {
+	}
+
+	@Override
+	public boolean InitObject() {// 类初始化调用的方法
+		super.InitObject();
+		return true;
+	}
+
+	@Override
+	public boolean FinalObject() { // 类释放前调用的方法
+		super.FinalObject();
+		return true;
+	}
+}

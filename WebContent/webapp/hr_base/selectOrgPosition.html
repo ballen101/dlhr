@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+
+        function $OnCorsairReady() {
+            getorgs();
+        }
+
+        function getorgs() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            $ajaxjsonget(url, function (jsondata) {
+                        jsondata[0].state = "";
+                        jsondata[0].iconCls = "application_home";
+                        setchildsnodeclose(jsondata[0]);
+                        $("#orggrid").treegrid({
+                            data: jsondata,
+                            onClickRow: function (row) {
+                                var urlp = _serUrl + "/web/hr/orgposition/findop.co?orgid=" + row.orgid;
+                                $ajaxjsonget(urlp, function (jsdata) {
+                                    $("#orgopgrid").treegrid("loadData", jsdata);
+                                }, function (err) {
+                                    $.messager.alert('错误', JSON.stringify(err), 'error');
+                                });
+                            }
+                        });
+                    },
+                    function (err) {
+                        $.messager.alert('错误', JSON.stringify(err), 'error');
+                    }
+            );
+            function setchildsnodeclose(node) {
+                if (node.children != undefined) {
+                    for (var i = 0; i < node.children.length; i++) {
+                        var chdnode = node.children[i];
+                        if (chdnode.children != undefined) {
+                            chdnode.state = "closed";
+                            setchildsnodeclose(chdnode);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        function OnOKModalDialog() {
+            var v = $("#cc").tree("getSelected");
+            if ((v == null) || (v == undefined)) {
+                $.messager.alert('错误', '没有选择的数据', 'error');
+                return;
+            }
+            return v;
+        }
+
+        function OnCancelModalDialog() {
+            return undefined;
+        }
+    </script>
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'west',border:false,split:true,collapsible:false"
+         style="width: 280px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+        <table id="orggrid" class="easyui-treegrid"
+               data-options="border:false,lines: true,idField: 'id',rownumbers: true,fitColumns: true,treeField: 'orgname'">
+            <thead>
+            <tr>
+                <th data-options="field:'orgname',hide:true" width="90%"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'center',title:'职位'" style="padding:0px">
+        <table id="orgopgrid" class="easyui-treegrid"
+               data-options="border:false,idField: 'ospid',rownumbers: true,fitColumns: true,treeField: 'sp_name',toolbar:'#toolbarOrgOptionGrid'">
+        </table>
+    </div>
+</div>
+</body>
+</html>

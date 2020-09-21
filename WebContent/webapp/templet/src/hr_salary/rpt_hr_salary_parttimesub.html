@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_salary">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1450",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1450",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic729",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=729",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic734",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=734",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1399",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1399",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                [
+                    {field: 'applaydate', title: '申请时间',  rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'startdate', title: '开始时间',  rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'enddate', title: '结束时间', rowspan: 2, width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'ptjalev', title: '兼职层级', rowspan: 2, width: 80, formatter: comUrl_dic734.formator},
+                    {field: 'ptjatype', title: '兼职范围', rowspan: 2, width: 100, formatter: comUrl_dic729.formator},
+                    {field: 'ptreason', title: '兼职原因', rowspan: 2, width: 110},
+                    {field: 'subsidyarm', title: '兼职补贴金额', rowspan: 2, width: 100,  formatter: floatsformator},
+                    {field: 'usable', title: '补贴有效', rowspan: 2, width: 64, formatter: comUrl_dic5.formator},
+                    {field: 'applaydate', title: '调整时间', rowspan: 2, width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'substart', title: '补贴开始', rowspan: 2, width: 80, formatter: $fieldDateFormatorYYYY_MM},
+                    {field: 'subend', title: '补贴截止', rowspan: 2, width: 80, formatter: $fieldDateFormatorYYYY_MM},
+                    {field: 'ptbbdate1', title: '终止月份', rowspan: 2, width: 80, formatter: $fieldDateFormatorYYYY_MM},
+                    {field: 'employee_code', title: '工号', rowspan: 2, width: 100},
+                    {field: 'employee_name', title: '姓名', rowspan: 2, width: 100},
+                    {field: 'degree', title: '学历', rowspan: 2, width: 64, formatter: comUrl_dic84.formator},
+                    {field: 'hiredday', title: '入职日期',  width: 100, rowspan: 2, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {title: '主职', colspan: 6},
+                    {title: '兼职', colspan: 6},
+                    {field: 'remark', title: '备注', rowspan: 2, width: 100}
+                ],
+                [
+                    {field: 'odorgname', title: '部门', width: 150},
+                    {field: 'odsp_name', title: '职位', width: 100},
+                    {field: 'oldhwc_namezl', title: '职类', width: 64},
+                    {field: 'odhg_name', title: '职等', width: 64},
+                    {field: 'odlv_num', title: '职级', width: 64},
+                    {field: 'odattendtype', title: '出勤类别', width: 64, formatter: comUrl_dic1399.formator},
+                    {field: 'neworgname', title: '部门', width: 150},
+                    {field: 'newsp_name', title: '职位', width: 100},
+                    {field: 'newhwc_namezl', title: '职类', width: 100},
+                    {field: 'newhg_name', title: '职等', width: 64},
+                    {field: 'newlv_num', title: '职级', width: 64},
+                    {field: 'newattendtype', title: '出勤类别', width: 64, formatter: comUrl_dic1399.formator}
+                ]
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var DYrelOptions = {
+            data: [{id: '=', value: '等于'},{id: '>=', value: '大于等于'},{id: '<=', value: '小于等于'}]
+        };
+        var XYrelOptions = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+
+        var findColums = [
+            {field: 'ymbg', title: '年月',  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'orgcode', title: '机构编码',  relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field: 'employee_name', title: '姓名', width: 70},
+            {field: 'degree', title: '学历',  width: 64, formatter: comUrl_dic84.formator},
+            {field:'sp_name',title:'职位',width:80},
+            {field: 'hiredday', title: '入职日期',  width: 100,  formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'subsidyarm', title: '补贴金额',  width: 100},
+            {field: 'substart', title: '补贴开始',  relOptions: DYrelOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'subend', title: '补贴截止',  relOptions: DYrelOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'ptjalev', title: '兼职层级',  width: 80, formatter: comUrl_dic734.formator},
+            {field: 'ptjatype', title: '兼职范围',  width: 100, formatter: comUrl_dic729.formator},
+            {field: 'odorgname', title: '主职部门', width: 150},
+            {field: 'odsp_name', title: '主职职位', width: 100},
+            {field: 'oldhwc_namezl', title: '主职职类', width: 64},
+            {field: 'odhg_name', title: '主职职等', width: 64},
+            {field: 'odlv_num', title: '主职职级', width: 64},
+            {field: 'odattendtype', title: '主职出勤类别', width: 64},
+            {field: 'neworgname', title: '兼职部门', width: 150},
+            {field: 'newsp_name', title: '兼职职位', width: 100},
+            {field: 'newhwc_namezl', title: '兼职职类', width: 100},
+            {field: 'newhg_name', title: '兼职职等', width: 64},
+            {field: 'newlv_num', title: '兼职职级', width: 64},
+            {field: 'newattendtype', title: '兼职出勤类别', width: 64}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrsalary/command/getparttimesublist.co",
+            extButtons: [//扩展按钮
+
+            ]
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/list/impsalarylistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+
+        function floatsformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

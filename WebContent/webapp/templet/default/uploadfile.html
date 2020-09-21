@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../../js/css/corsair.css">
+    <script type="text/javascript" src="../../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../../js/icefall.min.js"></script>
+    <script type="text/javascript">
+
+        var seted = false, filshed = false;
+        var _callback = undefined, _onstart = undefined, _multifile = undefined, _acceptfile = undefined;
+        function upload() {
+            var files = $("#file")[0].files;
+            if (files) {
+                if (files.length == 0) {
+                    $.messager.alert('错误', "请选择需要上传的文件", 'error');
+                    return;
+                }
+            } else {
+                if ($("#file").val().length == 0) {
+                    $.messager.alert('错误', "请选择需要上传的文件", 'error');
+                    return;
+                }
+            }
+            if (!seted) {
+                $("#newformid").attr("action", _action);
+                $("#newformid").attr("method", "POST");
+                $("#newformid").attr("target", "resultifr");
+                $("#newformid").attr("enctype", "multipart/form-data");
+                //$("#newformid").attr("onerror", onsubmiterr);
+                $("#resultifr").load(submitcallback);
+                seted = true;
+            }
+            filshed = false;
+            $("#newformid").submit();
+            //reflashProcedure();
+            if (_onstart)
+                _onstart();
+            return false;
+        }
+
+        function onsubmiterr(){
+            $.messager.alert('错误', "提交文件错误", 'error');
+        }
+
+        var submitcallback = function () {
+            var rst = null;
+            var io = $("#resultifr")[0];
+            if (io.contentWindow) {
+                rst = io.contentWindow.document.body ? io.contentWindow.document.body.innerHTML : null;
+
+            } else if (io.contentDocument) {
+                rst = io.contentDocument.document.body ? io.contentDocument.document.body.innerHTML : null;
+            }
+            filshed = true;
+            if (_callback)
+                _callback(rst);
+        };
+
+
+        function filechg() {
+            $("#files_display_id").html("");
+            var files = $("#file")[0].files;
+            //alert(files);
+            if (files) {
+                for (var i = 0; i < files.length; i++) {
+                    $("<li class='" + classoffile(files[i].name) + "'>" + files[i].name + "(" + (files[i].size / 1024).toFixed(2) + "K)" + "</li>").appendTo("#files_display_id")
+                }
+            } else {
+                $("<li class='" + classoffile($("#file").val()) + "'>" + $("#file").val() + "</li>").appendTo("#files_display_id")
+            }
+        }
+
+        function classoffile(fname) {
+            var ext = fname.substr(fname.lastIndexOf("."), fname.length).toUpperCase();
+            var excelfs = ".xls.xlsx.xlst.xlstx";
+            var pdffs = ".pdf";
+            var picfs = ".jpg.png.gif.bmp";
+            var pptfs = ".pptx.ppt.pptm.pot.potx.ppsx";
+            var swffs = ".swf.flash";
+            var txtfs = ".txt";
+            var vdfs = ".AVI.Mpg.RM.RMVB.3GP.MP4.AMV.Mpeg.Mpeg1.Mpeg2.Mpeg4.VCD.SVCD.DVD.XVID.DivX.ASF.WMV.SWF.IPOD.PSP.GIF.MJPEG.QuickTime.MOV.FLV.MKV.DV";
+            var wdfs = ".doc.docx.RTF";
+            var zpfs = ".rar.zip.7z.cab.iso";
+            if (excelfs.toUpperCase().indexOf(ext) >= 0)  return "ico_excel";
+            else if (pdffs.toUpperCase().indexOf(ext) >= 0)  return "ico_pdf";
+            else if (picfs.toUpperCase().indexOf(ext) >= 0)  return "ico_pic";
+            else if (pptfs.toUpperCase().indexOf(ext) >= 0)  return "ico_ppt";
+            else if (swffs.toUpperCase().indexOf(ext) >= 0)  return "ico_swf";
+            else if (txtfs.toUpperCase().indexOf(ext) >= 0)  return "ico_text";
+            else if (vdfs.toUpperCase().indexOf(ext) >= 0)  return "ico_video";
+            else if (wdfs.toUpperCase().indexOf(ext) >= 0)  return "ico_word";
+            else if (zpfs.toUpperCase().indexOf(ext) >= 0)  return "ico_zip";
+            else return "ico_unknow";
+        }
+
+        function addbtClick() {
+            $("#file").click();
+        }
+
+        function reflashProcedure() {
+            $ajaxjsonget($C.cos.commonupLoadFileProress, function (jsdata) {
+                if (jsdata.p) {
+                    $('#progressbar').progressbar('setValue', (parseFloat(jsdata.p) * 100).toFixed(0));
+                }
+                if (!filshed) {
+                    window.setTimeout(function () {
+                        reflashProcedure();
+                    }, 1000);
+                }
+            }, function (msg) {
+                $.messager.alert('错误', "上传文件错误:" + msg, 'error');
+                return;
+            }, true, undefined, true);
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                _multifile = (_multifile == undefined) ? true : _multifile;
+                if (_multifile) {
+                    $("#file").attr("multiple", "multiple");
+                } else {
+                    $("#file").removeAttr("multiple");
+                }
+                if (_acceptfile) {
+                    $("#file").attr("accept", _acceptfile);
+                } else {
+                    $("#file").removeAttr("accept");
+                }
+            }, 500);
+        });
+
+        //
+    </script>
+    <style type="text/css">
+        .easyui-panel li {
+            padding: 3px;
+            padding-left: 20px;
+            line-height: 16px;
+            list-style: none;
+        }
+    </style>
+
+
+</head>
+<body style="padding: 0px" class="easyui-layout" data-options="border:false">
+<div data-options="region:'north',split:false,border:false" style="background:#eee;padding: 5px">
+    <form id="newformid" style="height: 70px">
+        <a onclick="javascript:void(0)" class="easyui-linkbutton"
+           style="margin-top:5px;width:80px;height:30px;position: absolute">添加文件</a>
+        <input type="file" id="file" name="file" onchange="filechg();" style="display: block;position: absolute;width: 80px;padding-top: 5px;height: 30px;cursor:pointer;
+    filter:alpha(opacity=0);opacity:0;"/>
+
+        <a herf="javascript:void(0)" onclick="upload();" class="easyui-linkbutton"
+           style="margin-top:5px;width:80px;height:30px;position: absolute;left: 100px">提交</a>
+
+        <div id="progressbar" class="easyui-progressbar" style="width:100%;top:50px;height: 18px"></div>
+
+    </form>
+</div>
+<div data-options="region:'center',border:false" style="padding:5px;">
+    <div id="files_display_id" class="easyui-panel" title="文件列表"
+         style="width: 100%;padding:5px;height: 100%;overflow-x: hidden;overflow-y: auto">
+    </div>
+</div>
+<iframe id="resultifr" name="resultifr" style="position: relative;left: -9999;top:-9999;display: none"/>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'haccode', title: '销假编码', width: 80},
+            {field: 'hacode', title: '请假编码', width: 80},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'orgname', title: '部门', width: 150},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'lv_num', title: '职级', width: 50},
+            {field: 'hdays', title: '请假天数', width: 50},
+            {field: 'hdaystrue', title: '实际天数', width: 50},
+            {field: 'timebg', title: '开始时间', width: 100, formator: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+            {field: 'timeed', title: '截止时间', width: 100, formator: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+            {field: 'canceltime', title: '销假时间', width: 100, formator: $fieldDateFormatorYYYY_MM_DD_HH_MM},
+            {field: 'cancelreason', title: '销假原因', width: 200},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 120},
+            {field: 'creator', title: '制单人', width: 80},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 120},
+            {field: 'updator', title: '更新人', width: 80},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 120}
+        ];
+
+        var lhdayseditor = {
+            type: 'numberbox',
+            options: {min: 0, precision: 1}
+        };
+
+        var gdLinesColumns = [
+            {field: 'yearmonth', title: '月度', width: 80, formator: $fieldDateFormatorYYYY_MM},
+            {field: 'lhdays', title: '请假天数', width: 64},
+            {field: 'lhdaystrue', title: '实际天数', width: 64, editor: lhdayseditor},
+            {field: 'remark', title: '备注', width: 64, editor: 'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_holidayapp_cancel",
+            JPAIdField: "hacid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesName: 'hrkq_holidayapp_cancel_months',   //行Grid ID对应到json 明细行属性 名
+            htmlTemeType: HtmlTempType.htMLPop,
+            allowEmptyLine: false,//允许明细行为空保存
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            gdLinesColumns: gdLinesColumns,
+            disableButtonType: _NUBType.hide,
+            datainfo_line_title: "月度分解",
+            disableLineButtons: true,//隐藏扩展按钮
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                //jsondata.canceltime = $dateformattostrrYYYY_MM_DD_HH_MM(new Date());
+            },
+            onAddLine: function (append) {//点击添加明细行
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == "canceltime") {
+                    recounthdays();
+                }
+                if ((fdname == "canceltime") || (fdname == 'hdays')) {
+                    // recountrows();
+                }
+            },
+            beforeSave: function () {
+                if (!checkdata())
+                    throw new Error("数据检查失败，终止保存!");
+            }
+        };
+
+        function recounthdays() {
+            var timebg = mainline.getFieldValue("timebg");
+            var timeed = mainline.getFieldValue("canceltime");
+            if ((!$isEmpty(timebg)) && (!$isEmpty(timeed))) {
+                if (((new Date()).fromStr(timebg)) > ( (new Date()).fromStr(timeed))) {
+                    mainline.setFieldValue("timeed", "");
+                    alert("销假时间必须大于开始时间");
+                    return;
+                }
+                var url = _serUrl + "/web/hrkq/cmn/calcDateDiffDay.co?bgtime=" + timebg + "&edtime=" + timeed;
+                $ajaxjsonget(url, function (jsdata) {
+                    mainline.setFieldValue("hdaystrue", jsdata.rst);//
+                }, function (err) {
+                    alert(JSON.stringify(err));
+                });
+            }
+        }
+
+        function recountrows() {
+            var hdaystrue = mainline.getFieldValue("hdaystrue");
+        }
+
+        function checkdata() {
+            var canceltime = mainline.getFieldValue("canceltime");
+            var timebg = mainline.getFieldValue("timebg");
+            var timeed = mainline.getFieldValue("timeed");
+            canceltime = (new Date()).fromStr(canceltime);
+            timebg = (new Date()).fromStr(timebg);
+            timeed = (new Date()).fromStr(timeed);
+            if (canceltime.getTime() <= timebg.getTime()) {
+                alert("销假时间不允许小于请假开始时间");
+                return;
+            }
+            if (canceltime.getTime() > timeed.getTime()) {
+                alert("销假时间不允许大于请假截止时间");
+                return;
+            }
+            return true;
+        }
+
+        var select_holidayapp_pw = undefined;
+        function onSelectApp() {
+            var url = _serUrl + "/web/hrkq/holiday/findhas4cancel.co";
+            var wo = {
+                id: "select_holidayapp_pw",
+                coURL: url,
+                orderStr: " haid desc ",
+                multiRow: false,
+                idField: 'haid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'hacode', title: '编码', width: 100},
+                    {field: 'orgname', title: '部门', width: 200},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'timebg', title: '开始时间', width: 150},
+                    {field: 'timeed', title: '截止时间', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('haid', row.haid); // 申请ID
+                        mainline.setFieldValue('hacode', row.hacode); // 请假编码
+                        mainline.setFieldValue('er_id', row.er_id); // 人事ID
+                        mainline.setFieldValue('employee_code', row.employee_code); // 工号
+                        mainline.setFieldValue('employee_name', row.employee_name); // 姓名
+                        mainline.setFieldValue('orgid', row.orgid); // 部门ID
+                        mainline.setFieldValue('orgcode', row.orgcode); // 部门编码
+                        mainline.setFieldValue('orgname', row.orgname); // 部门
+                        mainline.setFieldValue('ospid', row.ospid); // 职位ID
+                        mainline.setFieldValue('ospcode', row.ospcode); // 职位编码
+                        mainline.setFieldValue('sp_name', row.sp_name); // 职位
+                        mainline.setFieldValue('lv_num', row.lv_num); // 职级
+                        mainline.setFieldValue('hdays', row.hdays); // 请假天数
+                        mainline.setFieldValue('timebg', row.timebg); // 请假时间开始 yyyy-MM-dd hh:mm
+                        mainline.setFieldValue('timeed', row.timeed); // 请假时间截止 yyyy-MM-dd hh:mm
+                        mainline.setFieldValue('orghrlev', row.orghrlev); // 机构人事层级
+                        mainline.setFieldValue('emplev', row.emplev); // 人事层级
+                        var lurl = _serUrl + "/web/hrkq/holiday/findhals4cancel.co?haid=" + row.haid;
+                        $ajaxjsonget(lurl, function (jsdata) {
+                            var ls = jsdata.rows;
+                            for (var i = 0; i < ls.length; i++) {
+                                var l = ls[i];
+                                l.lhdaystrue = l.lhdays;
+                            }
+                            $("#detail_main_grid_id").datagrid("loadData", ls);
+                        }, function () {
+                        });
+                    }
+                }
+            };
+            if (!select_holidayapp_pw) {
+                select_holidayapp_pw = new TSearchForm(wo);
+            } else
+                select_holidayapp_pw.extendOptions({
+                    coURL: url
+                });
+            select_holidayapp_pw.show();
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'haccode'">销假编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'haccode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hacode'">请假编码</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'hacode',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectApp,editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'canceltime'">销假时间</td>
+        <td colspan="2">
+            <input cjoptions="easyui_class:'easyui-datetimebox',fdname:'canceltime',formatter:$dateformattostrrYYYY_MM_DD_HH_MM,showSeconds: false "
+                   style="height:20px;width: 145px"/>
+        </td>
+        <td cjoptions="fdname:'hdaystrue'">实际请假天数</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'hdaystrue',min:0,precision:1" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'cancelreason'">销假原因</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'cancelreason'"
+                               style="height:20px;width: 180px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                   style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            请假时间从&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+            <input cjoptions="easyui_class:'easyui-datetimebox',fdname:'timebg',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD_HH_MM"
+                   style="height:20px;width: 145px"/>至
+            <input cjoptions="easyui_class:'easyui-datetimebox',fdname:'timeed',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD_HH_MM"
+                   style="height:20px;width: 145px"/>
+        </td>
+        <td cjoptions="fdname:'hdays'">请假天数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hdays',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                   style="height:20px;width: 310px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

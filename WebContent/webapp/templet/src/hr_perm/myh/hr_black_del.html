@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>黑名单解封</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic889",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=889",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1071",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1071",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1082",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1082",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1074",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1074",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic734",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=734",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'bdcode', title: '解封编码', width: 100},
+            {field: 'bdcode', title: '解封编码', width: 100},
+            {field: 'empflev', title: '员工层级', width: 64, formatter: comUrl_dic734.formator},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'orgname', title: '原部门', width: 64},
+            {field: 'sp_name', title: '原职位', width: 64},
+            {field: 'hg_name', title: '原职等', width: 64},
+            {field: 'lv_num', title: '原职级', width: 64},
+            {field: 'id_number', title: '身份证号', width: 64},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'hiredday', title: '原入职日期', width: 150, findtype: 'date', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'blackreason', title: '加封原因', width: 120, formatter: comUrl_dic1082.formator},
+            {field: 'batype', title: '加封类型', width: 100, formatter: comUrl_dic1071.formator},
+            {field: 'badate', title: '加封日期', width: 150, findtype: 'date', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'delappdate', title: '解封日期', width: 150, findtype: 'date', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'deltimes', title: '解封次数', width: 64},
+            {field: 'deldate', title: '生效日期', width: 150, findtype: 'date', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'deltype', title: '解封类型', width: 100, formatter: comUrl_dic1071.formator},
+            {field: 'deltype1', title: '解封类别', width: 100, formatter: comUrl_dic1074.formator},
+            {field: 'blackdellreason', title: '解封原因', width: 120},
+            {field: 'neworgname', title: '再入职部门', width: 64},
+            {field: 'newsp_name', title: '再入职职位', width: 64},
+            {field: 'newlv_num', title: '再入职职级', width: 64},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_black_del",
+            JPAIdField: "bdid",
+            allowAtt: false,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            onCreate: function () {//创建对象前  mainline不可用
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+                jsondata.delappdate = (new Date()).format("yyyy-MM-dd");
+                jsondata.deldate = jsondata.delappdate;
+                jsondata.billtype = 1;
+            },
+            beforeSave: function () {
+
+            },
+            onFind: function (parms) {
+                parms.disidpath = true;
+            },
+            afterFindDetail: function () {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'deltype') {
+                    mainline.setFieldValue("deltype1", undefined);
+                    resetjflb();
+                }
+            }
+        };
+
+        function resetjflb() {
+            var deltype = mainline.getFieldValue("deltype");
+            deltype = parseInt(deltype);
+            if (isNaN(deltype)) return;//不是数字
+            var newdic = undefined;
+            switch (deltype) {
+                case 1://A类黑名单
+                    newdic = getNewComUrl(comUrl_dic1074, new Array(1, 2, 3, 4));
+                    break;
+                case 2://B类黑名单
+                    newdic = getNewComUrl(comUrl_dic1074, new Array(5, 6, 7));
+                    break;
+            }
+            var deltype1 = mainline.getField("deltype1");
+            if (newdic && deltype1) {
+                deltype1.combobox(newdic);
+            }
+        }
+
+        function isValueInArray(v, vs) {
+            for (var i = 0; i < vs.length; i++) {
+                if (v == vs[i])
+                    return true;
+            }
+            return false;
+        }
+
+        function getNewComUrl(comurl, values) {
+            var rst = {
+                valueField: comurl.valueField,
+                textField: comurl.textField
+            };
+            var data = [];
+            var oddata = comurl.jsondata;
+            for (var i = 0; i < oddata.length; i++) {
+                var odrow = oddata[i];
+                if (isValueInArray(parseInt(odrow[comurl.valueField]), values)) {
+                    var nrow = {};
+                    nrow[comurl.textField] = odrow[comurl.textField];
+                    nrow[comurl.valueField] = odrow[comurl.valueField];
+                    data.push(nrow);
+                }
+            }
+            rst.data = data;
+            return rst;
+        }
+
+        function getEmplevParms(emplev) {
+            if (emplev == 1) {
+                return [{parmname: 'lv_num', reloper: '>=', parmvalue: '0'}, {parmname: 'lv_num', reloper: '<=', parmvalue: '2.3'}];
+            } else if (emplev == 2) {
+                return [{parmname: 'lv_num', reloper: '>=', parmvalue: '3.0'}, {parmname: 'lv_num', reloper: '<=', parmvalue: '3.3'}];
+            } else if (emplev == 3) {
+                return [{parmname: 'lv_num', reloper: '>=', parmvalue: '3.0'}, {parmname: 'lv_num', reloper: '<=', parmvalue: '3.3'}];
+            } else if (emplev == 4) {
+                return [{parmname: 'lv_num', reloper: '>=', parmvalue: '4.1'}, {parmname: 'lv_num', reloper: '<=', parmvalue: '4.2'}];
+            } else if (emplev == 5) {
+                return [{parmname: 'lv_num', reloper: '>=', parmvalue: '4.0'}, {parmname: 'lv_num', reloper: '<=', parmvalue: '9'}];
+            }
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var empflev = mainline.getFieldValue("empflev");
+            if ((!empflev) || (empflev.length == 0)) {
+                $.messager.alert('错误', "请先选择人事层级！", 'error');
+                return;
+            }
+            empflev = parseInt(empflev);
+            var extp = getEmplevParms(empflev);
+            var url = _serUrl + "/web/hr/employee/findEmoloyee4BlackDel.co?empstatid=13";//已经离职
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " employee_code desc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'id_number', title: '身份证', width: 100},
+                    {field: 'orgname', title: '机构', width: 500}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    //alert(rows.length);
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('id_number', row.id_number);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('hiredday', row.hiredday);
+                        mainline.setFieldValue('sex', row.sex);
+                        mainline.setFieldValue('degree', row.degree);
+                        mainline.setFieldValue('lv_id', row.lv_id);
+                        mainline.setFieldValue('lv_num', row.lv_num);
+                        mainline.setFieldValue('hg_id', row.hg_id);
+                        mainline.setFieldValue('hg_code', row.hg_code);
+                        mainline.setFieldValue('hg_name', row.hg_name);
+                        mainline.setFieldValue('ospid', row.ospid);
+                        mainline.setFieldValue('ospcode', row.ospcode);
+                        mainline.setFieldValue('sp_name', row.sp_name);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        var lvurl = _serUrl + "/web/hr/leavejob/findEmpLastLvj.co?er_id=" + row.er_id;//已经离职
+                        $ajaxjsonget(lvurl, function (jsondata) {
+                            if (jsondata.length > 0)
+                                jsondata = jsondata[0];
+                            mainline.setFieldValue('ljtype1', jsondata.ljtype1);
+                            mainline.setFieldValue('ljdate', jsondata.ljdate);
+                            mainline.setFieldValue('ljid', jsondata.ljid);
+                            mainline.setFieldValue('ljcode', jsondata.ljcode);
+                            mainline.setFieldValue('ljreason', jsondata.ljreason);
+                            mainline.setFieldValue('orgid', jsondata.orgid);
+                            mainline.setFieldValue('orgcode', jsondata.orgcode);
+                            mainline.setFieldValue('orgname', jsondata.orgname);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                        var lvurl = _serUrl + "/web/hr/perm/findLastBlackAddInfo.co?er_id=" + row.er_id;//加封信息
+                        $ajaxjsonget(lvurl, function (jsondata) {
+                            if (jsondata.length > 0) {
+                                jsondata = jsondata[0];
+                                mainline.setFieldValue('blackreason', jsondata.blackreason);
+                                mainline.setFieldValue('bacode', jsondata.bacode);
+                                mainline.setFieldValue('badate', jsondata.adddate);
+                                mainline.setFieldValue('batype', jsondata.addtype);
+                            }
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+                extParms: extp,//扩展参数
+            });
+            select_employee_pw.show();
+        }
+
+
+        var select_Org_pw1 = undefined;
+        function onSelectOrg1() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw1",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("neworgid", row.orgid);
+                        mainline.setFieldValue("neworgcode", row.code);
+                        mainline.setFieldValue("neworgname", row.extorgname);
+                        mainline.setFieldValue("newospid", "");
+                        mainline.setFieldValue("newospcode", "");
+                        mainline.setFieldValue("newsp_name", "");
+                        mainline.setFieldValue("newlv_num", "");
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('neworghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_Org_pw1) {
+                select_Org_pw1 = new TSearchForm(wo);
+            }
+            select_Org_pw1.show();
+        }
+
+        var select_OrgPosition_pw = undefined;
+        function onFindOrgPosition() {
+            var orgid = mainline.getFieldValue("neworgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "选择机构", 'error');
+                return;
+            }
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/employeetransfer/findOrgPostions.co",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                orderStr: " ospid asc ",
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 200},
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'lv_num', title: '职级', width: 120},
+                    {field: 'hwc_namezq', title: '职群', width: 120},
+                    {field: 'hwc_namezz', title: '职种', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        //console.error(JSON.stringify(row));
+                        mainline.setFieldValue("newlv_num", row.lv_num);
+                        mainline.setFieldValue("newospid", row.ospid);
+                        mainline.setFieldValue("newospcode", row.ospcode);
+                        mainline.setFieldValue("newsp_name", row.sp_name);
+                    }
+                }
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            }
+            select_OrgPosition_pw.extendOptions({
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ]
+            });
+            select_OrgPosition_pw.show();
+        }
+
+        function onFindGLGX() {
+            var er_id = mainline.getFieldValue("er_id");
+            if (er_id && (er_id.length > 0)) {
+                var url = _serUrl + "/web/hr/employee/getEmployeeRelation.co?er_id=" + er_id;
+                $ajaxjsonget(url, function (jsdata) {
+                    $("#hr_employee_relations").datagrid("loadData", jsdata);
+                }, function (msg) {
+                    $.messager.alert('错误', msg, 'error');
+                });
+                $('#glgxpw').window("open");
+            }
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'bdcode'">解封编码</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'bdcode',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'bacode'">加封编码</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'bacode',readonly:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'empflev'">员工层级</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'empflev',crequired:true,comidx:'dic734',editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true"
+                   data-options="buttonIcon:'icon-search',onClickButton:onFindemployee,editable:false"
+                   style="height:20px;width: 80px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',crequired:true,readonly:true,comidx:'dic81'"
+                   data-options="editable:false"
+                   style="height:20px;width: 80px"/></td>
+        <td cjoptions="fdname:'orgname'">原部门</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sp_name'">原职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true"
+                   style="height:20px;width: 80px"/>
+        </td>
+        <td cjoptions="fdname:'lv_num'">原职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true"
+                   style="height:20px;width: 80px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'id_number'">身份证号</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'id_number',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'degree',comidx:'dic84',readonly:true"
+                   data-options="editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',formatter:$dateformattostrrYYYY_MM_DD,editable:false,readonly:true"
+                style="height:20px;width: 100%"/></td>
+        </td>
+        <td>关联关系</td>
+        <td>
+            <a href="#" onclick="onFindGLGX()" class="easyui-linkbutton" data-options="iconCls:'icon-arrow_switch'" style="width: 100%">关联关系</a>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'blackreason'">加封原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'blackreason',readonly:true,comidx:'dic1082',editable:false"
+                               style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'batype'">加封类型</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'batype',readonly:true,comidx:'dic1071'" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'badate'">加封日期</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-datebox',fdname:'badate',formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'delappdate'">解封日期</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-datebox',fdname:'delappdate',crequired:true"
+                               data-options="formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                               style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'deltimes'">解封次数</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-numberbox',fdname:'deltimes'" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'deldate'">生效日期</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-datebox',fdname:'deldate',crequired:true"
+                               data-options="formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deltype'">解封类型</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'deltype',comidx:'dic1071',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'deltype1'">解封类别</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'deltype1',comidx:'dic1074',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'blackdellreason'">解封原因</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'blackdellreason',crequired:true"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'neworgname'">再入职部门</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'neworgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg1,editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'newsp_name'">再入职职位</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newsp_name',crequired:true,buttonIcon:'icon-search',onClickButton:onFindOrgPosition,editable:false"
+                               style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'newlv_num'">再入职职级</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newlv_num',readonly:true"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100%"/></td>
+    </tr>
+</table>
+
+<div id="glgxpw" class="easyui-window" title="关联关系" style="width:90%;height:400px"
+     data-options="modal:true,closed:true,minimizable:false,collapsible:false">
+    <table id="hr_employee_relations" class="easyui-datagrid"
+           cjoptions="fdname:'hr_employee_relations'"
+           data-options="fit:true,border:false,singleSelect:true">
+    </table>
+</div>
+</body>
+</html>

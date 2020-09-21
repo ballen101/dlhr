@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line.html" workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js"> var comUrl_dic635 = {
+        index: 'dic635',
+        type: 'combobox',
+        valueField: 'dictvalue',
+        textField: 'language1',
+        jsondata: [{"language1": "点球设备1", "dictvalue": "1"}],
+        formator: function (value, row) {
+            var jsondata = comUrl_dic635.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic635;
+            }
+            if (comUrl_dic635.type == 'combobox') {
+                for (var i = 0; i < jsondata.length; i++) {
+                    if (value == jsondata[i][comUrl_dic635.valueField]) return jsondata[i][comUrl_dic635.textField];
+                }
+            }
+            if (comUrl_dic635.type == 'combotree') {
+                var txt = $getTreeTextById(jsondata, value);
+                if (txt == undefined) txt = value;
+                return txt;
+            }
+            return value;
+        }
+    };
+    comUrl_dic635.editor = {
+        type: 'combobox',
+        options: {
+            valueField: comUrl_dic635.valueField,
+            textField: comUrl_dic635.textField,
+            data: comUrl_dic635.jsondata
+        }
+    };
+    var formtype = 2;
+    var allowAtt = false;
+    var allowWF = false;
+    var comUrls = [{
+        index: "dic635",
+        type: "combobox",
+        url: "/web/dict/getdictvalues.co?dicid=635",
+        valueField: 'dictvalue',
+        textField: 'language1'
+    }];</script>
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var search_item_pw = undefined;
+        var listGridColumns = [
+            {field: 'device_id', title: '设备ID', width: 64},
+            {field: 'device_type', title: '设备类型', width: 64},
+            {field: 'qrticket', title: 'qrticket', width: 64},
+            {field: 'item_code', title: '编码', width: 64},
+            {field: 'item_name', title: '名称', width: 64},
+            {field: 'item_short_name', title: '型号', width: 64},
+            {field: 'spec', title: '规格', width: 64},
+            {field: 'creator', title: '创建人', width: 64},
+            {field: 'create_time', title: '创建时间', width: 64},
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.weixin.entity.Wx_device",
+            JPAIdField: "did",
+            onNew: function (jsondata, idx) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onSave: function (postData) {
+                return true;
+            }
+        };
+
+        var search_ite_pw_options = {
+            id: "search_item_pw",
+            JPAClass: "com.corsair.server.generic.Drp_item",  //对应后台JPAClass名
+            gdListColumns: [
+                {field: 'item_code', title: '编码', width: 100},
+                {field: 'item_name', title: '名称', width: 150}
+            ],
+            onResult: function (rows) {
+                if (rows[0]) {
+                    mainline.setFieldValue("item_id", rows[0].item_id);
+                    mainline.setFieldValue("item_code", rows[0].item_code);
+                    mainline.setFieldValue("item_name", rows[0].item_name);
+                    mainline.setFieldValue("item_shortname", rows[0].item_short_name);
+                    mainline.setFieldValue("spec", rows[0].spec);
+                }
+            }, multiRow: false,
+            singleAutoReturn: true
+        };
+
+        function onFindItem() {
+            if (!search_item_pw)
+                search_item_pw = new TSearchForm(search_ite_pw_options);
+            var options = {
+                extParms: [
+                    {parmname: 'itemtype', reloper: '=', parmvalue: '0'}
+                ],
+                autoFind: false
+            };
+            search_item_pw.TSearchForm(options);
+            search_item_pw.show(true);
+        }
+
+    </script>
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style>
+<script id="findline" type="text/html">
+    <tr style="height: 25px;padding: 0px" id="{{rowid}}">
+        <td style="width: 30%">
+            <input class="easyui-combobox" fieldname="parmname"
+                   data-options="{{parmnameData}},width:120,onSelect:mainline.find_window_selectparmname">
+        </td>
+        <td style="width: 20%">
+            <input class="easyui-combobox" fieldname="reloper"
+                   data-options="{{reloperData}},width:60">
+        </td>
+        <td style="width: 30%" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" data-options="width:120">
+        </td>
+        <td style="width: 20%;text-align: center">
+            <a href="#" onclick="mainline.find_window_del_click(this)">删除</a>
+        </td>
+    </tr>
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:false,split:false" style="padding: 0px;height: auto">
+        <div class="easyui-panel" data-options="border:false"
+             style="width: 100%; padding:5px;border-bottom:solid 1px #95B8E7;overflow: hidden">
+            <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-ml_add'">新建</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-copy'">复制</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-save'">保存</a>
+            <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-submit'">提交</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-ml_find'">查找</a>
+            <!--    <a id="id_bt_detail" href="javascript:void(0)" class="easyui-linkbutton"
+                          data-options="plain:true,iconCls:'icon-ml_detail'">详情</a>-->
+            <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-reload'">刷新</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-ml_del'">删除</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-ml_attach'">上传附件</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-print'">打印</a>
+            <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-ml_excel'">导出</a>
+            <span class="button_sep"></span>
+            <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-exit'">返回</a>
+        </div>
+    </div>
+    <div data-options="region:'center',border:false" style="padding: 0px">
+        <div id="main_tabs_id" class="easyui-tabs" data-options="fit:true,border:false,plain:true,tabHeight:23">
+            <div id="main_tab_common_id" title="常规" style="padding: 0px">
+                <div id="main_tab_common_layout_id" class="easyui-layout" data-options="fit:true,border:false">
+                    <div id="main_form_div_id" data-options="region:'center',border:false"
+                         style="padding: 5px;height: auto">
+                        <table id="maindata_id" border="0" style="width: auto;height:auto">
+                            <tbody>
+                            <tr>
+                                <td cjoptions="fdname:'device_id'">设备ID</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'device_id',required:true"
+                                           style="height:20px;width: 100px"></td>
+                                <td cjoptions="fdname:'device_type'">设备类型</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'device_type',comidx:'dic635'"
+                                           style="height:20px;width: 100px"></td>
+                                <td cjoptions="fdname:'qrticket'">设备qrticket</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'qrticket'"
+                                           style="height:20px;width: 100px"></td>
+                            </tr>
+                            <tr>
+                                <td cjoptions="fdname:'item_code'">产品编码</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'item_code'"
+                                           data-options="buttonIcon:'icon-search',onClickButton:onFindItem"
+                                           style="height:20px;width: 100px"></td>
+                                <td cjoptions="fdname:'item_name'">产品名称</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'item_name',readonly:true"
+                                           style="height:20px;width: 100px"></td>
+                                <td cjoptions="fdname:'item_short_name'">型号</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'item_short_name',readonly:true"
+                                           style="height:20px;width: 100px"></td>
+                            </tr>
+                            <tr>
+                                <td cjoptions="fdname:'creator'">创建人</td>
+                                <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true"
+                                           style="height:20px;width: 100px"></td>
+                                <td cjoptions="fdname:'create_time'">创建时间</td>
+                                <td><input class="easyui-datetimebox" cjoptions="fdname:'create_time',readonly:true"
+                                           data-options="formatter:$dateformattostr" style="height:20px;width: 100px">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="main_tab_list_id" title="列表">
+                <table id="dg_datalist_id" style="height: 100%;width: 100%"
+                       data-options="rownumbers:true,remoteSort:false,border:false,singleSelect: true"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="find_window_id" class="easyui-window"
+     data-options="modal:true,title:'条件',closed:true,border:false,collapsible:false,minimizable:false,iconCls:'icon-search'"
+     style="width:400px;height:350px;;overflow: hidden">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false,title:' ',tools:'#toolbar_dg_find_window_parms_id'"
+             style="padding:0px;margin: 0px auto">
+            <table id="dg_find_window_parms_id" style="width: 100%;height: auto">
+                <thead>
+                <tr style="height: 25px;background-color:#EAF2FF;padding: 0px;text-align: center ">
+                    <th style="width: 30%">项目</th>
+                    <th style="width: 20%"></th>
+                    <th style="width: 30%">项目值</th>
+                    <th style="width: 20%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF">
+            <a class="easyui-linkbutton" onclick="mainline.find_window_ok_click();" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#find_window_id').window('close');"
+               data-options="iconCls:'icon-cancel'" style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+<div id="toolbar_dg_find_window_parms_id" style="height:auto">
+    <a href="#" class="icon-add" onclick="mainline.find_window_add_click()"></a>
+</div>
+<div id="common_divs_id">
+    <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'"
+         style="width:400px;height:400px;padding:0px;">
+        <iframe frameborder="0" style="width: 100%;height: 95%"></iframe>
+    </div>
+    <div id="pw_list_select" class="easyui-window" title="请选择模板"
+         data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:300px;height:300px;padding:0px;">
+        <ul class="corsair_list">
+        </ul>
+    </div>
+</div>
+<style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+</style>
+</body>
+</html>

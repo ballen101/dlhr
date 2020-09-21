@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ceai>
+	<name>csmitem_appproduct</name>
+	<eaiclass></eaiclass>
+	<enable>true</enable>
+	<eaitype>Poll</eaitype>   <!-- EAI 类型 Poll:轮询; NoticePoll:带通知的轮询; ParEAI:非轮询,由级联EAI触发 -->
+	<trans_type>row</trans_type><!-- 事务处理类型 row:行级事务处理  all: 一次调度一个事务  none:无事务处理  -->
+  <frequency>5</frequency>  <!-- 轮询时间间隔 秒 -->
+  <source>yhcrmtest</source> <!--源数据库连接池 -->
+  <target>yhcrmtest</target>	<!--目标数据库连接池 -->
+  <lastupdatefield>update_time</lastupdatefield> <!--最后更新时间的字段-->
+  <condts><!--sql语句执行附加条件-->
+  	<condt>
+  	  <field>usable</field><!--查询条件的字段-->
+  	  <oper>=</oper><!--字段运算符  >   <  =  like -->
+  	  <value>1</value><!--允许子类重载方法修改-->
+  	</condt>
+  	<condt>
+  	  <field>itemtype</field><!--查询条件的字段-->
+  	  <oper>=</oper><!--字段运算符  >   <  =  like -->
+  	  <value>0</value><!--允许子类重载方法修改-->
+  	</condt>
+  </condts>
+  <s_tablename>drp_item</s_tablename>  <!--源数据库表名-->
+  <t_tablename>app_products</t_tablename>  <!--目标数据库表名-->
+  <allow_insert>true</allow_insert> <!--是否允许插入，否则只更新-->
+  <childeais> <!-- 需要关联执行的子EAI -->
+  </childeais>
+  <eaimap>
+  	<keyfields>
+  		<keyfield>
+  			<s_keyfield>item_id</s_keyfield> <!--允许继承自标准CEAI的子类修改值-->
+  			<d_keyfield>product_id</d_keyfield>
+  		</keyfield>
+  	</keyfields>
+  	<fields>
+  		<field>
+  		  <s_fieldname>item_code</s_fieldname> <!--允许继承自标准CEAI的子类修改值-->
+  		  <d_fieldname>product_code</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>brand</s_fieldname>
+  		  <d_fieldname>barcode</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>rprice</s_fieldname>
+  		  <d_fieldname>price</d_fieldname>
+  		</field>  		
+  		<field>
+  		  <s_fieldname>item_name</s_fieldname>
+  		  <d_fieldname>product_name</d_fieldname>
+  		</field>   	
+  		<field>
+  		  <s_fieldname>item_short_name</s_fieldname>
+  		  <d_fieldname>product_short_desc</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>spec</s_fieldname>
+  		  <d_fieldname>product_desc</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>item_type_name</s_fieldname>
+  		  <d_fieldname>product_model</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>item_type_name</s_fieldname>
+  		  <d_fieldname>productType</d_fieldname>
+  		</field>
+  		<field>
+  		  <s_fieldname>creator</s_fieldname>
+  		  <d_fieldname>creator</d_fieldname>
+  		</field>  
+  		<field>
+  		  <s_fieldname>create_time</s_fieldname>
+  		  <d_fieldname>create_time</d_fieldname>
+  		</field>  
+  		<field>
+  		  <s_fieldname>updator</s_fieldname>
+  		  <d_fieldname>updator</d_fieldname>
+  		</field>  
+  		<field>
+  		  <s_fieldname>update_time</s_fieldname>
+  		  <d_fieldname>update_time</d_fieldname>
+  		</field>   			
+  	</fields>
+  </eaimap>
+  
+</ceai>

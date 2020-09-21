@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_salary">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic999",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=999",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1482",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1482",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+
+        comUrl_dic923.formator = function (value, row) {
+            var jsondata = comUrl_dic923.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic923;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [[
+                {field:'chgdate',title:'年月',rowspan: 2,width:80, formatter: $fieldDateFormatorYYYY_MM},
+                {field:'employee_code',title:'工号',rowspan: 2,width:70},
+                {field:'employee_name',title:'姓名',rowspan: 2,width:70},
+                {field:'orgname',title:'部门',rowspan: 2,width:250},
+                {field:'sp_name',title:'职位',rowspan: 2,width:80},
+                {field:'lv_num',title:'职级',rowspan: 2,width:50},
+                {field:'hiredday',title:'入职日期',rowspan: 2,width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'stype',title:'调薪类型',rowspan: 2,width: 80, formatter: comUrl_dic1482.formator},
+                {field:'updatetime',title:'签批完成时间',rowspan: 2,width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {title: '调薪前工资',  colspan: 7, width: 150},
+                {title: '调薪后工资',  colspan: 7, width: 150},
+                {field:'sacrage',title:'调整额度',rowspan: 2,width:80, formatter:zeroformator},
+                {field: 'remark', title: '备注',rowspan: 2, width: 100}
+            ], [
+                {field:'oldstru_name',title:'工资结构',width:80},
+                {field:'oldposition_salary',title:'职位工资',width:80, formatter:zeroformator},
+                {field:'oldbase_salary',title:'基本工资',width:80, formatter:zeroformator},
+                {field:'oldotwage',title:'固定加班工资',width:80, formatter:zeroformator},
+                {field:'oldtech_salary',title:'技能工资',width:80, formatter:zeroformator},
+                {field:'oldachi_salary',title:'绩效工资',width:80, formatter:zeroformator},
+                {field:'oldtech_allowance',title:'技术津贴',width:80, formatter:zeroformator},
+
+                {field:'newstru_name',title:'工资结构',width:80},
+                {field:'newposition_salary',title:'职位工资',width:80, formatter:zeroformator},
+                {field:'newbase_salary',title:'基本工资',width:80, formatter:zeroformator},
+                {field:'newotwage',title:'固定加班工资',width:80, formatter:zeroformator},
+                {field:'newtech_salary',title:'技能工资',width:80, formatter:zeroformator},
+                {field:'newachi_salary',title:'绩效工资',width:80, formatter:zeroformator},
+                {field:'newtech_allowance',title:'技术津贴',width:80, formatter:zeroformator},
+            ]
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var relOptionsDY = {
+            data: [{id: '>=', value: '大于等于'}]
+        };
+        var relOptionsXY = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+        var findColums = [
+            {field: 'chgdate', title: '年月',  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'chgbg', title: '统计开始',  relOptions: relOptionsDY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'chged', title: '统计截止',  relOptions: relOptionsXY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'orgcode', title: '机构编码',  relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field:'updatetime',title:'签批完成时间',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+           // {field: 'employee_name', title: '姓名', width: 70},
+           // {field:'sp_name',title:'职位',width:80}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrsalary/command/getSalaryReportSpecBatch.co"
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/list/impsalarylistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+
+        function floatsformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value;
+            }else{
+                dt=znum;
+            }
+            return dt;
+        }
+
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

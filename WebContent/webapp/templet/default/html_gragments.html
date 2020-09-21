@@ -1,0 +1,48 @@
+<script id="findline" type="text/html">
+    <tr style="height: 25px;padding: 0px" id="{{rowid}}">
+        <td style="">
+            <input class="easyui-combobox" fieldname="parmname" style="height: 20px;width: 150px">
+        </td>
+        <td style="" tdtype="reloper">
+            <input class="easyui-combobox" fieldname="reloper" style="height: 20px;width: 70px"
+                   data-options="{{reloperData}}">
+        </td>
+        <td style="" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" style="height: 20px;width: 150px">
+        </td>
+        <td style="text-align: center">
+            <a href="#" fieldname="actiondel">删除</a>
+        </td>
+    </tr>
+</script>
+
+<script id="_find_window_id" type="text/html">
+    <div class="easyui-window"
+         data-options="modal:true,title:'条件',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'ico-search-line'"
+         style="width:450px;height:400px;overflow: hidden">
+        <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+            <div data-options="region:'center',border:false,title:' '" style="padding:0px;margin: 0px auto">
+                <table class="dg_find_window_parms_id" style="width: 100%;height: auto">
+                    <thead>
+                    <tr style="height: 22px;background-color:#F1F1F1;padding: 0px;margin: 0 auto;text-align: center ">
+                        <th style="">项目</th>
+                        <th style="">运算</th>
+                        <th style="">项目值</th>
+                        <th style="">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div data-options="region:'south',border:true"
+                 style="text-align:right;padding: 5px;height: 40px;border-left: 0px;border-bottom: 0px;border-right: 0px;overflow: hidden">
+                <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'"
+                   style="width:80px">确定</a>
+                <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'"
+                   data-options="iconCls:'ico-cancel'" style="width:80px">取消</a>
+            </div>
+        </div>
+    </div>
+</script>

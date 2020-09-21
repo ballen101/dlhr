@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_card">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title>卡档案表</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic1263",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1263",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }];
+
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'card_sn', title: '卡序列号', width: 100},
+                {field: 'card_number', title: '卡号', width: 100},
+                {field: 'card_stat', title: '卡状态', width: 80, formatter: comUrl_dic1263.formator},
+                {field: 'effective_date', title: '生效时间', width: 100},
+                {field: 'disable_date', title: '失效时间', width: 100},
+                {field: 'employee_code', title: '工号', width: 100},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'orgname', title: '机构', width: 200},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'hwc_namezl', title: '职类', width: 80},
+                {field: 'hwc_namezq', title: '职群', width: 80},
+                {field: 'hwc_namezz', title: '职种', width: 80},
+                {field: 'hg_name', title: '职等', width: 80},
+                {field: 'lv_num', title: '职级', width: 80},
+                {field: 'remark', title: '备注', width: 100}
+            ];
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/Card/rpt/getcardlist.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        var url = _serUrl + "/ExcelModels/Hr_ykt_card/excelmodel/导出导入模板.xlsx";
+                        window.open(url);
+                    }
+                }
+            ]
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Card/rpt/impcardexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

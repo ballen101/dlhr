@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>人员异动数据统计报表</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [];</script> 
+  <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        function lformator(val, row) {
+            var fval = parseFloat(val);
+            if (isNaN(fval)) {
+                fval = 0;
+            }
+            fval = fval.toFixed(4);
+            return fval + "%";
+        }
+
+        var listGridColumns = function () {
+            return [
+                [
+                    {field: 'yearmonth', rowspan: 3, title: '年月', width: 80},
+                    {field: 'orgname', align: 'center', title: '机构', rowspan: 3, width: 100},
+                    {align: 'center', title: '编制人数', colspan: 3, rowspan: 2, width: 100},
+                    {align: 'center', title: '实际人数', colspan: 3, rowspan: 2, width: 100},
+                    {align: 'center', title: '超缺编人数', colspan: 3, rowspan: 2, width: 100},
+                    {align: 'center', title: '入职人数', colspan: 3, rowspan: 2, width: 100},
+                    {align: 'center', title: '调动', colspan: 5, rowspan: 2, width: 100},
+                    {align: 'center', title: '批量调动', colspan: 3, rowspan: 2, width: 100},
+                    {align: 'center', title: '借调', colspan: 2, rowspan: 2, width: 100},
+                    {field: 'partjbrs', align: 'center', title: '兼职人数', rowspan: 3, width: 100},
+                    {align: 'center', title: '离职人数', colspan: 7, rowspan: 1, width: 100}
+                ],
+                [
+                    {align: 'center', title: '主动离职', colspan: 2, rowspan: 1, width: 100},
+                    {align: 'center', title: '被动离职', colspan: 3, rowspan: 1, width: 100},
+                    {align: 'center', title: '协商离职', colspan: 2, rowspan: 1, width: 100}
+                ],
+                [
+                    {field: 'quota', align: 'center', title: '编制数', width: 80},
+                    {field: 'offjobquota', align: 'center', title: '脱产编制数', width: 80},
+                    {field: 'noffjobquota', align: 'center', title: '非脱产编制数', width: 80},
+                    {field: 'sumpemnum', align: 'center', title: '总人数', width: 80},
+                    {field: 'tcrs', align: 'center', title: '脱产实际人数', width: 80},
+                    {field: 'ttcrs', align: 'center', title: '非脱产实际人数', width: 80},
+                    {field: 'cqbrs', align: 'center', title: '超缺编总人数', width: 80},
+                    {field: 'tccqbrs', align: 'center', title: '脱产超缺编人数', width: 80},
+                    {field: 'ftccqbrs', align: 'center', title: '非脱产超缺编人数', width: 80},
+                    {field: 'rzrs', align: 'center', title: '合计入职人数', width: 80},
+                    {field: 'tcrzrs', align: 'center', title: '脱产入职人数', width: 80},
+                    {field: 'ftcrzrs', align: 'center', title: '非脱产入职人数', width: 80},
+                    {field: 'jsrs', align: 'center', title: '晋升人数', width: 80},
+                    {field: 'jzrs', align: 'center', title: '降职人数', width: 80},
+                    {field: 'nbddrs', align: 'center', title: '内部调动人数', width: 80},
+                    {field: 'drrs', align: 'center', title: '调入人数', width: 80},
+                    {field: 'dcrs', align: 'center', title: '调出人数', width: 80},
+                    {field: 'plddrs', align: 'center', title: '批量调动人数', width: 80},
+                    {field: 'pldrrs', align: 'center', title: '批量调入人数', width: 80},
+                    {field: 'pldcrs', align: 'center', title: '批量调出人数', width: 80},
+
+                    {field: 'jdrrs', align: 'center', title: '调入人数', width: 80},
+                    {field: 'jdcrs', align: 'center', title: '调出人数', width: 80},
+
+
+                    {field: 'selfleave', align: 'center', title: '自离', width: 80},
+                    {field: 'quit', align: 'center', title: '辞职', width: 80},
+                    {field: 'dismiss', align: 'center', title: '辞退', width: 80},
+                    {field: 'reduce', align: 'center', title: '退休', width: 80},
+                    {field: 'retire', align: 'center', title: '裁员', width: 80},
+                    {field: 'cpst', align: 'center', title: '无经济补偿', width: 80},
+                    {field: 'ncpst', align: 'center', title: '有经济补偿', width: 80}
+
+                ]
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'month', title: '月度', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            pagination:false,//是否分页
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hr/permrpt3/rpt_hrrsydtj.co",
+            beforeLoadData: function (jsdata) {
+
+            }
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html template="" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title>用户管理</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic2",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=2",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic49",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=49",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "rol",
+                type: "combobox",
+                iswie: true,
+                url: "/web/user/getRolesByUserID.co",
+                valueField: 'roleid',
+                textField: 'rolename'
+            },
+            {
+                index: "opt",
+                type: "combobox",
+                iswie: true,
+                url: "/web/user/getOptionsByUserID.co",
+                valueField: 'positionid',
+                textField: 'positiondesc'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            initGrids();
+            getorgs();
+        }
+
+        function initGrids() {
+            $("#userinfo_orgs").datagrid({
+                columns: [
+                    [
+                        {field: 'extorgname', width: 300, title: '机构'},
+                        {
+                            field: 'isdefault',
+                            width: 80,
+                            title: '默认机构',
+                            formatter: comUrl_dic5.formator,
+                            editor: comUrl_dic5.editor
+                        },
+                        {
+                            field: 'inheritrole',
+                            width: 80,
+                            title: '继承权限',
+                            formatter: comUrl_dic5.formator,
+                            editor: comUrl_dic5.editor
+                        }
+                    ]
+                ]
+            });
+            $("#userinfo_roles").datagrid({
+                columns: [
+                    [
+                        {
+                            field: 'roleid',
+                            width: 200,
+                            title: '系统角色',
+                            formatter: comUrl_rol.formator,
+                            editor: comUrl_rol.editor
+                        }
+                    ]
+                ]
+            });
+            $("#userinfo_postions").datagrid({
+                columns: [
+                    [
+                        {field: 'positionid', width: 200, title: '流程岗位', formatter: comUrl_opt.formator}
+                    ]
+                ]
+            });
+        }
+
+        function getorgs() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            $("#orggrid").treegrid({
+                onClickRow: function (row) {
+                    findorguser(row.orgid);
+                },
+                url: url
+            });
+        }
+
+        function findorguser(orgid, userid) {
+            $ajaxjsonget($C.cos.userlistbyorg() + "?orgid=" + orgid,
+                    function (jsondata) {
+                        $("#usergrid").datagrid({
+                            data: jsondata,
+                            onDblClickRow: function (rowIndex, rowData) {
+                                shwUserAction($C.action.Edit);
+                            }
+                        });
+                        if (userid) {
+                            var currow = undefined;
+                            var us = $("#usergrid").datagrid("getRows");
+                            for (var i = 0; i < us.length; i++) {
+                                var u = us[i];
+                                if (u.userid == userid) {
+                                    currow = u;
+                                    break;
+                                }
+                            }
+                            if (currow) {
+                                var idx = $("#usergrid").datagrid("getRowIndex", currow);
+                                $("#usergrid").datagrid("selectRow", idx);
+                            }
+                        }
+                    },
+                    function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("查询机构用户错误！");
+                    }
+            );
+        }
+
+
+        var OptionInfoWindow = undefined;
+        function shwUserAction(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            var org = $('#orggrid').treegrid('getSelected');
+            var row = $('#usergrid').datagrid('getSelected');
+            if (tp == $C.action.Del) {//删除
+                var row = $('#usergrid').datagrid('getSelected');
+                var idx = $('#usergrid').datagrid("getRowIndex", row);
+                if (!row) {
+                    $.messager.alert('错误', '没选定的用户!', 'error');
+                    return;
+                }
+                //del
+                $.messager.confirm('提醒', '确认删除?', function (r) {
+                    if (r) {
+                        $ajaxjsonget($C.cos.delUser + "?userid=" + row.userid, function (jsondata) {
+                            if (jsondata.result == "OK")
+                                $('#usergrid').datagrid("deleteRow", idx);
+                        }, function () {
+                            $.messager.alert('错误', '删除用户错误!', 'error');
+                        });
+                    }
+                });
+                return;
+            }
+            if (tp == $C.action.Reload) {//重置密码
+                var row = $('#usergrid').datagrid('getSelected');
+                var idx = $('#usergrid').datagrid("getRowIndex", row);
+                if (!row) {
+                    $.messager.alert('错误', '没选定的用户!', 'error');
+                    return;
+                }
+                $.messager.confirm('提醒', '确认重置密码?', function (r) {
+                    if (r) {
+                        var url = _serUrl + "/web/login/reSetPWD.co";
+                        var jsondata = JSON.stringify({userid: row.userid});
+                        $ajaxjsonpost(url, jsondata, function (jsondata) {
+                            if (jsondata.result) {
+                                $.messager.alert('注意', '密码重置为[' + jsondata.result + ']请牢记新密码!', 'warning');
+                            }
+                        }, function (err) {
+                            $.messager.alert('错误', '重置密码错误：' + err, 'error');
+                        });
+                    }
+                });
+                return;
+            }
+            if (tp == $C.action.New) {//新建
+                isnew = true;
+                var jsondata = {actived: 1, usertype: 2};
+            }
+            if (tp == $C.action.Edit) {//编辑
+                if (!row) {
+                    $.messager.alert('错误', '没选定的用户!', 'error');
+                    return;
+                }
+                var jsondata = row;
+                isnew = false;
+            }
+
+
+            var options = {
+                windowfilter: '#usereditwindow',
+                jsonData: jsondata,
+                onShow: function (isnew, jsondata) {
+                    if (isnew) {
+                        jsondata.userinfo_orgs = [];
+                        jsondata.userinfo_roles = [];
+                        jsondata.userinfo_postions = [];
+                        jsondata.userinfo_orgs = [{
+                            isdefault: 1,
+                            inheritrole: 1,
+                            orgid: org.orgid,
+                            extorgname: org.extorgname
+                        }];
+                    } else {
+                        getuserExtinfo(jsondata.userid);
+                    }
+                },
+                onOK: function (isnew, jsondata) {
+                    $C.grid.accept("userinfo_orgs");
+                    $C.grid.accept("userinfo_roles");
+                    $C.grid.accept("userinfo_postions");
+                    var orgdata = $("#userinfo_orgs").datagrid("getData").rows;
+                    var roledata = $("#userinfo_roles").datagrid("getData").rows;
+                    var posidata = $("#userinfo_postions").datagrid("getData").rows;
+                    jsondata = {isnew: isnew, orgs: orgdata, roles: roledata, positions: posidata, jsondata: jsondata};
+                    //console.error(JSON.stringify(jsondata));
+                    $ajaxjsonpost($C.cos.saveUser(), JSON.stringify(jsondata), function (jsondata) {
+                        if (isnew) {
+                            $('#usergrid').datagrid('appendRow', jsondata);
+                        } else {
+                            var row = $('#usergrid').datagrid('getSelected');
+                            var idx = $('#usergrid').datagrid("getRowIndex", row);
+                            //alert("do update:"+idx);
+                            $('#usergrid').datagrid('updateRow', {index: idx, row: jsondata});
+                        }
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+
+            OptionInfoWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoWindow.show();
+        }
+
+
+        function getuserExtinfo(usetid) {
+            $ajaxjsonget($C.cos.getRolesByUserID() + "?userid=" + usetid, function (jsondata) {
+                $("#userinfo_roles").datagrid({data: jsondata});
+            }, function () {
+                alert("错误");
+            });
+            $ajaxjsonget($C.cos.getOptionsByUserID() + "?userid=" + usetid, function (jsondata) {
+                $("#userinfo_postions").datagrid({data: jsondata});
+            }, function () {
+                alert("错误");
+            });
+            $ajaxjsonget($C.cos.getOrgsByUserID() + "?userid=" + usetid, function (jsondata) {
+                $("#userinfo_orgs").datagrid({data: jsondata});
+            }, function () {
+                alert("getOrgsData错误");
+            });
+        }
+
+        var select_user_pw = undefined;
+        function onFinduser() {
+            var url = _serUrl + "/web/user/findOrgUserByLogined.co";
+            var wo = {
+                id: "select_user_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'userid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'username', title: '登录名', width: 100},
+                    {field: 'displayname', title: '姓名', width: 100},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        findorguser(row.orgid, row.userid);
+                    }
+                }
+            };
+            if (!select_user_pw) {
+                select_user_pw = new TSearchForm(wo);
+            }
+            select_user_pw.show();
+        }
+
+        var selectPostionsPW = undefined;
+        function userinfo_postions_append() {
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "selectPostionsPW",
+                JPAClass: "com.corsair.server.generic.Shwposition",  //对应后台JPAClass名
+                multiRow: true,
+                idField: 'positionid',
+                showTitle: false,
+                autoFind: true,
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'positiondesc', title: '流程岗位', width: 120}
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#userinfo_postions", row.positionid, "positionid")) {
+                            $("#userinfo_postions").datagrid("appendRow", {positionid: row.positionid});
+                        }
+                    }
+                }
+            };
+            if (!selectPostionsPW) {
+                selectPostionsPW = new TSearchForm(wo);
+            }
+            selectPostionsPW.show();
+        }
+
+        var findOrg2UserOrg_pw = undefined;
+        function findOrg2UserOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "500px",//
+                height: "300px",//
+                gdListColumns: [
+                    {field: 'extorgname', title: '机构', width: 400, notfind: true},
+                    {field: 'orgname', title: '机构', width: 100, hidden: true}
+                ]
+            };
+            if (!findOrg2UserOrg_pw) {
+                findOrg2UserOrg_pw = new TSearchForm(wo);
+            }
+            findOrg2UserOrg_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        if (!$C.grid.getRowByField("#userinfo_orgs", [row.orgid], ["orgid"])) {
+                            var r = {};
+                            r.orgid = row.orgid;
+                            r.extorgname = row.extorgname;
+                            r.isdefault = 2;
+                            r.inheritrole = 1;
+                            $C.grid.append('userinfo_orgs', r, true);
+                        }
+                    }
+                }
+            });
+            findOrg2UserOrg_pw.show();
+        }
+
+        function formatuserinfostr(val, row) {
+            var usinfo = row.displayname + "(" + row.username + ")";
+            if (parseInt(row.actived) == 1) {
+                var icocls = "icon-user";
+            } else {
+                var icocls = "icon-userdisabled";
+            }
+            return "<span class='" + icocls + "' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span>" + usinfo;
+        }
+
+        function doimport(tp) {
+            var url = _serUrl + "/web/user/importuserinfo.co?tp=" + tp;
+            $uploadfile(url, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功更新" + jsdata.rst + "条记录");
+                    });
+        }
+
+        function doexport(tp) {
+            if (tp == 1)
+                var url = _serUrl + "/ExcelModels/Shwuser/excelmodel/用户资料模板.xls";
+            if (tp == 2)
+                var url = _serUrl + "/ExcelModels/Shwuser/excelmodel/用户角色模板.xls";
+            if (tp == 3)
+                var url = _serUrl + "/ExcelModels/Shwuser/excelmodel/用户岗位模板.xls";
+            window.open(url);
+        }
+
+    </script>
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div data-options="region:'north',border:false,split:false,collapsible:false"
+     style="overflow:hidden;margin: 0 auto">
+    <div class="easyui-panel" data-options="border:false"
+         style="padding:5px;background-color: #F4F4F4">
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.New);"
+           data-options="plain:true,iconCls:'icon-add'">新建用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Edit);"
+           data-options="plain:true,iconCls:'icon-edit'">编辑用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Del);"
+           data-options="plain:true,iconCls:'icon-remove'">删除用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="onFinduser()"
+           data-options="plain:true,iconCls:'icon-search'">查询用户</a>
+        <a href="#" class="easyui-linkbutton" onclick="shwUserAction($C.action.Reload);"
+           data-options="plain:true,iconCls:'icon-reload'">重置密码</a>
+        <a href="javascript:void(0)" class="easyui-splitbutton"
+           data-options="menu:'#mmuser',iconCls:'icon-importexcel'">导入用户资料</a>
+        <a href="javascript:void(0)" class="easyui-splitbutton"
+           data-options="menu:'#mmrole',iconCls:'icon-importexcel'">导入用户角色</a>
+        <a href="javascript:void(0)" class="easyui-splitbutton"
+           data-options="menu:'#mmpositon',iconCls:'icon-importexcel'">导入用户岗位</a>
+    </div>
+    <div>
+        <div id="mmuser" style="width:150px;">
+            <div data-options="iconCls:'icon-importexcel'" onclick="doimport(1)">导入用户资料</div>
+            <div data-options="iconCls:'icon-exportexcel'" onclick="doexport(1)">导出导入模板</div>
+        </div>
+        <div id="mmrole" style="width:150px;">
+            <div data-options="iconCls:'icon-importexcel'" onclick="doimport(2)">导入角色</div>
+            <div data-options="iconCls:'icon-exportexcel'" onclick="doexport(2)">导出导入模板</div>
+        </div>
+        <div id="mmpositon" style="width:150px;">
+            <div data-options="iconCls:'icon-importexcel'" onclick="doimport(3)">导入流程岗位</div>
+            <div data-options="iconCls:'icon-exportexcel'" onclick="doexport(3)">导出导入模板</div>
+        </div>
+    </div>
+    <div style="background-color: #95B8E7;height: 1px"></div>
+</div>
+<div data-options="region:'west',border:false,split:true,collapsible:false"
+     style="width: 280px;overflow-y: auto;overflow-x: hidden;margin: 0 auto">
+    <table id="orggrid" class="easyui-treegrid"
+           data-options="
+           border:false,
+           fit:true,
+           lines: true,
+           idField: 'orgid',
+           rownumbers: true,
+           fitColumns: true,
+           showHeader:false,
+           treeField: 'orgname'
+           ">
+        <thead>
+        <tr>
+            <th data-options="field:'orgname',hide:true" style="width: 100%"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div data-options="region:'center',border:false">
+    <table id="usergrid" class="easyui-datagrid"
+           data-options="singleSelect:true,border:false,showHeader:false,fit:true">
+        <thead>
+        <tr>
+            <th data-options="field:'username',width:'100%',formatter:formatuserinfostr">
+            </th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<div id="usereditwindow" class="easyui-window" title="用户信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:350px;;overflow: hidden">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="tabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px;">
+                    <table id="shwUserInfoForm" border="0" style="width: 99%;height: 99%">
+                        <tr>
+                            <td>登录名</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'username'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>邮箱</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'email'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>姓名</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'displayname'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>电话</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'telo'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>手机</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'mobil'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>身份证</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'idcardno'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>可用</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'actived',comidx:'dic2'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>用户类型</td>
+                            <td>
+                                <input cjoptions="easyui_class:'easyui-textbox',fdname:'usertype',comidx:'dic49'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'creator'">创建人</td>
+                            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                                       style="height:20px;width: 120px"/>
+                            </td>
+                            <td cjoptions="fdname:'createtime'">创建时间</td>
+                            <td><input
+                                    cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr,editable:false"
+                                    style="height:20px;width: 120px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td cjoptions="fdname:'updator'">更新人</td>
+                            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                                       style="height:20px;width: 120px"/>
+                            </td>
+                            <td cjoptions="fdname:'updatetime'">更新时间</td>
+                            <td><input
+                                    cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                                    style="height:20px;width: 120px"/></td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3">
+                                <input cjoptions="easyui_class:'easyui-textbox',multiline:true,fdname:'note'"
+                                       style="height: 50px;width: 350px"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="机构" style="padding:0px;">
+                    <table id="userinfo_orgs" class="easyui-datagrid"
+                           data-options="fit:true,border:false,toolbar:'#toolbarOrg',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_orgs');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_orgs');}">
+                    </table>
+                </div>
+                <div title="角色" style="padding:0px;">
+                    <table id="userinfo_roles" class="easyui-datagrid" style=""
+                           data-options="fit:true,border:false,toolbar:'#toolbarRole',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_roles');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_roles');}">
+                    </table>
+                </div>
+                <div title="岗位" style="padding:0px;">
+                    <table id="userinfo_postions" class="easyui-datagrid" style=""
+                           data-options="fit:true,border:false,toolbar:'#toolbarPostion',singleSelect: true,
+                       onClickRow:function(){ $C.grid.accept('userinfo_postions');},
+                       onDblClickRow:function(){ $C.grid.edit('userinfo_postions');}">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="toolbarOrgGridFind" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="orgfindAction($C.action.New);">添加</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="orgfindAction($C.action.Del);">删除</a>
+</div>
+
+<!--用户窗口GRID toolbar-->
+<div id="toolbarOrg" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="findOrg2UserOrg();"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_orgs');"></a>
+</div>
+<div id="toolbarRole" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('userinfo_roles', {}, true);"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_roles');"></a>
+</div>
+<div id="toolbarPostion" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="userinfo_postions_append();"></a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('userinfo_postions');"></a>
+</div>
+
+
+</body>
+</html>

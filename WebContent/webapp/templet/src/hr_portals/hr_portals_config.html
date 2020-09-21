@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_portals">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1294",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1294",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'config_name', title: '配置项名称', width: 100},
+            {field: 'menu_name', title: '菜单名', width: 80},
+            {field: 'config_type', title: '类型', formatter: comUrl_dic1294.formator, width: 50},
+            {field: 'url', title: 'URL链接', width: 120},
+            {field: 'useable', title: '是否可用', formatter: comUrl_dic5.formator, width: 50},
+            {field: 'remarks', title: '备注', width: 150},
+            {field: 'creator', title: '创建人', width: 64},
+            {field: 'createtime',title: '创建时间',width: 120},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 120}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.portals.entity.Hr_portals_config",
+            JPAIdField: "portals_config_id",
+            allowAtt: false,
+            allowWF: false,
+            datainfo_pw_title: "门户配置",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '300px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+        //查询菜单
+        var select_menu_pw=undefined;
+        function onFindmenu() {
+            var url = _serUrl + "/web/hr/portals/config/getmenu.co";
+            var wo = {
+                id: "select_menu_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'menuid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'menucode', title: '类型名称', width: 150},
+                    {field: 'menuname', title: '类型编码', width: 100}
+                ],
+                extParms: [
+
+                ],//扩展参数
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("menu_id", row.menuid);//设置界面值
+                        mainline.setFieldValue("menu_name", row.menuname);
+                    }
+                }
+            };
+            if (!select_menu_pw) {
+                select_menu_pw = new TSearchForm(wo);
+            }
+            select_menu_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'config_name'">配置项名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'config_name'" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'menu_name'">菜单名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'menu_name',buttonIcon:'icon-search',onClickButton:onFindmenu,editable:true" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'config_type'">类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'config_type',comidx:'dic1294',editable:false" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'url'">URL链接</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'url'" style="height:20px;width: 100px"></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'useable'">是否可用</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'useable',comidx:'dic5',editable:false" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks'" style="height:20px;width: 100px"></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'createtime'">创建日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'updator'">修改人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"></td>
+        <td cjoptions="fdname:'updatetime'">修改日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"></td>
+    </tr>
+</table>
+</body>
+</html>

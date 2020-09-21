@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic968",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=968",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '部门', width: 200},
+                {field: 'employee_code', title: '工号', width: 70},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'sp_name', title: '职位', width: 130},
+                {field: 'over_type', title: '加班类型', width: 100, formatter: comUrl_dic923.formator},
+                {field: 'dealtype', title: '加班处理', width: 100, formatter: comUrl_dic928.formator},
+                {field: 'bgtime', title: '加班开始时间', width: 130, sortable: true, findtype: 'datetime', formatter: jbtimeformator},
+                {field: 'edtime', title: '加班结束时间', width: 130, sortable: true, findtype: 'datetime', formatter: jbtimeformator},
+                {field: 'applyhours', title: '加班申请时数', width: 100},
+                {field: 'bgpktime', title: '上班打卡时间', width: 130, formatter: jbtimeformator},
+                {field: 'edpktime', title: '下班打卡时间', width: 130, formatter: jbtimeformator},
+                {field: 'frst', title: '上班考勤', width: 64, formatter: comUrl_dic968.formator},
+                {field: 'trst', title: '下班考勤', width: 64, formatter: comUrl_dic968.formator},
+                {field: 'needchedksb', title: '上班打卡', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'needchedkxb', title: '下班打卡', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'othours', title: '实际加班时数', width: 100},
+                {field: 'remark', title: '备注', width: 150}
+            ]
+        };
+
+        var findExtParms = [
+            {field: 'orgname', title: '部门', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'sp_name', title: '职位', width: 130},
+            {field: 'over_type', title: '加班类型', width: 64},
+            {field: 'bgtime', title: '开始时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'edtime', title: '结束时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'frst', title: '上班考勤', width: 64, formatter: comUrl_dic968.formator},
+            {field: 'trst', title: '下班考勤', width: 64, formatter: comUrl_dic968.formator}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            //comUrls: comUrls,
+            coURL: _serUrl + "/web/hrkq/rpt1/findovertimelist.co"
+        };
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm");
+        }
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

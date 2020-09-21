@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_cbxintype = {index: 'cbxintype',type: 'combobox',multiple: false,valueField: 'statvalue',textField: 'language1',jsondata:[{"language1":"招募待入职","statvalue":"0"},{"language1":"实习","statvalue":"1"},{"language1":"试用","statvalue":"2"},{"language1":"考察","statvalue":"3"},{"language1":"正式","statvalue":"4"},{"language1":"借出","statvalue":"5"},{"language1":"待入职","statvalue":"6"},{"language1":"实习试用","statvalue":"7"},{"language1":"见习期","statvalue":"8"},{"language1":"待离职","statvalue":"11"},{"language1":"离职","statvalue":"12"},{"language1":"黑名单","statvalue":"13"}], formator: function (value, row) { var jsondata = comUrl_cbxintype.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_cbxintype; } if (comUrl_cbxintype.type == 'combobox') { if (comUrl_cbxintype.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_cbxintype.valueField]) { rst = rst + jsondata[i][comUrl_cbxintype.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_cbxintype.valueField]) return jsondata[i][comUrl_cbxintype.textField]; } } } if (comUrl_cbxintype.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_cbxintype.editor= {type: 'combobox', options: {valueField:comUrl_cbxintype.valueField, textField:comUrl_cbxintype.textField, data: comUrl_cbxintype.jsondata}}; var comUrls = [{ index: "cbxintype", type: "combobox", url: "web/hr/employee/getepsts.co", valueField: 'statvalue', textField: 'language1' }];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'cdate', title: '日期', width: 100},
+                {field: 'employee_code', title: '工号', width: 100},
+                {field: 'employee_name', title: '姓名', width: 100},
+                {field: 'empstatid', title: '人事状态', width: 100, formatter: comUrl_cbxintype.formator},
+                {field: 'card_number', title: '卡号', width: 100},
+                {field: 'orgcode', title: '机构编码', width: 80},
+                {field: 'orgname', title: '机构名称', width: 200},
+                {field: 'hg_name', title: '职等', width: 80},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'memo', title: '未打卡期间', width: 200},
+                {field: 'billtypes', title: '缺勤记录', width: 200}
+            ]
+        };
+
+        var relbgdate = {
+            data: [
+                {id: '>=', value: '大于等于'}
+            ]
+        };
+        var releddate = {
+            data: [
+                {id: '<=', value: '小于等于'}
+            ]
+        };
+        var findExtParms = [
+            {field: 'bgdate', title: '开始日期', relOptions: relbgdate, notnull: true, formatter: $fieldDateFormatorYYYY_MM_DD, width: 150},
+            {field: 'eddate', title: '截止日期', relOptions: releddate, notnull: true, formatter: $fieldDateFormatorYYYY_MM_DD, width: 150},
+            {field: 'orgcode', title: '机构编码', width: 80},
+            {field: 'orgname', title: '机构名称', width: 200},
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'hg_name', title: '职等', width: 80},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'sp_name', title: '职位', width: 80}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findExtParms,
+            coURL: _serUrl + "/web/hrkq/rpt1/findnotswcardlist.co",
+            onFind: function (parms) {
+                /*  var fddate = undefined;
+                 var idx = 0;
+                 for (var i = 0; i < parms.length; i++) {
+                 var p = parms[i];
+                 if (p.parmname == 'fddate') {
+                 idx = i;
+                 fddate = p.parmvalue;
+                 break;
+                 }
+                 }
+                 if (fddate) {
+                 parms.splice(idx, 1);
+                 fddate = (new Date()).fromStr(fddate);
+                 var eddate = new Date(fddate.getTime() - 1000 * 60 * 60 * 24);//前一天
+                 var bgdate = new Date(fddate.getTime() - 3000 * 60 * 60 * 24);//前4天
+                 parms.push({"parmname": "bgdate", "reloper": "=", "parmvalue": $dateformattostrrYYYY_MM_DD(bgdate)});
+                 parms.push({"parmname": "eddate", "reloper": "=", "parmvalue": $dateformattostrrYYYY_MM_DD(eddate)});
+                 }*/
+                //{field: 'bgdate', title: '开始日期', relOptions: relbgdate, notnull: true, formatter: $fieldDateFormatorYYYY_MM_DD, width: 150},
+                //{field: 'eddate', title: '截止日期', relOptions: releddate, notnull: true, formatter: $fieldDateFormatorYYYY_MM_DD, width: 150},
+            }
+        };
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

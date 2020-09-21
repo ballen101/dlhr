@@ -1,0 +1,614 @@
+package com.hr.msg.co;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import com.corsair.cjpa.util.CjpaUtil;
+import com.corsair.dbpool.util.CJSON;
+import com.corsair.dbpool.util.JSONParm;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.base.CSContext;
+import com.corsair.server.cjpa.JPAController;
+import com.corsair.server.generic.Shworg;
+import com.corsair.server.retention.ACO;
+import com.corsair.server.retention.ACOAction;
+import com.corsair.server.util.CReport;
+import com.hr.msg.entity.Hr_kq_depart_day_report;
+import com.hr.util.DateUtil;
+import com.hr.util.HRUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+@ACO(coname = "web.hrkq.report")
+public class COHr_kq_day_report extends JPAController {
+	@ACOAction(eventname = "findkqcalreport", Authentication = false, notes = "查询考勤异常结果")
+	public String findkqcalreport() throws Exception {
+		String[] notnull = {};
+		//		String[] ignParms = { "ym" };// 忽略的查询条件
+		String sqlstr = "SELECT r.no_card_num,r.make_up_num,r.date,r.yer_no_card_num,r.yer_no_card_times,e.employee_code,e.employee_name,e.orgname,e.sp_name"
+				+" from Hr_kq_day_report r inner JOIN hr_employee e on r.er_id =e.er_id order by date desc";
+ 
+		System.out.print(sqlstr);
+		return new CReport(HRUtil.getReadPool(), sqlstr, " date desc ", notnull).findReport();
+	}
+
+	/**
+	 * 部门异常考勤
+	 * @return
+	 * @throws Exception
+	 */
+	@ACOAction(eventname = "findorgkqdayreport", Authentication = false, notes = "统计部门日考勤")
+	public String findorgkqdayreport() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		List<JSONParm> jps = CJSON.getParms(urlparms.get("parms"));
+		JSONParm jporgcode = CjpaUtil.getParm(jps, "orgcode");
+		JSONParm paramincludechild = CjpaUtil.getParm(jps, "includechild");
+		if (jporgcode == null)
+			throw new Exception("需要参数【orgcode】");
+		JSONParm jpdqdatebegin = CjpaUtil.getParm(jps, "dqdatebegin");
+	
+		if (jpdqdatebegin == null)
+			throw new Exception("需要参数【dqdate】");
+		
+		JSONParm jpdqdateend = CjpaUtil.getParm(jps, "dqdateend");
+		if (jpdqdateend == null)
+			throw new Exception("需要参数【dqdate】");
+		boolean includechild=false;
+		if(Boolean.valueOf(paramincludechild.getParmvalue())){
+			includechild=true;
+		}
+		String zjWhere="";
+//		JSONParm zj = CjpaUtil.getParm(jps, "zj");
+//		if(zj!=null){
+//			zjWhere=zj.getReloper()+zj.getParmvalue();
+//		}
+		String orgcode = jporgcode.getParmvalue();
+		String dqdatebegin=jpdqdatebegin.getParmvalue();
+		String dqdateend=jpdqdateend.getParmvalue();
+		if(dqdatebegin.contains("/")){
+			dqdatebegin=DateUtil.DateParseYYYYMMDD(dqdatebegin);
+		}
+		if(dqdateend.contains("/")){
+			dqdateend=DateUtil.DateParseYYYYMMDD(dqdateend);
+		}
+		String sqlstr = "select * from shworg where code='" + orgcode + "'";
+		Shworg org = new Shworg();
+		org.findBySQL(sqlstr);
+		if (org.isEmpty()){
+			throw new Exception("编码为【" + orgcode + "】的机构不存在");
+		}
+
+		String scols = urlparms.get("cols");
+		JSONArray dws= new JSONArray();
+		long between =DateUtil.getBetweenDays(Systemdate.getDateYYYYMMDD(dqdatebegin), Systemdate.getDateYYYYMMDD(dqdateend));
+		if(between<0){
+			throw new Exception("开始日期不允许大于截止日期");
+		}
+		for(int i=0;i<=between;i++){
+			//计算出需要统计的日期
+			String dqdate=Systemdate.getStrDateyyyy_mm_dd(Systemdate.dateDayAdd(Systemdate.getDateYYYYMMDD(dqdatebegin), i));
+			System.out.print(dqdate);
+			//.replace(" 00:00:00", "")
+			if(includechild){
+				if(org.code.getValue().equals("00000001")){
+					//新宝要两级下级
+					List<Shworg>orgs=HRUtil.getChildByOrg(org,2);
+					for(Shworg shworg :orgs){
+						if(Systemdate.getStrDateyyyy_mm_dd(new Date()).equals(dqdate)){
+							getKqRealTime(shworg,dqdate,dws,zjWhere);
+						}else{
+							getKqHistroy(shworg,dqdate,dws);
+
+						}
+					}
+				}else{
+					//其余的1级下级
+					List<Shworg>orgs=HRUtil.getChildByOrg(org,1);
+					for(Shworg shworg :orgs){
+						if(Systemdate.getStrDateyyyy_mm_dd(new Date()).equals(dqdate)){
+							getKqRealTime(shworg,dqdate,dws,zjWhere);
+						}else{
+							getKqHistroy(shworg,dqdate,dws);
+
+						}
+					}
+				}
+			}else{
+				//不包含子机构
+				if(Systemdate.getStrDateyyyy_mm_dd(new Date()).equals(dqdate)){
+					getKqRealTime(org,dqdate,dws,zjWhere);
+				}else{
+					getKqHistroy(org,dqdate,dws);
+
+				}
+			}
+		}
+
+
+
+		if (scols == null) {
+			return dws.toString();
+		} else {
+			(new CReport()).export2excel(dws, scols);
+			return null;
+		}
+	}
+	/**
+	 * 异常考勤名细
+	 * @return
+	 * @throws Exception
+	 */
+	@ACOAction(eventname = "findorgdetialkqdayreport", Authentication = false, notes = "异常考勤明细")
+	public String findorgdetialkqdayreport() throws Exception {
+		HashMap<String, String> urlparms = CSContext.get_pjdataparms();
+		List<JSONParm> jps = CJSON.getParms(urlparms.get("parms"));
+		JSONParm jporgcode = CjpaUtil.getParm(jps, "orgcode");
+		if (jporgcode == null)
+			throw new Exception("需要参数【orgcode】");
+		JSONParm jpdqdate = CjpaUtil.getParm(jps, "dqdate");
+		if (jpdqdate == null)
+			throw new Exception("需要参数【dqdate】");
+		String orgcode = jporgcode.getParmvalue();
+		String dqdate = jpdqdate.getParmvalue();
+		String sqlstr = "select * from shworg where code='" + orgcode + "'";
+		Shworg org = new Shworg();
+		org.findBySQL(sqlstr);
+		if (org.isEmpty()){
+			throw new Exception("编码为【" + orgcode + "】的机构不存在");
+		}
+		if(dqdate.isEmpty()){
+			throw new Exception("请输入查询日期");
+		}
+		String scols = urlparms.get("cols");
+		JSONArray dws= new JSONArray();
+		//dws.add(0, org.toJsonObj());
+		if(Systemdate.getStrDateyyyy_mm_dd(new Date()).equals(dqdate)){
+			//当天
+			getKqDeltailRealTime(org,dqdate,dws);
+		}else{
+			//历史
+			getHistoryDetailRecord(org,dqdate,dws);
+		}
+		if (scols == null) {
+			return dws.toString();
+		} else {
+			(new CReport()).export2excel(dws, scols);
+			return null;
+		}
+	}
+	/**
+	 * 部门考勤统计实时
+	 * @param org
+	 * @param dqdate
+	 * @param dws
+	 * @throws Exception
+	 */
+	private void getKqRealTime(Shworg org,String dqdate,JSONArray dws,String zjWhere)throws Exception{
+
+		JSONObject dw = new JSONObject();
+		String reportOrgSql="select a.employee_code,a.empstatid,a.orgname,noclock,emnature,hiredday,t.cq,t2.qj,t3.cc,t4.tx from hr_employee a"+
+				" LEFT JOIN (select  b.empno, '1' as cq from  hrkq_swcdlst b  WHERE  DATE_FORMAT(b.skdate,'%Y-%m-%d')='"+dqdate+"' GROUP BY b.empno) as t on t.empno=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as qj from  hrkq_holidayapp b  WHERE  (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeed>='"+dqdate+"') or (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeedtrue>='"+dqdate+"') and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t2 on t2.employee_code=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as cc from  hrkq_business_trip b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t3 on t3.employee_code=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as tx from  hrkq_wkoff b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t4 on t4.employee_code=a.employee_code"+
+				" where a.idpath like '"+org.idpath.getValue()+"%' and a.sp_name<>'项目实习生' and a.empstatid<>'12'   and a.empstatid<>'13' and a.empstatid<>'0' and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.hiredday<='"+dqdate+"'";
+		List<HashMap<String, String>> reportList = HRUtil.getReadPool().openSql2List(reportOrgSql);
+		int zz=reportList.size();
+		int cc=0;
+		int tx=0;
+		int qj=0;
+		int mdk=0;
+		int cq=0;
+		int tcwdk=0;//脱产无打卡
+		int ftcwdk=0;//非脱产无打卡
+		int rzdtwdk=0;//当天入职无打卡
+		int lj=0;
+		for(HashMap<String, String>entity :reportList)
+		{
+			String scc="";
+			String stx="";
+			String sqj="";
+			String scq="";
+			if(entity.get("cc")!=null){
+				scc=entity.get("cc");
+			}
+			if(entity.get("tx")!=null){
+				stx=entity.get("tx");
+			}
+			if(entity.get("qj")!=null){
+				sqj=entity.get("qj");
+			}
+			if(entity.get("cq")!=null){
+				scq=entity.get("cq");
+			}
+			if(scc.equals("1") && entity.get("noclock").equals("2")){
+				cc++;
+			}else if(stx.equals("1") && entity.get("noclock").equals("2")){
+				tx++;
+			}else if(scq.equals("1") && entity.get("noclock").equals("2")){
+				cq++;
+			}else if(sqj.equals("1") && entity.get("noclock").equals("2")){
+				qj++;
+			}else{
+				//缺勤
+				if(entity.get("emnature").equals("脱产") && entity.get("noclock").equals("2")){
+					tcwdk++;
+				}else if(entity.get("emnature").equals("非脱产")&& entity.get("noclock").equals("2")){
+					ftcwdk++;
+				}
+				//统计当天入职无打卡
+				//System.out.print(entity.get("hiredday"));
+				String hiredday=Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByyyyy_mm_dd(entity.get("hiredday")));
+				if(hiredday.equals(dqdate))
+				{
+					rzdtwdk++;
+				}
+			}
+			if(entity.get("noclock").equals("1")){
+				mdk++;
+				cq++;
+			}
+		}
+		//另外查询当天离职
+		String ljSql="select count(1) as lj from hr_employee a  where a.idpath like '"+org.idpath.getValue()+"%'  and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.ljdate='"+dqdate+"'";
+		List<HashMap<String, String>> ljlist = HRUtil.getReadPool().openSql2List(ljSql);
+		HashMap<String, String>entity=ljlist.get(0);
+		String dzmSql="select count(1) as dzm from hr_employee a  where a.idpath like '"+org.idpath.getValue()+"%'  and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.empstatid='0' and a.hiredday<='"+dqdate+"'";
+		List<HashMap<String, String>> dzmlist = HRUtil.getReadPool().openSql2List(dzmSql);
+		HashMap<String, String>dzmentity=dzmlist.get(0);
+		dw.put("numlj",entity.get("lj"));
+		dw.put("numdzm", dzmentity.get("dzm"));
+		dw.put("orgname",org.extorgname.getValue());
+		dw.put("numcc",cc);
+		dw.put("numtx", tx);
+		dw.put("numqj", qj);
+		dw.put("nummdk", mdk);
+		dw.put("numcq", cq);
+		dw.put("numtcwdk",tcwdk);
+		dw.put("numftcwdk", ftcwdk);
+		dw.put("numrzdtwdk", rzdtwdk);
+		dw.put("numzz", zz);
+		dw.put("date", dqdate);
+		if(zz>0){
+			int dzm=Integer.valueOf(dzmentity.get("dzm")) ;
+			double sum=cq+cc+tx;
+			sum=sum/(zz+dzm)*100;
+			BigDecimal bg = new BigDecimal(sum);
+			sum = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			if(sum>100){
+				dw.put("cqdcl", "100%");
+			}else{
+				dw.put("cqdcl", sum+"%");
+			}
+		}else{
+			dw.put("cqdcl", "0%");
+		}
+		if(zz>0){
+			double sum=cq+cc+tx;
+			sum=sum/zz*100;
+			BigDecimal bg = new BigDecimal(sum);
+			sum = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			if(sum>100){
+				dw.put("cqdcl2", "100%");
+			}else{
+				dw.put("cqdcl2", sum+"%");
+			}
+		}else{
+			dw.put("cqdcl2", "0%");
+		}
+		dws.add(dw);
+
+	}
+
+
+	/**
+	 * 部门考勤统计日结
+	 * @param org
+	 * @param dqdate
+	 * @param dws
+	 * @throws Exception
+	 */
+	private void getKqHistroy(Shworg org,String dqdate,JSONArray dws)throws Exception{
+		JSONObject dw = new JSONObject();
+		String sql="select  * from hr_kq_depart_day_report where orgcode='"+org.code.getValue()+"' and date='"+dqdate+"' limit 1";
+		List<HashMap<String, String>> reportList = HRUtil.getReadPool().openSql2List(sql);
+		for(HashMap<String, String>entity :reportList)
+		{
+			dw.put("numlj",entity.get("lj"));
+			dw.put("numdzm", entity.get("dzm"));
+			dw.put("orgname",entity.get("orgname"));
+			dw.put("numcc",entity.get("cc"));
+			dw.put("numtx", entity.get("tx"));
+			dw.put("numqj", entity.get("qj"));
+			dw.put("nummdk", entity.get("mdk"));
+			dw.put("numcq", entity.get("cq"));
+			dw.put("numtcwdk",entity.get("tcwdk"));
+			dw.put("numftcwdk", entity.get("ftcwdk"));
+			dw.put("numrzdtwdk", entity.get("rzdtwdk"));
+			dw.put("numzz", entity.get("zz"));
+			dw.put("date", entity.get("date"));
+			dw.put("cqdcl", entity.get("cqdcl"));
+			dw.put("cqdcl2", entity.get("cqdcl2"));
+			dws.add(dw);
+		}
+	}
+	/**
+
+	/**
+	 * 查询部门当天异常考勤明细
+	 * @param org
+	 * @param dqdate
+	 * @param dws
+	 * @throws Exception
+	 */
+	private void getKqDeltailRealTime(Shworg org,String dqdate,JSONArray dws)throws Exception{
+		String reportOrgSql="select a.employee_code,a.employee_name,a.orgname,a.empstatid,a.emnature,b.description,hiredday,sp_name, lv_num,t.cq,t2.qj,t3.cc,t4.tx from hr_employee a "+
+				" INNER JOIN hr_employeestat b on a.empstatid=b.statvalue"+
+				" LEFT JOIN (select  b.empno, '1' as cq from  hrkq_swcdlst b  WHERE DATE_FORMAT(b.skdate,'%Y-%m-%d')='"+dqdate+"' GROUP BY b.empno) as t on t.empno=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as qj from  hrkq_holidayapp b  WHERE  (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeed>='"+dqdate+"') or (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeedtrue>='"+dqdate+"') and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t2 on t2.employee_code=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as cc from  hrkq_business_trip b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t3 on t3.employee_code=a.employee_code"+
+				" LEFT JOIN (select  b.employee_code, '1' as tx from  hrkq_wkoff b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t4 on t4.employee_code=a.employee_code"+
+				" where a.idpath like '"+org.idpath.getValue()+"%' and sp_name<>'项目实习生' and a.empstatid<>'12'  and a.empstatid<>'13' and  a.hiredday<'"+dqdate+"' and a.noclock='2'";
+		List<HashMap<String, String>> reportList = HRUtil.getReadPool().openSql2List(reportOrgSql);
+		for(HashMap<String, String>entity : reportList){
+			JSONObject dw = new JSONObject();
+			String status="";
+			String remark="";
+			if((entity.get("cc"))!=null){
+				status="出差";
+			}
+			else if(entity.get("tx")!=null){
+				status="调休";
+			}
+			else if(entity.get("cq")!=null){
+				continue;
+			}
+			else if(entity.get("qj")!=null){
+				status="请假";
+			}
+			else if (entity.get("cq")==null){
+				status="无打卡";
+				remark="完全无打卡";
+			}
+			if(!"".equals(status)){
+				dw.put("date", dqdate);
+				dw.put("employee_code", entity.get("employee_code"));
+				dw.put("employee_name", entity.get("employee_name"));
+				dw.put("orgname", entity.get("orgname"));
+				dw.put("description", entity.get("description"));	
+				dw.put("hiredday", entity.get("hiredday").replace(" 00:00:00", ""));	
+				dw.put("sp_name", entity.get("sp_name"));	
+				dw.put("lv_num", entity.get("lv_num"));	
+				dw.put("status", status);
+				dw.put("emnature", entity.get("emnature"));
+				dw.put("remark", remark);
+				dws.add(dw);
+			}
+		}
+	}
+	/**
+	 * 考勤异常明细查询（历史）
+	 * @param org
+	 * @param dqdate
+	 * @param dws
+	 * @throws Exception
+	 */
+	private void getHistoryDetailRecord(Shworg org,String dqdate,JSONArray dws)throws Exception{
+		Date bgdate = Systemdate.getDateByStr(Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByStr(dqdate)));
+		Date eddate=Systemdate.dateDayAdd(bgdate, 1);
+		//String strbgdate = Systemdate.getStrDateyyyy_mm_dd(bgdate);
+		//String streddate = Systemdate.getStrDateyyyy_mm_dd(eddate);
+		String findZzSql = "select er_id, employee_code,employee_name,orgname,a.empstatid,a.emnature,b.description,hiredday,sp_name, lv_num "+
+				" from hr_employee a INNER JOIN hr_employeestat b on a.empstatid=b.statvalue"+
+				" where a.noclock='2' and  a.idpath like '"+org.idpath.getValue()+"%' and hiredday<='"+dqdate+"' and (ljdate>='"+dqdate+"' or ljdate='0000-00-00' or ljdate is NULL)";
+		Hr_kq_depart_day_report report=new Hr_kq_depart_day_report();
+		List<HashMap<String, String>> zzList = HRUtil.getReadPool().openSql2List(findZzSql);
+		List<String>wpbList=new ArrayList<String>();//无排版队列
+		for(HashMap<String, String>entity : zzList){
+			JSONObject dw = new JSONObject();
+			String employee_code=entity.get("employee_code");
+			String er_id=entity.get("er_id");
+			//先查一下考勤结果报表
+			//1 正常 2 迟到 3早退 4未打卡 5 出差 6 请假 7 调休8签卡 9 迟到 10 早退 11 迟到早退 12 旷工(旷工)
+			String findKqResultSql="select frtime,totime, lrst,frst,trst from hrkq_bckqrst where kqdate='"+dqdate+"' and er_id='"+er_id+"'";
+			String status="";
+			String remark="";
+			List<HashMap<String, String>> kqResultList = report.pool.openSql2List(findKqResultSql);
+			if(kqResultList.size()==0){
+				//没有排班，取打卡表
+				wpbList.add(employee_code);
+			}else if (kqResultList.size()==1){
+				//只有1个班，直接取结果
+				String frtime=kqResultList.get(0).get("frtime");
+				String totime=kqResultList.get(0).get("totime");
+				String lrst=kqResultList.get(0).get("lrst");//班次结果
+				String frst=kqResultList.get(0).get("frst");//上班打卡结果
+				String trst=kqResultList.get(0).get("trst");//下班打卡结果
+				if(frst.equals("4")||(trst.equals("4"))){
+					status="无打卡";
+					if(frst.equals("4")){
+						remark+=";"+frtime;
+					}if(trst.equals("4")){
+						remark+=";"+totime;
+					}if(remark.length()>0){
+						remark=	remark.replaceFirst(";", "");
+					}
+				}else if(lrst.equals("5")){
+					status="出差";
+				}else if(lrst.equals("6")){
+					status="请假";
+				}else if(lrst.equals("7")){
+					status="调休";
+				}
+				if(frst.equals("4")&&trst.equals("4")){
+					remark="完全无打卡";
+				}
+			}else if(kqResultList.size()==2){
+				//有两个班，优先12，再到567
+				String frtime=kqResultList.get(0).get("frtime");
+				String totime=kqResultList.get(0).get("totime");
+				String lrst=kqResultList.get(0).get("lrst");//班次结果
+				String	frst=kqResultList.get(0).get("frst");
+				String	trst=kqResultList.get(0).get("trst");
+				String frtime1=kqResultList.get(1).get("frtime");
+				String totime1=kqResultList.get(1).get("totime");
+				String lrst1=kqResultList.get(1).get("lrst");//班次结果
+				String	frst1=kqResultList.get(1).get("frst");
+				String	trst1=kqResultList.get(1).get("trst");
+				if(frst.equals("4") || trst.equals("4")|| frst1.equals("4") || trst1.equals("4")){
+					status="无打卡";
+					if(frst.equals("4")){
+						remark+=";"+frtime;
+					}if(trst.equals("4")){
+						remark+=";"+totime;
+					}if(frst1.equals("4")){
+						remark+=";"+frtime1;
+					}if(trst1.equals("4")){
+						remark+=";"+totime1;
+					}
+					if(remark.length()>0){
+						remark=	remark.replaceFirst(";", "");
+					}
+				}else if(lrst.equals("5")||lrst1.equals("5")){
+					status="出差";
+				}else if(lrst.equals("6")||lrst1.equals("6")){
+					status="请假";
+				}else if(lrst.equals("7")||lrst1.equals("7")){
+					status="调休";
+				}
+				if(frst.equals("4") && trst.equals("4")&& frst1.equals("4") && trst1.equals("4")){
+					remark="完全无打卡";
+				}
+			}else if(kqResultList.size()==3){
+				//有两个班，优先12，再到567
+				String frtime=kqResultList.get(0).get("frtime");
+				String totime=kqResultList.get(0).get("totime");
+				String lrst=kqResultList.get(0).get("lrst");//班次结果
+				String	frst=kqResultList.get(0).get("frst");
+				String	trst=kqResultList.get(0).get("trst");
+				String frtime1=kqResultList.get(1).get("frtime");
+				String totime1=kqResultList.get(1).get("totime");
+				String lrst1=kqResultList.get(1).get("lrst");//班次结果
+				String	frst1=kqResultList.get(1).get("frst");
+				String	trst1=kqResultList.get(1).get("trst");
+				String frtime2=kqResultList.get(2).get("frtime");
+				String totime2=kqResultList.get(2).get("totime");
+				String lrst2=kqResultList.get(2).get("lrst");//班次结果
+				String	frst2=kqResultList.get(2).get("frst");
+				String	trst2=kqResultList.get(2).get("trst");
+				if(frst.equals("4") || trst.equals("4")|| frst1.equals("4") || trst1.equals("4")||frst2.equals("4") || trst2.equals("4")){
+					status="无打卡";
+					if(frst.equals("4")){
+						remark+=";"+frtime;
+					}if(trst.equals("4")){
+						remark+=";"+totime;
+					}if(frst1.equals("4")){
+						remark+=";"+frtime1;
+					}if(trst1.equals("4")){
+						remark+=";"+totime1;
+					}if(frst2.equals("4")){
+						remark+=";"+frtime2;
+					}if(trst2.equals("4")){
+						remark+=";"+totime2;
+					}
+					if(remark.length()>0){
+						remark=	remark.replaceFirst(";", "");
+					}
+				}else if(lrst.equals("5")||lrst1.equals("5")||lrst2.equals("5")){
+					status="出差";
+				}else if(lrst.equals("6")||lrst1.equals("6")||lrst2.equals("6")){
+					status="请假";
+				}else if(lrst.equals("7")||lrst1.equals("7")||lrst2.equals("7")){
+					status="调休";
+				}
+				if(frst.equals("4") && trst.equals("4")&& frst1.equals("4") && trst1.equals("4")&& frst2.equals("4") && trst2.equals("4")){
+					remark="完全无打卡";
+				}
+			}
+			if(!"".equals(status)){
+				dw.put("date", dqdate);
+				dw.put("employee_code", entity.get("employee_code"));
+				dw.put("employee_name", entity.get("employee_name"));
+				dw.put("orgname", entity.get("orgname"));
+				dw.put("description", entity.get("description"));	
+				dw.put("hiredday", entity.get("hiredday").replace(" 00:00:00", ""));
+				dw.put("sp_name", entity.get("sp_name"));	
+				dw.put("lv_num", entity.get("lv_num"));	
+				dw.put("emnature", entity.get("emnature"));
+				dw.put("status", status);
+				dw.put("remark", remark);
+				dws.add(dw);
+			}
+		}
+		//没有排班的统一查询
+		if(wpbList.size()>0){
+			String ids=tranInSql(wpbList);
+			String reportSql = "select a.employee_code,employee_name,orgname,a.empstatid,a.emnature,b.description,hiredday,sp_name, lv_num,t.cq,t2.qj,t3.cc,t4.tx"+
+					" from hr_employee a INNER JOIN hr_employeestat b on a.empstatid=b.statvalue"+
+					" LEFT JOIN (select  b.empno, '1' as cq from  hrkq_swcdlst b  WHERE DATE_FORMAT(b.skdate,'%Y-%m-%d')='"+dqdate+"' GROUP BY b.empno) as t on t.empno=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as qj from  hrkq_holidayapp b  WHERE  ((DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeed>='"+dqdate+"') or (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeedtrue>='"+dqdate+"')) and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t2 on t2.employee_code=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as cc from  hrkq_business_trip b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t3 on t3.employee_code=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as tx from  hrkq_wkoff b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t4 on t4.employee_code=a.employee_code"+
+					" where a.employee_code in ("+ids+")";
+			List<HashMap<String, String>> reportList = HRUtil.getReadPool().openSql2List(reportSql);
+			for(HashMap<String, String>kq : reportList){
+				JSONObject dw = new JSONObject();
+				String status="";
+				String remark="";
+				if((kq.get("cc"))!=null){
+					status="出差";
+				}
+				else if(kq.get("tx")!=null){
+					status="调休";
+				}
+				else if(kq.get("qj")!=null){
+					status="请假";
+				}
+				else if (kq.get("cq")==null){
+					status="无打卡";
+					remark="完全无打卡";
+				}
+				if(!"".equals(status)){
+					dw.put("date", dqdate);
+					dw.put("employee_code", kq.get("employee_code"));
+					dw.put("employee_name", kq.get("employee_name"));
+					dw.put("orgname", kq.get("orgname"));
+					dw.put("description", kq.get("description"));	
+					dw.put("hiredday", kq.get("hiredday").replace(" 00:00:00", ""));
+					dw.put("sp_name", kq.get("sp_name"));	
+					dw.put("lv_num", kq.get("lv_num"));	
+					dw.put("emnature", kq.get("emnature"));
+					dw.put("status", status);
+					dw.put("remark", remark);
+					dws.add(dw);
+				}
+			}
+		}
+	}
+
+
+
+	/**
+	 * 数据转换成字符用于SQLIN操作
+	 * @param ids
+	 * @return
+	 */
+	public String tranInSql(List<String>ids){
+		StringBuffer idsStr = new StringBuffer();
+		for (int i = 0; i < ids.size(); i++) {
+			if (i > 0) {
+				idsStr.append(",");
+			}
+			idsStr.append("'").append(ids.get(i)).append("'");
+		}
+		System.out.print(idsStr.toString());
+		return idsStr.toString();
+
+	}
+
+}

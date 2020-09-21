@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        var stedorg = undefined;
+        var parms = $getPageParms();
+        var mengtag = parseInt(parms.menutag);// 3 sex 5 人员职级 6职类分析  7 部门分析 8人员异动分析 17 人事异动 18 入职分析  19 M类职级结构分析 20 职位趋势分析
+        //12 学历趋势
+        if (!mengtag) {
+            alert("没有设置【mengtag】参数");
+        }
+        var comUrls = [
+            {
+                index: "dic797",
+                type: "combobox",
+                url: _serUrl + "/web/dict/getdictvalues.co?dicid=797",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        function blformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v) || (v == undefined))
+                return "0%";
+            v = v * 100;
+            return v.toFixed(2) + "%";
+        }
+
+        function intzeroformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v))
+                return 0;
+            else
+                return v;
+        }
+
+        function xylred(value, row, index) {
+            var v = parseInt(value);
+            if (isNaN(v))
+                return "0";
+            if (v < 0)
+                return "<span style='color:red'>" + v + "</span>";
+            else
+                return v;
+        }
+
+        var lv_numdata = [
+            {value: undefined, text: "------"},
+            {value: "and lv_num >1 and lv_num <2", text: "1.1-1.3"},
+            {value: "and lv_num=2", text: "2.0"},
+            {value: "and lv_num >2 and lv_num <3", text: "2.1-2.3"},
+            {value: "and lv_num=3", text: "3.0"},
+            {value: "and lv_num >3 and lv_num <4", text: "3.1-3.3"},
+            {value: "and lv_num=4", text: "4.0"},
+            {value: "and lv_num >4 and lv_num <5", text: "4.1-4.3"},
+            {value: "and lv_num >5 and lv_num <6", text: "5.1-5.2"},
+            {value: "and lv_num >6 and lv_num <7", text: "6.1-6.3"},
+            {value: "and lv_num >7 and lv_num <8", text: "7.1-7.2"},
+            {value: "and lv_num>8", text: "8"},
+        ];
+
+        var listGridColumns = function () {
+            if ((mengtag == 1) || (mengtag == 12))
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                        {colspan: 2, title: '硕士及以上', width: 150},
+                        {colspan: 2, title: '本科', width: 150},
+                        {colspan: 2, title: '大专', width: 150},
+                        {colspan: 2, title: '高中', width: 150},
+                        {colspan: 2, title: '中专/中技', width: 150},
+                        //{colspan: 2, title: '中技', width: 150},
+                        {colspan: 2, title: '初中及以下', width: 150},
+                        {field: 'sumpeo', rowspan: 2, title: '总数', width: 100, formatter: intzeroformatter}
+                    ],
+                    [
+                        {field: 'ss', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bss', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'bk', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bbk', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'dz', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bdz', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'gz', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bgz', title: '比率', width: 100, formatter: blformatter},
+                        //{field: 'zz', title: '人数', width: 100, formatter: intzeroformatter},
+                        //{field: 'bzz', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'zzzj', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bzzzj', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'cz', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bcz', title: '比率', width: 100, formatter: blformatter}
+                    ]
+                ];
+            if ((mengtag == 2) || (mengtag == 13))  //年龄分布 趋势
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                        {colspan: 2, title: '50岁及以上', width: 150},
+                        {colspan: 2, title: '40(含)-50岁', width: 150},
+                        {colspan: 2, title: '30(含)-40岁', width: 150},
+                        {colspan: 2, title: '18(含)-30岁', width: 150},
+                        {colspan: 2, title: '16(含)-18岁', width: 150},
+                        {field: 'sumpeo', rowspan: 2, title: '总数', width: 100, formatter: intzeroformatter}
+                    ],
+                    [
+                        {field: 'f50', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bf50', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'f40', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bf40', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'f30', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bf30', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'f20', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bf20', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'f00', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bf00', title: '比率', width: 100, formatter: blformatter}
+                    ]
+                ];
+            if ((mengtag == 3) || (mengtag == 14)) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                        {colspan: 2, title: '男', width: 150},
+                        {colspan: 2, title: '女', width: 150},
+                        {field: 'sumpeo', rowspan: 2, title: '总数', width: 100, formatter: intzeroformatter}
+                    ],
+                    [
+                        {field: 'nan', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bnan', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'nv', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bnv', title: '比率', width: 100, formatter: blformatter}
+                    ]
+                ];
+            }
+            if (mengtag == 4) {
+                return getMZFields();
+            }
+            if ((mengtag == 5) || (mengtag == 15)) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 100},
+                        {colspan: 2, title: '1.1-1.3', width: 80},
+                        {colspan: 2, title: '2.0', width: 80},
+                        {colspan: 2, title: '2.1-2.3', width: 80},
+                        {colspan: 2, title: '3.0', width: 80},
+                        {colspan: 2, title: '3.1-3.3', width: 80},
+                        {colspan: 2, title: '4.0', width: 80},
+                        {colspan: 2, title: '4.1-4.3', width: 80},
+                        {colspan: 2, title: '5.1-5.2', width: 80},
+                        {colspan: 2, title: '6.1-6.3', width: 80},
+                        {colspan: 2, title: '7.1-7.2', width: 80},
+                        {colspan: 2, title: '8', width: 80},
+                        {field: 'sumpeo', rowspan: 2, title: '总数', width: 100, formatter: intzeroformatter}
+                    ],
+                    [
+                        {field: 'f1', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf1', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f2', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf2', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f21', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf21', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f3', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf3', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f31', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf31', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f4', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf4', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f41', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf41', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f51', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf51', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f61', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf61', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f71', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf71', title: '比率', width: 50, formatter: blformatter},
+                        {field: 'f8', title: '人数', width: 50, formatter: intzeroformatter},
+                        {field: 'bf8', title: '比率', width: 50, formatter: blformatter}
+                    ]
+                ];
+            }
+            if ((mengtag == 6) || (mengtag == 16)) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 3, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 3, title: '机构', width: 150},
+                        {rowspan: 2, colspan: 2, title: 'M类', width: 100},
+                        {rowspan: 2, colspan: 2, title: 'P类', width: 100},
+                        {rowspan: 2, colspan: 2, title: 'A类', width: 100},
+                        {colspan: 10, title: 'O类', width: 150},
+                        {field: 'sumpeo', rowspan: 3, title: '总数', width: 100, formatter: intzeroformatter}
+                    ],
+                    [
+                        {rowspan: 1, colspan: 2, title: 'OM', width: 50},
+                        {rowspan: 1, colspan: 2, title: 'OP', width: 50},
+                        {rowspan: 1, colspan: 2, title: 'OA', width: 50},
+                        {rowspan: 1, colspan: 2, title: 'OO', width: 50},
+                        {rowspan: 1, colspan: 2, title: '小计', width: 80, formatter: intzeroformatter}
+                    ],
+                    [
+                        {field: 'M', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bM', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'P', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bP', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'A', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bA', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'OM', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bOM', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'OP', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bOP', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'OA', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bOA', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'OO', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bOO', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'SO', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'bSO', title: '比率', width: 100, formatter: blformatter}
+                    ]
+                ];
+            }
+            if (mengtag == 7) {
+                return [
+                    {field: 'yearmonth', rowspan: 1, title: '年月', width: 80},
+                    {field: 'orgname', rowspan: 1, title: '机构', width: 150},
+                    {field: 'ct', title: '人数', width: 100, formatter: intzeroformatter},
+                    {field: 'bct', title: '比率', width: 100, formatter: blformatter}
+                ];
+            }
+            if (mengtag == 8)
+                return getYDFields();
+            if (mengtag == 9) {
+                return [
+                    {field: 'yearmonth', rowspan: 1, title: '年月', width: 80},
+                    {field: 'orgname', rowspan: 1, title: '机构', width: 150},
+                    {field: 'major', title: '专业', width: 100},
+                    {field: 'ct', title: '人数', width: 100, formatter: intzeroformatter},
+                    {field: 'bl', title: '比率', width: 100, formatter: blformatter}
+                ];
+            }
+            if (mengtag == 10) {
+                return [
+                    [
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                        {field: 'empsum', rowspan: 2, title: '总人数', width: 50},
+                        {colspan: 2, title: '合同签订', width: 100},
+                        {colspan: 2, title: '无固定期限合同', width: 100},
+                        {colspan: 2, title: '下月合同到期人数', width: 100},
+                        {colspan: 3, title: '合同续签', width: 150},
+                        {colspan: 2, title: '合同终止', width: 100},
+                        {colspan: 2, title: '合同解除', width: 100},
+                        {colspan: 2, title: '合同过期', width: 100}
+
+                    ],
+                    [
+                        {field: 'sn', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'sn1', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'oe', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'oe1', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'et1', title: '脱产', width: 100, formatter: intzeroformatter},
+                        {field: 'et2', title: '非脱产', width: 100, formatter: intzeroformatter},
+                        {field: 'ss', title: '应续签人数', width: 100, formatter: intzeroformatter},
+                        {field: 'rs', title: '实际续签人数', width: 100, formatter: intzeroformatter},
+                        {field: 'xq1', title: '续签达成率', width: 100, formatter: blformatter},
+                        {field: 'cs', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'cs1', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'cc', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'cc1', title: '比率', width: 100, formatter: blformatter},
+                        {field: 'co', title: '人数', width: 100, formatter: intzeroformatter},
+                        {field: 'co1', title: '比率', width: 100, formatter: blformatter}
+                    ]
+                ];
+            }
+            if (mengtag == 11) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 3, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 3, title: '机构', width: 150},
+                        {rowspan: 2, colspan: 3, title: '编制人数', width: 100},
+                        {rowspan: 2, colspan: 3, title: '实际人数', width: 100},
+                        {colspan: 7, title: '离职人数', width: 100},
+                        {field: 'totalleave', rowspan: 3, title: '合计离职人数', width: 100},
+                        {colspan: 10, title: '员工流失率', width: 100},
+                        {field: 'btotals', rowspan: 3, title: '绝对流失率', width: 100, formatter: blformatter}
+                        // {colspan: 25, title: 'O类', width: 150},
+
+                    ],
+                    [
+                        {rowspan: 1, colspan: 2, title: '主动离职', width: 50},
+                        {rowspan: 1, colspan: 3, title: '被动离职', width: 50},
+                        {rowspan: 1, colspan: 2, title: '协商离职', width: 50},
+
+                        {rowspan: 1, colspan: 3, title: '主动流失', width: 50},
+                        {rowspan: 1, colspan: 4, title: '被动流失', width: 80},
+                        {rowspan: 1, colspan: 3, title: '协商离职', width: 50},
+
+                    ],
+                    [
+                        {field: 'totalquota', title: '编制总数', width: 60, formatter: intzeroformatter},
+                        {field: 'offjobquota', title: '脱产编制', width: 60, formatter: intzeroformatter},
+                        {field: 'noffjobquota', title: '非脱产编制', width: 80, formatter: intzeroformatter},
+                        {field: 'emnum', title: '总人数', width: 60, formatter: intzeroformatter},
+                        {field: 'emnumoff', title: '脱产人数', width: 60, formatter: intzeroformatter},
+                        {field: 'emnumnoff', title: '非脱产人数', width: 80, formatter: intzeroformatter},
+                        {field: 'selfleave', title: '自离', width: 50, formatter: intzeroformatter},
+                        {field: 'quit', title: '辞职', width: 50, formatter: intzeroformatter},
+                        {field: 'dismiss', title: '辞退', width: 50, formatter: intzeroformatter},
+                        {field: 'retire', title: '退休', width: 50, formatter: intzeroformatter},
+                        {field: 'reduce', title: '裁员', width: 50, formatter: intzeroformatter},
+                        {field: 'ncpst', title: '无经济补偿', width: 80, formatter: intzeroformatter},
+                        {field: 'cpst', title: '有经济补偿', width: 80, formatter: intzeroformatter},
+
+                        {field: 'bsf', title: '自离率', width: 60, formatter: blformatter},
+                        {field: 'bq', title: '辞职率', width: 60, formatter: blformatter},
+                        {field: 'bsls', title: '主动流失率', width: 80, formatter: blformatter},
+                        {field: 'bdm', title: '辞退率', width: 60, formatter: blformatter},
+                        {field: 'brd', title: '退休率', width: 60, formatter: blformatter},
+                        {field: 'brt', title: '裁员率', width: 60, formatter: blformatter},
+                        {field: 'brls', title: '被动流失率', width: 80, formatter: blformatter},
+                        {field: 'bncpst', title: '无经济补偿', width: 80, formatter: blformatter},
+                        {field: 'bcpst', title: '有经济补偿', width: 80, formatter: blformatter},
+                        {field: 'btls', title: '协商流失率', width: 80, formatter: blformatter}
+
+                    ]
+                ];
+            }
+            if (mengtag == 17) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 3, title: '年月', width: 80},
+                        {field: 'orgname', align: 'center', title: '机构', rowspan: 3, width: 100},
+                        {align: 'center', title: '编制人数', colspan: 3, rowspan: 2, width: 100},
+                        {align: 'center', title: '实际人数', colspan: 3, rowspan: 2, width: 100},
+                        {align: 'center', title: '超缺编人数', colspan: 3, rowspan: 2, width: 100},
+                        {align: 'center', title: '入职人数', colspan: 3, rowspan: 2, width: 100},
+                        {align: 'center', title: '调动', colspan: 5, rowspan: 2, width: 100},
+                        {align: 'center', title: '批量调动', colspan: 3, rowspan: 2, width: 100},
+                        {align: 'center', title: '借调', colspan: 2, rowspan: 2, width: 100},
+                        {field: 'partjbrs', align: 'center', title: '兼职人数', rowspan: 3, width: 100},
+                        {align: 'center', title: '离职人数', colspan: 8, rowspan: 1, width: 100}
+                    ],
+                    [
+                        {align: 'center', title: '主动离职', colspan: 2, rowspan: 1, width: 100},
+                        {align: 'center', title: '被动离职', colspan: 3, rowspan: 1, width: 100},
+                        {align: 'center', title: '协商离职', colspan: 2, rowspan: 1, width: 100},
+                        {field: 'totalleave', align: 'center', title: '离职总人数', rowspan: 2, width: 100}
+                    ],
+                    [
+                        {field: 'quota', align: 'center', title: '编制数', width: 80, formatter: intzeroformatter},
+                        {field: 'offjobquota', align: 'center', title: '脱产编制数', width: 80, formatter: intzeroformatter},
+                        {field: 'noffjobquota', align: 'center', title: '非脱产编制数', width: 80, formatter: intzeroformatter},
+                        {field: 'sumpemnum', align: 'center', title: '总人数', width: 80, formatter: intzeroformatter},
+                        {field: 'tcrs', align: 'center', title: '脱产实际人数', width: 80, formatter: intzeroformatter},
+                        {field: 'ttcrs', align: 'center', title: '非脱产实际人数', width: 80, formatter: intzeroformatter},
+                        {field: 'cqbrs', align: 'center', title: '超缺编总人数', width: 80, formatter: xylred},
+                        {field: 'tccqbrs', align: 'center', title: '脱产超缺编人数', width: 80, formatter: xylred},
+                        {field: 'ftccqbrs', align: 'center', title: '非脱产超缺编人数', width: 80, formatter: xylred},
+                        {field: 'rzrs', align: 'center', title: '合计入职人数', width: 80, formatter: intzeroformatter},
+                        {field: 'tcrzrs', align: 'center', title: '脱产入职人数', width: 80, formatter: intzeroformatter},
+                        {field: 'ftcrzrs', align: 'center', title: '非脱产入职人数', width: 80, formatter: intzeroformatter},
+                        {field: 'jsrs', align: 'center', title: '晋升人数', width: 80, formatter: intzeroformatter},
+                        {field: 'jzrs', align: 'center', title: '降职人数', width: 80, formatter: intzeroformatter},
+                        {field: 'nbddrs', align: 'center', title: '内部调动人数', width: 80, formatter: intzeroformatter},
+                        {field: 'drrs', align: 'center', title: '调入人数', width: 80, formatter: intzeroformatter},
+                        {field: 'dcrs', align: 'center', title: '调出人数', width: 80, formatter: intzeroformatter},
+                        {field: 'plddrs', align: 'center', title: '批量调动人数', width: 80, formatter: intzeroformatter},
+                        {field: 'pldrrs', align: 'center', title: '批量调入人数', width: 80, formatter: intzeroformatter},
+                        {field: 'pldcrs', align: 'center', title: '批量调出人数', width: 80, formatter: intzeroformatter},
+
+                        {field: 'jdrrs', align: 'center', title: '调入人数', width: 80, formatter: intzeroformatter},
+                        {field: 'jdcrs', align: 'center', title: '调出人数', width: 80, formatter: intzeroformatter},
+
+
+                        {field: 'selfleave', align: 'center', title: '自离', width: 80, formatter: intzeroformatter},
+                        {field: 'quit', align: 'center', title: '辞职', width: 80, formatter: intzeroformatter},
+                        {field: 'dismiss', align: 'center', title: '辞退', width: 80, formatter: intzeroformatter},
+                        {field: 'reduce', align: 'center', title: '退休', width: 80, formatter: intzeroformatter},
+                        {field: 'retire', align: 'center', title: '裁员', width: 80, formatter: intzeroformatter},
+                        {field: 'cpst', align: 'center', title: '无经济补偿', width: 80, formatter: intzeroformatter},
+                        {field: 'ncpst', align: 'center', title: '有经济补偿', width: 80, formatter: intzeroformatter}
+                    ]
+                ]
+            }
+
+            if (mengtag == 18) {
+                return [
+                    [
+                        {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                        {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                        {colspan: 3, title: '编制人数'},
+                        {colspan: 3, title: '实际人数'},
+                        {colspan: 3, title: '入职人数'}
+                    ],
+                    [
+                        {field: 'totalquota', align: 'center', title: '编制数', width: 100, formatter: intzeroformatter},
+                        {field: 'offjobquota', align: 'center', title: '脱产编制数', width: 100, formatter: intzeroformatter},
+                        {field: 'noffjobquota', align: 'center', title: '非脱产编制数', width: 10, formatter: intzeroformatter0},
+                        {field: 'emnum', align: 'center', title: '总人数', width: 100, formatter: intzeroformatter},
+                        {field: 'emnumoff', align: 'center', title: '脱产实际人数', width: 100, formatter: intzeroformatter},
+                        {field: 'emnumnoff', align: 'center', title: '非脱产实际人数', width: 100, formatter: intzeroformatter},
+                        {field: 'sument', align: 'center', title: '合计入职人数', width: 100, formatter: intzeroformatter},
+                        {field: 'entnumoff', align: 'center', title: '脱产入职人数', width: 100, formatter: intzeroformatter},
+                        {field: 'entnumnoff', align: 'center', title: '非脱产入职人数', width: 100, formatter: intzeroformatter}
+                    ]
+                ]
+            }
+
+            if (mengtag == 19) {
+                return [
+                    {field: 'yearmonth', title: '年月', width: 80},
+                    {field: 'orgname', title: '模块单位', width: 150},
+                    {field: 'bzpznum', title: '标准配置人数', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev1', title: '总监级(2.0)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev2', title: '总监级(2.1-2.3)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev3', title: '高级经理(3.0-3.1)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev4', title: '经理级(3.1-3.3)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev5', title: '产品类项目经理', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev7', title: '高级科长(4.0)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev8', title: '科长级(4.1-4.2)', width: 80, formatter: intzeroformatter},
+                    {field: 'mlev6', title: '非产品类项目经理', width: 80, formatter: intzeroformatter},
+                    {field: 'mlevall', title: '实际配置人数合计', width: 80, formatter: intzeroformatter},
+                    {field: 'mlevpc', title: '配置偏差', width: 80, formatter: intzeroformatter},
+                    {field: 'cbnum', title: '储干实际(3.1-4.2)', width: 80, formatter: intzeroformatter},
+                    {field: 'cbpc', title: '配置偏差(含储干)', width: 80, formatter: intzeroformatter}
+                ];
+            }
+            if (mengtag == 20) {
+                return [
+                    {field: 'yearmonth', title: '年月', width: 80},
+                    {field: 'orgname', title: '机构', width: 150},
+                    {field: 'sp_name', title: '职位', width: 80},
+                    {field: 'emnum', align: 'center', title: '人数', width: 100, formatter: intzeroformatter}
+                ];
+
+            }
+        };
+
+        function getMZFields() {
+            var data = $C.grid.comDatas["dic797"].data;
+            var row1 = [
+                {field: 'yearmonth', rowspan: 2, title: '年月', width: 80},
+                {field: 'orgname', rowspan: 2, title: '机构', width: 150}
+            ];
+            var row2 = [];
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                row1.push({colspan: 2, title: d.language1, width: 100});
+                row2.push({field: 'f' + d.dictvalue, title: '人数', width: 50, formatter: intzeroformatter});
+                row2.push({field: 'bf' + d.dictvalue, title: '比率', width: 60, formatter: blformatter});
+            }
+            row1.push({field: 'sumpeo', rowspan: 2, title: '总数', width: 100, formatter: intzeroformatter});
+            var rst = [row1, row2];
+            return rst;
+        }
+
+        function getYDFields() {
+
+        }
+
+        var prtOptions = {
+            htmlTempt: "",
+            allowChart: true,
+            pagination: false,
+            afterLoadData: function (jsondata) {
+                if (mengtag == 7) {
+                    //设置字段
+                }
+            },
+            gdListColumns: listGridColumns,
+            comUrls: comUrls,
+            beforeInitUI: function () {
+                ///
+                if (mengtag == 1)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeXL.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 2)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeAge.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 3)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeSex.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 4)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeMZ.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 5)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeLev.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 6) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeClass.co",
+                        allowChart: false,
+                        fitColumns: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 7) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmpoyeeOrg.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 9) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findzyrpt.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 10) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/contractanalysis.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 11) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/staffretention.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 12) {
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeXL_QS.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                }
+                if (mengtag == 13)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeAge_QS.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 14)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeSex_QS.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: false,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 15)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeLev_QS.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 16)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/findEmployeeClass_QS.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 17)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt3/rpt_hrrsydtj.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: false,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 18)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/rpt_hrrztj.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 19)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/rpt_mlevtj.co",
+                        fitColumns: false,
+                        allowChart: false,
+                        findwidth: 400,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+                if (mengtag == 20)
+                    return {
+                        coURL: _serUrl + "/web/hr/permrpt1/rpt_zwqstj.co",
+                        fitColumns: false,
+                        allowChart: true,
+                        findwidth: 450,
+                        findheight: 350,
+                        showChartChoicetor: true,
+                        findOptionsFilter: "#findOptions7",
+                        onGetFindParms: onGetFindParms
+                    };
+            },
+            afterInitUI: afterInitUI,
+            onLoadChartOptions: onLoadChartOptions,
+            onLoadChartData: onLoadChartData
+        };
+
+
+        function afterInitUI() {
+            loadZLData();
+            $parserDatebox2YearMonth($("#yearmonth_begin"));
+            $parserDatebox2YearMonth($("#yearmonth_end"));
+            if (mengtag == 7) {
+            }
+            if ((mengtag == 12) || (mengtag == 13) || (mengtag == 14) || (mengtag == 15) || (mengtag == 16) || (mengtag == 4)
+                    || (mengtag == 7) || (mengtag == 11) || (mengtag == 17) || (mengtag == 18) || (mengtag == 19)) {//趋势分析
+                $("#dg_datalist_id").datagrid({showFooter: false});
+                setDateOnlyOne(false);
+            } else if (mengtag == 19) {
+                $("#hwc_namezl").parent().parent().css("display", "none");
+                $("#lv_num").parent().parent().css("display", "none");
+                $("#dg_datalist_id").datagrid({showFooter: true});
+                setDateOnlyOne(true);
+                $("#zwxztr").hide();
+            } else if (mengtag == 20) {
+                $("#dg_datalist_id").datagrid({showFooter: true});
+                $(".yearmonth_begin_title").html("选择开始年月");
+                $(".yearmonth_end_title").html("选择截止年月");
+                $(".yearmonth_end_title").parent().css("display", "");
+                // $("#zwnametr").css("display", "");
+                $("#zwxztr").css("display", "none");
+            } else {
+                $("#dg_datalist_id").datagrid({showFooter: true});
+                setDateOnlyOne(true);
+            }
+            if ((mengtag == 5) || (mengtag == 15)) {//职级趋势分析 职级结构分析
+                $("#lv_num").parent().parent().css("display", "none");
+            }
+            if ((mengtag == 6) || (mengtag == 16)) {//职类结构分析 职类趋势分析
+                $("#hwc_namezl").parent().parent().css("display", "none");
+            }
+            var hds = [1, 12, 2, 13, 3, 14, 4, 5, 15, 6, 16, 7, 9, 11, 17, 18, 19];
+            if (hds.indexOf(mengtag) > -1) {
+                $("#findtypes").css("display", "none");
+            }
+        }
+        function setDateOnlyOne(onlyone) {
+            if (onlyone) {
+                $(".yearmonth_begin_title").html("选择年月");
+                $(".yearmonth_end_title").parent().css("display", "none");
+            } else {
+                $(".yearmonth_begin_title").html("选择开始年月");
+                $(".yearmonth_end_title").html("选择截止年月");
+                $(".yearmonth_end_title").parent().css("display", "");
+            }
+        }
+        function onGetFindParms() {
+            var parms = [];
+            if ((mengtag == 11) || (mengtag == 10) || (mengtag == 9) || (mengtag == 7) || (mengtag == 6) || (mengtag == 1)
+                    || (mengtag == 2) || (mengtag == 3) || (mengtag == 4) || (mengtag == 5) || (mengtag == 17) || (mengtag == 18)) {
+                if (!stedorg) {
+                    alert("选择机构");
+                    return;
+                }
+                var yearmonth = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth)) {
+                    alert("选择年月");
+                    return;
+                }
+
+                var empclass = $("input[name='empclass']:checked").val();
+                if ($isEmpty(empclass)) {
+                    alert("选择职位性质");
+                    return;
+                }
+
+                var includechild = document.getElementById("includechild").checked;
+                parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg.orgid});
+                parms.push({parmname: "yearmonth", reloper: "=", parmvalue: yearmonth});
+                parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+                parms.push({parmname: "empclass", reloper: "=", parmvalue: empclass});
+            }
+            if ((mengtag == 12) || (mengtag == 13) || (mengtag == 14) || (mengtag == 15) || (mengtag == 16)) {
+                if (!stedorg) {
+                    alert("选择机构");
+                    return;
+                }
+                var yearmonth_begin = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth_begin)) {
+                    alert("选择起始年月");
+                    return;
+                }
+
+                var yearmonth_end = $("#yearmonth_end").datebox('getValue');
+                if ($isEmpty(yearmonth_end)) {
+                    alert("选择截止年月");
+                    return;
+                }
+                var empclass = $("input[name='empclass']:checked").val();
+                if ($isEmpty(empclass)) {
+                    alert("选择职位性质");
+                    return;
+                }
+                var includechild = document.getElementById("includechild").checked;
+                parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg.orgid});
+                parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth_begin});
+                parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonth_end});
+                parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+                parms.push({parmname: "empclass", reloper: "=", parmvalue: empclass});
+            }
+            if ((mengtag == 19)) {
+                if (!stedorg) {
+                    alert("选择机构");
+                    return;
+                }
+                var yearmonth = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth)) {
+                    alert("选择年月");
+                    return;
+                }
+                var includechild = document.getElementById("includechild").checked;
+                parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg.orgid});
+                parms.push({parmname: "yearmonth", reloper: "=", parmvalue: yearmonth});
+                parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+            }
+            if (mengtag == 20) {
+                if (!stedorg) {
+                    alert("选择机构");
+                    return;
+                }
+                var yearmonth_begin = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth_begin)) {
+                    alert("选择起始年月");
+                    return;
+                }
+
+                var yearmonth_end = $("#yearmonth_end").datebox('getValue');
+                if ($isEmpty(yearmonth_end)) {
+                    alert("选择截止年月");
+                    return;
+                }
+
+                var findtype = $("input[name='findtype']:checked").val();
+                if ($isEmpty(findtype)) {
+                    alert("查询方式");
+                    return;
+                }
+                var includechild = document.getElementById("includechild").checked;
+
+                parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg.orgid});
+                parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth_begin});
+                parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonth_end});
+                parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+                parms.push({parmname: "findtype", reloper: "=", parmvalue: findtype});
+            }
+            ///
+            if (!$isEmpty($("#idzwname").textbox('getValue'))) {
+                parms.push({parmname: "spname", reloper: "=", parmvalue: $("#idzwname").textbox('getValue')});
+            }
+            if (!$isEmpty($("#hwc_namezl").textbox('getValue'))) {
+                parms.push({parmname: "hwc_namezl", reloper: "=", parmvalue: $("#hwc_namezl").textbox('getValue')});
+            }
+            if (!$isEmpty($("#hwc_namezq").textbox('getValue'))) {
+                parms.push({parmname: "hwc_namezq", reloper: "=", parmvalue: $("#hwc_namezq").textbox('getValue')});
+            }
+            if (!$isEmpty($("#hwc_namezz").textbox('getValue'))) {
+                parms.push({parmname: "hwc_namezz", reloper: "=", parmvalue: $("#hwc_namezz").textbox('getValue')});
+            }
+            if (!$isEmpty($("#lv_num").combobox('getValue'))) {
+                parms.push({parmname: "lv_num_sql", reloper: "=", parmvalue: $("#lv_num").combobox('getValue')});
+            }
+
+            if ((mengtag == 4) || (mengtag == 7) || (mengtag == 11) || (mengtag == 17) || (mengtag == 18) || (mengtag == 19)) {//新变更的趋势分析
+                var yearmonth_end = $("#yearmonth_end").datebox('getValue');
+                if ($isEmpty(yearmonth_end)) {
+                    alert("选择截止年月");
+                    return;
+                }
+                parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonth_end});
+            }
+            return parms;
+        }
+        //载入测试数据
+        function gettestrows(rows) {
+            var rst = [];
+            if (mengtag == 1) {
+                for (i = 0; i < 10; i++) {
+                    rst.push({
+                        orgname: "单位" + i,
+                        ss: parseInt(Math.random() * 100),
+                        bk: parseInt(Math.random() * 100),
+                        dz: parseInt(Math.random() * 100),
+                        gz: parseInt(Math.random() * 100),
+                        zz: parseInt(Math.random() * 100),
+                        zj: parseInt(Math.random() * 100),
+                        cz: parseInt(Math.random() * 100)
+                    });
+                }
+            }
+            if (mengtag == 2) {
+                for (i = 0; i < 10; i++) {
+                    rst.push({
+                        orgname: "单位" + i,
+                        f50: parseInt(Math.random() * 100),
+                        f40: parseInt(Math.random() * 100),
+                        f30: parseInt(Math.random() * 100),
+                        f20: parseInt(Math.random() * 100),
+                        f00: parseInt(Math.random() * 100)
+                    });
+                }
+            }
+            if (mengtag == 3) {
+                for (i = 0; i < 10; i++) {
+                    rst.push({
+                        orgname: "单位" + i,
+                        nan: parseInt(Math.random() * 500),
+                        nv: parseInt(Math.random() * 500)
+                    });
+                }
+            }
+            return rst;
+        }
+        function onLoadChartOptions(rows) {
+            if (mengtag == 1)
+                return getDegreeOptions(rows);
+            if (mengtag == 2)
+                return getDegreeOptions(rows);
+            if (mengtag == 3)
+                return getDegreeOptions(rows);
+            if (mengtag == 7) {
+                return getOrgChartOptions(rows);
+            }
+            if ((mengtag == 12) || (mengtag == 13) || (mengtag == 14) || (mengtag == 15) || (mengtag == 16) || (mengtag == 20)) {
+                return getOrgDegreeQSptions(rows);
+            }
+
+            if (mengtag == 18) {
+                return getDegreeOptions(rows);
+            }
+
+            function getOrgDegreeQSptions(rows) {
+                var ticks = [];
+                if ((rows.chartdata) && (rows.chartdata.length > 0)) {
+                    var dts = rows.chartdata[0].data;
+                    for (var i = 0; i < dts.length; i++) {
+                        ticks.push(dts[i][0]);
+                    }
+                }
+                var options = {
+                    yaxis: {
+                        min: 0
+                    },
+                    xaxis: {
+                        mode: "time",
+                        timeformat: "%Y%m",
+                        tickSize: [1, "month"]
+                        //tickDecimals: 0,
+                        //tickFormatter: function (val, axis) {
+                        //var d = new Date(val);
+                        //console.log(val)
+                        //return d.getFullYear() + "-" + (d.getUTCMonth() + 1);
+                        //return "数字" + val.toString();
+                        //}
+                    },
+                    legend: {
+                        opacity: 1,
+                        backgroundOpacity: 1
+                    }
+                };
+                console.error(JSON.stringify(ticks));
+                if (ticks.length > 0) {
+                    options.xaxis.ticks = ticks;
+                    //  options.max = ticks[ticks.length - 1] + (1000 * 60 * 60 * 2);
+                }
+                return options;
+            }
+
+            function getDegreeOptions(rows) {
+                // rows = gettestrows();
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var ticks = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    ticks.push([i, row.orgname]);
+                }
+                var options = {
+                    series: {
+                        stack: true,
+                        bars: {
+                            show: true,
+                            barWidth: 0.6
+                        }
+                    },
+                    xaxis: {
+                        ticks: ticks,
+                        axisLabel: "机构",
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Verdana, Arial',
+                        axisLabelPadding: 10
+                    },
+                    yaxis: {
+                        color: "black",
+                        axisLabel: "员工数量",
+                        min: 0,
+                        axisLabelUseCanvas: true,
+                        axisLabelFontSizePixels: 12,
+                        axisLabelFontFamily: 'Verdana, Arial',
+                        axisLabelPadding: 3
+                    },
+                    grid: {
+                        hoverable: true,
+                        borderWidth: 2,
+                        backgroundColor: {colors: ["#EDF5FF", "#ffffff"]}
+                    },
+                    legend: {
+                        opacity: 1,
+                        backgroundOpacity: 1
+                    },
+                    colors: ["#004078", "#207800", "#613C00"]
+                };
+                return options;
+            }
+
+            function getOrgChartOptions() {
+                var options = {
+                    series: {
+                        pie: {
+                            show: true,
+                            radius: 0.8,
+                            label: {
+                                show: true,
+                                radius: 2 / 4,
+                                formatter: labelFormatter,
+                                background: {
+                                    opacity: 0.5
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        opacity: 1,
+                        backgroundOpacity: 1
+                    }
+                };
+                return options;
+            }
+
+        }
+        function onLoadChartData(rows) {
+
+            $(".legend div:nth-child(1)").css("opacity", "1");
+            //if (mengtag != 7)
+            //    rows = gettestrows(rows);
+            if (mengtag == 1)
+                return getDegreeData(rows);
+            if (mengtag == 2)
+                return getAgeData(rows);
+            if (mengtag == 3)
+                return getSexData(rows);
+            if (mengtag == 7)
+                return getOrgData(rows);
+
+            if ((mengtag == 12) || (mengtag == 13) || (mengtag == 14) || (mengtag == 15) || (mengtag == 16) || (mengtag == 20)) {
+                return getDegreeQSData(rows);
+            }
+            if (mengtag == 18)
+                return getOrgEntryData(rows);//入职
+
+            function getOrgEntryData() {
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var data1 = [];
+                var data2 = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data1.push([i, row.entnumoff]);
+                    data2.push([i, row.entnumnoff]);
+                }
+                var dataset = [
+                    {label: "脱产", data: data1, color: "#DE000F"},
+                    {label: "非脱产", data: data2, color: "#2E8B57"}
+                ];
+                return dataset;
+            }
+
+
+            function getDegreeData(rows) {
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var data1 = [];
+                var data2 = [];
+                var data3 = [];
+                var data4 = [];
+                var data5 = [];
+                var data6 = [];
+                var data7 = [];
+                var data8 = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data1.push([i, row.ss]);
+                    data2.push([i, row.bk]);
+                    data3.push([i, row.dz]);
+                    data4.push([i, row.gz]);
+                    data5.push([i, row.zz]);
+                    data6.push([i, row.zj]);
+                    data7.push([i, row.cz]);
+                    data8.push([i, row.qt]);
+                }
+                var dataset = [
+                    {label: "硕士及以上", data: data1, color: "#DE000F"},
+                    {label: "本科", data: data2, color: "#2E8B57"},
+                    {label: "大专", data: data3, color: "#0077FF"},
+                    {label: "高中", data: data4, color: "#7D0096"},
+                    {label: "中专", data: data5},
+                    {label: "中技", data: data6},
+                    {label: "初中及以下", data: data7, color: "#FFA500"},
+                    {label: "其他", data: data8}
+                ];
+                return dataset;
+            }
+
+            function getAgeData(rows) {
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var data1 = [];
+                var data2 = [];
+                var data3 = [];
+                var data4 = [];
+                var data5 = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data1.push([i, row.f50]);
+                    data2.push([i, row.f40]);
+                    data3.push([i, row.f30]);
+                    data4.push([i, row.f20]);
+                    data5.push([i, row.f00]);
+                }
+                var dataset = [
+                    {label: "50岁及以上", data: data1, color: "#DE000F"},
+                    {label: "40(含)-50岁", data: data2, color: "#2E8B57"},
+                    {label: "30(含)-40岁", data: data3, color: "#0077FF"},
+                    {label: "20(含)-30岁", data: data4, color: "#7D0096"},
+                    {label: "20岁以下", data: data5, color: "#FFA500"}
+                ];
+                return dataset;
+            }
+
+            function getSexData(rows) {
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var data1 = [];
+                var data2 = [];
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    data1.push([i, row.nan]);
+                    data2.push([i, row.nv]);
+                }
+                var dataset = [
+                    {label: "男", data: data1, color: "#DE000F"},
+                    {label: "女", data: data2, color: "#2E8B57"}
+                ];
+                return dataset;
+            }
+
+            function getOrgData(rows) {
+                if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+                var data = [];
+                for (var i = 0; i < rows.length - 1; i++) {//最后一行是合计
+                    var row = rows[i];
+                    data.push({label: row.orgname, data: row.ct});
+                }
+                //alert(JSON.stringify(data));
+                return data;
+            }
+
+            function getDegreeQSData(rows) {
+                console.error(JSON.stringify(rows.chartdata));
+                return rows.chartdata;
+            }
+        }
+        function labelFormatter(label, series) {
+            return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+        }
+
+        function loadZLData() {
+            var url = _serUrl + "/web/hr/employee/findHrClass.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#hwc_namezl").combobox({
+                    valueField: 'hwc_name',
+                    textField: 'hwc_name',
+                    data: jsdata
+                });
+
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        var select_Org_pw = undefined;
+        function onFindOrg() {
+            stedorg = undefined;
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                width: "400px",//
+                height: "400px",//
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        stedorg = row;
+                        $("#idorg").textbox("setValue", row.orgname);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+    </script>
+
+    <script type="text/html" id="findOptions7">
+        <table style="padding: 10px">
+            <tr>
+                <td>选择机构</td>
+                <td>
+                    <input id="idorg" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton: onFindOrg,editable:false"
+                           style="width:200px;height: 22px">
+                </td>
+            </tr>
+            <tr id="zwxztr">
+                <td>职位性质</td>
+                <td>
+                    <label><input name="empclass" type="radio" checked="true" value="1"/>脱产+非脱产</label>
+                    <label><input name="empclass" type="radio" value="2"/>脱产</label>
+                    <label><input name="empclass" type="radio" value="3"/>非脱产</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    职类
+                </td>
+                <td>
+                    <input id="hwc_namezl" type="text" class="easyui-textbox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    职群
+                </td>
+                <td>
+                    <input id="hwc_namezq" type="text" class="easyui-textbox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    职种
+                </td>
+                <td>
+                    <input id="hwc_namezz" type="text" class="easyui-textbox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    职级
+                </td>
+                <td>
+                    <input id="lv_num" type="text" class="easyui-combobox" data-options="data:lv_numdata,valueField:'value',textField:'text'" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr id="zwnametr" style="">
+                <td>职位</td>
+                <td>
+                    <input id="idzwname" class="easyui-textbox" style="width:150px;height: 22px"><br>
+                    <span id="findtypes">
+                      <label><input name="findtype" type="radio" checked="true" value="1"/>精确</label>
+                      <label><input name="findtype" type="radio" value="2"/>模糊明细</label>
+                      <label><input name="findtype" type="radio" value="3"/>模糊汇总</label>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="yearmonth_begin_title">
+                    选择年月
+                </td>
+                <td>
+                    <input id="yearmonth_begin" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr style="display: none">
+                <td class="yearmonth_end_title">
+                    选择年月
+                </td>
+                <td>
+                    <input id="yearmonth_end" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    显示子机构
+                </td>
+                <td>
+                    <input id="includechild" type="checkbox" checked="checked">
+                </td>
+            </tr>
+        </table>
+    </script>
+</head>
+<body>
+
+</body>
+</html>

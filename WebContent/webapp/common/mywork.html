@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+
+    <script type="text/javascript">
+        var maintreedata = [
+            {
+                "id": 99,
+                "text": "(<label id='lableusername' style='font-weight: 700;'>" + $C.UserInfo.displayname() + "</label>)的工作流",
+                "iconCls": "icon-mywork",
+                "children": [
+                    {"text": "当前流程", "id": 1},
+                    {"text": "我启动的流程", "id": 2},
+                    {"text": "未到达的流程", "id": 3},
+                    {"text": "已完成的流程", "id": 4},
+                    {"text": "通知我的流程", "id": 5}
+                ]
+            }
+        ];
+
+        $(document).ready(function () {
+                    $('#westtree_id').tree({
+                        onSelect: function (node) {
+                            if (node.id == 99) return;
+                            $ajaxjsonget($C.cos.myworkflows + "?wftype=" + node.id, function (jsondata) {
+                                //console.error(JSON.stringify(jsondata));
+                                $('#mywf_grid').treegrid({
+                                    data: jsondata,
+                                    onDblClickRow: function (row) {
+                                        showWfObjectFrmEx(row);
+                                    }
+                                });
+                            }, function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert("获取流程信息错误！");
+                            });
+                        }
+                    });
+                    setTimeout('findfirst()', 500);
+                }
+        );
+
+        function wftempformator(value, row, index) {
+            if (parseInt(row.iswftemp) == 1) {
+                return value + "  (<span style='color: red'>" + row.children.length + "</span>)";
+            } else
+                return value;
+        }
+
+        function findfirst() {
+            var node = $('#westtree_id').tree('find', 1);
+            $('#westtree_id').tree('select', node.target);
+        }
+
+        function showWfOjectFrm(rowData) {
+            var menuid = rowData.codeid;
+            var objectid = rowData.ojcectid;
+            var url = _serUrl + "/web/menu/getMenuByid.co?menuid=" + menuid;
+            $ajaxjsonget(url, function (jsondata) {
+                var pw = this.parent;
+                if (pw) {
+                    if (pw.findNodeByMenu)
+                        pw.findNodeByMenu(pw, jsondata, objectid);
+                }
+            }, function () {
+                alert("获取菜单信息错误！");
+            })
+        }
+
+        function showWfObjectFrmEx(row) {
+            if (parseInt(row.iswftemp) == 1)
+                return;
+            var mwwfstype = (row.mwwfstype) ? row.mwwfstype : 1;
+            var ifid = "wf_" + row.wfid;
+            //var pw = this.parent;
+            var pw = window.top;
+            var url = row.formurl;
+            var src = _serUrl + "/webapp/common/shwwf.html?wfid=" + row.wfid + "&showtype=" + mwwfstype;
+            if (pw.showTab) {
+                pw.showTab(undefined, "审批流程", ifid, src, undefined);
+            } else {
+                alert("首页链接不能调用");
+                return;
+            }
+        }
+
+        function formatorwf(val, row) {
+            return "<span class='icon-text_ab' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span><span>"
+                    + val + "</span>";
+        }
+
+    </script>
+</head>
+<body>
+<div id="cc" class="easyui-layout easyui-panel" data-options="fit:true,border:false"
+     style="padding: 0px;margin: 0px auto">
+    <div data-options="region:'west',split:true" style="width:200px;border:none">
+        <ul id="westtree_id" class="easyui-tree" data-options="data:maintreedata"></ul>
+    </div>
+    <div data-options="region:'center'" style="border:none">
+        <table id="mywf_grid" class="easyui-treegrid" style="width:100%;height:100%"
+               data-options="fitColumns:false,singleSelect:true,remoteSort:false,border:false,idField:'wfid',treeField:'wftempname'">
+            <thead>
+            <tr>
+                <th data-options="field:'wftempname',width:300,sortable: true,formatter:formatorwf,formatter:wftempformator">
+                    流程主题
+                </th>
+                <th data-options="field:'creator',sortable: true,width:100,align:'center'">提交人</th>
+                <th data-options="field:'createtime',sortable: true,width:150,align:'center'">提交时间</th>
+                <th data-options="field:'curusers',width:100,align:'center'">当前用户</th>
+                <th data-options="field:'procname',width:100,align:'center'">当前环节</th>
+                <th data-options="field:'arivetime',width:100,align:'center'">到达时间</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+</body>
+
+</html>

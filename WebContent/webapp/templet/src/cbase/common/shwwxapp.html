@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop3.html" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline3.js"></script>
+    <title>微信参数设置</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'wxappid', title: 'wxappid', width: 150},
+            {field: 'acaption', title: '名称', width: 150}
+        ];
+        function parmvaluefrm(value, row, index) {
+            if (row.parmname == "WxPayCert") {
+                if ($isEmpty(row.pid)) {
+                    return "";
+                } else {
+                    if ($isEmpty(value))
+                        return "<a class='uploada' herf='###' onclick=doupload(" + row.pid + ")>上传</a>";
+                    else
+                        return value + "(<a class='uploada' herf='###' onclick=doupload(" + row.pid + ")>重新上传</a>)";
+                }
+            } else
+                return value;
+        }
+
+        var columns_shwwxappparms = [
+            {field: 'parmname', title: '参数名', width: 250},
+            {field: 'parmvalue', title: '参数值', width: 300, formatter: parmvaluefrm},
+            {field: 'acaption', title: '参数说明', width: 300}
+        ];
+
+        function tagidformatter(value, row, index) {
+            if (!value) {
+                return "<a href='javascript:' onclick='doSynTagWX(" + index + ")'>同步到微信</a>";
+            } else return value;
+        }
+
+        function tagmenuformatter(value, row, index) {
+            var editstr = "<a href='javascript:' onclick='edittagmenu(" + index + ")'>编辑</a>";
+            var creatstr = "<a href='javascript:' onclick='createtagmenu(" + index + ")'>创建到微信</a>";
+            var removestr = "<a href='javascript:' onclick='removetagmenu(" + index + ")'>从微信删除</a>";
+            var rst = undefined;
+            if (!value) {
+                rst = editstr;
+            } else {
+                if (!mainline.getDataChanged())
+                    rst = editstr + "-" + creatstr;
+                else
+                    rst = editstr;
+            }
+            if (row.wxtagmenuid) {
+                rst = rst + "-" + removestr;
+            }
+            return rst;
+        }
+
+        var columns_shwwxapptags = [
+            {field: 'tagid', title: '微信tagid', width: 80, formatter: tagidformatter},
+            {field: 'tagname', title: '名称', width: 100, editor: "text", crequired: true},
+            {field: 'remark', title: '备注', width: 100, editor: "text"},
+            {field: 'usable', title: '可用', width: 80, crequired: true, formatter: comUrl_dic5.formator, editor: comUrl_dic5.editor},
+            {field: 'wxusable', title: '微信是否可用', width: 100, formatter: comUrl_dic5.formator},
+            {field: 'uscount', title: '粉丝数量', width: 100},
+            {field: 'tagmenujson', title: 'tag菜单', width: 200, formatter: tagmenuformatter}
+        ];
+
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.weixin.entity.Shwwxapp",
+            JPAIdField: "appid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            allow_expt_list: true,
+            autoFind: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            detailGrids: [
+                {
+                    grdid: "shwwxappparms_id",
+                    allowEmptyLine: false,
+                    lineTitle: "微信参数",
+                    lineHeight: "500px",
+                    lineProperty: 'shwwxappparms',
+                    onDBClick: function (index, row) {
+                        dopromt(row);
+                        return false; //false 将不调用edit方法
+                    },
+                    onSetToolbar: function (grdid, toolbar) {
+                        return [
+                            {
+                                text: '载入默认参数项目',
+                                iconCls: 'icon-importexcel',
+                                handler: function () {
+                                    getshwwxappparmdefault();
+                                }
+                            }
+                        ];     //如果定义了本方法需要返回才能设置
+                    },
+                    extToolBar: [],
+                    lineColumns: columns_shwwxappparms
+                },
+                {
+                    grdid: "shwwxapptags_id",
+                    allowEmptyLine: true,
+                    lineTitle: "微信tag",
+                    lineProperty: 'shwwxapptags',
+                    lineColumns: columns_shwwxapptags,
+                    extToolBar: [
+                        {
+                            text: '从微信更新所有Tag',
+                            iconCls: 'icon-importexcel',
+                            handler: function () {
+                                doupdateTag4wx();
+                            }
+                        }
+                    ],
+                    onLineAppend: function () {  //返回值将被添加 返回false undefi不添加
+                        return {usable: 1};
+                    }
+                }
+            ],
+            onCreate: function () {//创建对象前
+
+            },
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                getshwwxappparmdefault();
+            }
+        };
+
+        function getshwwxappparmdefault() {
+            var url = _serUrl + "/corsair/weichart/mange/getshwwxappparmdefault.co";
+            $ajaxjsonget(url, function (jsdata) {
+                var ct = 0;
+                var rows = $("#shwwxappparms_id").datagrid("getRows");
+                for (var i = 0; i < jsdata.length; i++) {
+                    var pd = jsdata[i];
+                    var fd = false;
+                    for (var j = 0; j < rows.length; j++) {
+                        if (rows[j].parmname == pd.parmname) {
+                            fd = true;
+                            break;
+                        }
+                    }
+                    if (!fd) {
+                        rows.push(pd);
+                        ct++;
+                    }
+                }
+                $("#shwwxappparms_id").datagrid("loadData", rows);
+                if (ct > 0)
+                    $.messager.alert('提示', "增加了【" + ct + "】个参数注意设置", 'info');
+            }, function (msg) {
+                $.messager.alert('错误', msg.errmsg, 'error');
+                return;
+            });
+        }
+        function dopromt(row) {
+            if (row.parmname == "WxPayCert")
+                return;
+            $.messager.prompt(row.parmname, row.acaption, function (r) {
+                if (r) {
+                    var idx = $("#shwwxappparms_id").datagrid("getRowIndex", row);
+                    row.parmvalue = r;
+                    $("#shwwxappparms_id").datagrid("updateRow", {
+                        index: idx,
+                        row: row
+                    });
+                    $("#shwwxappparms_id").datagrid("refreshRow", idx);
+                    mainline.setDataChanged(true);
+                }
+            });
+            $(".messager-input").val(row.parmvalue);
+        }
+
+        function doupload(pid) {
+            if ($isEmpty(pid)) {
+                $.messager.alert('错误', "请先保存基础资料！", 'error');
+                return;
+            }
+            $uploadfile(_serUrl + "/corsair/weichart/mange/uploadwxcert.co?pid=" + pid, null,
+                    function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    },
+                    function (jsdata) {
+                        var rows = $("#shwwxappparms_id").datagrid("getRows");
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            if (row.pid == pid) {
+                                var idx = $("#shwwxappparms_id").datagrid("getRowIndex", row);
+                                row.parmvalue = jsdata.parmvalue;
+                                $("#shwwxappparms_id").datagrid("updateRow", {
+                                    index: idx,
+                                    row: row
+                                });
+                                $("#shwwxappparms_id").datagrid("refreshRow", idx);
+                                break;
+                            }
+                        }
+                    });
+        }
+        var edittype = undefined;//1 mainjsmenu 2 tagjsmenu
+        function editmenujson() {
+            var menujson = mainline.getFieldValue("menujson");
+            showmenuedit(menujson);
+            edittype = 1;
+        }
+
+        function edittagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var menujson = row.tagmenujson;
+            showmenuedit(menujson);
+            edittype = 2;
+        }
+
+
+        function showmenuedit(menujson) {
+            if ($isEmpty(menujson))
+                $("#txt_menujson").textbox("setValue", "");
+            else {
+                try {
+                    var mj = JSON.parse(menujson);
+                } catch (err) {
+                    alert(err);
+                }
+                if (mj) {
+                    $("#txt_menujson").textbox("setValue", JSON.stringify(mj, null, '\t'));
+                } else {
+                    $("#txt_menujson").textbox("setValue", "menujson");
+                }
+            }
+            $('#editwxmenujson_pw').window('open');
+        }
+
+        function doEditOK() {
+            if (edittype == 1) {
+                var menujson = $("#txt_menujson").textbox("getValue");
+                try {
+                    var mj = JSON.parse(menujson);
+                    mainline.setFieldValue("menujson", JSON.stringify(mj));
+                    mainline.setDataChanged(true);
+                    $('#editwxmenujson_pw').window('close');
+                } catch (err) {
+                    $.messager.alert('错误', err.errmsg, 'error');
+                }
+            }
+            if (edittype == 2) {
+                var menujson = $("#txt_menujson").textbox("getValue");
+                try {
+                    var mj = JSON.parse(menujson);
+                    var row = $("#shwwxapptags_id").datagrid("getSelected");
+                    if (!row) {
+                        $.messager.alert('错误', "没选中数据", 'error');
+                        return;
+                    }
+                    var idx = $("#shwwxapptags_id").datagrid("getRowIndex", row);
+                    row.tagmenujson = JSON.stringify(mj);
+                    $("#shwwxapptags_id").datagrid("updateRow", {index: idx, row: row});
+                    mainline.setDataChanged(true);
+                    $('#editwxmenujson_pw').window('close');
+                } catch (err) {
+                    $.messager.alert('错误', err.errmsg, 'error');
+                }
+            }
+
+            if (edittype == 3) {
+                $('#editwxmenujson_pw').window('close');
+            }
+        }
+
+        function synmenujson2wx() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "未保存的设置", 'error');
+                return;
+            }
+            $.messager.confirm('确认', '确认同步？', function (r) {
+                if (r) {
+                    var url = _serUrl + "/corsair/weichart/mange/synwxmenuex.co?appid=" + appid;
+                    $ajaxjsonget(url, function (jsondata) {
+                        alert(JSON.stringify(jsondata));
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                }
+            });
+        }
+
+        function deletewcmenu() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "未保存的设置", 'error');
+                return;
+            }
+
+            $.messager.confirm('确认', '确认删除？', function (r) {
+                if (r) {
+                    var url = _serUrl + "/corsair/weichart/mange/deleteallmenu.co?appid=" + appid;
+                    $ajaxjsonget(url, function (jsondata) {
+                        alert(JSON.stringify(jsondata));
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                }
+            });
+        }
+
+        function doSynTagWX(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/createWXTag.co";
+            var data = {tgid: tgid, appid: appid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function doupdateTag4wx() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/updateWXTag.co";
+            var data = {appid: appid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                mainline.showDetail();//重新加载数据
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function createtagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/synwxtagmenu.co";
+            var data = {tgid: tgid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function removetagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/removewxtagmenu.co";
+            var data = {tgid: tgid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function showwxonlinemenu() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/getWXOnlineMenu.co?appid=" + appid;
+            $ajaxjsonget(url, function (jsdata) {
+                edittype = 3;
+                showmenuedit(JSON.stringify(jsdata));
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <style type="text/css">
+        #maindata_id td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+
+        .uploada {
+            color: red;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style>
+    <tr>
+        <td cjoptions="fdname:'wxappid'">wxappid</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'wxappid'" style="height:20px;width: 200px"/></td>
+        <td cjoptions="fdname:'acaption'">acaption</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'acaption'" style="height:20px;width: 200px"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <a href="javascript:" onclick="editmenujson()" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑默认微信菜单</a>
+            <a href="javascript:" onclick="synmenujson2wx()" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">创建默认菜单到微信</a>
+            <a href="javascript:" onclick="deletewcmenu()" class="easyui-linkbutton" data-options="iconCls:'edit-remove'">删除微信在线菜单(包括个性化菜单)</a>
+            <a href="javascript:" onclick="showwxonlinemenu()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查看微信在线菜单</a>
+        </td>
+    </tr>
+</table>
+
+<div id="editwxmenujson_pw" class="easyui-window" title="编辑菜单"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:450px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <input id="txt_menujson" class="easyui-textbox" data-options="multiline:true" style="width:100%;height: 100%">
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="doEditOK()"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#editwxmenujson_pw').window('close')"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic705",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=705",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic855",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=855",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1194",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1194",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1197",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1197",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1117",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1117",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1120",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1120",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1133",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1133",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1141",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1141",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1146",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1146",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1166",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1166",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1162",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1162",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic729",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=729",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'emptranfbcode', title: '批调编码', width: 120},
+            {
+                field: 'tranfcmpdate',
+                title: '生效时间',
+                findtype: 'date',
+                width: 120,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'tranftype3', title: '调动范围', width: 100, formatter: comUrl_dic729.formator},
+            {field: 'oldorgname', title: '调出单位', width: 100},
+            {field: 'neworgname', title: '调入部门', width: 150},
+            {field: 'attribute1', title: '调动人数', width: 80},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 120},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        var opeditor = {
+            type: "textbox",
+            options: {
+                icons: [{
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        var v = $(e.data.target).textbox('getValue');
+                        onFindOrgPosition(v);
+                    }
+                }]
+            }
+        };
+
+        function rlformatter(value, row) {
+            var rows = comUrl_dic1194.jsondata;
+            var rstv = value;
+            for (var i = 0; i < rows.length; i++) {
+                var dr = rows[i];
+                if (dr.dictvalue == value) {
+                    rstv = dr.language1;
+                    break;
+                }
+            }
+            if (parseInt(value) == 1) {
+                rstv = "<a href='#' onclick='showglgz(\"" + row.employee_code + "\")'>" + rstv + "(点击查看)</a>"
+            }
+            return rstv;
+        }
+
+        var gdLinesColumns = [
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'hiredday', title: '入职日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'degree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+            {field: 'odsp_name', title: '调动前职位', width: 100},
+            {field: 'oldhwc_namezl', title: '调动前职类', width: 100},
+            {field: 'odhg_name', title: '调动前职等', width: 100},
+            {field: 'odlv_num', title: '调动前职级', width: 100},
+            {field: 'oldzwxz', title: '调动前职位性质', width: 100},
+            {field: 'neworgname', title: '调入机构', width: 200},
+            {field: 'newsp_name', title: '调动后职位', width: 100, editor: opeditor},
+            {field: 'newhwc_namezl', title: '调动后职类', width: 100},
+            {field: 'newhg_name', title: '调动后职等', width: 100},
+            {field: 'newlv_num', title: '调动后职级', width: 100},
+            {field: 'newzwxz', title: '调动后职位性质', width: 100},
+            {field: 'isexistsrl', title: '关联关系', width: 64, formatter: rlformatter},
+            {field: 'rlmgms', title: '管控措施', width: 80, formatter: comUrl_dic1197.formator, editor: comUrl_dic1197.editor},
+            {field: 'rccode', title: '管控单编码', width: 100, editor: 'text'},
+            {field: 'remark', title: '备注', width: 100, editor: 'text'}
+        ];
+
+        var rlfdnb = [
+            [
+                {title: "调动人员信息", colspan: 5},
+                {title: "关联人信息", colspan: 7},
+                {field: 'rlname', title: '关联关系', width: 100, rowspan: 2},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100, rowspan: 2},
+                {field: 'rllabel_a', title: '关联人自称', width: 100, rowspan: 2},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator, rowspan: 2},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator, rowspan: 2},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator, rowspan: 2},
+                {field: 'rlext', title: '关联关系说明', width: 150, rowspan: 2},
+                {field: 'oldrlmanagetype', title: '原管理关系类别', width: 100, formatter: comUrl_dic1146.formator, rowspan: 2},
+                {field: 'newrctrms', title: '管控措施', width: 100, formatter: comUrl_dic1141.formator, rowspan: 2},
+                {field: 'newrccode', title: '管控单编码', width: 100, rowspan: 2},
+                {field: 'remark', title: '备注', width: 64, rowspan: 2}
+            ],
+            [
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'neworgname', title: '拟调入机构', width: 64},
+                {field: 'newsp_name', title: '拟调入职位', width: 64},
+                {field: 'newlv_num', title: '拟调入职级', width: 64},
+                {field: 'remployee_code', title: '工号', width: 64},
+                {field: 'remployee_name', title: '姓名', width: 64},
+                {field: 'rhiredday', title: '入职日期', width: 64},
+                {field: 'rorgname', title: '机构', width: 64},
+                {field: 'rsp_name', title: '职位', width: 64},
+                {field: 'rhwc_namezl', title: '职类', width: 64},
+                {field: 'rlv_num', title: '职级', width: 64}
+            ]
+        ];
+        var rlfdwb = [
+            [
+                {title: "调动人员信息", colspan: 5},
+                {title: "推荐人信息", colspan: 7},
+                {field: 'rlname', title: '关联关系', width: 100, rowspan: 2},
+                {field: 'rllabel_b', title: '关联人称谓', width: 100, rowspan: 2},
+                {field: 'rllabel_a', title: '关联人自称', width: 100, rowspan: 2},
+                {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator, rowspan: 2},
+                {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator, rowspan: 2},
+                {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator, rowspan: 2},
+                {field: 'rlext', title: '关联关系说明', width: 150, rowspan: 2},
+                {field: 'oldrbusiness', title: '商业厉害关系', width: 100, formatter: comUrl_dic1166.formator, rowspan: 2},
+                {field: 'rccode', title: '管控单编码', width: 100, rowspan: 2},
+                {field: 'remark', title: '备注', width: 64, rowspan: 2}
+            ], [
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'neworgname', title: '拟调入机构', width: 64},
+                {field: 'newsp_name', title: '拟调入职位', width: 64},
+                {field: 'newlv_num', title: '拟调入职级', width: 64},
+                {field: 'ldtype', title: '推荐性质', width: 64, formatter: comUrl_dic1162.formator},
+                {field: 'rname', title: '推荐客户/供应商', width: 100},
+                {field: 'raddr', title: '客户/供应商地址', width: 150},
+                {field: 'remployee_name', title: '推荐人姓名', width: 100},
+                {field: 'rorgname', title: '推荐人工作单位', width: 64},
+                {field: 'rsp_name', title: '推荐人职务', width: 100},
+                {field: 'rmobile', title: '推荐人手机号码', width: 120}
+            ]
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_emptransferbatch",
+            JPAIdField: "emptranfb_id",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '90%',
+            windowHeight: '90%',
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hr_emptransferbatch_lines",
+            datainfo_line_title: "批量调动名单",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+
+                $("#transfer_rl_nb").datagrid({
+                    columns: rlfdnb
+                });
+
+                $("#transfer_rl_wb").datagrid({
+                    columns: rlfdwb
+                });
+
+            },
+            onNew: function (jsondata) {
+                jsondata.probation = 0;
+                jsondata.quota_over = 2;
+                jsondata.tranamt = 0;
+            },
+            beforeSave: function () {
+                calcToDate();
+            },
+            onAddLine: function (append) {//点击添加明细行
+                onFindemployee(append);
+                // append(rowdata);
+            },
+            onFind: function (parms) {
+
+            },
+            afterFindDetail: function () {
+
+            }
+        };
+
+        function calcToDate() {
+            var mdata = mainline.getMainData();
+            var tdt = mainline.getFieldValue("tranfcmpdate");
+            var pb = mainline.getFieldValue("probation");
+            if (tdt && pb) {
+                var dt = (new Date()).fromStr(tdt);
+                dt = dt.addMonth(parseInt(pb));
+                var v = dt.format("yyyy-MM-dd");
+                var dts = mdata.hr_emptransferbatch_lines;
+                for (var i = 0; i < dts.length; i++) {
+                    dts[i].probation = pb;
+                    dts[i].probationdate = v;
+                }
+            } else {
+                $.messager.alert('错误', "【生效期】【考察期】不能为空", 'error');
+            }
+            var ls = mdata.hr_emptransferbatch_lines;
+            for (var i = 0; i < ls.length; i++) {
+                var l = ls;
+                var rlmgms = parseInt(l.rlmgms);
+            }
+        }
+
+        function impexcel() {
+            var sorgid = mainline.getFieldValue("olorgid");
+            if ((!sorgid) || (sorgid.length == 0)) {
+                $.messager.alert('错误', "先选择调出机构", 'error');
+                return;
+            }
+
+            var dorgid = mainline.getFieldValue("neworgid");
+            if ((!dorgid) || (dorgid.length == 0)) {
+                $.messager.alert('错误', "先选择调入机构", 'error');
+                return;
+            }
+
+            $uploadfile(_serUrl + "/web/hr/emtranbatch/impexcel.co?sorgid=" + sorgid + "&dorgid=" + dorgid, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+        function updateNewRow(gdline, idx, erow, newvaue) {
+            if (curEditorText)
+                curEditorText.textbox("setValue", newvaue);
+            gdline.datagrid("updateRow", {index: idx, row: erow});
+            gdline.datagrid("acceptChanges");
+            gdline.datagrid("beginEdit");
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(append) {
+            var orgid = mainline.getFieldValue("olorgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择调出机构", 'error');
+                return;
+            }
+
+            var url = _serUrl + "/web/hr/employee/findEmployeeTrancer.co?tp=2&orgid=" + orgid;//批量
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ]
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                            var erow = {};
+                            erow.er_id = row.er_id;
+                            erow.employee_code = row.employee_code;
+                            erow.id_number = row.id_number;
+                            erow.employee_name = row.employee_name;
+                            erow.mnemonic_code = row.mnemonic_code;
+                            erow.mnemonic_code = row.mnemonic_code;
+                            erow.email = row.email;
+                            erow.empstatid = row.empstatid;
+                            erow.hiredday = row.hiredday;
+                            erow.degree = row.degree;
+                            erow.odorgid = row.orgid;
+                            erow.odorgcode = row.orgcode;
+                            erow.odorgname = row.orgname;
+                            erow.odlv_id = row.lv_id;
+                            erow.odlv_num = row.lv_num;
+                            erow.odhg_id = row.hg_id;
+                            erow.odhg_code = row.hg_code;
+                            erow.odhg_name = row.hg_name;
+                            erow.odospid = row.ospid;
+                            erow.odospcode = row.ospcode;
+                            erow.odsp_name = row.sp_name;
+                            var url = _serUrl + "/web/hr/perm/findOrgpositionByOspid.co?ospid=" + row.ospid;
+                            $ajaxjsonget(url, function (jsdata, userdata) {
+                                userdata.oldhwc_namezl = jsdata.hwc_namezl;
+                                if (parseInt(jsdata.isoffjob) == 1)
+                                    userdata.oldzwxz = "脱产";
+                                else
+                                    userdata.oldzwxz = "非脱产";
+
+                                var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + userdata.employee_code;
+                                $ajaxjsonget(url, function (jsdata, userdata) {
+                                    //alert(JSON.stringify(jsdata));
+                                    if (jsdata.length > 0)
+                                        userdata.isexistsrl = 1;
+                                    else
+                                        userdata.isexistsrl = 2;
+                                    append(userdata);
+                                }, function (err) {
+                                    alert(JSON.stringify(err));
+                                }, true, userdata);
+
+                            }, function (err) {
+                                alert(JSON.stringify(err));
+                            }, true, erow);
+                        }
+                    }
+                }
+            });
+            select_employee_pw.show();
+        }
+
+        //调入部门
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("neworgid", row.orgid);
+                        mainline.setFieldValue("neworgcode", row.code);
+                        mainline.setFieldValue("neworgname", row.orgname);
+                        var url = _serUrl + "/web/user/getExtOrgName.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('neworgname', jsdata.extorgname);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+        //调出部门
+        var select_Org_pw1 = undefined;
+        function onSelectOrg1() {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=list";
+
+            $("#detail_main_grid_id").datagrid("loadData", []);
+
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw1",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("olorgid", row.orgid);
+                        mainline.setFieldValue("oldorgcode", row.code);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue('oldorgname', row.extorgname);
+                    }
+                }
+            };
+            if (!select_Org_pw1) {
+                select_Org_pw1 = new TSearchForm(wo);
+            }
+            select_Org_pw1.show();
+        }
+
+        var select_OrgPosition_pw = undefined;
+
+        function onFindOrgPosition(v) {
+            var orgid = mainline.getFieldValue("neworgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "选择调入机构", 'error');
+                return;
+            }
+
+            var cr = $("#detail_main_grid_id").datagrid("getSelected");
+            if (!cr) {
+                $.messager.alert('错误', "没有选中的行", 'error');
+                return;
+            }
+
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/emtranbatch/findOrgPostionsbatch.co",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 200},
+                    {field: 'sp_name', title: '职位', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var crow = $("#detail_main_grid_id").datagrid("getSelected");
+                        if (crow == null) return;
+                        //crow.neworgid = mainline.getFieldValue("neworgid");
+                        //crow.neworgcode = mainline.getFieldValue("neworgcode");
+                        //crow.neworgname = mainline.getFieldValue("neworgname");
+                        crow.neworgid = row.orgid;
+                        crow.neworgcode = row.orgcode;
+                        crow.neworgname = row.orgname;
+
+                        crow.newlv_id = row.lv_id;
+                        crow.newlv_num = row.lv_num;
+                        crow.newhg_id = row.hg_id;
+                        crow.newhg_code = row.hg_code;
+                        crow.newhg_name = row.hg_name;
+                        crow.newospid = row.ospid;
+                        crow.newospcode = row.ospcode;
+                        crow.newsp_name = row.sp_name;
+
+                        var url = _serUrl + "/web/hr/perm/findOrgpositionByOspid.co?ospid=" + row.ospid;
+                        $ajaxjsonget(url, function (jsdata, userdata) {
+                            userdata.newhwc_namezl = jsdata.hwc_namezl;
+                            //console.error(JSON.stringify(jsdata));
+                            if (parseInt(jsdata.isoffjob) == 1)
+                                userdata.newzwxz = "脱产";
+                            else
+                                userdata.newzwxz = "非脱产";
+                            var erow = $("#detail_main_grid_id").datagrid("getSelected");
+                            var idx = $("#detail_main_grid_id").datagrid("getRowIndex", erow);
+                            $("#detail_main_grid_id").datagrid("cancelEdit", idx);
+                            $("#detail_main_grid_id").datagrid("updateRow", {
+                                index: idx,
+                                row: userdata
+                            });
+
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        }, true, crow);
+
+
+                    }
+                }
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            }
+            select_OrgPosition_pw.extendOptions({
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid},
+                    {parmname: 'odospid', reloper: '=', parmvalue: cr.odospid}
+                ]
+            });
+            select_OrgPosition_pw.show(true);
+        }
+
+
+        function showglgz(employee_code) {
+            if (employee_code && (employee_code.length > 0)) {
+                var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + employee_code + "&ldtype=1";
+                $ajaxjsonget(url, function (jsdata) {
+                    for (var i = 0; i < jsdata.length; i++) {
+                        jsdata[i].oldrlmanagetype = jsdata[i].rlmanagetype;
+                    }
+                    $("#transfer_rl_nb").datagrid("loadData", jsdata);
+                }, function (msg) {
+                    $.messager.alert('错误', msg, 'error');
+                });
+
+                var url = _serUrl + "/web/hr/common/getRealtionPem.co?employee_code=" + employee_code + "&ldtype=2";
+                $ajaxjsonget(url, function (jsdata) {
+                    for (var i = 0; i < jsdata.length; i++) {
+                        jsdata[i].oldrbusiness = jsdata[i].rbusiness;
+                    }
+                    $("#transfer_rl_wb").datagrid("loadData", jsdata);
+                }, function (msg) {
+                    $.messager.alert('错误', msg, 'error');
+                });
+            } else
+                alert("先选择调用员工");
+            $('#glgxpw').window('open');
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+
+    <tr>
+        <td cjoptions="fdname:'emptranfbcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'emptranfbcode',readonly:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                               style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'tranftype3'">调动范围</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'tranftype3',crequired:true,comidx:'dic729',editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td>调动类型</td>
+        <td>批量调动</td>
+        <td cjoptions="fdname:'quota_over_rst'">超编审批</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'quota_over_rst',readonly:false,editable:false,comidx:'dic855'"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'tranfcmpdate'">生效时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'tranfcmpdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'oldorgname'">调出机构</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'oldorgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg1,editable:false"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'neworgname'">调入机构</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'neworgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'tranfreason'">调动原因</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'tranfreason'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:false"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr,editable:false"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+
+
+<div id="glgxpw" class="easyui-window" title="关联关系" style="width:90%;height:400px"
+     data-options="modal:true,closed:true,minimizable:false,collapsible:false">
+    <table id="transfer_rl_nb" class="easyui-datagrid"
+           data-options="border:false,singleSelect:true,title:'内部关联关系'" style="height: 200px;width: 100%">
+    </table>
+    <table id="transfer_rl_wb" class="easyui-datagrid"
+           data-options="border:false,singleSelect:true,title:'外部关联关系'" style="height: 200px;width: 100%">
+    </table>
+</div>
+</body>
+</html>

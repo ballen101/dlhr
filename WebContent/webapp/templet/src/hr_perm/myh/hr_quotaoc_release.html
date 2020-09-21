@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>Title</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'oocrlscode', title: '编码', width: 120},
+            {field: 'quota_year', title: '年月', width: 64, formatter: $fieldDateFormatorYYYY_MM},
+            {field: 'stat', title: '状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'orgname', title: '机构', width: 120},
+            {field: 'hwc_namezl', title: '职类名称', width: 120},
+            {field: 'quota', title: '编制', width: 64, editor: 'numberbox'},
+            {field: 'remark', title: '备注', width: 200, editor: 'text'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_quotaoc_release",
+            JPAIdField: "qocrlsid",
+            allowAtt: true,
+            allowWF: false,
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: 'hr_quotaoc_releaselines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "职类编制发布详情",
+            datainfo_line_title: "职类编制详情",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: "800px",//
+            windowHeight: "500px",//
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+
+                $("#wa_grid_orgs").datagrid({
+                    columns: [[
+                        {field: 'code', title: '编码', width: 120},
+                        {field: 'orgname', title: '机构', width: 100}
+                    ]]
+                });
+                $parserDatebox2YearMonth(mainline.getField('quota_year'));
+            },
+            onFind: function (parms) {
+            },
+            onAddLine: function (append) {//点击添加明细行
+                cappend = append;
+                $("#appendocgridpw").window("open");
+            }
+        };
+        var cappend = undefined;
+
+
+        var select_Orgs_pw = undefined;
+        function orgfindAction() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true";
+            var wo = {
+                id: "select_Orgs_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'orgtype', reloper: '=', parmvalue: '6'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'extorgname', title: '机构', width: 150}
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#wa_grid_orgs", row.orgid, "orgid")) {
+                            $("#wa_grid_orgs").datagrid("appendRow", row);
+                        }
+                    }
+                }
+            };
+            if (!select_Orgs_pw) {
+                select_Orgs_pw = new TSearchForm(wo);
+            }
+            select_Orgs_pw.show();
+        }
+
+        var sch_hrclass_pw = undefined;
+        var selectedClass = undefined;
+        function clsfindAction() {
+            var wo = {
+                id: "sch_hrclass_pw",
+                coURL: _serUrl + "/web/hr/quotaocrelease/findClass4QC.co",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_wclass",  //对应后台JPAClass名
+                orderStr: " hwc_id asc ",
+                isTree: true,
+                treeField: "hwc_name",
+                multiRow: false,
+                idField: 'hwc_id',
+                pidField: 'pid',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'type_id', reloper: '=', parmvalue: '1'},
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'hwc_name', title: '编码', width: 100},
+                    {field: 'hwc_name', title: '名称', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        selectedClass = rows[0];
+                        $("#selectedClassName").textbox("setValue", selectedClass.hwc_name);
+                    }
+                }
+            };
+            if (!sch_hrclass_pw) {
+                sch_hrclass_pw = new TSearchForm(wo);
+            }
+            sch_hrclass_pw.show();
+        }
+
+        function appendok() {
+            if (!selectedClass) {
+                alert("选择职类");
+                return;
+            }
+            var orgs = $("#wa_grid_orgs").datagrid("getRows");
+            for (var i = 0; i < orgs.length; i++) {
+                var org = orgs[i];
+                var cl = selectedClass;
+                //alert(org.orgid + " " + cl.hwc_id);
+                if (!isexists(org.orgid, cl.hwc_id)) {
+                    var line = {
+                        hwc_idzl: cl.hwc_id,
+                        hwc_namezl: cl.hwc_name,
+                        hw_codezl: cl.hw_code,
+                        orgid: org.orgid,
+                        orgname: org.orgname,
+                        orgcode: org.code
+                    };
+                    $("#detail_main_grid_id").datagrid("appendRow", line);
+                }
+            }
+            $('#appendocgridpw').window('close');
+        }
+
+        function isexists(orgid, hwc_id) {
+            var ldatas = $("#detail_main_grid_id").datagrid("getRows");
+            for (var i = 0; i < ldatas.length; i++) {
+                var ldata = ldatas[i];
+                if ((ldata.orgid == orgid) && (ldata.hwc_idzl == hwc_id))
+                    return true;
+
+            }
+            return false;
+        }
+
+        function onAppendocgridpwOpen() {
+            selectedClass = undefined;
+            $("#selectedClassName").textbox("setValue", "");
+            $("#wa_grid_orgs").datagrid("loadData", []);
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/quotaocrelease/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.hwc_idzl, row.orgid], ["hwc_idzl", "orgid"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'oocrlscode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oocrlscode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'quota_year'">年月</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'quota_year',crequired:true,formatter:$dateformatorYYYY_MM,parser:$date4str,editable:false"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'stat'">状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:true"
+                               style="height:40px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+
+<div id="appendocgridpw" class="easyui-window" title="添加编制"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home',onOpen:onAppendocgridpwOpen"
+     style="width:500px;height:400px;padding:0px;overflow: hidden">
+    <div class="easyui-layout" data-options="fit:true,border:true" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+                <div data-options="region:'north',split:false,border:false" style="height:35px;">
+                    <table>
+                        <tr>
+                            <td>选择职类</td>
+                            <td><input id="selectedClassName" class="easyui-textbox"
+                                       data-options="buttonIcon:'icon-search',onClickButton:clsfindAction,editable:false"
+                                       style="height:20px;width: 300px"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div data-options="region:'center',title: '机构',border:false"
+                     style="padding:0px;margin: 0px auto">
+                    <table id="wa_grid_orgs" class="easyui-datagrid"
+                           data-options="fit:true,border:false,toolbar:'#toolbarOrgGridFind',singleSelect: true,
+                    onClickRow:function(){ $C.grid.accept('wa_grid_orgs');},
+                    onDblClickRow:function(){ $C.grid.edit('wa_grid_orgs');}">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #E6F0FF">
+            <a class="easyui-linkbutton" onclick="appendok()" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#appendocgridpw').window('close')"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="toolbarOrgGridFind" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="orgfindAction($C.action.New);">添加</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('wa_grid_orgs');;">删除</a>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>年假批量展期</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1019",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1019",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }, {
+                index: "dic1384",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1384",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'lbebcode', title: '批量展期编码', width: 80},
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'stype', title: '展期类型', width: 80, formatter: comUrl_dic1019.formator},
+            {field: 'sccode', title: '来源编码/年度', width: 100},
+            {field: 'ext_nums', title: '展期人数', width: 64},
+            {field: 'newvaldate', title: '展期有效期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ext_reason', title: '展期原因', width: 120},
+            {field: 'emplev', title: '人事层级', width: 80, formatter: comUrl_dic1384.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'orgname', title: '机构', width: 300},
+            // {field:'sp_name',title:'职位',width:100},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'stype', title: '来源类型', width: 80, formatter: comUrl_dic1019.formator},
+            {field: 'alllbtime', title: '可调休时间(H)', width: 100},
+            {field: 'usedlbtime', title: '已调休时间(H)', width: 100},
+            // {field:'ext_days',title:'展期天数',width:64},
+            {
+                field: 'newvaldate',
+                title: '展期有效期',
+                width: 120,
+                formatter: $fieldDateFormatorYYYY_MM_DD,
+                editor: 'datebox'
+            },
+            {field: 'valdate', title: '原有效期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_lbe_batch",
+            JPAIdField: "lbebid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesName: 'hrkq_lbe_batch_lines',   //行Grid ID对应到json 明细行属性 名
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "批量展期",
+            datainfo_line_title: "展期明细",
+            allow_expt_list: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allowEmptyLine: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+            },
+            onAddLine: function (append) {//点击添加明细行
+                onSelectOvertimeBlance();
+                // append(rowdata);
+            },
+            onCreate: function () {//创建对象前
+
+            },
+            onNew: function (jsondata) {
+                //jsondata.stype = 1;
+                jsondata.ext_nums = 0;
+                jsondata.newvaldate = new Date();
+                jsondata.stype = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == "sccode") || (fdname == "stype")) {
+                    $("#detail_main_grid_id").datagrid("loadData", []);
+                }
+                /*if (fdname == 'employee_code') {
+                 var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                 if (!$isEmpty(employee_code)) {
+                 onSelectOvertimeBlance(employee_code);
+                 }
+                 }
+                 if (fdname == 'newvaldate') {
+                 var newvaldate = (mainline.getField("newvaldate")).textbox("getValue");
+                 if (!$isEmpty(newvaldate)) {
+                 checknewvdate(newvaldate);
+                 }
+                 }*/
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+                var newvaldate = row.newvaldate;
+                var valdate = row.valdate;
+                if (!$isEmpty(newvaldate)) {
+                    newvaldate = (new Date()).fromStr(newvaldate);
+                    valdate = (new Date()).fromStr(valdate);
+                    valdate = valdate.addMonth(3);
+                    if (newvaldate.getTime() > valdate.getTime()) {
+                        alert("展期时间不允许超过3个月");
+                        row.newvaldate = undefined;
+                        $('#detail_main_grid_id').datagrid('refreshRow', index);
+                    }
+                }
+
+            },
+            afterClearGrid: function (filter) {
+                mainline.setFieldValue("ext_nums", 0);
+                return true;
+            },
+            onRemoveLine: function (rowdata) {//点击删除行
+                deletecount();
+                return true;//return false 将不删除
+            }
+        };
+
+        function totalcount() {
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            var rownum = rows.length;
+            //alert(1);
+            mainline.setFieldValue("ext_nums", rownum);
+            //alert(2);
+        }
+
+        function deletecount() {
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            var rownum = rows.length - 1;
+            mainline.setFieldValue("ext_nums", rownum);
+        }
+
+        function checknewvdate(newvaldate) {
+            var newvaldate = mainline.getFieldValue("newvaldate");
+            var valdate = mainline.getFieldValue("valdate");
+            if ($isEmpty(valdate)) {
+                alert("先选择调休信息");
+                return;
+            }
+            newvaldate = (new Date()).fromStr(newvaldate);
+            valdate = (new Date()).fromStr(valdate);
+            valdate = valdate.addMonth(3);
+            if (newvaldate.getTime() > valdate.getTime()) {
+                alert("展期时间不允许超过3个月");
+                mainline.setFieldValue("newvaldate", undefined);
+                return;
+            }
+        }
+
+        var SelectOvertimeBlance_pw = undefined;
+        function onSelectOvertimeBlance(employee_code) {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择机构", 'error');
+                return;
+            }
+            var stype = mainline.getFieldValue("stype");
+            if ((!stype) || (stype.length == 0)) {
+                $.messager.alert('错误', "先选择展期类型", 'error');
+                return;
+            }
+            var idpath = mainline.getFieldValue("idpath");
+            var emplev = mainline.getFieldValue("emplev");
+            if ((!emplev) || (emplev.length == 0)) {
+                $.messager.alert('错误', "先选择人事层级", 'error');
+                return;
+            }
+
+            var sccode = mainline.getFieldValue("sccode");
+            if ((!sccode) || (sccode.length == 0)) {
+                $.messager.alert('错误', "先选输入年份", 'error');
+                return;
+            }
+
+            emplev = parseInt(emplev);
+            var levparm = {};
+            if (emplev == 1) {
+                levparm = {parmname: 'lv_num', reloper: '>=', parmvalue: 3};
+            } else {
+                levparm = {parmname: 'lv_num', reloper: '<', parmvalue: 3};
+            }
+            var reason = mainline.getFieldValue("ext_reason");
+            var scode = mainline.getFieldValue("sccode");
+
+            var url = _serUrl + "/web/hrkq/lbe/findbl4ext.co";
+            var wo = {
+                id: "SelectOvertimeBlance_pw",
+                coURL: url,
+                multiRow: true,
+                idField: 'er_id',
+                singleAutoReturn: true,
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 64},
+                    {field: 'orgname', title: '机构', width: 200},
+                    {field: 'employee_name', title: '姓名', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field: 'stype', title: '来源类型', width: 80, formatter: comUrl_dic1019.formator},
+                    {field: 'sccode', title: '来源编码/年度', width: 100},
+                    {field: 'alllbtime', title: '总调休时间(H)', width: 120},
+                    {field: 'usedlbtime', title: '已经调休时间(H)', width: 120},
+                    {field: 'valdate', title: '到期时间', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'isexpire', title: '是否过期', notfind: true, width: 64, formatter: comUrl_dic5.formator}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            //alert(JSON.stringify(row));
+                            if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                                // alert("add");
+                                var erow = {};
+                                erow.newvaldate = mainline.getFieldValue("newvaldate");
+                                erow.valdate = row.valdate;
+                                erow.ext_reason = reason;
+                                erow.stype = row.stype;
+                                erow.sid = 0;
+                                erow.sccode = scode;
+                                erow.hg_name = row.hg_name;
+                                erow.lv_num = row.lv_num;
+                                erow.alllbtime = row.alllbtime;
+                                erow.usedlbtime = row.usedlbtime;
+                                erow.lbid = row.lbid;
+                                erow.lbname = row.lbname;
+                                erow.idpath = row.idpath;
+                                erow.er_id = row.er_id;
+                                erow.employee_code = row.employee_code;
+                                erow.employee_name = row.employee_name;
+                                erow.orgid = row.orgid;
+                                erow.orgcode = row.orgcode;
+                                erow.orgname = row.orgname;
+                                $("#detail_main_grid_id").datagrid("appendRow", erow);
+                            }
+                        }
+                        totalcount();
+                    }
+                }
+            };
+            if (!SelectOvertimeBlance_pw) {
+                SelectOvertimeBlance_pw = new TSearchForm(wo);
+            }
+
+            SelectOvertimeBlance_pw.extendOptions({
+                autoFind: false,
+                extParms: [
+                    {parmname: 'idpath', reloper: 'like', parmvalue: idpath},
+                    levparm,
+                    {parmname: 'stype', reloper: '=', parmvalue: stype},
+                    {parmname: 'sccode', reloper: '=', parmvalue: sccode}
+                ]
+            });
+            SelectOvertimeBlance_pw.show(true);
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+        function impexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择机构", 'error');
+                return;
+            }
+            var emplev = mainline.getFieldValue("emplev");
+            if ((!emplev) || (emplev.length == 0)) {
+                $.messager.alert('错误', "先选择人事层级", 'error');
+                return;
+            }
+            var sccode = mainline.getFieldValue("sccode");
+            if ((!sccode) || (sccode.length == 0)) {
+                $.messager.alert('错误', "先选输入年份", 'error');
+                return;
+            }
+
+            var newvaldate = mainline.getFieldValue("newvaldate");
+            if ((!newvaldate) || (newvaldate.length == 0)) {
+                $.messager.alert('错误', "选择展期有效期", 'error');
+                return;
+            }
+
+
+            $uploadfile(_serUrl + "/web/hrkq/lbeb/implbebatchlistexcel.co?orgid=" + orgid + "&emplev=" + emplev
+                    + "&sccode=" + sccode + "&newvaldate=" + newvaldate, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                        totalcount();
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'lbebcode'">批量展期编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lbebcode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stype'">展期类型</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'stype',crequired:true,comidx:'dic1019',readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onSelectOrg"
+                style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ext_reason'">展期原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'ext_reason',crequired:true"
+                               style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'newvaldate'">展期有效期</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datebox',fdname:'newvaldate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'emplev'">人事层级</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'emplev',crequired:true,comidx:'dic1384',editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sccode'">源编码/年假的年份</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sccode',readonly:false,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">签批状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ext_nums'">展期人数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ext_nums',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">申请人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">申请时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

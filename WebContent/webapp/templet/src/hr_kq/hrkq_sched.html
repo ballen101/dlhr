@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../js/otherjs/pickcolor/jquery.minicolors.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+
+    <script type="text/javascript" src="../js/otherjs/pickcolor/jquery.minicolors.min.js"></script>
+
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [{
+            index: "dic5",
+            type: "combobox",
+            url: "/web/dict/getdictvalues.co?dicid=5",
+            valueField: 'dictvalue',
+            textField: 'language1'
+        },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1409",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1409",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        function colorformator(value, row) {
+            return "<span style='background-color: " + value + "'>" + value + "</span>";
+        }
+        var listGridColumns = [
+            {field: 'scdode', title: '班制编码', width: 80},
+            {field: 'scdname', title: '班制名称', width: 100},
+            {field: 'orgname', title: '所属机构', width: 200},
+            {field: 'backcolor', title: '背景颜色', width: 64, formatter: colorformator},
+            {field: 'lct', title: '班次数', width: 64},
+            {field: 'slinfo', title: '班次详情', width: 350},
+            {field: 'allworktime', title: '时长(H)', width: 64},
+            {field: 'allworktime', title: '时长(H)', width: 64},
+            {field: 'sctype', title: '班制类别', width: 80, formatter: comUrl_dic1409.formator},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 150, formatter: $fieldDateFormator},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 150, formatter: $fieldDateFormator}
+        ];
+        var gdLinesColumns = [
+            {field: 'bcno', title: '班次号', width: 64},
+            {field: 'frtime', title: '上班时间', width: 64},
+            {field: 'totime', title: '下班时间', width: 64},
+            {field: 'worktime', title: '合计时长(分钟)', width: 100},
+            {field: 'exworktime', title: '加班时长(分钟)', width: 100},
+            {field: 'over_type', title: '加班类型', width: 100, formatter: comUrl_dic923.formator},
+            {field: 'exdealtype', title: '加班处理', width: 100, formatter: comUrl_dic928.formator},
+            {field: 'realworktime', title: '实际合计时长(分钟)', width: 120},
+            {field: 'dayratio', title: '天比例(%)', width: 64}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_sched",
+            findUrl: _serUrl + "/web/hrkq/sched/findsallched.co",
+            JPAIdField: "scid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hrkq_sched_lines",
+            datainfo_line_title: "班制详情",
+            htmlTemeType: HtmlTempType.htMLPop,
+            autoFind: true,//准备好页面后自动执行查询  不显示查询条件
+            allow_copy: true,
+            disableButtonType: _NUBType.hide,
+            allowEmptyLine: false,
+            OnReady: function () {   //都准备好后
+                initpickcolor();
+            },
+            onNew: function (jsondata) {
+                jsondata.probation = 1;
+                jsondata.backcolor = "#139934";
+            },
+            beforeSave: function () {
+                if (!checkData())
+                    throw new Error("数据检查错误");
+            },
+            onAddLine: function (append) {//点击添加明细行
+                onAddLineData(append);
+            },
+            onFind: function (parms) {
+
+            },
+            onCopy: function (parms) {
+                parms.clearfields = "scdode";
+            },
+            onLineGridDBClickRow: function (row) {
+                showOptionInfo($C.action.Edit, row);
+                return false; //false 将不调用edit方法
+            },
+            afterFindDetail: function () {
+                $("#pickcolor").minicolors("value", mainline.getFieldValue("backcolor"));
+                mainline.setDataChanged(false);
+            }
+        };
+
+        function onAddLineData() {
+            showOptionInfo($C.action.New);
+        }
+
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+                    exdealtype: 2,
+                    frnoclock: 2,
+                    tonoclock: 2,
+                    noclockabs: 1,
+                    frbfwe: 2,
+                    frbfwemin: 0,
+                    frbfwemax: 0,
+                    frafabn: 1,
+                    frafextimeabn: 0,
+                    toafwe: 2,
+                    toafwemin: 0,
+                    toafwemax: 0,
+                    tobfabn: 1,
+                    tobfextimeabn: 0,
+                    exworktime: 0,
+                    exfreetime: 0
+                };
+                isnew = true;
+            } else {
+                var row = mainline.getSelectedLine();
+                if (tp == $C.action.Del) {//删除
+                    //delete from server
+                    var url = _serUrl + "/web/hrkq/sched/del.co?sclid=" + row.sclid;
+                    $.messager.confirm('提示', '确认删除?', function (r) {
+                        if (r) {
+                            mainline.removeSelectLine();
+                        }
+                    });
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#schedlinepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+                    OptionInfoWindow.getField("exdealtype").combobox($getNewComboxParmsByComUrl(comUrl_dic928, [2]));
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        mainline.addLineData(undefined, jsondata);
+                    } else {
+                        mainline.updateLineData(undefined, jsondata);
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                    if (fdname == "frtime") {
+                        var frvtimebg = OptionInfoWindow.getFieldValue("frvtimebg");
+                        if ((!frvtimebg) || (frvtimebg.length == 0))
+                            OptionInfoWindow.setFieldValue("frvtimebg", newValue);
+                        var frvtimeed = OptionInfoWindow.getFieldValue("frvtimeed");
+                        if ((!frvtimeed) || (frvtimeed.length == 0))
+                            OptionInfoWindow.setFieldValue("frvtimeed", newValue);
+
+                        calcwortime();
+                    }
+                    if (fdname == "frbfwe") {
+                        if (newValue == 1) {
+                            OptionInfoWindow.setFieldReadOnly("frbfwemin", false);
+                            OptionInfoWindow.setFieldReadOnly("frbfwemax", false);
+
+                        } else {
+                            OptionInfoWindow.setFieldValue("frbfwemin", "0");
+                            OptionInfoWindow.setFieldValue("frbfwemax", "0");
+                            OptionInfoWindow.setFieldReadOnly("frbfwemin", true);
+                            OptionInfoWindow.setFieldReadOnly("frbfwemax", true);
+                        }
+                    }
+                    if (fdname == "toafwe") {
+                        if (newValue == 1) {
+                            OptionInfoWindow.setFieldReadOnly("toafwemin", false);
+                            OptionInfoWindow.setFieldReadOnly("toafwemax", false);
+
+                        } else {
+                            OptionInfoWindow.setFieldValue("toafwemin", "0");
+                            OptionInfoWindow.setFieldValue("toafwemax", "0");
+                            OptionInfoWindow.setFieldReadOnly("toafwemin", true);
+                            OptionInfoWindow.setFieldReadOnly("toafwemax", true);
+                        }
+                    }
+                    if (fdname == "totime") {
+                        var tovtimebg = OptionInfoWindow.getFieldValue("tovtimebg");
+                        if ((!tovtimebg) || (tovtimebg.length == 0))
+                            OptionInfoWindow.setFieldValue("tovtimebg", newValue);
+                        var tovtimeed = OptionInfoWindow.getFieldValue("tovtimeed");
+                        if ((!tovtimeed) || (tovtimeed.length == 0))
+                            OptionInfoWindow.setFieldValue("tovtimeed", newValue);
+
+                        calcwortime();
+                    }
+                    if ((fdname == "frvtimebg") || (fdname == "frvtimeed")) {
+                        calcwortime1();
+                    }
+                    if ((fdname == "tovtimebg") || (fdname == "tovtimeed")) {
+                        calcwortime2();
+                    }
+                    if ((fdname == "exworktime") || (fdname == "exfreetime")) {
+                        calcwortime3();
+                    }
+                    if (fdname == "frafabn") {
+                        if (newValue == 1) {
+                            OptionInfoWindow.setFieldReadOnly("frafextimeabn", false);
+                        } else {
+                            OptionInfoWindow.setFieldValue("frafextimeabn", "0");
+                            OptionInfoWindow.setFieldReadOnly("frafextimeabn", true);
+                        }
+                    }
+                    if (fdname == "tobfabn") {
+                        if (newValue == 1) {
+                            OptionInfoWindow.setFieldReadOnly("tobfextimeabn", false);
+                        } else {
+                            OptionInfoWindow.setFieldValue("tobfextimeabn", "0");
+                            OptionInfoWindow.setFieldReadOnly("tobfextimeabn", true);
+                        }
+                    }
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            else
+                OptionInfoWindow.extendOptions({
+                    isNew: isnew,
+                    jsonData: jsondata
+                });
+            OptionInfoWindow.show();
+        }
+
+
+        function calcwortime() {
+            var frtime = OptionInfoWindow.getFieldValue("frtime");
+            var totime = OptionInfoWindow.getFieldValue("totime");
+            if ($isEmpty(frtime) || $isEmpty(totime))return;
+            var bm = getminute(frtime);
+            var em = getminute(totime);
+            //alert(em + ":" + bm);
+            var lt = em - bm;
+            if (lt < 0) {
+                alert("上班时间小于0，设置错误");
+                return false;
+            }
+            if (lt > (24 * 60)) {
+                alert("上班时间大于24小时，设置错误");
+                return false;
+            }
+            OptionInfoWindow.setFieldValue("worktime", lt);
+            calcwortime3();
+        }
+
+        function calcwortime1() {
+            var frvtimebg = OptionInfoWindow.getFieldValue("frvtimebg");
+            var frvtimeed = OptionInfoWindow.getFieldValue("frvtimeed");
+            if ($isEmpty(frvtimebg) || $isEmpty(frvtimeed))return;
+            var bm = getminute(frvtimebg);
+            var em = getminute(frvtimeed);
+            var lt = em - bm;
+            if (lt < 0) {
+                alert("上班有效期间设置错误");
+                return;
+            }
+
+        }
+
+        function calcwortime2() {
+            var tovtimebg = OptionInfoWindow.getFieldValue("tovtimebg");
+            var tovtimeed = OptionInfoWindow.getFieldValue("tovtimeed");
+            if ($isEmpty(tovtimebg) || $isEmpty(tovtimeed))return;
+            var bm = getminute(tovtimebg);
+            var em = getminute(tovtimeed);
+            var lt = em - bm;
+            if (lt < 0) {
+                alert("下班有效期间设置错误");
+                return;
+            }
+        }
+
+        function calcwortime3() {
+            var worktime = OptionInfoWindow.getFieldValue("worktime");
+            var exworktime = OptionInfoWindow.getFieldValue("exworktime");
+            var exfreetime = OptionInfoWindow.getFieldValue("exfreetime");
+            if (isNaN(worktime) || (worktime == undefined) || (worktime == 0)) worktime = 0;
+            if (isNaN(exworktime) || (exworktime == undefined) || (exworktime == 0)) exworktime = 0;
+            if (isNaN(exfreetime) || (exfreetime == undefined) || (exfreetime == 0)) exfreetime = 0;
+            OptionInfoWindow.setFieldValue("realworktime", worktime - exworktime - exfreetime);
+        }
+
+        function initpickcolor() {
+            $("#pickcolor").minicolors({
+                hide: null,
+                change: function (value, opacity) {
+                    mainline.setFieldValue("backcolor", value);
+                    mainline.setDataChanged(true);
+                }
+            });
+            $(".minicolors-swatch").css("top", "1px");
+        }
+
+        function getminute(strtime) {
+            var tb = 0;// 0 今天  -1 昨天  1 明天
+            var stime = strtime;
+            if (strtime.substr(0, 1).toUpperCase() == "T") {
+                tb = 1;
+                stime = stime.substr(1, stime.length - 1);
+            }
+            if (strtime.substr(0, 1).toUpperCase() == "Y") {
+                tb = -1;
+                stime = stime.substr(1, stime.length - 1);
+            }
+            var mt = $toMinute(stime);
+            mt = mt + (tb * 24 * 60);
+            return mt;
+        }
+
+        function checkData() {
+            var mdata = mainline.getMainData();
+            var allworktime = 0;
+            var ls = mdata.hrkq_sched_lines;
+            if (ls) {
+                for (var i = 0; i < ls.length; i++) {
+                    var l1 = ls[i];
+                    l1.frtime = l1.frtime.toUpperCase();
+                    l1.totime = l1.totime.toUpperCase();
+                    l1.frvtimebg = l1.frvtimebg.toUpperCase();
+                    l1.frvtimeed = l1.frvtimeed.toUpperCase();
+                    l1.tovtimebg = l1.tovtimebg.toUpperCase();
+                    l1.tovtimeed = l1.tovtimeed.toUpperCase();
+                    if ($isEmpty(l1.frtime) || $isEmpty(l1.totime))return;
+                    var frm = getminute(l1.frtime);
+                    var tom = getminute(l1.totime);
+                    var lt = tom - frm;
+                    if (lt <= 0) {
+                        alert("上班时间必须大于0，设置错误");
+                        return false;
+                    }
+                    if (lt > (24 * 60)) {
+                        alert("上班时间大于24小时，设置错误");
+                        return false;
+                    }
+                    var dayratio = parseFloat(l1.dayratio);
+                    if (isNaN(dayratio) || (dayratio <= 0) || (dayratio > 100)) {
+                        alert("班次天比例必须为1到100之间");
+                        return false;
+                    }
+                    var frmvb = getminute(l1.frvtimebg);//上班有效开始分钟
+                    var frmve = getminute(l1.frvtimeed);//上班有效截止分钟
+                    var tomvb = getminute(l1.tovtimebg);//下班有效开始分钟
+                    var tomve = getminute(l1.tovtimeed);//下班有效截止分钟
+                    if (frmvb > frm) {
+                        alert("上班有效开始时间不能大于上班时间");
+                        return;
+                    }
+                    if (frmve < frm) {
+                        alert("上班有效截止时间不能小于于上班时间");
+                        return;
+                    }
+
+                    if (tomvb > tom) {
+                        alert("下班有效开始时间不能大于下班时间");
+                        return;
+                    }
+                    if (tomve < tom) {
+                        alert("下班有效截止时间不能小于于下班时间");
+                        return;
+                    }
+                    allworktime = allworktime + parseInt(l1.realworktime);//worktime
+                }
+            }
+            mainline.setFieldValue("allworktime", allworktime / 60);
+            return true;
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=list";
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw1",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.code);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setDataChanged(true);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+    </script>
+    <style type="text/css">
+        #maindata_id table td {
+            padding: 1px 2px 2px 1px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'scdode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdode',readonly:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'scdname'">名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'scdname',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'backcolor'">背景颜色(<span style="color: red">*</span>)</td>
+        <td>
+            <input id="pickcolor" type="text" class="minicolors-input" value="#139934"
+                   style="width: 60px;height: 18px;border: none">
+        </td>
+        <td cjoptions="fdname:'allworktime'">时长(小时)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'allworktime',readonly:true,"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">所属机构</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                   style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'lct'">班次数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lct',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sctype'">班制类别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sctype',crequired:true,editable:false,comidx:'dic1409'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'note'">备注</td>
+        <td colspan="8">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'note'"
+                   style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr,editable:false"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+
+
+<div id="schedlinepw" class="easyui-window" title="班次详情" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 600px;height: 500px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table>
+                <tr>
+                    <td cjoptions="fdname:'bcno'">班次号</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'bcno',crequired:true"
+                               style="height:20px;width: 50px"/></td>
+                    <td cjoptions="fdname:'noclockabs'">未打卡记旷工</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'noclockabs',crequired:true,editable:false,comidx:'dic5'"
+                            style="height:20px;width: 50px"/></td>
+                    <td cjoptions="fdname:'dayratio'">天比例(%)</td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'dayratio',crequired:true,min:0,precision:2,max:100" style="height:20px;width: 100%"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'over_type'">加班类型</td>
+                    <td colspan="2"><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'over_type',editable:false,comidx:'dic923',crequired:true"
+                            style="height:20px;width: 100%"/></td>
+                    <td cjoptions="fdname:'exdealtype'">加班处理</td>
+                    <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'exdealtype',editable:false,crequired:true,comidx:'dic928'"
+                                           style="height:20px;width: 100%"/></td>
+
+                </tr>
+                <tr style="font-weight: 700; background-color: #D3D3D3">
+                    <td colspan="8">上班</td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        上班时间(<span style="color: red">*</span>)
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'frtime',crequired:true"
+                               style="height:20px;width: 60px"/>;
+                        有效打卡时段
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'frvtimebg',crequired:true"
+                               style="height:20px;width: 60px"/>到
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'frvtimeed',crequired:true"
+                               style="height:20px;width: 60px"/>
+                    </td>
+                    <td cjoptions="fdname:'frnoclock'">免打卡</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'frnoclock',crequired:true,editable:false,comidx:'dic5'"
+                            style="height:20px;width: 50px"/></td>
+                </tr>
+                <tr>
+                    <td colspan="8">推迟打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'frafextimeabn',crequired:true"
+                               style="height:20px;width: 50px"/>分钟以上记迟到
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'frafabn',crequired:true,editable:false,comidx:'dic5'"
+                               style="height:20px;width: 50px"/>;
+                        推迟打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'frafextimeabt',crequired:true"
+                               style="height:20px;width: 50px"/>分钟以上记旷工(迟到)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">直落加班
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'frbfwe',crequired:true,editable:false,comidx:'dic5'"
+                               style="height:20px;width: 50px"/>
+                        提前打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'frbfwemin',readonly:true,crequired:true"
+                               style="height:20px;width: 50px"/>分钟启计，总计不超过
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'frbfwemax',readonly:true,crequired:true"
+                               style="height:20px;width: 50px"/>分钟;
+                    </td>
+                </tr>
+
+                <tr style="font-weight: 700; background-color: #D3D3D3">
+                    <td colspan="8">下班</td>
+                </tr>
+                <tr>
+                    <td colspan="6">下班时间(<span style="color: red">*</span>)
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'totime',crequired:true"
+                               style="height:20px;width: 60px"/>
+                        有效打卡时段
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'tovtimebg',crequired:true"
+                               style="height:20px;width: 60px"/>
+                        到
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'tovtimeed',crequired:true"
+                               style="height:20px;width: 60px"/>
+                    <td cjoptions="fdname:'tonoclock'">免打卡</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'tonoclock',crequired:true,editable:false,comidx:'dic5'"
+                            style="height:20px;width: 50px"/></td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        提前打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'tobfextimeabn',crequired:true"
+                               style="height:20px;width: 50px"/>
+                        分钟以上计早退
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'tobfabn',crequired:true,editable:false,comidx:'dic5'"
+                               style="height:20px;width: 50px"/>;
+                        提前打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'tobfextimeabt',crequired:true"
+                               style="height:20px;width: 50px"/>分钟以上记旷工(早退)
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        直落班加班
+                        <input cjoptions="easyui_class:'easyui-textbox',fdname:'toafwe',crequired:true,editable:false,comidx:'dic5'"
+                               style="height:20px;width: 50px"/>
+                        推迟打卡
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'toafwemin',readonly:true,crequired:true"
+                               style="height:20px;width: 50px"/>分钟启记，总计加班不超过
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'toafwemax',readonly:true,crequired:true"
+                               style="height:20px;width: 50px"/>分钟;
+                    </td>
+                </tr>
+                <tr style="font-weight: 700; background-color: #D3D3D3">
+                    <td colspan="8">扩展信息</td>
+                </tr>
+                <tr>
+                    <td colspan="2" cjoptions="fdname:'worktime'">合计时长(分钟)</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-numberbox',fdname:'worktime',readonly:true,crequired:true"
+                            style="height:20px;width: 60px"/></td>
+                    <td colspan="2" cjoptions="fdname:'exworktime'">固定加班时长(分钟)</td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'exworktime',crequired:true"
+                               style="height:20px;width: 60px"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" cjoptions="fdname:'exfreetime'">扣休息时长(分钟)</td>
+                    <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'exfreetime',crequired:true"
+                               style="height:20px;width: 60px"/></td>
+                    <td colspan="2" cjoptions="fdname:'realworktime'">实计时长(分钟)</td>
+                    <td>
+                        <input cjoptions="easyui_class:'easyui-numberbox',fdname:'realworktime',readonly:true,crequired:true"
+                               style="height:20px;width: 60px"/>
+                    </td>
+                </tr>
+
+                <tr style="height: 40px">
+                    <td colspan="8" style="color:#e9322d ">说明：</td>
+                </tr>
+                <tr>
+                    <td colspan="8" style="color:#e9322d ">时间段以【Y】开头为前一天，时间段以【T】开头为后一天，无前缀标识当天</td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line2.html" workpath="webapp/hr_base">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 2; var allowAtt = false; var allowWF = false;</script> 
+  <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'hrvname', title: '名称', width: 150}
+        ];
+        frmOptions = {
+            allow_copy: false,
+            allow_print: false,
+            JPAClass: "com.hr.base.entity.Hr_relative",
+            JPAIdField: "hrvid",
+            Pagination: false,
+            istree: true,
+            treeParentField: "pid",
+            showtreeHeader: false,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata, idx) {
+                var node = $("#dg_datalist_id").treegrid('getSelected');
+                if ((!node) && (idx == 1)) {
+                    jsondata.pid = 0;
+                }
+                if (!node) {
+                    jsondata.pid = 0;
+                }
+                jsondata.usable = 1;
+            },
+            onFind: function (parms) {
+                //parms.enableidpath = false;
+                parms.order = " hrvid asc";
+            }
+        };
+
+
+    </script> 
+ </head> 
+ <body> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;
+     text-align: center;padding-top: 20%;background-color:white;font-size: 12px;display: none">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <div class="easyui-layout" data-options="fit:true,border:false" style="overflow: hidden"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:true" style="width: 100%; padding:5px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_add'">新建</a> 
+     <a id="id_bt_new2" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_add'">新建子节点</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-copy'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-save'">保存</a> 
+     <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-submit'">提交</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ml_find'">查找</a> 
+     <!--    <a id="id_bt_detail" href="javascript:void(0)" class="easyui-linkbutton"
+                   data-options="plain:true,iconCls:'icon-ml_detail'">详情</a>--> 
+     <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-reload'">刷新</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_del'">删除</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_attach'">上传附件</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-print'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_excel'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-filter'">显示列</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-exit'">返回</a> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <div id="main_tabs_id" class="easyui-tabs" data-options="fit:true,border:false,plain:true,tabHeight:23,showHeader:false"> 
+     <div id="main_tab_common_id" title="常规" style="padding: 0px"> 
+      <div id="main_tab_common_layout_id" class="easyui-layout" data-options="fit:true,border:false"> 
+       <div id="main_tab_list_id" data-options="region:'west',border:false,split:true,collapsible:false" style="padding: 0px;height: 100%;width: 300px" title="列表"> 
+        <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,fitColumns:true,remoteSort:false,border:false,singleSelect: true"></table> 
+       </div> 
+       <div data-options="region:'center',border:false" style="padding: 0px"> 
+        <div class="easyui-layout" data-options="fit:true,border:false"> 
+         <div id="main_form_div_id" data-options="region:'center',border:false" style="padding: 0px;height: auto"> 
+          <table id="maindata_id" border="0" style="width: auto;height:auto"> 
+           <tbody> 
+            <tr> 
+             <td cjoptions="fdname:'hrvcode'">编码</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'hrvcode',required:true,readonly:true" style="height:20px;width: 100px"> </td> 
+             <td cjoptions="fdname:'hrvname'">名称</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'hrvname',required:true" style="height:20px;width: 100px"> </td> 
+             <td cjoptions="fdname:'hrvlevel'">分级</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'hrvlevel',required:true" style="height:20px;width: 100px"> </td> 
+             <td cjoptions="fdname:'usable'">有效</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'usable',comidx:'dic5'" data-options="editable:false" style="height:20px;width: 100px"> </td> 
+            </tr> 
+            <tr> 
+             <td cjoptions="fdname:'remark'">备注</td> 
+             <td colspan="3"><input class="easyui-textbox" data-options="multiline:true" cjoptions="fdname:'remark'" style="height:40px;width: 300px"></td> 
+            </tr> 
+            <tr> 
+             <td cjoptions="fdname:'creator'">制单人</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width: 120px"> </td> 
+             <td cjoptions="fdname:'createtime'">制单时间</td> 
+             <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true" data-options="formatter:$dateformattostr" style="height:20px;width: 120px"></td> 
+            </tr> 
+            <tr> 
+             <td cjoptions="fdname:'updator'">更新人</td> 
+             <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width: 120px"> </td> 
+             <td cjoptions="fdname:'updatetime'">更新时间</td> 
+             <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true" data-options="formatter:$dateformattostr" style="height:20px;width: 120px"></td> 
+            </tr> 
+           </tbody> 
+          </table> 
+         </div>  
+        </div> 
+       </div> 
+      </div> 
+     </div>   
+    </div> 
+   </div> 
+  </div> 
+  <div id="common_divs_id"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+    </ul> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:60px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:60px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'icon-selectall'" style="width:60px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'icon-reload'" style="width:60px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+</style>  
+ </body>
+</html>

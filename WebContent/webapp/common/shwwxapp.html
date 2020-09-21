@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop3.html" workpath="webapp/common">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline3.js"></script> 
+  <title>微信参数设置</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 1; var allowAtt = false; var allowWF = false;</script> 
+  <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'wxappid', title: 'wxappid', width: 150},
+            {field: 'acaption', title: '名称', width: 150}
+        ];
+        function parmvaluefrm(value, row, index) {
+            if (row.parmname == "WxPayCert") {
+                if ($isEmpty(row.pid)) {
+                    return "";
+                } else {
+                    if ($isEmpty(value))
+                        return "<a class='uploada' herf='###' onclick=doupload(" + row.pid + ")>上传</a>";
+                    else
+                        return value + "(<a class='uploada' herf='###' onclick=doupload(" + row.pid + ")>重新上传</a>)";
+                }
+            } else
+                return value;
+        }
+
+        var columns_shwwxappparms = [
+            {field: 'parmname', title: '参数名', width: 250},
+            {field: 'parmvalue', title: '参数值', width: 300, formatter: parmvaluefrm},
+            {field: 'acaption', title: '参数说明', width: 300}
+        ];
+
+        function tagidformatter(value, row, index) {
+            if (!value) {
+                return "<a href='javascript:' onclick='doSynTagWX(" + index + ")'>同步到微信</a>";
+            } else return value;
+        }
+
+        function tagmenuformatter(value, row, index) {
+            var editstr = "<a href='javascript:' onclick='edittagmenu(" + index + ")'>编辑</a>";
+            var creatstr = "<a href='javascript:' onclick='createtagmenu(" + index + ")'>创建到微信</a>";
+            var removestr = "<a href='javascript:' onclick='removetagmenu(" + index + ")'>从微信删除</a>";
+            var rst = undefined;
+            if (!value) {
+                rst = editstr;
+            } else {
+                if (!mainline.getDataChanged())
+                    rst = editstr + "-" + creatstr;
+                else
+                    rst = editstr;
+            }
+            if (row.wxtagmenuid) {
+                rst = rst + "-" + removestr;
+            }
+            return rst;
+        }
+
+        var columns_shwwxapptags = [
+            {field: 'tagid', title: '微信tagid', width: 80, formatter: tagidformatter},
+            {field: 'tagname', title: '名称', width: 100, editor: "text", crequired: true},
+            {field: 'remark', title: '备注', width: 100, editor: "text"},
+            {field: 'usable', title: '可用', width: 80, crequired: true, formatter: comUrl_dic5.formator, editor: comUrl_dic5.editor},
+            {field: 'wxusable', title: '微信是否可用', width: 100, formatter: comUrl_dic5.formator},
+            {field: 'uscount', title: '粉丝数量', width: 100},
+            {field: 'tagmenujson', title: 'tag菜单', width: 200, formatter: tagmenuformatter}
+        ];
+
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.weixin.entity.Shwwxapp",
+            JPAIdField: "appid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            allow_expt_list: true,
+            autoFind: true,
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            detailGrids: [
+                {
+                    grdid: "shwwxappparms_id",
+                    allowEmptyLine: false,
+                    lineTitle: "微信参数",
+                    lineHeight: "500px",
+                    lineProperty: 'shwwxappparms',
+                    onDBClick: function (index, row) {
+                        dopromt(row);
+                        return false; //false 将不调用edit方法
+                    },
+                    onSetToolbar: function (grdid, toolbar) {
+                        return [
+                            {
+                                text: '载入默认参数项目',
+                                iconCls: 'icon-importexcel',
+                                handler: function () {
+                                    getshwwxappparmdefault();
+                                }
+                            }
+                        ];     //如果定义了本方法需要返回才能设置
+                    },
+                    extToolBar: [],
+                    lineColumns: columns_shwwxappparms
+                },
+                {
+                    grdid: "shwwxapptags_id",
+                    allowEmptyLine: true,
+                    lineTitle: "微信tag",
+                    lineProperty: 'shwwxapptags',
+                    lineColumns: columns_shwwxapptags,
+                    extToolBar: [
+                        {
+                            text: '从微信更新所有Tag',
+                            iconCls: 'icon-importexcel',
+                            handler: function () {
+                                doupdateTag4wx();
+                            }
+                        }
+                    ],
+                    onLineAppend: function () {  //返回值将被添加 返回false undefi不添加
+                        return {usable: 1};
+                    }
+                }
+            ],
+            onCreate: function () {//创建对象前
+
+            },
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                getshwwxappparmdefault();
+            }
+        };
+
+        function getshwwxappparmdefault() {
+            var url = _serUrl + "/corsair/weichart/mange/getshwwxappparmdefault.co";
+            $ajaxjsonget(url, function (jsdata) {
+                var ct = 0;
+                var rows = $("#shwwxappparms_id").datagrid("getRows");
+                for (var i = 0; i < jsdata.length; i++) {
+                    var pd = jsdata[i];
+                    var fd = false;
+                    for (var j = 0; j < rows.length; j++) {
+                        if (rows[j].parmname == pd.parmname) {
+                            fd = true;
+                            break;
+                        }
+                    }
+                    if (!fd) {
+                        rows.push(pd);
+                        ct++;
+                    }
+                }
+                $("#shwwxappparms_id").datagrid("loadData", rows);
+                if (ct > 0)
+                    $.messager.alert('提示', "增加了【" + ct + "】个参数注意设置", 'info');
+            }, function (msg) {
+                $.messager.alert('错误', msg.errmsg, 'error');
+                return;
+            });
+        }
+        function dopromt(row) {
+            if (row.parmname == "WxPayCert")
+                return;
+            $.messager.prompt(row.parmname, row.acaption, function (r) {
+                if (r) {
+                    var idx = $("#shwwxappparms_id").datagrid("getRowIndex", row);
+                    row.parmvalue = r;
+                    $("#shwwxappparms_id").datagrid("updateRow", {
+                        index: idx,
+                        row: row
+                    });
+                    $("#shwwxappparms_id").datagrid("refreshRow", idx);
+                    mainline.setDataChanged(true);
+                }
+            });
+            $(".messager-input").val(row.parmvalue);
+        }
+
+        function doupload(pid) {
+            if ($isEmpty(pid)) {
+                $.messager.alert('错误', "请先保存基础资料！", 'error');
+                return;
+            }
+            $uploadfile(_serUrl + "/corsair/weichart/mange/uploadwxcert.co?pid=" + pid, null,
+                    function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    },
+                    function (jsdata) {
+                        var rows = $("#shwwxappparms_id").datagrid("getRows");
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            if (row.pid == pid) {
+                                var idx = $("#shwwxappparms_id").datagrid("getRowIndex", row);
+                                row.parmvalue = jsdata.parmvalue;
+                                $("#shwwxappparms_id").datagrid("updateRow", {
+                                    index: idx,
+                                    row: row
+                                });
+                                $("#shwwxappparms_id").datagrid("refreshRow", idx);
+                                break;
+                            }
+                        }
+                    });
+        }
+        var edittype = undefined;//1 mainjsmenu 2 tagjsmenu
+        function editmenujson() {
+            var menujson = mainline.getFieldValue("menujson");
+            showmenuedit(menujson);
+            edittype = 1;
+        }
+
+        function edittagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var menujson = row.tagmenujson;
+            showmenuedit(menujson);
+            edittype = 2;
+        }
+
+
+        function showmenuedit(menujson) {
+            if ($isEmpty(menujson))
+                $("#txt_menujson").textbox("setValue", "");
+            else {
+                try {
+                    var mj = JSON.parse(menujson);
+                } catch (err) {
+                    alert(err);
+                }
+                if (mj) {
+                    $("#txt_menujson").textbox("setValue", JSON.stringify(mj, null, '\t'));
+                } else {
+                    $("#txt_menujson").textbox("setValue", "menujson");
+                }
+            }
+            $('#editwxmenujson_pw').window('open');
+        }
+
+        function doEditOK() {
+            if (edittype == 1) {
+                var menujson = $("#txt_menujson").textbox("getValue");
+                try {
+                    var mj = JSON.parse(menujson);
+                    mainline.setFieldValue("menujson", JSON.stringify(mj));
+                    mainline.setDataChanged(true);
+                    $('#editwxmenujson_pw').window('close');
+                } catch (err) {
+                    $.messager.alert('错误', err.errmsg, 'error');
+                }
+            }
+            if (edittype == 2) {
+                var menujson = $("#txt_menujson").textbox("getValue");
+                try {
+                    var mj = JSON.parse(menujson);
+                    var row = $("#shwwxapptags_id").datagrid("getSelected");
+                    if (!row) {
+                        $.messager.alert('错误', "没选中数据", 'error');
+                        return;
+                    }
+                    var idx = $("#shwwxapptags_id").datagrid("getRowIndex", row);
+                    row.tagmenujson = JSON.stringify(mj);
+                    $("#shwwxapptags_id").datagrid("updateRow", {index: idx, row: row});
+                    mainline.setDataChanged(true);
+                    $('#editwxmenujson_pw').window('close');
+                } catch (err) {
+                    $.messager.alert('错误', err.errmsg, 'error');
+                }
+            }
+
+            if (edittype == 3) {
+                $('#editwxmenujson_pw').window('close');
+            }
+        }
+
+        function synmenujson2wx() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "未保存的设置", 'error');
+                return;
+            }
+            $.messager.confirm('确认', '确认同步？', function (r) {
+                if (r) {
+                    var url = _serUrl + "/corsair/weichart/mange/synwxmenuex.co?appid=" + appid;
+                    $ajaxjsonget(url, function (jsondata) {
+                        alert(JSON.stringify(jsondata));
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                }
+            });
+        }
+
+        function deletewcmenu() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "未保存的设置", 'error');
+                return;
+            }
+
+            $.messager.confirm('确认', '确认删除？', function (r) {
+                if (r) {
+                    var url = _serUrl + "/corsair/weichart/mange/deleteallmenu.co?appid=" + appid;
+                    $ajaxjsonget(url, function (jsondata) {
+                        alert(JSON.stringify(jsondata));
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                }
+            });
+        }
+
+        function doSynTagWX(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/createWXTag.co";
+            var data = {tgid: tgid, appid: appid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function doupdateTag4wx() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/updateWXTag.co";
+            var data = {appid: appid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                mainline.showDetail();//重新加载数据
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function createtagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/synwxtagmenu.co";
+            var data = {tgid: tgid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function removetagmenu(index) {
+            $("#shwwxapptags_id").datagrid("selectRow", index);
+            var row = $("#shwwxapptags_id").datagrid("getSelected");
+            if (!row) {
+                $.messager.alert('错误', "没选中数据", 'error');
+                return;
+            }
+            var tgid = row.tgid, appid = row.appid;
+            if ($isEmpty(tgid) || $isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/removewxtagmenu.co";
+            var data = {tgid: tgid};
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#shwwxapptags_id").datagrid("updateRow", {index: index, row: jsdata});
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+        function showwxonlinemenu() {
+            var appid = mainline.getFieldValue("appid");
+            if ($isEmpty(appid)) {
+                $.messager.alert('错误', "先保存数据", 'error');
+                return;
+            }
+            var url = _serUrl + "/corsair/weichart/mange/getWXOnlineMenu.co?appid=" + appid;
+            $ajaxjsonget(url, function (jsdata) {
+                edittype = 3;
+                showmenuedit(JSON.stringify(jsdata));
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, 'error');
+            });
+        }
+
+    </script> 
+ </head> 
+ <body> 
+  <div id="editwxmenujson_pw" class="easyui-window" title="编辑菜单" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'" style="width:500px;height:450px;padding: 0px"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto"> 
+     <input id="txt_menujson" class="easyui-textbox" data-options="multiline:true" style="width:100%;height: 100%"> 
+    </div> 
+    <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF"> 
+     <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="doEditOK()" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick="$('#editwxmenujson_pw').window('close')" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <script id="findline" type="text/html">
+    <tr style="height: 20px;padding: 0px" id="{{rowid}}">
+        <td style="width: 30%">
+            <input class="easyui-combobox" fieldname="parmname" style="height: 20px"
+                   data-options="{{parmnameData}},width:120,onSelect:mainline.find_window_selectparmname">
+        </td>
+        <td style="width: 20%">
+            <input class="easyui-combobox" fieldname="reloper" style="height: 20px"
+                   data-options="{{reloperData}},width:60,editable:false">
+        </td>
+        <td style="width: 30%" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" data-options="width:120" style="height: 20px">
+        </td>
+        <td style="width: 20%;text-align: center">
+            <a href="#" onclick="mainline.find_window_del_click(this)">删除</a>
+        </td>
+    </tr>
+</script> 
+  <div id="mlp_main_sayout" class="easyui-layout" data-options="fit:true,border:false"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_add'">新建</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-copy'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ml_find'">查找</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-print'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_excel'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_expt_list" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_excel'">导出列表</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-filter'">显示列</a> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,remoteSort:false,fit:true,border:false,singleSelect: true"> 
+    </table> 
+   </div> 
+  </div> 
+  <div id="datainfo_window_id" class="easyui-window" data-options="modal:true,title:'详情',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-mylocation'" style="width:100%;height:100%;overflow:hidden"> 
+   <div id="cc" class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'north',split:false,border:true" style="height:40px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+      <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-save'">保存</a> 
+      <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-submit'">提交</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_unsubmit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-undo'">反审核</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-reload'">刷新</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_del'">删除</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_attach'">上传附件</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-exit'">返回</a> 
+      <span id="wfspanid" style="display: none;margin-left: 20px"> <a id="bt_sumit_id" class="easyui-linkbutton" iconcls="ico-check-fill" style="" data-options="disabled:true,plain:false">提交</a> <a id="bt_reject_id" class="easyui-linkbutton" iconcls="icon-undo" style="" data-options="disabled:true">驳回</a> <a id="bt_break_id" class="easyui-linkbutton" iconcls="icon-no" style="" data-options="disabled:true">中断</a> <a id="bt_refer_id" class="easyui-linkbutton" iconcls="icon-redo" style="" data-options="disabled:true">转办</a> </span> 
+     </div> 
+    </div> 
+    <div data-options="region:'center',border:false" style="padding:0px;overflow-x: hidden;overflow-y: auto"> 
+     <div id="main_form_div_id"> 
+      <table id="maindata_id" border="0" style="width: auto;height:auto"> 
+       <style type="text/css">
+        #maindata_id td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+
+        .uploada {
+            color: red;
+            cursor: pointer;
+            font-weight: 700;
+        }
+    </style> 
+       <tbody> 
+        <tr> 
+         <td cjoptions="fdname:'wxappid'">wxappid</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'wxappid'" style="height:20px;width: 200px"></td> 
+         <td cjoptions="fdname:'acaption'">acaption</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'acaption'" style="height:20px;width: 200px"></td> 
+         <td></td> 
+        </tr> 
+        <tr> 
+         <td colspan="5"> <a href="javascript:" onclick="editmenujson()" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">编辑默认微信菜单</a> <a href="javascript:" onclick="synmenujson2wx()" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">创建默认菜单到微信</a> <a href="javascript:" onclick="deletewcmenu()" class="easyui-linkbutton" data-options="iconCls:'edit-remove'">删除微信在线菜单(包括个性化菜单)</a> <a href="javascript:" onclick="showwxonlinemenu()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查看微信在线菜单</a> </td> 
+        </tr> 
+       </tbody> 
+      </table> 
+     </div> 
+     <div id="detail_main_grid_div"> 
+     </div> 
+     <div id="dg_att_div"> 
+      <div class="datainfo_title">
+        附件 
+      </div> 
+      <div style="width: 100%;height: 200px"> 
+       <table id="dg_att_id" data-options="rownumbers:true,fitColumns:false,border:false,singleSelect: true,fit:true"></table> 
+       <div id="ContextMenu" class="easyui-menu"> 
+        <div id="id_bt_delatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_del'">
+          删除 
+        </div> 
+        <div id="id_bt_downloadatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_download'">
+          下载 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="main_tab_wf_div" style="width: 100%"> 
+      <div class="datainfo_title" onclick="setWFHideOrShow()">
+        流程 
+      </div>  
+     </div> 
+     <script type="text/javascript">
+                function setWFHideOrShow() {
+                    if ($('#main_tab_wf_id').css('display') == "none") {
+                        $('#main_tab_wf_id').css('display', '');
+                    } else {
+                        $('#main_tab_wf_id').css('display', 'none')
+                    }
+                }
+            </script> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="find_window_id" class="easyui-window" data-options="modal:true,title:'条件',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-search'" style="width:400px;height:350px;;overflow: hidden"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false,title:' ',tools:'#toolbar_dg_find_window_parms_id'" style="padding:0px;margin: 0px auto"> 
+     <table id="dg_find_window_parms_id" style="width: 100%;height: auto"> 
+      <thead> 
+       <tr class="datagrid-header" style="height: 20px;padding: 0px;text-align: center "> 
+        <th style="width: 30%">项目</th> 
+        <th style="width: 20%">关系</th> 
+        <th style="width: 30%">项目值</th> 
+        <th style="width: 20%">操作</th> 
+       </tr> 
+      </thead> 
+      <tbody> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-right: 0px;border-bottom: 0px"> 
+     <a class="easyui-linkbutton" onclick="mainline.find_window_ok_click();" data-options="iconCls:'ico-check-fill'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick="$('#find_window_id').window('close');" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="toolbar_dg_find_window_parms_id" style="height:auto"> 
+   <a href="#" class="icon-add1" onclick="mainline.find_window_add_click()"></a> 
+  </div> 
+  <div id="common_divs_id" style="display: none"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+     <li><span>fdsa</span></li> 
+    </ul> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:60px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:60px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'icon-selectall'" style="width:60px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'icon-reload'" style="width:60px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+
+    .datainfo_title {
+        height: 20px;
+        background-color: #E8EEFA;
+        color: #0e2d5f;
+        font-size: 12px;
+        line-height: 20px;
+        font-weight: bold;
+        padding-left: 10px;
+        border-bottom: 1px solid #DDDDDD;
+    }
+</style>  
+ </body>
+</html>

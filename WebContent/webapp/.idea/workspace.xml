@@ -1,0 +1,1344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" readonly="true" id="ffb57472-18d4-40fc-a2cf-585e5da1fcd8" name="Default" comment="" />
+    <ignored path="webapp.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="webapp" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="hr_employeeex.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employeeex.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="19425">
+              <caret line="777" column="33" selection-start-line="777" selection-start-column="25" selection-end-line="777" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Mainline_API" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/jsapi/Mainline_API">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="6175">
+              <caret line="247" column="1" selection-start-line="247" selection-start-column="1" selection-end-line="247" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hrkq_overtime.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_overtime.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="10325">
+              <caret line="461" column="9" selection-start-line="461" selection-start-column="9" selection-end-line="461" selection-end-column="9" />
+              <folding>
+                <element signature="e#17334#17419#0" expanded="false" />
+                <element signature="e#17459#20164#0" expanded="false" />
+                <element signature="e#20198#20222#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="icefall.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/icefall.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="22425">
+              <caret line="1670" column="0" selection-start-line="1670" selection-start-column="0" selection-end-line="1670" selection-end-column="0" />
+              <folding>
+                <element signature="n#!!block;n#$getDate4Str#0" expanded="false" />
+                <element signature="n#!!block;n#$getNewComboxParmsByComUrl#0" expanded="false" />
+                <element signature="n#!!block;n#$removeDicValue#0" expanded="false" />
+                <element signature="n#!!block;n#$ajaxhtmlget#0" expanded="false" />
+                <element signature="n#!!block;n#$getHtmlFragment#0" expanded="false" />
+                <element signature="n#!!block;n#$generateUUID#0" expanded="false" />
+                <element signature="n#!!block;n#getservdate#0" expanded="false" />
+                <element signature="n#!!block;n#getnewid#0" expanded="false" />
+                <element signature="n#!!block;n#$getDBTime#0" expanded="false" />
+                <element signature="e#21011#37194#0" expanded="false" />
+                <element signature="n#!!block;n#$parserDatebox2YearMonth#0" expanded="false" />
+                <element signature="e#48906#50094#0" expanded="false" />
+                <element signature="e#50271#50278#0" expanded="false" />
+                <element signature="e#50511#50774#0" expanded="false" />
+                <element signature="n#!!block;n#$getRowByFields#0" expanded="false" />
+                <element signature="n#!!block;n#$InitGridColFields#0" expanded="false" />
+                <element signature="n#!!block;n#$showGridColFilter#0" expanded="false" />
+                <element signature="n#!!block;n#createFitlters#0" expanded="false" />
+                <element signature="n#!!block;n#setFiltersChk#0" expanded="false" />
+                <element signature="n#!!block;n#setCol2Grid#0" expanded="false" />
+                <element signature="n#!!block;n#saveColFilterParms#0" expanded="false" />
+                <element signature="n#!!block;n#getColFieldsByColFilter#0" expanded="false" />
+                <element signature="n#!!block;n#$endGridEdit#0" expanded="false" />
+                <element signature="n#!!block;n#$HeartBeat#0" expanded="false" />
+                <marker date="1536500705646" expanded="true" signature="9411:9464" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="9495:9604" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="9682:9817" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="10778:10815" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="10932:10955" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="44067:44104" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="44155:44178" placeholder="..." />
+                <marker date="1536500705646" expanded="true" signature="47074:47097" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="loginex.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/loginex.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="325">
+              <caret line="13" column="52" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/common/login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1650">
+              <caret line="68" column="17" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainline2.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/js/common/mainline2.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="495">
+              <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
+              <folding>
+                <element signature="n#!!block;n#$OnCorsairReady#0" expanded="false" />
+                <element signature="n#!!block;n#rightClickDownload#0" expanded="false" />
+                <marker date="1569597180254" expanded="true" signature="9396:9406" placeholder="..." />
+                <marker date="1569597180254" expanded="true" signature="37027:37037" placeholder="..." />
+                <marker date="1569597180254" expanded="true" signature="79405:79428" placeholder="..." />
+                <marker date="1569597180254" expanded="true" signature="84105:84117" placeholder="..." />
+                <marker date="1569597180254" expanded="true" signature="91649:91661" placeholder="..." />
+                <marker date="1569597180254" expanded="true" signature="95972:95984" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="corsair.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/css/corsair.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8700">
+              <caret line="348" column="0" selection-start-line="348" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hrkq_overtime_qual.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_overtime_qual.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3575">
+              <caret line="143" column="31" selection-start-line="143" selection-start-column="16" selection-end-line="143" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hr_leavejob.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_leavejob.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="11875">
+              <caret line="475" column="55" selection-start-line="475" selection-start-column="55" selection-end-line="475" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="XHTML File" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/templet/src/hr_card/rpt_card_infor_analysis.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_card/hr_ykt_card_publish.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_access/rpt_access_log.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_onduty.html" />
+        <option value="$PROJECT_DIR$/loginex.html" />
+        <option value="$PROJECT_DIR$/js/common/login.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_black_del.html" />
+        <option value="$PROJECT_DIR$/js/common/lg.js" />
+        <option value="$PROJECT_DIR$/js/common/cSearchDlg.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_emploanbatch.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_sched.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_card/hr_ykt_card_clean.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_entry_prob.html" />
+        <option value="$PROJECT_DIR$/js/hrms/dlhrsary.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_recruit/hr_recruit_form.html" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/common/shwwftemp.html" />
+        <option value="$PROJECT_DIR$/js/common/shwwftemp.js" />
+        <option value="$PROJECT_DIR$/templet/src/cbase/common/shwmenu.html" />
+        <option value="$PROJECT_DIR$/js/common/cFindDlg.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/rpthrkq_swcdlst.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_wkoff.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/Hr_empptjob_app.html" />
+        <option value="$PROJECT_DIR$/templet/src/cbase/common/shwwf.html" />
+        <option value="$PROJECT_DIR$/js/jsapi/mainline_api" />
+        <option value="$PROJECT_DIR$/js/jsapi/TSearchForm_API" />
+        <option value="$PROJECT_DIR$/js/jsapi/CPopInfoWindow_API" />
+        <option value="$PROJECT_DIR$/js/jsapi/TCreport_API" />
+        <option value="$PROJECT_DIR$/js/common/mainlineAPI.txt" />
+        <option value="$PROJECT_DIR$/js/jsapi/Other_API" />
+        <option value="$PROJECT_DIR$/js/test.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp_cancel.html" />
+        <option value="$PROJECT_DIR$/hr_kq/hrkq_holidayapp_test.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp.html" />
+        <option value="$PROJECT_DIR$/common/shwsystemparms.html" />
+        <option value="D:/aa.html" />
+        <option value="$PROJECT_DIR$/js/common/jsonbanding2.js" />
+        <option value="$PROJECT_DIR$/hr_perm/aa.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_induction.html" />
+        <option value="$PROJECT_DIR$/js/common/mainline2.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp_test.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_business_trip_batch.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/Hr_transfer_prob.html" />
+        <option value="$PROJECT_DIR$/hr_perm/rpt_employeeanalysis.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_leavejob.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_transfer.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_reward_list.html" />
+        <option value="$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employeeex.html" />
+        <option value="$PROJECT_DIR$/test/test.html" />
+        <option value="$PROJECT_DIR$/js/cjquery.js" />
+        <option value="$PROJECT_DIR$/templet/src/hr_kq/hrkq_overtime.html" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsBuildToolPackageJson" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1060" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource ProjectPane="true" />
+      <autoscrollFromSource ProjectPane="true" />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hr_perm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templet" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jsapi" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../thhis" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/MyWorks2/zy/webservice/tomcat71/webapps/dlhr/webapp/templet/src/hr_kq/hrkq_holidayapp.html" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\hr_kq" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\cbase\common" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\corsairbase" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\hr_perm\myh" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\hr_perm\myh" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\hr_kq" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\default" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\templet\src\cbase\common" />
+      <recent name="D:\MyWorks2\zy\webservice\tomcat71\webapps\dlhr\webapp\js" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+      <method />
+    </configuration>
+    <configuration default="true" type="DartTestRunConfigurationType" factoryName="Dart Test">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" working-dir="">
+      <method />
+    </configuration>
+    <configuration default="true" type="cucumber.js" factoryName="Cucumber.js">
+      <option name="cucumberJsArguments" value="" />
+      <option name="executablePath" />
+      <option name="filePath" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner" factoryName="Mocha">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <working-directory />
+      <pass-parent-env>true</pass-parent-env>
+      <envs />
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>DIRECTORY</test-kind>
+      <test-directory />
+      <recursive>false</recursive>
+      <method />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ffb57472-18d4-40fc-a2cf-585e5da1fcd8" name="Default" comment="" />
+      <created>1500562204933</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1500562204933</updated>
+      <workItem from="1500562207425" duration="129000" />
+      <workItem from="1500564048980" duration="1281000" />
+      <workItem from="1500650092064" duration="612000" />
+      <workItem from="1500859662553" duration="7647000" />
+      <workItem from="1500883985555" duration="3186000" />
+      <workItem from="1500905900425" duration="1430000" />
+      <workItem from="1500943591361" duration="11010000" />
+      <workItem from="1500964337877" duration="5231000" />
+      <workItem from="1500983893814" duration="5182000" />
+      <workItem from="1501035471372" duration="1215000" />
+      <workItem from="1501126908034" duration="1853000" />
+      <workItem from="1501139171169" duration="6122000" />
+      <workItem from="1501203224663" duration="2401000" />
+      <workItem from="1501292246818" duration="3496000" />
+      <workItem from="1501398824404" duration="4243000" />
+      <workItem from="1501465110090" duration="344000" />
+      <workItem from="1501465534175" duration="1342000" />
+      <workItem from="1501486952396" duration="621000" />
+      <workItem from="1501549536269" duration="9832000" />
+      <workItem from="1501593547373" duration="1155000" />
+      <workItem from="1501634791656" duration="18844000" />
+      <workItem from="1501691865359" duration="1180000" />
+      <workItem from="1501720888153" duration="4471000" />
+      <workItem from="1501831815152" duration="2991000" />
+      <workItem from="1501908038455" duration="3543000" />
+      <workItem from="1501946958377" duration="6350000" />
+      <workItem from="1501982599432" duration="7591000" />
+      <workItem from="1501998581524" duration="671000" />
+      <workItem from="1502070747888" duration="2634000" />
+      <workItem from="1502171559528" duration="23000" />
+      <workItem from="1502242445946" duration="3481000" />
+      <workItem from="1502328223681" duration="6697000" />
+      <workItem from="1502377288833" duration="413000" />
+      <workItem from="1502500364893" duration="1023000" />
+      <workItem from="1502673722309" duration="2386000" />
+      <workItem from="1502761317070" duration="2744000" />
+      <workItem from="1502865522790" duration="3191000" />
+      <workItem from="1502882746271" duration="2846000" />
+      <workItem from="1502932561393" duration="10697000" />
+      <workItem from="1502955583383" duration="396000" />
+      <workItem from="1502961332694" duration="1053000" />
+      <workItem from="1503015294358" duration="1879000" />
+      <workItem from="1503104010513" duration="5850000" />
+      <workItem from="1503148893091" duration="2795000" />
+      <workItem from="1503323718128" duration="844000" />
+      <workItem from="1503363453875" duration="667000" />
+      <workItem from="1503490480583" duration="4228000" />
+      <workItem from="1503548409678" duration="13000" />
+      <workItem from="1503579713490" duration="5521000" />
+      <workItem from="1503624244923" duration="680000" />
+      <workItem from="1503631257879" duration="1316000" />
+      <workItem from="1503653679268" duration="1334000" />
+      <workItem from="1503802378630" duration="4553000" />
+      <workItem from="1503885834452" duration="19000" />
+      <workItem from="1503922131046" duration="1637000" />
+      <workItem from="1503976370103" duration="8782000" />
+      <workItem from="1504009407748" duration="1202000" />
+      <workItem from="1504064485145" duration="798000" />
+      <workItem from="1504102356776" duration="15948000" />
+      <workItem from="1504398575358" duration="8154000" />
+      <workItem from="1504490541054" duration="12442000" />
+      <workItem from="1504572962643" duration="3024000" />
+      <workItem from="1504598021681" duration="57000" />
+      <workItem from="1504613314087" duration="1060000" />
+      <workItem from="1504747959259" duration="15626000" />
+      <workItem from="1504959984144" duration="20095000" />
+      <workItem from="1505093942886" duration="15097000" />
+      <workItem from="1505181336777" duration="37000" />
+      <workItem from="1505181394248" duration="369000" />
+      <workItem from="1505269943989" duration="3383000" />
+      <workItem from="1505350851496" duration="677000" />
+      <workItem from="1505542791434" duration="5694000" />
+      <workItem from="1505572809677" duration="28000" />
+      <workItem from="1505701929737" duration="650000" />
+      <workItem from="1505736323280" duration="1737000" />
+      <workItem from="1505782499668" duration="8968000" />
+      <workItem from="1505872181782" duration="5806000" />
+      <workItem from="1505909841383" duration="5452000" />
+      <workItem from="1505958229895" duration="3295000" />
+      <workItem from="1506038921403" duration="2021000" />
+      <workItem from="1506059776020" duration="1253000" />
+      <workItem from="1506066971089" duration="1307000" />
+      <workItem from="1506126727318" duration="4105000" />
+      <workItem from="1506300094043" duration="4741000" />
+      <workItem from="1506404445869" duration="1012000" />
+      <workItem from="1506436590589" duration="608000" />
+      <workItem from="1506475438539" duration="1464000" />
+      <workItem from="1506522312096" duration="1515000" />
+      <workItem from="1506559111675" duration="1881000" />
+      <workItem from="1506603713212" duration="2197000" />
+      <workItem from="1506690475883" duration="641000" />
+      <workItem from="1507078585502" duration="12174000" />
+      <workItem from="1507219510791" duration="648000" />
+      <workItem from="1507292876325" duration="417000" />
+      <workItem from="1507293641566" duration="1509000" />
+      <workItem from="1507453339648" duration="227000" />
+      <workItem from="1507554459406" duration="2949000" />
+      <workItem from="1507638394019" duration="4564000" />
+      <workItem from="1507684068134" duration="17674000" />
+      <workItem from="1507732183489" duration="2294000" />
+      <workItem from="1507771642455" duration="35000" />
+      <workItem from="1507772718898" duration="685000" />
+      <workItem from="1507789491684" duration="928000" />
+      <workItem from="1507857647836" duration="3384000" />
+      <workItem from="1507943011304" duration="28000" />
+      <workItem from="1507944163959" duration="1458000" />
+      <workItem from="1508056367245" duration="3605000" />
+      <workItem from="1508115777583" duration="660000" />
+      <workItem from="1508124399918" duration="2707000" />
+      <workItem from="1508153785992" duration="594000" />
+      <workItem from="1508205503671" duration="607000" />
+      <workItem from="1508242675051" duration="2155000" />
+      <workItem from="1508293023664" duration="18885000" />
+      <workItem from="1508379754565" duration="855000" />
+      <workItem from="1508405763602" duration="2473000" />
+      <workItem from="1508637421517" duration="2125000" />
+      <workItem from="1508766543111" duration="5705000" />
+      <workItem from="1508819158896" duration="1914000" />
+      <workItem from="1508848652667" duration="7248000" />
+      <workItem from="1508935596184" duration="7126000" />
+      <workItem from="1508979045267" duration="661000" />
+      <workItem from="1509007027110" duration="665000" />
+      <workItem from="1509024601055" duration="1625000" />
+      <workItem from="1509066274482" duration="455000" />
+      <workItem from="1509067840445" duration="6132000" />
+      <workItem from="1509084731081" duration="3961000" />
+      <workItem from="1509154797010" duration="123000" />
+      <workItem from="1509325722229" duration="21000" />
+      <workItem from="1509366207730" duration="134000" />
+      <workItem from="1509370150718" duration="3968000" />
+      <workItem from="1509414406409" duration="2355000" />
+      <workItem from="1509452239438" duration="9465000" />
+      <workItem from="1509504802195" duration="21380000" />
+      <workItem from="1509583832294" duration="20029000" />
+      <workItem from="1509627155655" duration="2201000" />
+      <workItem from="1509671491684" duration="2303000" />
+      <workItem from="1509770373233" duration="2964000" />
+      <workItem from="1509931233870" duration="1093000" />
+      <workItem from="1510015856398" duration="844000" />
+      <workItem from="1510023223147" duration="1212000" />
+      <workItem from="1510056409836" duration="4109000" />
+      <workItem from="1510120314150" duration="607000" />
+      <workItem from="1510126283039" duration="1490000" />
+      <workItem from="1510142257543" duration="7843000" />
+      <workItem from="1510189047265" duration="7783000" />
+      <workItem from="1510207506779" duration="2112000" />
+      <workItem from="1510281570246" duration="236000" />
+      <workItem from="1510552673438" duration="1879000" />
+      <workItem from="1510584470416" duration="1255000" />
+      <workItem from="1510644326737" duration="44000" />
+      <workItem from="1510713900570" duration="1240000" />
+      <workItem from="1510817887342" duration="1985000" />
+      <workItem from="1511048340355" duration="1999000" />
+      <workItem from="1511148672978" duration="195000" />
+      <workItem from="1511169219846" duration="33000" />
+      <workItem from="1511253573203" duration="2415000" />
+      <workItem from="1511312629842" duration="14027000" />
+      <workItem from="1511361881820" duration="120000" />
+      <workItem from="1511406070587" duration="6460000" />
+      <workItem from="1511427688370" duration="1977000" />
+      <workItem from="1511750261334" duration="21000" />
+      <workItem from="1511773373702" duration="616000" />
+      <workItem from="1511831114555" duration="5986000" />
+      <workItem from="1511916789921" duration="2452000" />
+      <workItem from="1511968323117" duration="1067000" />
+      <workItem from="1512003131039" duration="710000" />
+      <workItem from="1512090996374" duration="854000" />
+      <workItem from="1512119238833" duration="20000" />
+      <workItem from="1512181836206" duration="2658000" />
+      <workItem from="1512207588738" duration="185000" />
+      <workItem from="1512284003634" duration="6170000" />
+      <workItem from="1512349034328" duration="68000" />
+      <workItem from="1512358341352" duration="1233000" />
+      <workItem from="1512391823483" duration="5520000" />
+      <workItem from="1512524530482" duration="304000" />
+      <workItem from="1512564837966" duration="2424000" />
+      <workItem from="1512608094848" duration="152000" />
+      <workItem from="1512610918069" duration="5196000" />
+      <workItem from="1512703739551" duration="14000" />
+      <workItem from="1512786112578" duration="249000" />
+      <workItem from="1512787001015" duration="605000" />
+      <workItem from="1512791154567" duration="701000" />
+      <workItem from="1512900676274" duration="3986000" />
+      <workItem from="1512974515570" duration="849000" />
+      <workItem from="1513058297300" duration="729000" />
+      <workItem from="1513087796615" duration="868000" />
+      <workItem from="1513126086943" duration="696000" />
+      <workItem from="1513168387780" duration="599000" />
+      <workItem from="1513213823968" duration="5797000" />
+      <workItem from="1513318895244" duration="270000" />
+      <workItem from="1513319255292" duration="92000" />
+      <workItem from="1513408100873" duration="4933000" />
+      <workItem from="1513561831776" duration="2312000" />
+      <workItem from="1513597876062" duration="1656000" />
+      <workItem from="1513647349157" duration="30000" />
+      <workItem from="1513654385287" duration="955000" />
+      <workItem from="1513690104632" duration="2227000" />
+      <workItem from="1513692362556" duration="419000" />
+      <workItem from="1513693049306" duration="3133000" />
+      <workItem from="1513735103840" duration="1634000" />
+      <workItem from="1513751627914" duration="22000" />
+      <workItem from="1513756543357" duration="276000" />
+      <workItem from="1513779135094" duration="3981000" />
+      <workItem from="1513861347244" duration="1993000" />
+      <workItem from="1513907288251" duration="720000" />
+      <workItem from="1513911165438" duration="251000" />
+      <workItem from="1513928673106" duration="957000" />
+      <workItem from="1514168775388" duration="1931000" />
+      <workItem from="1514252823399" duration="2885000" />
+      <workItem from="1514269625913" duration="357000" />
+      <workItem from="1514337853161" duration="2443000" />
+      <workItem from="1514454330969" duration="2607000" />
+      <workItem from="1514508906867" duration="20000" />
+      <workItem from="1514517597941" duration="678000" />
+      <workItem from="1514857853396" duration="631000" />
+      <workItem from="1514894538050" duration="2600000" />
+      <workItem from="1514981640523" duration="5803000" />
+      <workItem from="1515026935913" duration="880000" />
+      <workItem from="1515030640735" duration="2557000" />
+      <workItem from="1515076928842" duration="1038000" />
+      <workItem from="1515122045876" duration="3879000" />
+      <workItem from="1515202382841" duration="4495000" />
+      <workItem from="1515226228381" duration="617000" />
+      <workItem from="1515396659261" duration="6706000" />
+      <workItem from="1515459995252" duration="2886000" />
+      <workItem from="1515549343749" duration="9854000" />
+      <workItem from="1515575064649" duration="285000" />
+      <workItem from="1515634988335" duration="1266000" />
+      <workItem from="1515662033748" duration="988000" />
+      <workItem from="1515675013956" duration="995000" />
+      <workItem from="1515725340774" duration="3386000" />
+      <workItem from="1515892414805" duration="9626000" />
+      <workItem from="1515982321695" duration="8549000" />
+      <workItem from="1516089791612" duration="2430000" />
+      <workItem from="1516105034782" duration="4957000" />
+      <workItem from="1516261850886" duration="51000" />
+      <workItem from="1516613821185" duration="1204000" />
+      <workItem from="1516692518795" duration="5143000" />
+      <workItem from="1516706885156" duration="4161000" />
+      <workItem from="1516782372370" duration="65000" />
+      <workItem from="1516782849886" duration="729000" />
+      <workItem from="1516851338792" duration="394000" />
+      <workItem from="1517056344064" duration="1232000" />
+      <workItem from="1517229593420" duration="4715000" />
+      <workItem from="1517275696156" duration="600000" />
+      <workItem from="1517279376261" duration="6160000" />
+      <workItem from="1517387999734" duration="906000" />
+      <workItem from="1517454724279" duration="5360000" />
+      <workItem from="1517621013753" duration="5134000" />
+      <workItem from="1517637967919" duration="911000" />
+      <workItem from="1518178255513" duration="1886000" />
+      <workItem from="1519176382985" duration="748000" />
+      <workItem from="1519178237336" duration="8703000" />
+      <workItem from="1519223132071" duration="3619000" />
+      <workItem from="1519474495065" duration="2423000" />
+      <workItem from="1519633159621" duration="1566000" />
+      <workItem from="1519825462066" duration="828000" />
+      <workItem from="1520487643295" duration="904000" />
+      <workItem from="1520488591419" duration="2569000" />
+      <workItem from="1520491182419" duration="2900000" />
+      <workItem from="1520854788009" duration="5304000" />
+      <workItem from="1520911841560" duration="240000" />
+      <workItem from="1520931785169" duration="2052000" />
+      <workItem from="1521008023583" duration="1410000" />
+      <workItem from="1521185945711" duration="645000" />
+      <workItem from="1521188321989" duration="2607000" />
+      <workItem from="1521603166625" duration="335000" />
+      <workItem from="1521615213098" duration="642000" />
+      <workItem from="1521703753728" duration="2018000" />
+      <workItem from="1521855790628" duration="632000" />
+      <workItem from="1521962291029" duration="172000" />
+      <workItem from="1522043198657" duration="1910000" />
+      <workItem from="1522055243475" duration="1531000" />
+      <workItem from="1522205707262" duration="682000" />
+      <workItem from="1522227821247" duration="693000" />
+      <workItem from="1522325172845" duration="522000" />
+      <workItem from="1522631172199" duration="638000" />
+      <workItem from="1522652636348" duration="3560000" />
+      <workItem from="1522717592091" duration="1980000" />
+      <workItem from="1523066653769" duration="4087000" />
+      <workItem from="1523151213326" duration="10371000" />
+      <workItem from="1523235584889" duration="61000" />
+      <workItem from="1523370571866" duration="8214000" />
+      <workItem from="1523493550858" duration="1234000" />
+      <workItem from="1523537574075" duration="10955000" />
+      <workItem from="1523601038468" duration="408000" />
+      <workItem from="1523709341960" duration="1739000" />
+      <workItem from="1523968976009" duration="214000" />
+      <workItem from="1524052893038" duration="3282000" />
+      <workItem from="1524120259892" duration="37000" />
+      <workItem from="1524138592770" duration="9100000" />
+      <workItem from="1524186700944" duration="833000" />
+      <workItem from="1524304856485" duration="54000" />
+      <workItem from="1524539513391" duration="21000" />
+      <workItem from="1524572814455" duration="6222000" />
+      <workItem from="1524720667634" duration="347000" />
+      <workItem from="1524741778306" duration="5456000" />
+      <workItem from="1524790666477" duration="643000" />
+      <workItem from="1524830193826" duration="551000" />
+      <workItem from="1524831385891" duration="49000" />
+      <workItem from="1525175718568" duration="4574000" />
+      <workItem from="1525224281241" duration="602000" />
+      <workItem from="1525246954215" duration="1429000" />
+      <workItem from="1525265608226" duration="3907000" />
+      <workItem from="1525272961146" duration="501000" />
+      <workItem from="1525308531455" duration="606000" />
+      <workItem from="1525328290003" duration="732000" />
+      <workItem from="1525354286503" duration="3782000" />
+      <workItem from="1525514505029" duration="3807000" />
+      <workItem from="1525611089880" duration="2605000" />
+      <workItem from="1525656478000" duration="18000" />
+      <workItem from="1525699763515" duration="416000" />
+      <workItem from="1525700235823" duration="3617000" />
+      <workItem from="1525779999243" duration="5807000" />
+      <workItem from="1525860926725" duration="7312000" />
+      <workItem from="1525878819506" duration="4638000" />
+      <workItem from="1525915308896" duration="1207000" />
+      <workItem from="1525954817599" duration="5787000" />
+      <workItem from="1526000266923" duration="16000" />
+      <workItem from="1526040240748" duration="6653000" />
+      <workItem from="1526087155533" duration="16152000" />
+      <workItem from="1526205592028" duration="10880000" />
+      <workItem from="1526259701694" duration="14958000" />
+      <workItem from="1526302236813" duration="9775000" />
+      <workItem from="1526363427734" duration="14000" />
+      <workItem from="1526437063165" duration="604000" />
+      <workItem from="1526449960260" duration="2471000" />
+      <workItem from="1526699863099" duration="3086000" />
+      <workItem from="1526815697832" duration="621000" />
+      <workItem from="1526819478620" duration="1836000" />
+      <workItem from="1527062184075" duration="2097000" />
+      <workItem from="1527142922186" duration="4717000" />
+      <workItem from="1527166668390" duration="5200000" />
+      <workItem from="1527211768171" duration="122000" />
+      <workItem from="1527510446213" duration="3887000" />
+      <workItem from="1527555776160" duration="2292000" />
+      <workItem from="1527687571071" duration="246000" />
+      <workItem from="1528291397616" duration="657000" />
+      <workItem from="1528449694240" duration="21000" />
+      <workItem from="1528523522146" duration="745000" />
+      <workItem from="1528599453349" duration="1114000" />
+      <workItem from="1528679096559" duration="6573000" />
+      <workItem from="1528705389783" duration="5686000" />
+      <workItem from="1528850913699" duration="4566000" />
+      <workItem from="1528895228173" duration="1548000" />
+      <workItem from="1528942134612" duration="533000" />
+      <workItem from="1529132836070" duration="620000" />
+      <workItem from="1544248038839" duration="3208000" />
+      <workItem from="1544251532914" duration="11611000" />
+      <workItem from="1544273345383" duration="7133000" />
+      <workItem from="1544448135235" duration="2549000" />
+      <workItem from="1544490730456" duration="11103000" />
+      <workItem from="1544660385221" duration="1251000" />
+      <workItem from="1544759178035" duration="24000" />
+      <workItem from="1550913664393" duration="1385000" />
+      <workItem from="1550977879220" duration="38000" />
+      <workItem from="1551016472519" duration="1208000" />
+      <workItem from="1554121697941" duration="3003000" />
+      <workItem from="1554537518400" duration="98000" />
+      <workItem from="1554649316276" duration="2036000" />
+      <workItem from="1554734719103" duration="726000" />
+      <workItem from="1554775713442" duration="2582000" />
+      <workItem from="1555226792680" duration="9979000" />
+      <workItem from="1555239021312" duration="22000" />
+      <workItem from="1555899605966" duration="881000" />
+      <workItem from="1555940940375" duration="30000" />
+      <workItem from="1557218747056" duration="16000" />
+      <workItem from="1566824143698" duration="5687000" />
+      <workItem from="1566906272669" duration="890000" />
+      <workItem from="1566977245432" duration="3503000" />
+      <workItem from="1567049125952" duration="17131000" />
+      <workItem from="1567135591481" duration="18010000" />
+      <workItem from="1567519442184" duration="1198000" />
+      <workItem from="1567654826166" duration="10736000" />
+      <workItem from="1567848729047" duration="2515000" />
+      <workItem from="1568030878002" duration="35000" />
+      <workItem from="1570506428357" duration="5918000" />
+      <workItem from="1570542340644" duration="1475000" />
+      <workItem from="1570582258560" duration="2309000" />
+      <workItem from="1570693109940" duration="2017000" />
+      <workItem from="1571103738097" duration="1466000" />
+      <workItem from="1571275965899" duration="6337000" />
+      <workItem from="1571903380203" duration="1805000" />
+      <workItem from="1572489333906" duration="9896000" />
+      <workItem from="1572595999225" duration="15000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1214216000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-9" y="-9" width="1938" height="1060" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25013193" sideWeight="0.4937888" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23499268" sideWeight="0.50621116" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="2" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/js/test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="4" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr/hrkq_parms.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="66" column="20" selection-start-line="66" selection-start-column="16" selection-end-line="66" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/cFindDlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1259">
+          <caret line="247" column="0" selection-start-line="247" selection-start-column="0" selection-end-line="247" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/jsapi/TSearchForm_API">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/default/search_grid.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1075">
+          <caret line="43" column="40" selection-start-line="43" selection-start-column="40" selection-end-line="43" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/cSearchDlg.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/jsapi/Other_API">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="122" column="6" selection-start-line="122" selection-start-column="6" selection-end-line="122" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hr_kq/hrkq_holidayapp_test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-800">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp_cancel.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="29" column="8" selection-start-line="29" selection-start-column="8" selection-end-line="30" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12325">
+          <caret line="493" column="113" selection-start-line="493" selection-start-column="95" selection-end-line="493" selection-end-column="113" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/shwsystemparms.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="188" column="9" selection-start-line="188" selection-start-column="9" selection-end-line="188" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/aa.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="1770" column="61" selection-start-line="1770" selection-start-column="61" selection-end-line="1770" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/default/main_line_pop.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hr_perm/hr_black_add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="7" column="71" selection-start-line="7" selection-start-column="71" selection-end-line="7" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hr_perm/aa.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="18" column="72" selection-start-line="18" selection-start-column="72" selection-end-line="18" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_holidayapp_test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="710">
+          <caret line="254" column="48" selection-start-line="254" selection-start-column="48" selection-end-line="254" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_lbe_batch.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="163" column="66" selection-start-line="163" selection-start-column="66" selection-end-line="163" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_resignbatch.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="134" column="12" selection-start-line="134" selection-start-column="12" selection-end-line="134" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_leavejobbatch.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="383" column="43" selection-start-line="383" selection-start-column="43" selection-end-line="383" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_businesstrip.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2825">
+          <caret line="147" column="10" selection-start-line="147" selection-start-column="10" selection-end-line="147" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_ins/hr_ins_insurancetype.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6200">
+          <caret line="248" column="72" selection-start-line="248" selection-start-column="16" selection-end-line="248" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_business_trip_batch.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1375">
+          <caret line="116" column="13" selection-start-line="116" selection-start-column="13" selection-end-line="116" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/Hr_transfer_prob.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="931" column="13" selection-start-line="931" selection-start-column="13" selection-end-line="931" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hr_perm/rpt_employeeanalysis.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="96" column="78" selection-start-line="96" selection-start-column="78" selection-end-line="96" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_recruit/rpt_waitfor_distribution.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="198" column="59" selection-start-line="198" selection-start-column="59" selection-end-line="198" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_transfer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="669" column="62" selection-start-line="669" selection-start-column="62" selection-end-line="669" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_salary/rpt_hr_employee_transfer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="104" column="103" selection-start-line="104" selection-start-column="103" selection-end-line="104" selection-end-column="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_reward_list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_salary/rpt_hr_salary_entry_prob.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2575">
+          <caret line="103" column="47" selection-start-line="103" selection-start-column="47" selection-end-line="103" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/rpt_entrybatch_list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1625">
+          <caret line="65" column="44" selection-start-line="65" selection-start-column="44" selection-end-line="65" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_salary/rpt_hr_salary_transfer_prob.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="113" column="16" selection-start-line="113" selection-start-column="16" selection-end-line="113" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employee_induction.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="775">
+          <caret line="417" column="32" selection-start-line="417" selection-start-column="16" selection-end-line="417" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/testold.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/cwf.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="3641" column="19" selection-start-line="3641" selection-start-column="19" selection-end-line="3641" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/cwf_uncompress.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="3476" column="19" selection-start-line="3476" selection-start-column="13" selection-end-line="3476" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/cwf2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="3625" column="51" selection-start-line="3625" selection-start-column="46" selection-end-line="3625" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/jsonbanding2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="74" column="5" selection-start-line="74" selection-start-column="5" selection-end-line="74" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/cjquery.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="620" column="24" selection-start-line="620" selection-start-column="24" selection-end-line="620" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_leavejob.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11875">
+          <caret line="475" column="55" selection-start-line="475" selection-start-column="55" selection-end-line="475" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_overtime_qual.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3575">
+          <caret line="143" column="31" selection-start-line="143" selection-start-column="16" selection-end-line="143" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_overtime.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10325">
+          <caret line="461" column="9" selection-start-line="461" selection-start-column="9" selection-end-line="461" selection-end-column="9" />
+          <folding>
+            <element signature="e#17334#17419#0" expanded="false" />
+            <element signature="e#17459#20164#0" expanded="false" />
+            <element signature="e#20198#20222#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_kq/hrkq_resign.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="140" column="19" selection-start-line="140" selection-start-column="19" selection-end-line="140" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/css/corsair.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8700">
+          <caret line="348" column="0" selection-start-line="348" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/icefall.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="0" column="1832" selection-start-line="0" selection-start-column="1832" selection-end-line="0" selection-end-column="1832" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/icefall.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22425">
+          <caret line="1670" column="0" selection-start-line="1670" selection-start-column="0" selection-end-line="1670" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#$getDate4Str#0" expanded="false" />
+            <element signature="n#!!block;n#$getNewComboxParmsByComUrl#0" expanded="false" />
+            <element signature="n#!!block;n#$removeDicValue#0" expanded="false" />
+            <element signature="n#!!block;n#$ajaxhtmlget#0" expanded="false" />
+            <element signature="n#!!block;n#$getHtmlFragment#0" expanded="false" />
+            <element signature="n#!!block;n#$generateUUID#0" expanded="false" />
+            <element signature="n#!!block;n#getservdate#0" expanded="false" />
+            <element signature="n#!!block;n#getnewid#0" expanded="false" />
+            <element signature="n#!!block;n#$getDBTime#0" expanded="false" />
+            <element signature="e#21011#37194#0" expanded="false" />
+            <element signature="n#!!block;n#$parserDatebox2YearMonth#0" expanded="false" />
+            <element signature="e#48906#50094#0" expanded="false" />
+            <element signature="e#50271#50278#0" expanded="false" />
+            <element signature="e#50511#50774#0" expanded="false" />
+            <element signature="n#!!block;n#$getRowByFields#0" expanded="false" />
+            <element signature="n#!!block;n#$InitGridColFields#0" expanded="false" />
+            <element signature="n#!!block;n#$showGridColFilter#0" expanded="false" />
+            <element signature="n#!!block;n#createFitlters#0" expanded="false" />
+            <element signature="n#!!block;n#setFiltersChk#0" expanded="false" />
+            <element signature="n#!!block;n#setCol2Grid#0" expanded="false" />
+            <element signature="n#!!block;n#saveColFilterParms#0" expanded="false" />
+            <element signature="n#!!block;n#getColFieldsByColFilter#0" expanded="false" />
+            <element signature="n#!!block;n#$endGridEdit#0" expanded="false" />
+            <element signature="n#!!block;n#$HeartBeat#0" expanded="false" />
+            <marker date="1536500705646" expanded="true" signature="9411:9464" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="9495:9604" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="9682:9817" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="10778:10815" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="10932:10955" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="44067:44104" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="44155:44178" placeholder="..." />
+            <marker date="1536500705646" expanded="true" signature="47074:47097" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/loginex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="13" column="52" selection-start-line="13" selection-start-column="52" selection-end-line="13" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1650">
+          <caret line="68" column="17" selection-start-line="68" selection-start-column="17" selection-end-line="68" selection-end-column="17" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templet/src/hr_perm/myh/hr_employeeex.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19425">
+          <caret line="777" column="33" selection-start-line="777" selection-start-column="25" selection-end-line="777" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/jsapi/Mainline_API">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6175">
+          <caret line="247" column="1" selection-start-line="247" selection-start-column="1" selection-end-line="247" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/common/mainline2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="103" column="24" selection-start-line="103" selection-start-column="24" selection-end-line="103" selection-end-column="24" />
+          <folding>
+            <element signature="n#!!block;n#$OnCorsairReady#0" expanded="false" />
+            <element signature="n#!!block;n#rightClickDownload#0" expanded="false" />
+            <marker date="1569597180254" expanded="true" signature="9396:9406" placeholder="..." />
+            <marker date="1569597180254" expanded="true" signature="37027:37037" placeholder="..." />
+            <marker date="1569597180254" expanded="true" signature="79405:79428" placeholder="..." />
+            <marker date="1569597180254" expanded="true" signature="84105:84117" placeholder="..." />
+            <marker date="1569597180254" expanded="true" signature="91649:91661" placeholder="..." />
+            <marker date="1569597180254" expanded="true" signature="95972:95984" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

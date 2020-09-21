@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1450",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1450",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1455",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1455",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic999",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=999",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1399",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1399",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1437",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1437",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1522",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1522",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1522",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1522",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'tw_code',title:'编码',width:120},
+            {field:'orgname',title:'机构',width:300},
+            {field:'applydate',title:'申请月份',width:64, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'ttpay',title:'总分配金额',width:100},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+            {field:'orgname',title:'拉线',width:280},
+            {field:'linetype',title:'拉线类型',width:64, formatter: comUrl_dic1522.formator},
+            {field:'servicelinesname',title:'服务拉线',width:80},
+            {field:'targetoutput',title:'目标产量',width:64, formatter:zeroformator},
+            {field:'realoutput',title:'实际产量',width:64, formatter:zeroformator},
+            {field:'plancomplete',title:'计划达成率',width:80, formatter:persentformator},
+            {field:'goodsrate',title:'验货合格率',width:80, formatter:persentformator},
+            {field:'staffrunoff',title:'人员流失率',width:80, formatter:persentformator},
+            {field:'workdays',title:'开拉天数',width:64},
+            {field:'standard',title:'分配金额标准',width:80, formatter:zeroformator},
+            {field:'canpay',title:'可分配金额',width:80},
+            {field:'lrealpay',title:'拉线实际分配金额',width:64}
+        ];
+
+        var gdLinesEmpColumns=[
+            {field:'employee_code',title:'工号',width:100},
+            {field:'employee_name',title:'姓名',width:80},
+            {field:'sp_name',title:'职位',width:64},
+            {field:'descriprev',title:'分配比例(%)',width:70,editor:'text', formatter:derpersentformator},
+            {field:'shouldpay',title:'可分配金额',width:64},
+            {field:'realpay',title:'实际分配金额',width:64},
+            {field: 'remark', title: '备注', width: 200,editor:'text'}
+        ];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.salary.entity.Hr_salary_teamaward",
+            JPAIdField: "tw_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+            gdLinesName: 'hr_salary_teamaward_lines',   //行Grid ID对应到json 明细行属性 名
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "基层管理团队奖",
+            allow_expt_list: true,
+             datainfo_line_title: "拉线资料",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            /*extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],*/
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '添加已维护指标的总装拉线',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                $parserDatebox2YearMonth(mainline.getField('applydate'));
+                initGrid();
+            },
+            onAddLine: function (append) {//点击添加明细行
+                showOptionInfo($C.action.New);
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+
+            },
+            onLineGridDBClickRow: function (row) {
+                showOptionInfo($C.action.Edit, row);
+                return false; //false 将不调用edit方法
+            },
+            onNew: function (jsondata) {
+               // jsondata.subsdate = new Date();
+                jsondata.substype = 5;
+                jsondata.usable = 1;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+                if (parms) {
+                    var parms = parms.parms;
+                    for (var i = 0; i < parms.length; i++) {
+                        var parm = parms[i];
+                        if (parm.parmname == "applydate") {
+                            parm.parmvalue = parm.parmvalue + "-01";
+                        }
+                    }
+                }
+            },
+            onSave: function (postData, andSubmit) {
+              /*  var data = postData.jpadata;
+                if (!checkdata(data))
+                    return false;*/
+                mainline.postData2Save(postData, andSubmit);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            beforeSave: function () {
+                if (!checkdata())
+                    throw new Error("数据检查失败，终止保存!");
+                //countdata();
+            }
+        };
+        function onAddLineData() {
+            showOptionInfo($C.action.New);
+        }
+
+        function impexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var applydate = mainline.getFieldValue("applydate");
+            if ((!applydate) || (applydate.length == 0)) {
+                $.messager.alert('错误', "请先选择申请月份！", 'error');
+                return;
+            }
+            var url = _serUrl + "/web/hrsalary/command/getHadTargetLines.co?orgid=" +
+                    orgid+"&applydate="+applydate;
+            $ajaxjsonget(url, function (jsdata) {
+                if(jsdata.rows.length>0){
+                    for (var i = 0; i < jsdata.rows.length; i++) {
+                        var row = jsdata.rows[i];
+                        if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.orgid], ["orgid"])) {
+                            row.linetype=1;
+                            $("#detail_main_grid_id").datagrid("appendRow", row);
+                        }
+                    }
+                }
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                coURL:url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            });
+            select_Org_pw.show(true);
+        }
+
+        var select_Orgline_pw = undefined;
+        function onSelectOrgLine() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var applydate = mainline.getFieldValue("applydate");
+            if ((!applydate) || (applydate.length == 0)) {
+                $.messager.alert('错误', "请先选择申请月份！", 'error');
+                return;
+            }
+            var lt = OptionInfoWindow.getFieldValue("linetype");
+            if ((!lt) || (lt.length == 0)) {
+                $.messager.alert('错误', "请先选择拉线类型！", 'error');
+                return;
+            }
+            lt=parseInt(lt);
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "&orgid=" + orgid;
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list"+orgp;
+            var wo = {
+                id: "select_Orgline_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+               // isTree: true,
+                idField: 'orgid',
+                autofind:true,
+               // pidField: 'superid',
+               // treeField: 'code',
+                showTitle: true,
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'orgtype', reloper: '=', parmvalue: '17'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                   // {field: 'orgname', title: '机构', width: 100},
+                    {field: 'extorgname', title: '拉线', width: 300}
+                ]
+            };
+            if (!select_Orgline_pw) {
+                select_Orgline_pw = new TSearchForm(wo);
+            }
+            select_Orgline_pw.extendOptions({
+                coURL:url,
+                extParms:[
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'orgtype', reloper: '=', parmvalue: '17'}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.orgid, "orgid")) {
+                            OptionInfoWindow.setFieldValue('orgid', row.orgid);
+                            OptionInfoWindow.setFieldValue('orgcode', row.code);
+                            OptionInfoWindow.setFieldValue('orgname', row.extorgname);
+                            OptionInfoWindow.setFieldValue('idpath', row.idpath);
+                        }
+                        if(lt==1){
+                            var url = _serUrl + "/web/hrsalary/command/getLinesTargets.co?orgid=" +
+                                    row.orgid+"&applydate="+applydate;
+                            $ajaxjsonget(url, function (jsdata) {
+                                if(jsdata.rows.length>0){
+                                    var row=jsdata.rows[0];
+                                    OptionInfoWindow.setFieldValue('targetoutput', row.targetoutput);
+                                    OptionInfoWindow.setFieldValue('realoutput', row.realoutput);
+                                    OptionInfoWindow.setFieldValue('goodsrate', row.goodsrate);
+                                    OptionInfoWindow.setFieldValue('staffrunoff', row.staffrunoff);
+                                    OptionInfoWindow.setFieldValue('plancomplete', row.plancomplete);
+                                    OptionInfoWindow.setFieldValue('workdays', row.workdays);
+                                    OptionInfoWindow.setFieldValue('standard', row.standard);
+                                    OptionInfoWindow.setFieldValue('canpay', row.canpay);
+                                }
+                            }, function (err) {
+                                alert(JSON.stringify(err));
+                            });
+                        }
+                    }
+                }
+        });
+            select_Orgline_pw.show(true);
+        }
+
+        var select_OrgServline_pw = undefined;
+        function onSelectOrgServLine() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "&orgid=" + orgid;
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list"+orgp;
+            var wo = {
+                id: "select_OrgServline_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                // isTree: true,
+                idField: 'orgid',
+                autofind:true,
+                // pidField: 'superid',
+                // treeField: 'code',
+                showTitle: true,
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'orgtype', reloper: '=', parmvalue: '17'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    // {field: 'orgname', title: '机构', width: 100},
+                    {field: 'extorgname', title: '拉线', width: 300}
+                ]
+            };
+            if (!select_OrgServline_pw) {
+                select_OrgServline_pw = new TSearchForm(wo);
+            }
+            select_OrgServline_pw.extendOptions({
+                coURL:url,
+                extParms:[
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'orgtype', reloper: '=', parmvalue: '17'}
+                ],
+                onResult: function (rows) {
+                    var lid="";
+                    var lname="";
+                    for(var i=0;i<rows.length;i++){
+                        var row = rows[i];
+                        lid=lid+row.orgid+",";
+                        lname=lname+row.orgname+",";
+                    }
+                    if (lid.length > 0) lid = lid.substring(0, lid.length - 1);
+                    if (lname.length > 0) lname = lname.substring(0, lname.length - 1);
+                    OptionInfoWindow.setFieldValue('servicelines', lid);
+                    OptionInfoWindow.setFieldValue('servicelinesname', lname);
+                }
+            });
+            select_OrgServline_pw.show(true);
+        }
+
+        function initGrid() {
+            $("#hr_salary_teamaward_line_empss").datagrid({
+                columns: [gdLinesEmpColumns],
+                toolbar: EmpToolBar,
+                onClickRow: function (index, row) {
+                    $C.grid.accept("#hr_salary_teamaward_line_empss");
+                },
+                onDblClickRow: function (index, row) {
+                   // showOptionEmpInfo($C.action.Edit, row);
+                    $C.grid.edit("#hr_salary_teamaward_line_empss");
+                },
+                onAfterEdit: function ( index, row, changes) {
+                    var linerow = $("#detail_main_grid_id").datagrid("getSelected");
+                    var lindex = $("#detail_main_grid_id").datagrid("getRowIndex", linerow);
+                    var lcp=linerow.canpay;
+                    var dp=row.descriprev;
+                    var sp=row.shouldpay;
+                    dp=parseFloat(dp);
+                    sp=parseFloat(sp);
+                    lcp=parseFloat(lcp);
+                    sp=lcp*dp/100;
+                    var rp=sp;
+                    var ispt=row.isparttime;
+                    ispt=parseInt(ispt);
+                    if(ispt==1){
+                        var ptnums=row.ptnums;
+                        ptnums=parseInt(ptnums);
+                        ptnums=ptnums+1;
+                        rp=rp/ptnums;
+                    }
+                    row.shouldpay=sp;
+                    row.realpay=rp;
+                    if (isNaN(row.realpay) || (row.realpay == undefined) || (row.realpay.length == 0))  row.realpay = 0;
+                  //  $('#hr_salary_teamaward_line_empss').datagrid('refreshRow', index);
+                    var trows = $("#hr_salary_teamaward_line_empss").datagrid("getRows");
+                    var tdp=0;
+                    for(var i=0;i<trows.length;i++){
+                        var lrow=trows[i];
+                        var rdp=lrow.descriprev;
+                        rdp=parseFloat(rdp);
+                        tdp=tdp+rdp;
+                    }
+                    if(tdp>100){
+                        $.messager.alert('错误', "一条拉线合计分配比例不能超过100%", 'error');
+                        //throw "prensent over 100%";
+                        row.descriprev=0;
+                        row.realpay=0;
+                    }
+                    $('#hr_salary_teamaward_line_empss').datagrid('refreshRow', index);
+                    mainline.setDataChanged(true);
+                },
+                border: false
+            });
+            $("#detail_main_grid_id").datagrid({
+                onSelect: function (index, row) {
+                    if (mainline.getCanEdit()) {
+                        $C.grid.accept("detail_main_grid_id");
+                    }
+                    var lrow = $("#detail_main_grid_id").datagrid("getSelected");
+                    if (lrow) {
+                        if (!lrow.hr_salary_teamaward_line_empss) {
+                            lrow.hr_salary_teamaward_line_empss = [];
+                        }
+                        $("#hr_salary_teamaward_line_empss").datagrid("loadData", lrow.hr_salary_teamaward_line_empss);
+                    }
+                }
+            });
+        }
+
+        var EmpToolBar = [
+            {
+                text: '添加人员',
+                iconCls: 'icon-add',
+                handler: function () {
+                   // showOptionEmpInfo($C.action.New);
+                    getlineemps();
+                }
+            },
+            "-",
+            {
+                text: '删除人员',
+                iconCls: 'icon-remove',
+                handler: function () {
+                    if (mainline.getCanEdit()) {
+                        var rowdata = $("#hr_salary_teamaward_line_empss").datagrid("getSelected");
+                        if (!rowdata) {
+                            $.messager.alert('错误', '没有选择的数据！', 'error');
+                            return;
+                        }
+                        $C.grid.remove("hr_salary_teamaward_line_empss");
+                        mainline.setDataChanged(true);
+                    }
+                }
+            },
+            "-",
+            {
+                text: '应用变更',
+                iconCls: 'icon-ok',
+                handler: function () {
+                    var wfinfo = mainline.getWFInfo();
+                    if (mainline.getCanEdit() || (wfinfo && (parseInt(wfinfo.userInActiveNode) == 1))) { //当前用户参与了节点 //mainline.getCanEdit()
+                        $("#hr_salary_teamaward_line_empss").datagrid("acceptChanges");
+                        mainline.setDataChanged(true);
+                    }
+                }
+            }
+
+        ];
+
+        function getlineemps(){
+            if (mainline.getCanEdit()) {
+                var lrow = $("#detail_main_grid_id").datagrid("getSelected");
+                if (!lrow) {
+                    $.messager.alert('错误', '没有选择的数据！', 'error');
+                    return;
+                }
+                onFindemployee(lrow.orgid,lrow.canpay);
+            }
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(orgid,canpay) {
+            var applydate = mainline.getFieldValue("applydate");
+            if ((!applydate) || (applydate.length == 0)) {
+                $.messager.alert('错误', "请先选择月份！", 'error');
+                return;
+            }
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid+"&applydate="+applydate;
+            var url = _serUrl + "/web/hrsalary/command/findTeamWardEmoloyeeList.co" + orgp;
+
+            var extp=[];
+           // extp.push({parmname: 'hiredday', reloper: '<=', parmvalue: dt});
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 300},
+                    {field: 'sp_name', title: '职位', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+                ]
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+                autoFind: false,
+               // extParms: extp,
+                onResult: function (rows) {
+                   for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        var emp={};
+                        var emps=[];
+                        if (!$C.grid.getRowByField("#hr_salary_teamaward_line_empss", row.er_id, "er_id")) {
+                            emp.er_id=row.er_id;
+                            emp.employee_code=row.employee_code;
+                            emp.employee_name=row.employee_name;
+                            emp.ospid=row.ospid;
+                            emp.ospcode=row.ospcode;
+                            emp.sp_name=row.sp_name;
+                            emp.orgid=row.orgid;
+                            emp.orgcode=row.orgcode;
+                            emp.orgname=row.orgname;
+                            emp.idpath=row.idpath;
+                           // emp.shouldpay=canpay;
+                            var url = _serUrl + "/web/hrsalary/command/isPartTimeEmp.co?orgid=" +
+                                    orgid+"&er_id="+row.er_id+"&applydate="+applydate;
+                            $ajaxjsonget(url, function (jsdata,userdata) {
+                               var ispt=jsdata.isparttime;
+                                ispt=parseInt(ispt);
+                                if(ispt==1){
+                                    userdata.isparttime=ispt;
+                                    userdata.ptnums=jsdata.ptnums;
+                                }
+                            }, function (err) {
+                                alert(JSON.stringify(err));
+                            },false,emp);
+                            $C.grid.append("hr_salary_teamaward_line_empss", emp, true);
+                            emps.push(emp);
+                        }
+                    }
+                   // $("#hr_salary_teamaward_line_empss").datagrid("loadData", emps);
+                    mainline.setDataChanged(true);
+                }
+            });
+            select_employee_pw.show(true);
+        }
+
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+
+                };
+                isnew = true;
+            } else {
+                var row = data;
+                if (tp == $C.action.Del) {//删除
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#orglinepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        mainline.addLineData(undefined, jsondata);
+                    } else {
+                        mainline.updateLineData(undefined, jsondata);
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                    if (fdname == 'linetype'){
+                        var lt=parseInt(OptionInfoWindow.getFieldValue("linetype"));
+                        if(lt==1){
+                            OptionInfoWindow.setFieldValue('servicelines', undefined);
+                            OptionInfoWindow.setFieldValue('servicelinesname', undefined);
+                            OptionInfoWindow.setFieldReadOnly("servicelinesname",true);
+                           /* OptionInfoWindow.setFieldReadOnly("targetoutput",false);
+                            OptionInfoWindow.setFieldReadOnly("realoutput",false);
+                            OptionInfoWindow.setFieldReadOnly("goodsrate",false);
+                            OptionInfoWindow.setFieldReadOnly("staffrunoff",false);
+                            OptionInfoWindow.setFieldReadOnly("runofftarget",false);
+                            OptionInfoWindow.setFieldReadOnly("standard",false);
+                            OptionInfoWindow.setFieldReadOnly("canpay",false);*/
+                        }else{
+                            OptionInfoWindow.setFieldValue('targetoutput', undefined);
+                            OptionInfoWindow.setFieldValue('realoutput', undefined);
+                            OptionInfoWindow.setFieldValue('goodsrate', undefined);
+                            OptionInfoWindow.setFieldValue('staffrunoff', undefined);
+                            OptionInfoWindow.setFieldValue('runofftarget', undefined);
+                            OptionInfoWindow.setFieldReadOnly("servicelinesname",false);
+                            OptionInfoWindow.setFieldReadOnly("targetoutput",true);
+                            OptionInfoWindow.setFieldReadOnly("realoutput",true);
+                            OptionInfoWindow.setFieldReadOnly("goodsrate",true);
+                            OptionInfoWindow.setFieldReadOnly("staffrunoff",true);
+                            OptionInfoWindow.setFieldReadOnly("runofftarget",true);
+                            OptionInfoWindow.setFieldReadOnly("standard",true);
+                            OptionInfoWindow.setFieldReadOnly("canpay",true);
+                        }
+                    }
+                    if (fdname == 'servicelinesname'){
+                        callinescanpay();
+                    }
+                    if (fdname == 'canpay'){
+                        if (mainline.getCanEdit()) {
+                            $C.grid.accept("detail_main_grid_id");
+                        }
+                        var lrow = $("#detail_main_grid_id").datagrid("getSelected");
+                        if (lrow) {
+                            var emps=[];
+                            if (!lrow.hr_salary_teamaward_line_empss) {
+                                emps = [];
+                            }else{
+                                 emps=lrow.hr_salary_teamaward_line_empss;
+                                for(var i=0;i<emps.length;i++){
+                                    var emp=emps[i];
+                                    emp.shouldpay=newValue;
+                                    emp.realpay=newValue*emp.descriprev/100;
+                                }
+                            }
+                            $("#hr_salary_teamaward_line_empss").datagrid("loadData", emps);
+                        }
+                    }
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            OptionInfoWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoWindow.show();
+        }
+
+
+        var OptionEmpInfoWindow = undefined;
+        function showOptionEmpInfo(tp, data) {
+            var lrow = $("#detail_main_grid_id").datagrid("getSelected");
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+                    shouldpay:lrow.canpay
+
+                };
+                isnew = true;
+            } else {
+                var row = data;
+                if (tp == $C.action.Del) {//删除
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#orglineemppw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        $C.grid.append("hr_salary_teamaward_line_empss", jsondata, true);
+                    } else {
+                        $C.grid.edit("hr_salary_teamaward_line_empss", jsondata);
+                        $C.grid.endEditing("hr_salary_teamaward_line_empss");
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                    if ((fdname == 'descriprev')||(fdname == 'shouldpay')){
+                        var dp=parseFloat(OptionEmpInfoWindow.getFieldValue("descriprev"));
+                        var sp=parseFloat(OptionEmpInfoWindow.getFieldValue("shouldpay"));
+                        var rp=sp*dp/100;
+                        OptionEmpInfoWindow.setFieldValue("realpay",rp);
+                    }
+                }
+            };
+            if (!OptionEmpInfoWindow)
+                OptionEmpInfoWindow = new CPopInfoWindow(options);
+            OptionEmpInfoWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionEmpInfoWindow.show();
+        }
+
+
+        function persentformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(2);
+            return v + "%";
+        }
+        function derpersentformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(1);
+            return v + "%";
+        }
+
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        function contains(arr, obj) {
+            var i = arr.length;
+            while (i--) {
+                if (arr[i] === obj) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function callinescanpay(){
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "请先选择机构！", 'error');
+                return;
+            }
+            var applydate = mainline.getFieldValue("applydate");
+            if ((!applydate) || (applydate.length == 0)) {
+                $.messager.alert('错误', "请先选择月份！", 'error');
+                return;
+            }
+            var ltype=OptionInfoWindow.getFieldValue("linetype");
+            if(parseInt(ltype)==1){
+                return;
+            }else{
+                var sl=OptionInfoWindow.getFieldValue("servicelines");
+                var url = _serUrl + "/web/hrsalary/command/getServerLinesCanpay.co?orgid=" +
+                        orgid+"&lorgids="+sl+"&applydate="+applydate;
+                $ajaxjsonget(url, function (jsdata) {
+                    OptionInfoWindow.setFieldValue('canpay', jsdata.avgcanpay);
+                }, function (err) {
+                    alert(JSON.stringify(err));
+                });
+            }
+        }
+
+
+        function implistexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择机构", 'error');
+                return;
+            }
+            $uploadfile(_serUrl + "/web/hrsalary/command/impyearriase_listexcel.co?orgid=" + orgid, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+        function checkdata() {
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            for (var i =0;i<rows.length;i++) {
+                var row = rows[i];
+                if((!row.canpay)||(row.canpay.length==0)){
+                    $.messager.alert('错误', "拉线的可分配金额不能为空", 'error');
+                    return;
+                }
+                var emps=row.hr_salary_teamaward_line_empss;
+                if(emps){
+                    var present=0;
+                    for(var j=0;j<emps.length;j++){
+                        var emp=emps[j];
+                        present=parseFloat(present)+parseFloat(emp.descriprev);
+                    }
+                    if(present>100){
+                        alert("拉线【"+row.orgname+"】人员分配金额比例超过100%");
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        function countdata() {
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            var ttpay=0;
+            for (var i =0;i<rows.length;i++) {
+                var row = rows[i];
+                if((!row.canpay)||(row.canpay.length==0)){
+                    $.messager.alert('错误', "拉线的可分配金额不能为空", 'error');
+                    return;
+                }
+                var emps=row.hr_salary_teamaward_line_empss;
+                var rp=0;
+                if(emps){
+                    for(var j=0;j<emps.length;j++){
+                        var emp=emps[j];
+                        rp=parseFloat(rp)+parseFloat(emp.realpay);
+                    }
+                }
+                row.lrealpay=rp;
+                var lindex = $("#detail_main_grid_id").datagrid("getRowIndex", row);
+                $('#detail_main_grid_id').datagrid('refreshRow', lindex);
+                ttpay=parseFloat(ttpay)+parseFloat(rp);
+            }
+            mainline.setFieldValue("ttpay",ttpay);
+            mainline.setDataChanged(true);
+        }
+
+        $(document).ready(function () {
+            $("#detail_main_grid_div").html($("#dmgdl").html());
+        });
+    </script>
+
+    <script type="text/html" id="dmgdl">
+        <div class="datainfo_title">明细数据</div>
+        <div class="easyui-layout" style="width:100%;height:300px;">
+            <div region='west' data-options="region:'west',split:true" style="width:60%;">
+                <div style="width: 100%;height: 300px">
+                    <table id="detail_main_grid_id" data-options="rownumbers:true,remoteSort:false,fit:true"></table>
+                </div>
+            </div>
+            <div region='center' data-options="region:'center'" style="">
+                <table id="hr_salary_teamaward_line_empss" data-options="remoteSort:false,fit:true,singleSelect:true"></table>
+            </div>
+        </div>
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'tw_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'tw_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'applydate'">申请月份</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'applydate',crequired:true,formatter:$dateformattostrrYYYY_MM,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',buttonIcon:'icon-search',onClickButton:onSelectOrg,crequired:true" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'ttpay'">分配总金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ttpay',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+<div id="orglinepw" class="easyui-window" title="拉线信息" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 850px;height: 200px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table>
+                <tr>
+                    <td cjoptions="fdname:'orgname'">拉线</td>
+                    <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrgLine,editable:false" style="height:20px;width: 300px"/></td>
+                    <td cjoptions="fdname:'linetype'">拉线类型</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'linetype',crequired:true,comidx:'dic1522'" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'servicelinesname'">服务拉线</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'servicelinesname',readonly:true,buttonIcon:'icon-search',onClickButton:onSelectOrgServLine,editable:false" style="height:20px;width: 100px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'targetoutput'">目标产量</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'targetoutput',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'realoutput'">实际产量</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'realoutput',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'plancomplete'">计划达成率</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'plancomplete',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'goodsrate'">验货合格率</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'goodsrate',readonly:true" style="height:20px;width: 100px"/></td>
+
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'staffrunoff'">人员流失率</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'staffrunoff',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'workdays'">开拉天数</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'workdays',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'standard'">分配金额标准</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'standard',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'canpay'">可分配金额</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'canpay',readonly:true" style="height:20px;width: 100px"/></td>
+
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'remark'">备注</td>
+                    <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+<div id="orglineemppw" class="easyui-window" title="人员信息" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 850px;height: 200px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table>
+                <tr>
+                    <td cjoptions="fdname:'employee_code'">工号</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:getlineemps,editable:false" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'employee_name'">姓名</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'orgname'">部门</td>
+                    <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 300px"/></td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'sp_name'">职位</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'shouldpay'">可分配金额</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'shouldpay',readonly:true" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'descriprev'">分配比例</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'descriprev'" style="height:20px;width: 100px"/></td>
+                    <td cjoptions="fdname:'realpay'">实际分配金额</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'realpay',readonly:true" style="height:20px;width: 100px"/></td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

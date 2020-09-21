@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic993",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=993",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic650",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=650",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1212",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1212",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'orgname', title: '所属机构', width: 120},
+            {field: 'sp_code', title: '编码', width: 120},
+            {field: 'sp_name', title: '职位', width: 150},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hg_name', title: '职等', width: 120},
+            {field: 'hwc_namezl', title: '职类', width: 120},
+            {field: 'hwc_namezq', title: '职群', width: 100},
+            {field: 'hwc_namezz', title: '职种', width: 100},
+            {field: 'gtitle', title: '职衔', width: 100},
+            {field: 'isoffjob', title: '职位性质', width: 64, formatter: comUrl_dic1212.formator},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isadvtech', title: '高技人才', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'issensitive', title: '敏感岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'iskey', title: '关键岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'ishighrisk', title: '高危岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isneedadtoutwork', title: '离职审计岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isdreamposition', title: '梦职场岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'maxage', title: '最大年龄', width: 64},
+            {field: 'minage', title: '最小年龄', width: 64},
+            {field: 'mindegree', title: '学历要求', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'yhtype', title: '年假方式', width: 64, formatter: comUrl_dic993.formator},
+            {field:'istechsub',title:'技术津贴',width:64, formatter: comUrl_dic5.formator},
+            {field: 'sp_exp', title: '职位说明', width: 200},
+            {field: 'alloworgwsch', title: '参与机构排班', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isteamward', title: '团队管理奖', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 200},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150, findtype: 'datetime'},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        function rowstyler(index, row) {
+            if (row)
+                if (parseInt(row.usable) == 2) {
+                    return 'color:#DC143C;';
+                }
+        }
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_standposition",
+            JPAIdField: "sp_id",
+            allowAtt: false,
+            allowWF: false,
+            autoFind: true,
+            datainfo_pw_title: "职位详情",
+            datainfo_attr_title: "职位说明书",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '950px',//窗体宽度  htMLPop有效
+            windowHeight: '450px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            bttexts: {id_bt_att: "上传职位说明书"},
+            extButtons: [//扩展按钮
+                {
+                    text: '隐藏/显示不可用',
+                    iconCls: 'icon-task',
+                    handler: function () {
+                        hidediusable();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后\
+                $("#dg_datalist_id").datagrid({
+                    rowStyler: rowstyler
+                });
+            },
+            onFind: function (parms) {
+                parms.order = ' hwc_namezl asc,hg_name asc,lv_num asc ';
+            },
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+                jsondata.isadvtech = 2;
+                jsondata.isoffjob = 1;
+                jsondata.issensitive = 2;
+                jsondata.iskey = 2;
+                jsondata.ishighrisk = 2;
+                jsondata.maxage = 0;
+                jsondata.minage = 0;
+                jsondata.mindegree = 7;
+                jsondata.isneedadtoutwork = 2;
+                jsondata.isdreamposition = 2;
+            }
+        };
+        var sch_hrclass_pw = undefined;
+        var sch_hr_grade_pw = undefined;
+        var sch_hr_prolevel_pw = undefined;
+        function onFindHRClass() {
+            var wo = {
+                id: "sch_hrclass_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_wclass",  //对应后台JPAClass名
+                orderStr: " hwc_id asc ",
+                isTree: true,
+                treeField: "hwc_name",
+                multiRow: false,
+                idField: 'hwc_id',
+                pidField: 'pid',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'hwc_name', title: '名称', width: 150},
+                    {field: 'type_id', title: '类型', width: 80, formatter: comUrl_dic650.formator}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        var datas = sch_hrclass_pw.getData();
+                        var zz = rows[0];
+                        if (zz.type_id != 3) {
+                            $.messager.alert('错误', '请选择职种!', 'error');
+                            return;
+                        }
+                        var zq = getParentNodeByNodes(datas, zz);
+                        if (!zq) {
+                            $.messager.alert('错误', '计算职群错误', 'error');
+                            return;
+                        }
+                        var zl = getParentNodeByNodes(datas, zq);
+                        if (!zl) {
+                            $.messager.alert('错误', '计算职类错误', 'error');
+                            return;
+                        }
+
+                        mainline.setFieldValue("hwc_idzz", zz.hwc_id);
+                        mainline.setFieldValue("hw_codezz", zz.hw_code);
+                        mainline.setFieldValue("hwc_namezz", zz.hwc_name);
+
+                        mainline.setFieldValue("hwc_idzq", zq.hwc_id);
+                        mainline.setFieldValue("hw_codezq", zq.hw_code);
+                        mainline.setFieldValue("hwc_namezq", zq.hwc_name);
+
+                        mainline.setFieldValue("hwc_idzl", zl.hwc_id);
+                        mainline.setFieldValue("hw_codezl", zl.hw_code);
+                        mainline.setFieldValue("hwc_namezl", zl.hwc_name);
+                        mainline.setFieldValue("isoffjob", zl.isoffjob);
+
+
+                        mainline.setFieldValue("hg_id", "");
+                        mainline.setFieldValue("hg_code", "");
+                        mainline.setFieldValue("hg_name", "");
+                    }
+                }
+            };
+            if (!sch_hrclass_pw) {
+                sch_hrclass_pw = new TSearchForm(wo);
+            }
+            sch_hrclass_pw.show();
+        }
+
+        var ishide = false;
+        function hidediusable() {
+            ishide = !ishide;
+            var parms = (ishide) ? [{parmname: "usable", reloper: "=", parmvalue: "1"}] : [];
+            mainline.do_find(parms);
+        }
+
+        function getParentNodeByNode(pnode, node) {
+            if (pnode.children) {
+                for (var i = 0; i < pnode.children.length; i++) {
+                    var child = pnode.children[i];
+                    if (child == node)
+                        return pnode;
+                    else {
+                        var pnd = getParentNodeByNode(child, node);
+                        if (pnd) {
+                            return pnd;
+                        }
+                    }
+                }
+            }
+        }
+
+        function getParentNodeByNodes(nodes, node) {
+            for (var i = 0; i < nodes.length; i++) {
+                var nd = nodes[i];
+                var rst = getParentNodeByNode(nd, node);
+                if (rst) return rst;
+            }
+        }
+
+        function onFindhr_grade() {
+            var hwc_id = mainline.getFieldValue("hwc_idzl");
+            if ($isEmpty(hwc_id)) {
+                $.messager.alert('错误', '请先选择职类!', 'error');
+                return;
+            }
+            var url = _serUrl + "/web/hr/orgposition/findGradeList.co?hwc_id=" + hwc_id;
+            var wo = {
+                id: "sch_hr_grade_pw",
+                enableIdpath: false,
+                coURL: url,
+                JPAClass: "com.hr.base.entity.Hr_grade",  //对应后台JPAClass名
+                orderStr: " hg_id asc ",
+                multiRow: false,
+                idField: 'hg_id',
+                autoFind: true,//是否自动查询
+                gdListColumns: [
+                    {field: 'hg_name', title: '职等', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        //alert(rows[0].hg_id);
+                        mainline.setFieldValue("hg_id", rows[0].hg_id);
+                        mainline.setFieldValue("hg_code", rows[0].hg_code);
+                        mainline.setFieldValue("hg_name", rows[0].hg_name);
+                        mainline.setFieldValue("gtitle", rows[0].gtitle);
+
+                        mainline.setFieldValue("lv_id", "");
+                        mainline.setFieldValue("lv_num", "");
+                    }
+                }
+            };
+            if (!sch_hr_grade_pw) {
+                sch_hr_grade_pw = new TSearchForm(wo);
+            } else
+                sch_hr_grade_pw.extendOptions({
+                    coURL: url
+                });
+            sch_hr_grade_pw.show(true);
+        }
+
+        function onFindhr_prolevel() {
+            var hg_id = mainline.getFieldValue("hg_id");
+            if ($isEmpty(hg_id)) {
+                $.messager.alert('错误', '请先选择职等!', 'error');
+                return;
+            }
+            var wo = {
+                id: "sch_hr_prolevel_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_prolevel",  //对应后台JPAClass名
+                orderStr: " lv_id asc ",
+                multiRow: false,
+                idField: 'lv_id',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'hg_id', reloper: '=', parmvalue: hg_id}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'lv_num', title: '职级', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        mainline.setFieldValue("lv_id", rows[0].lv_id);
+                        mainline.setFieldValue("lv_num", rows[0].lv_num);
+                    }
+                }
+            };
+            if (!sch_hr_prolevel_pw) {
+                sch_hr_prolevel_pw = new TSearchForm(wo);
+            } else
+                sch_hr_prolevel_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'hg_id', reloper: '=', parmvalue: hg_id}
+                    ]
+                });
+            sch_hr_prolevel_pw.show(true);
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.code);
+                        mainline.setFieldValue("orgname", row.extorgname);
+                        mainline.setFieldValue("aidpath", row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'sp_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_code',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'usable'">有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'hwc_namezq'">职群</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'hwc_namezz'">职种</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',crequired:true,buttonIcon:'icon-search',onClickButton:onFindHRClass,editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',crequired:true"
+                   data-options="buttonIcon:'icon-search',onClickButton:onFindhr_grade,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,buttonIcon:'icon-search',onClickButton:onFindhr_prolevel,editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'maxage'">最大年龄</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'maxage'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'minage'">最小年龄</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'minage'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'isadvtech'">高技人才</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'isadvtech',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'isoffjob'">职位性质</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'isoffjob',crequired:true,comidx:'dic1212',readonly:false,editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'issensitive'">敏感岗位</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'issensitive',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'iskey'">关键岗位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'iskey',crequired:true,comidx:'dic5',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ishighrisk'">高危岗位</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'ishighrisk',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'mindegree'">学历要求</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'mindegree',crequired:true,comidx:'dic84',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'isneedadtoutwork'">离职审计岗位</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'isneedadtoutwork',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'isdreamposition'">梦职场岗位</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'isdreamposition',crequired:true,comidx:'dic5',editable:false"
+                style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'gtitle'">职衔</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'gtitle',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'yhtype'">年假方式</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yhtype',editable:false,comidx:'dic993'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'alloworgwsch'">参与机构排班</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'alloworgwsch',editable:false,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'istechsub'">技术津贴</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'istechsub',editable:false,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">所属机构</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,
+            buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td cjoptions="fdname:'isteamward'">团队管理奖</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isteamward',editable:false,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td colspan="8" cjoptions="fdname:'attribute1'">TX系统职务编码名称列表,编码与名称用井号分隔,多个职务之间用竖线分隔(如:5216#MC员|8045#生产工2|)</td>
+    </tr>
+    <tr>
+        <td colspan="8">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'attribute1',multiline:true"
+                   style="height:40px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_exp'">职位说明</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_exp'"
+                               style="height:40px;width: 200px"/>
+        </td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:true"
+                               style="height:40px;width: 200px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

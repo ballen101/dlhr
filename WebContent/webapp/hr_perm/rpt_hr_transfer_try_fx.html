@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>考察期统计报表</title> 
+  <script type="text/javascript" style="cserver_js"> </script> 
+  <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var listGridColumns = function () {
+            return [
+                {field: 'extorgname', title: '机构', width: 150},
+                {field: 'zrs', title: '考察期人数', width: 80},
+                {field: 'ygzz', title: '应转正人数', width: 80},
+                {field: 'yjzz', title: '考察转正人数', width: 80},
+                {field: 'yqzz', title: '考察延期人数', width: 80},
+                {field: 'bhgzz', title: '不合格人数', width: 80},
+                {field: 'yjzzl', title: '考察转正率', width: 80},
+                {field: 'yqzzl', title: '考察延期率', width: 80},
+                {field: 'bhgzz', title: '不合格率', width: 80}
+            ]
+        };
+
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var relOptionsDY = {
+            data: [{id: '>', value: '大于'}]
+        };
+        var relOptionsXY = {
+            data: [{id: '<', value: '小于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'bgdate', title: '开始日期', notnull: true, relOptions: relOptionsDY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'eddate', title: '截止日期', notnull: true, relOptions: relOptionsXY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'zrs', title: '考察期人数', width: 80},
+            {field: 'ygzz', title: '应转正人数', width: 80},
+            {field: 'yjzz', title: '考察转正人数', width: 80},
+            {field: 'yqzz', title: '考察延期人数', width: 80},
+            {field: 'bhgzz', title: '不合格人数', width: 80}
+        ];
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            pagination:false,//是否分页
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hr/permrpt3/rpt_transfer_try_fx.co"
+        };
+
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

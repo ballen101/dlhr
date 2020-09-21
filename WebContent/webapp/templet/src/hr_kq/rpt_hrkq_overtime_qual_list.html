@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+        {
+            index: "dic227",
+                    type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+        }
+        ];
+    </script>
+    <script type="text/javascript">
+
+        comUrl_dic923.formator = function (value, row) {
+            var jsondata = comUrl_dic923.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic923;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'oq_code', title: '申请编码', width: 64},
+                {field: 'orgname', title: '机构', width: 200},
+                {field: 'lv_num', title: '职级', width: 80},
+                {field: 'sp_name', title: '职位', width: 100},
+                {field: 'over_type', title: '加班类型', notfind: true, width: 100, formatter: comUrl_dic923.formator},
+                {field: 'begin_date', title: '开始时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'end_date', title: '结束时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'dealtype', title: '加班处理', width: 100, formatter: comUrl_dic928.formator},
+                {field: 'permonlimit', title: '月度加班上限时数', width: 100},
+                {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+                {field: 'remark', title: '备注', width: 100},
+                {field: 'creator', title: '制单人', width: 100},
+                {field: 'createtime', title: '制单时间', width: 150},
+                {field: 'updator', title: '更新人', width: 64},
+                {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+            ]
+        };
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hrkq/rpt1/findovertimequallist.co"
+        };
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm");
+        }
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="zh-cn">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>批量补签</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1007",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1007",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic968",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=968",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic941",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=941",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'resbcode', title: '补签编码', width: 120},
+            {field: 'resdate', title: '申请日期', width: 80, formatter: $fieldDateFormatorYYYY_MM},
+            {field: 'orgname', title: '机构', width: 150},
+            {field: 'resreson', title: '补签原因', width: 200},
+            {field: 'remark', title: '备注', width: 120},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 80},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 120},
+            {field: 'updator', title: '更新人', width: 80},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 120}
+        ];
+        var gdLinesColumns = [
+            {field: 'employee_code', title: '工号', width: 60},
+            {field: 'employee_name', title: '姓名', width: 60},
+            {field: 'orgname', title: '机构', width: 150},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'lv_num', title: '职级', width: 50},
+            {field: 'kqdate', title: '考勤日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'bcno', title: '班次号', width: 64},
+            {field: 'rgtime', title: '班次时间', width: 80}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_resignbatch",
+            JPAIdField: "resbid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            wfWindowHeight: "600px",
+            datainfo_line_title: "补签明细",
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hrkq_resignbatchlines",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allowEmptyLine: false,//允许明细行为空保存
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.splice(0, tb.length);
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        var url = _serUrl + "/ExcelModels/Hrkq_resign/excelmodel/批量补签行表导入模板.xls";
+                        window.open(url);
+                    }
+                });
+                // tb.splice(0, 0, bts);
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+            },
+            onNew: function (jsondata) {
+                jsondata.resdate = new Date();
+            },
+            onSave: function (postData) {
+                return true;
+            },
+            onFind: function (parms) {
+            },
+            afterFindDetail: function () {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+                //calcResigntimes();
+            }
+        };
+
+        //
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=list";
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.code);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        function impexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择机构", 'error');
+                return;
+            }
+            var url = _serUrl + "/web/hrkq/resignbatch/imprgbexcel.co?orgid=" + orgid;
+            //alert(url);
+            $uploadfile(url, null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            $("#detail_main_grid_id").datagrid("appendRow", row);
+                        }
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'resbcode'">补签编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',readonly:true,fdname:'resbcode',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'resdate'">申请日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'resdate',formatter:$dateformattostrrYYYY_MM_DD,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'resreson'">补签原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'resreson',crequired:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100%"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

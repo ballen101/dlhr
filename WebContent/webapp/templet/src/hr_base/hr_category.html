@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'hc_code', title: '职类代码', width: 100},
+            {field: 'hc_name', title: '职类名称', width: 120},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 150}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'hwp_code', title: '职类代码', width: 100},
+            {field: 'hwp_name', title: '职类名称', width: 120, editor: 'text'},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator, editor: comUrl_dic5.editor},
+            {field: 'remark', title: '备注', width: 200, editor: 'textarea'}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_category",
+            JPAIdField: "hc_id",
+            allowAtt: false,
+            allowWF: false,
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "职类详情",
+            datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            }
+        };
+
+    </script>
+
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'hc_code'">职类代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hc_code',required:true,readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'hc_name'">职类名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hc_name'" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'usable'">有效</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usable',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input class="easyui-textbox" data-options="multiline:true" cjoptions="fdname:'remark'"
+                               style="height:40px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

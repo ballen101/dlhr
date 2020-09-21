@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_recruit">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>成绩登记</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'id_number', title: '身份证号', width: 150},
+            {field: 'employee_name', title: '姓名', width: 120},
+            {field: 'orgname', title: '机构', width: 150},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'twktitle', title: '培训课题', width: 100},
+            {field: 'twktime', title: '培训日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'twkscore', title: '培训成绩', width: 80},
+            {field: 'writime', title: '笔试日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'wriscore', title: '笔试成绩', width: 80},
+            {field: 'creator', title: '创建人', width: 100},
+            {field: 'createtime', title: '创建时间', width: 120},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间', width: 120}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.recruit.entity.Hr_recruit_score",
+            JPAIdField: "rsid",
+            allowAtt: true,
+            allowWF: false,
+            allow_print: true,
+            datainfo_pw_title: "成绩登记",
+            allow_expt_list: true,
+            windowWidth: '480px',
+            windowHeight: '380px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);//设置界面值
+                        mainline.setFieldValue("id_number", row.id_number);
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("lv_id", row.lv_id);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("ospid", row.ospid);
+                        mainline.setFieldValue("ospcode", row.ospcode);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url
+            });
+            var extParms = [];
+            if (employee_code) {
+                extParms.push({parmname: 'employee_code', reloper: '=', parmvalue: employee_code});
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: extParms
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: extParms
+                });
+            }
+            select_employee_pw.show();
+        }
+
+        //Excel导入功能
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/rcu/score/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+    <style type="text/css">
+        #baseinfodiv td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'id_number'">身份证号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'id_number',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'twktitle'">培训课题</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'twktitle'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'twktime'">培训日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'twktime',formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'twkscore'">培训成绩</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'twkscore'" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'writime'">笔试日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'writime',formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'wriscore'">笔试成绩</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'wriscore'" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,formatter:$dateformattostr,readonly:true" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

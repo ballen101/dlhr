@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cpopinfo2.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <title>年度法定假期维护</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }];</script> 
+  <script type="text/javascript">
+        function $OnCorsairReady() {
+            inityear();
+        }
+        var years = [];
+        function inityear() {
+            var y = (new Date()).getFullYear();
+            var ly = y + 10;
+            years = [];
+            for (var i = 1970; i <= ly; i++) {
+                years.push({value: i, text: i});
+            }
+            $("#ohyerlist1").combobox({
+                valueField: 'value',
+                textField: 'text',
+                data: years,
+                editable: false,
+                onSelect: function (rec) {
+                    loadHodays();
+                }
+            });
+            $("#ohyerlist1").combobox("select", y);
+            loadHodays();
+            /*
+             $("#ohyerlist2").combobox({
+             valueField: 'value',
+             textField: 'text',
+             data: years,
+             editable: false
+             });*/
+            initckvalidators();
+        }
+
+        var PW_ohinfowd = undefined;
+        var jpajsondat = undefined;
+        function do_add(date) {
+
+            var setedinfo = getDayHolyday(date.format("yyyy-MM-dd"));
+
+            var isnew = (setedinfo == undefined);
+            var jsondata = {ohyear: $("#ohyerlist1").combobox("getValue")};
+
+            if (setedinfo != undefined) {
+                jsondata = setedinfo;
+                if (date) {
+                    jsondata.ohdatebg = date.format("yyyy-MM-dd");
+                    jsondata.ohdateed = date.format("yyyy-MM-dd");
+                }
+            } else if (date) {
+                jsondata.ohdatebg = date.format("yyyy-MM-dd");
+                jsondata.ohdateed = date.format("yyyy-MM-dd");
+            }
+            jpajsondat = jsondata;
+
+            //alert(JSON.stringify(jsondata));
+            var options = {
+                windowfilter: '#ohinfowd',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+                    var rdo = (( jsondata.ohdatebg) && ( jsondata.ohdateed)) ? true : false;
+                    PW_ohinfowd.setFieldReadOnly("ohdatebg", rdo);
+                    PW_ohinfowd.setFieldReadOnly("ohdateed", rdo);
+                },
+                onOK: function (isnew, jsondata) {
+                    //alert(JSON.stringify(jsondata));
+                    var url = _serUrl + "/web/hrkq/ohyear/addYearHolidays.co";
+                    $ajaxjsonpost(url, JSON.stringify(jsondata), function (json) {
+                        loadHodays();
+                        //alert(JSON.stringify(json));
+                    }, function (err) {
+                        alert(JSON.stringify(err));
+                    });
+                    return true;
+                }
+            };
+            if (!PW_ohinfowd)
+                PW_ohinfowd = new CPopInfoWindow(options);
+            else
+                PW_ohinfowd.extendOptions({
+                    isNew: isnew,
+                    jsonData: jsondata
+                });
+            PW_ohinfowd.show();
+        }
+
+
+        function formatDay(date) {
+            var r = date.getDate();
+            var d = date.getDay();
+            var ds = date.format("yyyy-MM-dd");
+            var rt = getDayHolyday(ds);
+            if (rt) {
+                return r + "<br>" + rt.daydis;
+            } else {
+                if ((d == 0) || (d == 6))
+                    return r + "<br>休假";
+                else
+                    return r + "<br>上班";
+                return r + "<br>上班"
+            }
+        }
+
+        function ishoday(date) {
+            var d = date.getDay();
+            var ds = date.format("yyyy-MM-dd");
+            var rt = getDayHolyday(ds);
+            if (rt) {
+                return (parseInt(rt.iswork) == 2);
+            } else {
+                return ((d == 0) || (d == 6));
+            }
+        }
+
+        function getDayHolyday(ds) {
+            if (!_holdays) return;
+            for (var i = 0; i < _holdays.length; i++) {
+                if (_holdays[i].ohdate == ds) {
+                    return _holdays[i];
+                }
+            }
+        }
+
+        function stylerDay(date) {
+            if (ishoday(date))
+                return 'background-color:#EBFECE;border: none;';
+            else
+                return 'background-color:#FFFFFF;border: none;';
+        }
+
+        var ckvalidators = [];
+        function initckvalidators() {
+            for (var i = 0; i <= 11; i++) {
+                var idx = i + 1;
+                ckvalidators[i] = new Function("date", " return ckvalidator('#ymcl" + idx + "', date);");
+            }
+        }
+
+
+        function ckvalidator(filter, date) {
+            var options = $(filter).calendar("options");
+            var y = parseInt(options.year);
+            var m = parseInt(options.month);
+            var cy = parseInt(date.getFullYear());
+            var cm = date.getMonth() + 1;
+            //alert(cy + ":" + y);
+            if ((cy == y) && (cm == m))
+                return true;
+            else
+                return false;
+        }
+
+        function onSelectDate(date) {
+            do_add(date);
+            //alert(date.getFullYear() + ":" + (date.getMonth() + 1) + ":" + date.getDate());
+        }
+
+        function init12c() {
+            var hs = "";
+            for (var i = 1; i <= 12; i++) {
+                var ht = $("#callendermodel").html();
+                ht = ht.replace(new RegExp("{{id}}", "g"), "ymcl" + i);
+                hs = hs + ht;
+            }
+            $("#calendarpart").html(hs);
+            //$.parser.parse("#calendarpart");
+            var sy = $("#ohyerlist1").combobox("getValue");
+            for (var i = 1; i <= 12; i++) {
+                $("#ymcl" + i).calendar({
+                    year: sy,
+                    month: i,
+                    firstDay: '1',
+                    formatter: formatDay,
+                    styler: stylerDay,
+                    validator: ckvalidators[i - 1],
+                    onSelect: onSelectDate
+                });
+                $("#ymcl" + i + " .calendar-header").html("<div style='width: 100%;text-align: center;font-weight: 700'>" + i + "月" + "</div>");
+            }
+        }
+
+        function do_reload() {
+            loadHodays();
+        }
+        var _holdays = undefined;
+        function loadHodays() {
+            var sy = $("#ohyerlist1").combobox("getValue");
+            var url = _serUrl + "/web/hrkq/ohyear/findYearHolidays.co?ohyear=" + sy;
+            $ajaxjsonget(url, function (jsondata) {
+                _holdays = jsondata;
+                init12c();
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+    </script> 
+  <style type="text/css">
+        .a {
+            background-color: #1a7bc9;
+        }
+
+        .calendar-disabled {
+            opacity: 0.05;
+        }
+    </style> 
+ </head> 
+ <body> 
+  <div id="maindata_id" class="easyui-layout" data-options="fit:true"> 
+   <div data-options="region:'north'" style="height:50px;padding: 10px"> 
+    <input id="ohyerlist1" class="easyui-combobox" label="年度:" labelposition="left" style="width:250px;height:22px"> 
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'" style="width: 100px" onclick="do_reload();">刷新</a> 
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add1'" style="width: 100px" onclick="do_add();">添加</a> 
+   </div> 
+   <div data-options="region:'center'"> 
+    <div id="calendarpart"> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="ohinfowd" class="easyui-window" title="假期详情" data-options="iconCls:'icon-save',closed:true,modal:true" style="width: 500px;height: 200px;padding:5px;"> 
+   <div class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'center',border:false" style="padding:0px;"> 
+     <table border="0" style="width: 100%;height: 100%"> 
+      <tbody> 
+       <tr> 
+        <td cjoptions="fdname:'ohyear'">年度</td> 
+        <td><input id="ohyerlist2" cjoptions="easyui_class:'easyui-textbo',fdname:'ohyear',crequired:true,readonly:true" style="height:20px;width: 150px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'ohdatebg'">开始日期</td> 
+        <td><input class="easyui-datebox" cjoptions="easyui_class:'easyui-datebox', fdname:'ohdatebg',crequired:true,editable:false" style="height:20px;width: 150px"></td> 
+        <td cjoptions="fdname:'ohdateed'">截止日期</td> 
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'ohdateed',crequired:true,editable:false" style="height:20px;width: 150px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'iswork'">上班</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbo',fdname:'iswork',crequired:true,editable:false,comidx:'dic5'" style="height:20px;width: 150px"></td> 
+        <td cjoptions="fdname:'daydis'">标题</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbo',fdname:'daydis',crequired:true" style="height:20px;width: 150px"></td> 
+       </tr> 
+       <tr> 
+        <td cjoptions="fdname:'daymeo'">备注</td> 
+        <td><input cjoptions="easyui_class:'easyui-textbo',fdname:'daymeo'" style="height:20px;width: 150px"></td> 
+       </tr> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;"> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <script type="text/html" id="callendermodel" style="display:none">
+    <div id="{{id}}" class="easyui-calendar" style="width:400px;height:400px;margin: 2px;float: left"></div>
+</script>  
+ </body>
+</html>

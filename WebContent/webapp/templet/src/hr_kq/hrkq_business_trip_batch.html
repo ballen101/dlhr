@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>批量出差单</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic931",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=931",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic960",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=960",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'btab_code', title: '编码', width: 80},
+            {field: 'orgname', title: '部门', width: 120},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '申请人', width: 64},
+            {field: 'createtime', title: '申请时间', findtype: 'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var bedateeditor = {
+            type: "datetimebox",
+            options: {
+                showSeconds: false
+            }
+        };
+
+        var gdLinesColumns = [
+            {field: 'orgname', title: '部门', width: 120},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'lv_num', title: '职级', width: 50},
+            {field: 'sp_name', title: '职位', width: 60},
+            {field: 'trip_type', title: '出差类型', width: 80, formatter: comUrl_dic931.formator, editor: comUrl_dic931.editor},
+            {field: 'destination', title: '出差地点', width: 100, editor: "text"},
+            {field: 'begin_date', title: '出差开始时间', findtype: "datetime", width: 120, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM, editor: bedateeditor},
+            {field: 'end_date', title: '出差结束时间', findtype: "datetime", width: 120, formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM, editor: bedateeditor},
+            {field: 'iswfagent', title: '流程代理', width: 80, formatter: comUrl_dic5.formator, editor: comUrl_dic5.editor},
+            {field: 'tripdays', title: '合计天数', width: 64},
+            {field: 'tripreason', title: '出差事由', width: 300, editor: "text"}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_business_trip_batch",
+            JPAIdField: "btab_id",
+            allowAtt: true,
+            allowWF: true,
+            datainfo_pw_title: "批量出差单",
+            allow_expt_list: true,
+            windowWidth: '1094px',
+            windowHeight: '580px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            //allow_void: true,取消取消按钮
+
+            disableButtonType: _NUBType.hide,
+            datainfo_line_title: "批量出差名单",
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hrkq_business_trip_batchlines",
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+            },
+            onNew: function (jsondata) {
+
+            },
+            onAddLine: function (append) {//点击添加明细行 v3取消
+                onFindemployee(append);
+            },
+            onFind: function (parms) {
+
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+                calcTrapDays(index, row, changes);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+        function impexcel() {
+            var orgid = mainline.getFieldValue("orgid");
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "先选择出差部门", 'error');
+                return;
+            }
+            $uploadfile(_serUrl + "/web/hrkq/businesstripbatch/impexcel.co?sorgid=" + orgid , null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        //console.error(JSON.stringify(jsdata));
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(addline) {
+            var orgid = mainline.getFieldValue("orgid");
+            if ($isEmpty(orgid)) {
+                alert("请先选择部门");
+                return;
+            }
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co?orgid=" + orgid;
+            var wo = {
+                id: "select_employee_pw",
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: false,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                            row.iswfagent = 2;
+                            addline(row);
+                        }
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url
+            });
+            select_employee_pw.show(true);
+        }
+
+        function calcTrapDays(index, row, changes) {
+            if (changes.begin_date || changes.end_date) {
+                var timebg = row.begin_date;
+                var timeed = row.end_date;
+                if ((!$isEmpty(timebg)) && (!$isEmpty(timeed))) {
+                    if (((new Date()).fromStr(timebg)) >= ( (new Date()).fromStr(timeed))) {
+                        mainline.setFieldValue("end_date", "");
+                        alert("截止时间必须大于开始时间");
+                        return;
+                    }
+                    var url = _serUrl + "/web/hrkq/cmn/calcDateDiffDay.co?bgtime=" + timebg + "&edtime=" + timeed;
+                    $ajaxjsonget(url, function (jsdata) {
+                        row.tripdays = jsdata.rst;
+                        $('#detail_main_grid_id').datagrid('refreshRow', index);
+                    }, function (err) {
+                        alert(JSON.stringify(err));
+                    });
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'btab_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'btab_code',readonly:true,crequired:true"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:40px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

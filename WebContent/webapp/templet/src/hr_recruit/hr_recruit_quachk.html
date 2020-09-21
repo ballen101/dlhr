@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_recruit">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/hrms/cactivex.js"></script>
+    <title>资格对比</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1420",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1420",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1423",
+                type: "combobox",
+                multiple: true,
+                url: "/web/dict/getdictvalues.co?dicid=1423",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1045",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1045",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1071",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1071",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1074",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1074",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1082",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1082",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic797",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=797",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic905",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=905",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        comUrl_dic1423.formator = function (value, row) {
+            var jsondata = comUrl_dic1423.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic1423;
+            }
+            try {
+                var arv = eval("[" + value + "]");
+                var rv = "";
+                for (var i = 0; i < arv.length; i++) {
+                    for (var j = 0; j < jsondata.length; j++) {
+                        if (arv[i] == jsondata[j]["dictvalue"]) {
+                            rv = rv + jsondata[j]["language1"] + ",";
+                            break;
+                        }
+                    }
+                }
+                if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+                if (rv.length > 0) return rv;
+                else return value;
+            } catch (err) {
+                return value;
+            }
+        };
+
+
+        var listGridColumns = [
+            {field: 'id_number', title: '身份证号', width: 150},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'sign_date', title: '签发日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'expired_date', title: '到期日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'birthday', title: '出生日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'sign_org', title: '发证机关', width: 150},
+            {field: 'address', title: '现住址', width: 150},
+            {field: 'nation', title: '民族', width: 50, formatter: comUrl_dic797.formator},
+            {field: 'compar_result', title: '验证结果', width: 100, formatter: comUrl_dic1420.formator},
+            {field: 'reason', title: '原因', width: 150, formatter: comUrl_dic1423.formator},
+            {field: 'special_item', title: '特殊项目', width: 100},
+            {field: 'situation', title: '情况', width: 150},
+            {field: 'remark', title: '备注', width: 250},
+            {field: 'creator', title: '创建人', width: 100},
+            {field: 'createtime', title: '创建时间', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'hiredday', title: '入职日期', width: 0, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'id_number', title: '身份证号', width: 0, hidden: true},
+            {field: 'employee_name', title: '姓名', width: 0},
+            {field: 'empstatid', title: '状态', width: 0, formatter: comUrl_cbxintype.formator},
+            {field: 'dates', title: '离职天数', width: 0, notfind: true},
+            {field: 'ljdate', title: '离职日期', width: 0, formatter: $fieldDateFormatorYYYY_MM_DD, notfind: true},
+            {field: 'ljreason', title: '离职原因', width: 150, formatter: comUrl_dic1049.formator, notfind: true},
+            {field: 'leaveremark', title: '离职备注', width: 150, notfind: true},
+            {field: 'orgname', title: '所在部门', width: 120},
+            {field: 'liidcount', title: '离职次数', width: 0},
+            {field: 'blidcount', title: '黑名单次数', width: 0},
+            {field: 'ljtype1', title: '离职类别', width: 0, formatter: comUrl_dic782.formator, notfind: true},
+            {field: 'ljtype2', title: '离职类型', width: 0, formatter: comUrl_dic1045.formator},
+            {field: 'addtype', title: '加封类型', width: 0, formatter: comUrl_dic1071.formator},
+            {field: 'addtype1', title: '加封类别', width: 0, formatter: comUrl_dic1074.formator},
+            {field: 'addnum', title: '加封次数', width: 0},
+            {field: 'blackreason', title: '加封原因', width: 120, formatter: comUrl_dic1082.formator},
+            {field: 'addappdate', title: '加封日期', width: 0, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'adddate', title: '生效日期', width: 0, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var grderglistcols = [[
+            {field: 'employee_code', title: '工号', width: 60},
+            {field: 'employee_name', title: '姓名', width: 60},
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'sp_name', title: '职位', width: 60},
+            {field: 'lv_num', title: '职级', width: 50},
+            {field: 'quachk', title: '资格比对', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'quachknote', title: '资格比对备注', width: 100},
+            {field: 'cercheck', title: '证件检查', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'cerchecknote', title: '证件检查备注', width: 100},
+            {field: 'formchk', title: '形体检查', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'formchknote', title: '形体检查备注', width: 100},
+            {field: 'iview', title: '面试', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'iviewnote', title: '面试备注', width: 100},
+            {field: 'train', title: '培训', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'trainnote', title: '培训备注', width: 100},
+            {field: 'meexam', title: '体检', width: 60, formatter: comUrl_dic905.formator},
+            {field: 'meexamnote', title: '体检备注', width: 100},
+            {field: 'reportfor', title: '报到', width: 64, formatter: comUrl_dic905.formator},
+            {field: 'reportfornote', title: '报到备注', width: 100}
+
+        ]];
+
+        frmOptions = {
+            JPAClass: "com.hr.recruit.entity.Hr_recruit_quachk",
+            JPAIdField: "recruit_quachk_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_print: true,
+            datainfo_pw_title: "资格比对",
+            datainfo_line_title: "离职记录",
+            allow_expt_list: true,
+            windowWidth: '1000px',
+            windowHeight: '600px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hr_recruit_quachklines",
+            newaftersubmit: true,
+            OnReady: function () {
+                // $("#grdreglist").datagrid({columns: [grderglistcols]});
+            },
+            onNew: function (jsondata) {
+                jsondata.compar_result1 = 1;
+                jsondata.compar_result2 = 1;
+                jsondata.compar_result3 = 1;
+                jsondata.compar_result4 = 1;
+                jsondata.compar_result5 = 1;
+                jsondata.compar_result6 = 1;
+                jsondata.compar_result7 = 1;
+                jsondata.compar_result8 = 1;
+                jsondata.compar_result9 = 1;
+            },
+            onSetGridDefaultToolbar: function (lineToolBar) {// 设置行GRID Toolbar 事件    v3取消
+                return [];
+            },
+            onFind: function (parms) {
+
+            },
+            onLoadData: function (jsdata) {//从服务器上获取数据后
+                console.error(JSON.stringify(jsdata));
+            },
+            beforeSave: function () {
+                resetrst2();
+                var values = [];
+                /*
+                 var s2 = new Date();
+                 var birthday = mainline.getFieldValue("birthday");
+                 var dtime = s2.getTime() - $getDate4Str(birthday).getTime();
+                 var y = (dtime / (86400000 * 365));
+                 if (y < 16) {
+                 mainline.setFieldValue("compar_result", 2);
+                 mainline.setFieldValue("compar_result1", 2);
+                 }*/
+
+                var ispass = true;
+                var npassresonvs = "";
+                for (var i = 1; i <= 9; i++) {
+                    values[i] = parseInt(mainline.getFieldValue("compar_result" + i));
+                    if (values[i] != 1) {
+                        ispass = false;
+                        npassresonvs = npassresonvs + i + ",";
+                    }
+                }
+                if (ispass == false)
+                    mainline.setFieldValue("compar_result", 2);
+
+                var l = mainline.getFieldValue("reason");
+                var m = parseInt(mainline.getFieldValue("compar_result"));
+                if ((m == 2) && ($isEmpty(l))) {
+                    alert("请录入不合格原因");
+                    throw new error("请录入不合格原因");
+                }
+                var id_number = mainline.getFieldValue("id_number");
+                if (id_number.length != 18)
+                    alert("注意:身份证号码不是18位!!!");
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (mainline.isloadingdata())
+                    return;
+                if (fdname == 'compar_result') {
+                    if (newValue == '1') {
+                        mainline.setFieldValue("reason", "");
+                        mainline.setReadOnly("reason", true);
+                    } else {
+                        mainline.setReadOnly("reason", false);
+                    }
+                }
+                if (fdname == 'id_number') {
+                    if (newValue != "") {
+                        onFindEffectiveEmployee(newValue);
+                    }
+                }
+                if (fdname.substr(0, 13) == "compar_result") {
+                    updatecomparresult();
+                }
+                if (fdname == 'expired_date') {
+                    resetrst2();
+                }
+            }
+        };
+
+        function resetrst2() {
+            var expired_date = mainline.getFieldValue("expired_date");
+            if (!$isEmpty(expired_date)) {
+                expired_date = $getDate4Str(expired_date);
+                console.error(expired_date.getTime() + " " + (new Date()).getTime());
+                if (expired_date.getTime() < (new Date()).getTime()) {
+                    mainline.setFieldValue("compar_result2", 2);
+                } else {
+                    mainline.setFieldValue("compar_result2", 1);
+                }
+            }
+        }
+
+        function updatecomparresult() {
+            var values = [];
+            var ispass = true;
+            var npassresonvs = "";
+            for (var i = 1; i <= 9; i++) {
+                values[i] = parseInt(mainline.getFieldValue("compar_result" + i));
+                if (values[i] != 1) {
+                    ispass = false;
+                    npassresonvs = npassresonvs + i + ",";
+                }
+            }
+            if (!$isEmpty(npassresonvs)) {
+                npassresonvs = npassresonvs.substring(0, npassresonvs.length - 1);
+            }
+            if (ispass) {
+                mainline.setFieldValue("compar_result", 1);
+                mainline.setFieldValue("reason", "");
+            } else {
+                mainline.setFieldValue("compar_result", 2);
+                mainline.setFieldValue("reason", npassresonvs);
+            }
+        }
+
+        function doreadidcardinfo() {
+            if (mainline.getCanEdit()) {
+                var cinfo = $ReadIDCardInfo();
+                //console.error(JSON.stringify(cinfo));
+                if (cinfo.name) {
+                    mainline.setisloadingdata(true);
+                    mainline.setFieldValue("employee_name", cinfo.name);
+                    mainline.setFieldValue("id_number", cinfo.cardid);
+                    mainline.setFieldValue("sign_org", cinfo.issue);
+                    mainline.setFieldValue("birthday", parsbirthday(cinfo.birthday));
+                    mainline.setFieldValue("sign_date", parsbirthday(cinfo.begin));
+                    var enddate = (cinfo.end == "长期") ? "2099-12-31" : parsbirthday(cinfo.end);
+                    //alert(enddate);
+                    mainline.setFieldValue("expired_date", enddate);
+                    if (cinfo.sex == "女")
+                        mainline.setFieldValue("sex", 1);
+                    else
+                        mainline.setFieldValue("sex", 2);
+                    mainline.setFieldValue("address", cinfo.addr);
+                    mainline.setFieldValue("nation", getmzbyname(cinfo.folk));
+                    var s2 = new Date();
+                    var dtime = s2.getTime() - parsbirthdaytodate(cinfo.birthday).getTime();
+                    var y = (dtime / (86400000 * 365));
+                    var isok = true;
+                    if (y < 16) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result1", 2);
+                        isok = false;
+                    }
+                    if (s2.getTime() > ($date4str(enddate)).getTime()) {
+                        isok = false;
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result2", 2);
+                    }
+                    if (isok) {
+                        onFindEffectiveEmployee(cinfo.cardid, true);
+                    }
+                    mainline.setisloadingdata(false);
+                    mainline.setDataChanged(true);
+                }
+            }
+        }
+
+        //根据身份证读取历史信息
+        function onFindEffectiveEmployee(idnumber, isreadcard) {
+            var url = _serUrl + "/web/hr/Recruit/quachk/FindEffectiveEmployee.co?id_number=" + idnumber;
+            $ajaxjsonget(url, function (jsondata) {
+                if (jsondata.ct > 0) {
+                    alert("在职人员不允许资质对比或再入职");
+                    mainline.setFieldValue("id_number", "");
+                    return;
+                }
+                var url = _serUrl + "/web/hr/Recruit/quachk/findEmployeeByIDCard.co?id_number=" + idnumber;
+                $ajaxjsonget(url, function (jsdata) {
+                    if (jsdata.length == 0) {
+                        //$.messager.alert('错误', "没有记录", "error");
+                        return;
+                    }
+                    $("#detail_main_grid_id").datagrid("loadData", jsdata);
+                    var row = jsdata[0];
+                    console.log(JSON.stringify(row));
+                    mainline.setisloadingdata(true);
+                    if (!isreadcard) {
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("id_number", row.id_number);
+                        mainline.setFieldValue("sign_org", row.sign_org);
+                        mainline.setFieldValue("birthday", row.birthday);
+                        mainline.setFieldValue("sign_date", row.sign_date);
+                        mainline.setFieldValue("expired_date", row.expired_date);
+                        mainline.setFieldValue("sex", row.sex);
+                        mainline.setFieldValue("address", row.registeraddress);
+                        mainline.setFieldValue("nation", row.nation);
+                    }
+                    var s2 = new Date();
+                    if (((s2.getTime() - row.birthday) / 1440000) < 5840) {
+                        mainline.setValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result1", 2);
+                        //mainline.setValue("reason", 1);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result1", 1);
+                    }
+                    if ((s2.getTime() - row.expired_date) < 0) {
+                        mainline.setValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result2", 2);
+                        // mainline.setValue("reason", 2);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result2", 1);
+                    }
+                    if (row.ljtype1 == 3) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result3", 2);
+                        //mainline.setFieldValue("reason", 3);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result3", 1);
+                    }
+                    // 其他离职90天以内 不允许   招募中心自离 自离 180天以内
+                    if ((row.ljtype1 != 1) && (row.ljtype1 != 8) && (row.dates < 90)) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result5", 2);
+                        //mainline.setFieldValue("reason", 5);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result5", 1);
+                    }
+                    if (((row.ljtype1 == 8) || (row.ljtype1 == 1)) && (row.dates < 180)) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result6", 2);
+                        //mainline.setFieldValue("reason", 6);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result6", 1);
+                    }
+                    if (row.liidcount > 3) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result4", 2);
+                        //mainline.setFieldValue("reason", 4);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result4", 1);
+                    }
+                    if (row.empstatid == 13) {
+                        mainline.setFieldValue("compar_result", 2);
+                        mainline.setFieldValue("compar_result7", 2);
+                        //mainline.setFieldValue("reason", 7);
+                    } else {
+                        mainline.setFieldValue("compar_result", 1);
+                        mainline.setFieldValue("compar_result7", 1);
+                    }
+                    updatecomparresult();
+                    mainline.setisloadingdata(false);
+                }, function (err) {
+                    $.messager.alert('错误', err.errmsg, "error");
+                });
+
+                var url = _serUrl + "/web/hr/Recruit/quachk/findreglist.co?id_number=" + idnumber;
+                $ajaxjsonget(url, function (jsdata) {
+                    $("#grdreglist").datagrid("loadData", jsdata);
+                }, function (err) {
+                    $.messager.alert('错误', err.errmsg, "error");
+                });
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        //19781129
+        function parsbirthday(bd) {
+            return bd.substr(0, 4) + "-" + bd.substr(4, 2) + "-" + bd.substr(6, 2);
+        }
+
+        function parsbirthdaytodate(v) {
+            var s = parsbirthday(v);
+            return $date4str(s);
+        }
+
+        function getmzbyname(v) {
+            var m = v + "族";
+            for (var i = 0; i < comUrl_dic797.jsondata.length; i++) {
+                var r = comUrl_dic797.jsondata[i];
+                if (r.language1 == m) {
+                    return r.dictvalue;
+                }
+            }
+            return '57';
+        }
+
+        //buttonText:'对比载入', onClickButton:onFindEmployeeByIDNumber,
+    </script>
+    <style type="text/css">
+        #maindata_id td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<div id="maindata_id">
+    <table border="0" style="">
+        <tr>
+            <td cjoptions="fdname:'id_number'">身份证号</td>
+            <td colspan="3"><input
+                    cjoptions="easyui_class:'easyui-textbox',fdname:'id_number',crequired:true,validType:['length[0,20]']"
+                    style="height:20px;width: 200px"/>
+                <a href="#" class="easyui-linkbutton" onclick="doreadidcardinfo()"
+                   style="height: 20px">二代身份证读取</a>
+            </td>
+            <td cjoptions="fdname:'sign_org'">发证机关</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sign_org',crequired:true"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'employee_name'">姓名</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true"
+                       style="height:20px;width: 100px"/></td>
+        <tr>
+            <td cjoptions="fdname:'sign_date'">签发日期</td>
+            <td><input
+                    cjoptions="easyui_class:'easyui-datebox',fdname:'sign_date',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                    style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'expired_date'">到期日期</td>
+            <td><input
+                    cjoptions="easyui_class:'easyui-datebox',fdname:'expired_date',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                    style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'birthday'">出生日期</td>
+            <td><input
+                    cjoptions="easyui_class:'easyui-datebox',fdname:'birthday',crequired:true,formatter:$dateformattostrrYYYY_MM_DD"
+                    style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'sex'">性别</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',comidx:'dic81',editable:false"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'address'">身份证地址</td>
+            <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'address'"
+                                   style="height:20px;width: 100%"/></td>
+            <td cjoptions="fdname:'nation'">民族</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'nation',comidx:'dic797'"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'compar_result'">验证结果</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result',crequired:true,comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'reason'">原因</td>
+            <td colspan="7"><input
+                    cjoptions="easyui_class:'easyui-textbox',fdname:'reason',multiple:true,comidx:'dic1423'"
+                    style="height:20px;width: 100%"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'special_item'">特殊项目</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'special_item',crequired:false"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'situation'">情况</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'situation',crequired:false"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'remark'">备注</td>
+            <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                                   style="height:20px;width: 100%"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'creator'">创建人</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'createtime'">创建时间</td>
+            <td><input
+                    cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                    style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'updator'">更新人</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'updatetime'">更新时间</td>
+            <td><input
+                    cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                    style="height:20px;width: 100px"/></td>
+        </tr>
+
+        <tr>
+            <td colspan="7">
+                ---------------------------------------------------------资格比对项目---------------------------------------------------------
+            </td>
+        </tr>
+
+        <tr>
+            <td cjoptions="fdname:'compar_result1'" colspan="2">小于16岁的童工</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result1',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'compar_result6'" colspan="2">自离未满六个月</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result6',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'compar_result2'" colspan="2">身份证件过期</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result2',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'compar_result7'" colspan="2">列入公司黑名单者</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result7',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'compar_result3'" colspan="2">辞退、解除劳动关系者</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result3',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'compar_result8'" colspan="2">从事过职业病工种无镇级以上<br>医院职业病体检合格证明者</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result8',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'compar_result4'" colspan="2">在新宝入职、离职三次以上</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result4',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'compar_result9'" colspan="2">特殊工种年龄要在18-45岁之间</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result9',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'compar_result5'" colspan="2">正常离职未满三个月</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'compar_result5',comidx:'dic1420'"
+                       style="height:20px;width: 100px"/></td>
+        </tr>
+    </table>
+    <div>
+        <table class="easyui-datagrid" data-options="title:'招募记录',singleSelect:true,columns:grderglistcols"
+               style="height:100px" id="grdreglist">
+        </table>
+    </div>
+</div>
+</body>
+</html>

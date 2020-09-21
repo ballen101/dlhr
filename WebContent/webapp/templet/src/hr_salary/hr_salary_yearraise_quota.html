@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1450",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1450",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1455",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1455",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic999",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=999",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1399",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1399",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1437",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1437",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'orgname',title:'机构',width:300},
+            {field:'salaryquotadate',title:'额度使用月份',width:80, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'yrqname',title:'额度名称',width:80},
+            {field:'salary_quota_canuse',title:'可用工资额度',width:80, formatter: zeroformator},
+            {field:'usable',title:'有效',width:80, formatter: comUrl_dic5.formator},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.salary.entity.Hr_salary_yearraise_quota",
+            JPAIdField: "yrqid",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+            datainfo_pw_title: "机构额度维护",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后
+                /*var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        implistexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});*/
+                $parserDatebox2YearMonth(mainline.getField('salaryquotadate'));
+            },
+            onNew: function (jsondata) {
+               // jsondata.subsdate = new Date();
+                jsondata.usable = 1;
+                jsondata.salaryquotadate = new Date().format("yyyy-MM-dd");
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'salary_quota_canuse') {
+                    var salary_quota_canuse = (mainline.getField("salary_quota_canuse")).textbox("getValue");
+                    v=parseFloat(salary_quota_canuse);
+                    if (v == 0) mainline.setFieldValue('salary_quota_canuse',0);
+                    v = v.toFixed(0);
+                    mainline.setFieldValue('salary_quota_canuse',v);
+                }
+            },
+            beforeSave: function () {
+            /*    if (!checkdata())
+                    throw new Error("数据检查失败，终止保存!");*/
+            }
+        };
+
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/command/impyearraise_quotaexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        mainline.setFieldValue('idpath', row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show(true);
+        }
+
+        function persentformator(value) {
+            vl=value;
+            vl.textbox({
+                formatter: function (d) {
+                    var v = parseFloat(d);
+                    if (isNaN((v))) v = 0;
+                    if (v == 0) return 0;
+                    v = v.toFixed(0);
+                    return v;
+                }
+            });
+           // return v;
+        }
+        function zeroformator(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN((v))) v = 0;
+            if (v == 0) return 0;
+            v = v.toFixed(0);
+            return v;
+        }
+
+        function checkdata() {
+            var qcu = mainline.getFieldValue("salary_quota_canuse");
+            if ((!qcu) || (qcu.length == 0)) {
+                $.messager.alert('错误', "先输入可用工资额度", 'error');
+                return;
+            }
+            qcu = parseFloat(qcu);
+            var rows = $("#detail_main_grid_id").datagrid("getRows");
+            for (var i =0;i<rows.length;i++) {
+                var row = rows[i];
+                if((!row.newstru_id)||(row.newstru_id.length==0)){
+                    $.messager.alert('错误', "调薪后工作结构不能为空", 'error');
+                    return;
+                }
+                if (parseInt(row.pbtsarylev) > qcu) {
+                    alert("本次调薪金额大于可用工资额度");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',buttonIcon:'icon-search',onClickButton:onSelectOrg,crequired:true,editable:false" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'yrqname'">额度名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yrqname',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'salary_quota_canuse'">可用工资额度</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'salary_quota_canuse',crequired:true,formatter:persentformator" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'salaryquotadate'">额度有效月份</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'salaryquotadate',crequired:true,formatter:$dateformattostrrYYYY_MM,editable:false" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

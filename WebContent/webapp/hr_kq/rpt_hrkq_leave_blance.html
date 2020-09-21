@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic1019 = {index: 'dic1019',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"年假","dictvalue":"1"},{"language1":"加班","dictvalue":"2"},{"language1":"值班","dictvalue":"3"},{"language1":"出差","dictvalue":"4"},{"language1":"特殊","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1019.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1019; } if (comUrl_dic1019.type == 'combobox') { if (comUrl_dic1019.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1019.valueField]) { rst = rst + jsondata[i][comUrl_dic1019.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1019.valueField]) return jsondata[i][comUrl_dic1019.textField]; } } } if (comUrl_dic1019.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1019.editor= {type: 'combobox', options: {valueField:comUrl_dic1019.valueField, textField:comUrl_dic1019.textField, data: comUrl_dic1019.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1019", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1019", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '机构', width: 200},
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'sp_name', title: '职位', width: 60},
+                {field: 'hg_name', title: '职等', width: 64},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'stype', title: '来源类型', width: 80, formatter: comUrl_dic1019.formator},
+                {field: 'sccode', title: '来源编码/年度', width: 100},
+                {
+                    field: 'bgtime',
+                    title: '开始时间',
+                    notfind: true,
+                    width: 120,
+                    formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM
+                },
+                {
+                    field: 'edtime',
+                    title: '截止时间',
+                    notfind: true,
+                    width: 120,
+                    formatter: $fieldDateFormatorYYYY_MM_DD_HH_MM
+                },
+                {field: 'alllbtime', title: '总调休时间(H)', width: 120},
+                {field: 'usedlbtime', title: '已经调休时间(H)', width: 120},
+                {field: 'valdate', title: '到期时间', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'isexpire', title: '是否过期', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'extended', title: '是否展期', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'usup', title: '是否用完', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'canuses', title: '可用', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'note', title: '备注', width: 150}
+            ]
+        };
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hrkq/rpt2/findleavlblc.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        var url = _serUrl + "/ExcelModels/Hrkq_leave_blance/excelmodel/导出导入模板.xls";
+                        window.open(url);
+                    }
+                }
+            ],
+            onFind: function (parms) {
+                parms.push({parmname: "alllbtime", reloper: ">", parmvalue: "0"});
+            },
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrkq/leaveblc/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

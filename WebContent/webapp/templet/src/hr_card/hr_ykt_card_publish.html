@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_card">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../jshr/hr.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1260",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1260",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'card_publish_no', title: '发补卡编号', width: 100},
+            {field: 'card_number', title: '卡号', width: 80},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'orgname', title: '部门名称', width: 100},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'card_type', title: '类型', width: 64, formatter: comUrl_dic1260.formator},
+            {field: 'publish_date', title: '发卡时间', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'effective_date', title: '生效时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'disable_date', title: '失效时间', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'finger_mark_no', title: '指纹登记号', width: 100},
+            {field: 'amount', title: '补卡金额', width: 64},
+            {field: 'remark', title: '备注', width: 150},
+            {field: 'stat', title: '表单状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        var bttexts = {
+            id_bt_new: '发/补卡',
+            id_bt_save: '写卡'
+        };
+
+        frmOptions = {
+            saveUrl: _serUrl + '/web/hr/Card/savepublish.co',
+            JPAClass: "com.hr.card.entity.Hr_ykt_card_publish",
+            JPAIdField: "card_publish_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_print: true,
+            datainfo_pw_title: "发补卡管理",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '500px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: false,
+            bttexts: bttexts,
+            OnReady: function () {   //都准备好后
+                if (browinfo.browser != "IE") {
+                    alert("无法加载控件，本页面仅支持IE8到IE11浏览器");
+                } else {
+                    //if (!MyActiveX.OpenCurUsbPort) {
+                    //    alert("控件装载错误或没有安装控件");
+                    //}
+                }
+                setempfds();
+                $("#batchwpid").window({onClose: onbatchwpclose});
+            },
+            onNew: function (jsondata) {
+                jsondata.disable_date = '2999-12-31';
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    if (isbatching) {
+                        return;
+                    }
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            },
+            onSave: function (jsondata) {
+                var cardsn = $readcardsn(); //检查卡机上是否有卡
+                if (cardsn == undefined) {
+                    return;
+                }
+                mainline.setFieldValue('card_sn', cardsn);
+                jsondata.card_sn = cardsn;
+                //console.log(JSON.stringify(jsondata));
+                var cardinfo = $ReadCardInfo();
+                //alert(JSON.stringify(cardinfo));
+                if ((cardinfo.cardno != 'FFFFFFFFFFFF') && (cardinfo.cardno != '000000000000') && (cardinfo.cardno != 'FFFFFF') && (cardinfo.cardno != '000000')) {
+                    alert("不是空卡，不能执行发卡操作");
+                    return;
+                }
+                var hasnormalcard = false;
+                var url = _serUrl + "/web/hr/Card/getyktcard.co?erid=" + jsondata.er_id + "&isnormalcard=true";
+                $ajaxjsonget(url, function (jsdata) {
+                    if (parseInt(jsdata.ct) == 0) {
+                        hasnormalcard = false;
+                    } else {
+                        hasnormalcard = true;
+                    }
+                }, function (err) {
+                    alert(JSON.stringify(err));
+                }, false);
+                if (hasnormalcard) {
+                    alert("该员工有正常使用的卡，请先挂失再补发卡");
+                    return;
+                }
+                /*
+                 var card_number = undefined;
+                 if (parseInt((mainline.getField("card_type")).textbox("getValue")) == 1) {
+                 card_number = mainline.getFieldValue("employee_code");
+                 } else {
+                 var url = _serUrl + "/web/common/getnewcode.co?codeid=112";
+                 $ajaxjsonget(url, function (jsdata) {
+                 card_number = jsdata.code;
+                 }, function (err) {
+                 alert(JSON.stringify(err));
+                 }, false);//false表示同步执行
+                 }
+                 if ($isEmpty(card_number))
+                 return false;
+                 mainline.setFieldValue('card_number', card_number);
+                 */
+                return true;
+            },
+            afterSave: function (jsondata) {
+                if (!dowritecarde(jsondata)) {
+                    $.messager.alert('提示', '写卡失败，请检查卡片，点击确定重新写卡', "info", function (r) {
+                        dowritecarde(jsondata);
+                    });
+                }
+            },
+            extButtons: [//扩展按钮
+                {
+                    text: '批量发卡',
+                    iconCls: 'icon-copy',
+                    posion: '#id_bt_new',//按钮位置之前，
+                    handler: function () {
+                        showbatchpw();
+                    }
+                }]
+        };
+
+        function dowritecarde(jsondata) {
+            $WriteCardInfo(jsondata.card_number, jsondata.employee_name);
+            var cardinfo = $ReadCardInfo(false);
+            var rst = (cardinfo && (cardinfo.cardno == jsondata.card_number));
+            if (rst) {
+                docontinue(jsondata);
+            }
+            return rst;
+        }
+
+        function docontinue(jsondata) {
+            if (isbatching) {
+                curcheckrow.fked = true;//标记已经发卡
+                var currow = getfirstrowemp();
+                if (!currow) {//完成发卡
+                    issacncarding = false;//标记开始扫描卡
+                    mainline.setDataChanged(false);
+                    $("#datainfo_window_id").window('close');
+                    $("#batchwpid").window('close');
+                    alert("完成发卡");
+                    throw "抛出错误禁止加载数据";
+                } else {
+                    issacncarding = true;//标记开始扫描卡
+                    alert("完成【" + jsondata.employee_name + "】发卡,\n请更换新卡后点【确定】继续发卡");
+                    doshowfirstnotfkemp();
+                    throw "抛出错误禁止加载数据，保证循环发卡";
+                }
+            }
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/Card/findemp4card.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        putempinfo2ui(row);
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+        }
+
+        function putempinfo2ui(row) {
+            mainline.setFieldValue('er_id', row.er_id);
+            mainline.setFieldValue('er_code', row.er_code);
+            mainline.setFieldValue('employee_code', row.employee_code);
+            mainline.setFieldValue('employee_name', row.employee_name);
+            mainline.setFieldValue('orgid', row.orgid);
+            mainline.setFieldValue('orgcode', row.orgcode);
+            mainline.setFieldValue('orgname', row.orgname);
+            mainline.setFieldValue('sp_name', row.sp_name);
+            mainline.setFieldValue("hwc_namezl", row.hwc_namezl);
+            mainline.setFieldValue("hwc_namezq", row.hwc_namezq);
+            mainline.setFieldValue("hwc_namezz", row.hwc_namezz);
+            mainline.setFieldValue("hg_name", row.hg_name);
+            mainline.setFieldValue("lv_num", row.lv_num);
+            mainline.setFieldValue("idpath", row.idpath);
+            var cardct = parseInt(row.cardct);
+            if (isNaN(cardct)) {
+                alert("检查发卡历史错误");
+                return;
+            }
+            if (cardct == 0) {
+                mainline.setFieldValue('card_type', '1');
+            } else {
+                mainline.setFieldValue('card_type', '2');
+            }
+        }
+
+
+        function showbatchpw() {
+            $("#batchwpid").window("open");
+            $("#selectorgname").textbox("setValue", undefined);
+            $("#grd_emps").datagrid("loadData", []);
+        }
+
+        var selectedorg = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            selectedorg = undefined;
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        selectedorg = row;
+                        $("#selectorgname").textbox("setValue", row.extorgname);
+                        //加载发卡的人
+
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        function setempfds() {
+            var fds = [[
+                {field: 'chkd', checkbox: true, width: 50},
+                {field: 'employee_code', title: '工号', width: 120},
+                {field: 'orgname', title: '机构', width: 120},
+                {field: 'employee_name', title: '姓名', width: 100},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'lv_num', title: '职级', width: 40}]];
+            $("#grd_emps").datagrid(
+                    {columns: fds}
+            );
+        }
+
+        function dofindemps() {
+            var selectdate = $("#selectdate").datebox("getValue");
+            var orgid = (selectedorg) ? selectedorg.orgid : undefined;
+            if ($isEmpty(selectdate) && $isEmpty(orgid)) {
+                alert("机构和入职日期不能同时为空");
+                return;
+            }
+            var url = _serUrl + "/web/hr/Card/findemp4card.co?1=1";
+            if (orgid)
+                url = url + "&orgid=" + orgid;
+            if (selectdate)
+                url = url + "&hiredday=" + selectdate;
+            $ajaxjsonget(url, function (jsdata) {
+                $("#grd_emps").datagrid("loadData", jsdata);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+
+        var isbatching = false, isallowsancard = false, curcheckrow = undefined;//批量发卡中
+
+
+        function onbatchwpclose() {
+            isbatching = false;
+            isallowsancard = false;
+            curcheckrow = undefined;
+        }
+
+        function dobeginbatch() {
+            isbatching = true;
+            curcheckrow = undefined;
+            doshowfirstnotfkemp();
+        }
+
+
+        function doshowfirstnotfkemp() {
+            var currow = getfirstrowemp();
+            curcheckrow = currow;
+            if (currow) {
+                mainline.donew(1, true);//安静的新建
+                putempinfo2ui(currow);
+                isallowsancard = true;
+                sacncardisok();
+            }
+        }
+
+        function getfirstrowemp() {
+            var rows = $("#grd_emps").datagrid("getChecked");
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (!row.fked) {//是否已经发卡
+                    return row;
+                }
+            }
+        }
+
+        function sacncardisok() {
+            if (!isallowsancard) return;
+            if (isemptcard()) {
+                isallowsancard = false;
+                mainline.setDataChanged(true);
+                mainline.dosave(false);
+            } else
+                setTimeout(sacncardisok, 1000); //time是指本身,延时递归调用自己,100为间隔调用时间,单位毫秒
+        }
+
+        function isemptcard() {
+            var cardinfo = $ReadCardInfo(false);
+            if (!cardinfo) return false;
+            console.error(JSON.stringify(cardinfo));
+            if ((cardinfo.cardno != 'FFFFFFFFFFFF') && (cardinfo.cardno != '000000000000') && (cardinfo.cardno != 'FFFFFF') && (cardinfo.cardno != '000000')) {
+                alert("不是空卡，不能执行发卡操作");
+                return;
+            } else {
+                //alert("可以发卡");
+                return true;
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<div style="display:none">
+    <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C"
+            codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0">
+    </object>
+</div>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'card_publish_no'">发补卡编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_publish_no',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',buttonIcon:'icon-search',onClickButton:onFindemployee,editable:true,crequired:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'stat'">表单状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',comidx:'dic227',editable:false,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_type'">类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_type',comidx:'dic1260',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'card_sn'">卡序列号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_sn',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'card_number',readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'finger_mark_no'">指纹登记号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'finger_mark_no'" style="height:20px;width: 100px"/>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'publish_date'">发卡时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'publish_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 150px"/></td>
+        <td cjoptions="fdname:'effective_date'">生效时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'effective_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 150px"/></td>
+        <td cjoptions="fdname:'disable_date'">失效时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'disable_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                style="height:20px;width: 150px"/></td>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'amount'">补卡金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'amount'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',editable:false,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',formatter:$dateformattostr,editable:false,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',editable:false,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,editable:false,readonly:true"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+<div id="batchwpid" class="easyui-window" title="批量发卡" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 550px;height: 450px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',border:true"
+             style="text-align:left;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <div>
+                <span>机构：</span>
+                <input id="selectorgname" class="easyui-textbox "
+                       data-options="buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                       style="height:20px;width: 200px"/></td>
+                <span>入职日期：</span>
+            <span>
+                <input id="selectdate" type="text" class="easyui-datebox" style="width: 120px"> </input>
+            </span>
+            </div>
+            <div>
+                <a href="#" class="easyui-linkbutton" onclick="dofindemps()" style="width: 80px">查找</a>
+            </div>
+        </div>
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table id="grd_emps" class="easyui-datagrid"
+                   data-options="singleSelect:false,fit:true,title:'选择批量发卡人'"></table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" onclick="dobeginbatch();" data-options="iconCls:'icon-ok'"
+               style="width:150px">开始批量发卡</a>
+            <a class="easyui-linkbutton" onclick=" $('#batchwpid').window('close');"
+               data-options="iconCls:'icon-cancel'"
+               style="width:150px">取消批量发卡</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

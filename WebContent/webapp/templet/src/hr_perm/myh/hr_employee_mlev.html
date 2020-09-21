@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>M类层级设置</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1512",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1512",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            }
+
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'employee_code', title: '工号', width: 60},
+            {field: 'employee_name', title: '姓名', width: 60},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'orgname', title: '部门', width: 200},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'hwc_namezl', title: '职类', width: 64},
+            {field: 'mlev', title: '层级', width: 100, formatter: comUrl_dic1512.formator},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'empstatid', title: '人事状态', width: 60, formatter: comUrl_cbxintype.formator},
+            {field: 'hiredday', title: '入职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee",
+            JPAIdField: "er_id",
+            allowAtt: true,
+            allowWF: false,
+            datainfo_line_title: "M类层级配置",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '750px',
+            windowHeight: '250px',
+            allow_copy: false,
+            allow_new: false,
+            allow_del: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+            },
+            beforeSave: function () {
+            },
+            onSave: function (postData, andSubmit) {
+                return true;
+            },
+            onFind: function (parms) {
+                parms.parms.push({parmname: 'empstatid', reloper: '>', parmvalue: '0'});
+                parms.parms.push({parmname: 'empstatid', reloper: '<', parmvalue: '10'});
+                parms.parms.push({parmname: 'hwc_namezl', reloper: '=', parmvalue: 'M类'});
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            afterFindDetail: function (jsondata) {
+
+            },
+            extButtons: [//扩展按钮
+
+            ]
+        };
+        function doclear() {
+            mainline.setFieldValue("mlev", undefined);
+            mainline.setDataChanged(true);
+
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,editable:false,readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'sex',crequired:true,readonly:true,comidx:'dic81',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="7"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'mlev'">层级</td>
+        <td colspan="2">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'mlev',readonly:false,comidx:'dic1512',editable:false"
+                   style="height:20px;width: 100%"/>
+        </td>
+        <td>
+            <a class="easyui-linkbutton" onclick="doclear()" data-options="iconCls:'icon-search'">清除层级</a>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td colspan="3"><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false,editable:false"
+                style="height:20px;width: 100%"/></td>
+        </td>
+        <td cjoptions="fdname:'ljdate'">离职日期</td>
+        <td colspan="3"><input class="easyui-datetimebox"
+                               cjoptions="easyui_class:'easyui-datetimebox',fdname:'ljdate',formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                               style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic1045",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1045",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var listGridColumns = function () {
+            return [
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'orgname', title: '机构', notfind: true, width: 150},
+                {field: 'hwc_namezl', title: '职类', width: 60},
+                {field: 'sp_name', title: '职位', width: 60},
+                {field: 'hg_name', title: '职等', width: 60},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'zwxz', title: '职位性质', notfind: true, width: 64},
+                {field: 'pay_way', title: '计薪方式', width: 64},
+                {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljdate', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ycmq', title: '应出满勤', width: 80},
+                {field: 'sjcq', title: '实际出勤', width: 80},
+                {field: 'fdjq', title: '法定假日', notfind: true, width: 80},
+                {field: 'sj', title: '事假', notfind: true, width: 80},
+                {field: 'gj', title: '公假', notfind: true, width: 80},
+                {field: 'hj', title: '婚假', notfind: true, width: 80},
+                {field: 'cj', title: '产假', notfind: true, width: 80},
+                {field: 'snj', title: '丧假', notfind: true, width: 80},
+                {field: 'bj', title: '病假', notfind: true, width: 80},
+                {field: 'gsj', title: '工伤假', notfind: true, width: 80},
+                {field: 'prjbss', title: '平时加班时数', notfind: true, width: 80},
+                {field: 'zmjbss', title: '周末加班时数', notfind: true, width: 80},
+                {field: 'fdjbss', title: '法定假日加班时数', notfind: true, width: 80},
+                {field: 'zlbjbss', title: '直落班加班时数', notfind: true, width: 80},
+                {field: 'zjbss', title: '加班总时数', notfind: true, width: 80},
+                {field: 'kgts', title: '旷工天数', notfind: true, width: 80},
+                {field: 'nightworkdays', title: '夜班上班天数', notfind: true, width: 80},
+                {field: 'cdcs', title: '迟到次数', notfind: true, width: 80},
+                {field: 'ztcs', title: '早退次数', notfind: true, width: 80},
+                {field: 'cqcs', title: '超签次数', notfind: true, width: 80},
+                {field: 'ljtype2', title: '离职类型', notfind: true, width: 100, formatter: comUrl_dic1045.formator},
+                {field: 'ljtype1', title: '离职类别', notfind: true, width: 100, formatter: comUrl_dic782.formator},
+                {field: 'ljreason', title: '离职原因', notfind: true, width: 200, formatter: comUrl_dic1049.formator}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {
+                field: 'orgcode',
+                title: '机构编码',
+                notnull: true,
+                relOptions: relOptions,
+                cjoptions: orgfdiptions,
+                width: 100
+            },
+            {
+                field: 'dqdate',
+                title: '考勤日期',
+                notnull: true,
+                relOptions: relOptions,
+                formatter: $fieldDateFormatorYYYY_MM,
+                width: 100
+            },
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'hg_name', title: '职等', width: 60},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hwc_namezl', title: '职类', width: 60},
+            {field: 'sp_name', title: '职位', width: 60}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrkq/rpt2/getkqorgmonthrptdetail.co"
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

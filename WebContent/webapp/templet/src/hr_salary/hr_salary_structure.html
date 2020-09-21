@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1433",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1433",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1437",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1437",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1539",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1539",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'stru_code',title:'编码',width:120},
+            {field:'stru_name',title:'工资结构名称',width:100},
+            {field:'kqtype',title:'出勤机制',width:100, formatter: comUrl_dic1433.formator},
+            {field:'checklev',title:'绩效考核层级',width:100, formatter: comUrl_dic1437.formator},
+            {field:'strutype',title:'工资结构类型',width:100, formatter: comUrl_dic1539.formator},
+            {field:'basewage',title:'基本工资',width:100, formatter:persentformator},
+            {field:'otwage',title:'固定加班工资',width:100, formatter:persentformator},
+            {field:'skillwage',title:'技能工资',width:100, formatter:persentformator},
+            {field:'meritwage',title:'绩效工资',width:100, formatter:persentformator},
+            {field:'stat',title:'流程状态',width:64, formatter: comUrl_dic227.formator},
+            {field:'usable',title:'有效',width:64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.salary.entity.Hr_salary_structure",
+            JPAIdField: "stru_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+            //  gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "工资结构设置",
+            allow_expt_list: true,
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            /*extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],*/
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+                jsondata.strutype = 1;
+               // jsondata.signyears = 3;
+              // var ed = gap(jsondata.sign_date,3);
+             //   jsondata.end_date = ed;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            }
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrct/canteen/impcardreaderlistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+
+        function persentformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value+"%";
+            }else{
+                dt=znum+"%";
+            }
+            return dt;
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'stru_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stru_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stru_name'">工资结构名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stru_name'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'kqtype'">出勤机制</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'kqtype',crequired:true,comidx:'dic1433',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'checklev'">绩效考核层级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'checklev',crequired:true,comidx:'dic1437',editable:false" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'basewage'">基本工资(%)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'basewage',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'otwage'">固定加班工资(%)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'otwage',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'skillwage'">技能工资(%)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'skillwage',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'meritwage'">绩效工资(%)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'meritwage',crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'strutype'">工资结构类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'strutype',crequired:true,comidx:'dic1539'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usable'">是否有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td ><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

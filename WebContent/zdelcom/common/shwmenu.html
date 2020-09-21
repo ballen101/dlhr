@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line2.html" workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+        var comUrls = [
+            {
+                index: "dic2",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=2",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic58",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=58",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic622",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=622",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'menuname', title: '名称', width: 150}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.generic.Shwmenu",
+            JPAIdField: "menuid",
+            Pagination: false,
+            istree: true,
+            treeParentField: "menupid",
+            showtreeHeader: false,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata, idx) {
+                var node = $("#dg_datalist_id").treegrid('getSelected');
+                if ((!node) && (idx == 1)) {
+                    jsondata.menupid = 0;
+                }
+                jsondata.clas = 1;
+                jsondata.issystem = 2;
+                jsondata.showtype = 1;
+                jsondata.state = 1;
+            },
+            onFind: function (parms) {
+                //parms.enableidpath = false;
+                parms.order = " sortindex asc";
+            },
+            onLoadData: function (jsdata) {
+                dealTreeData(jsdata);
+            },
+            OnReady: function () {
+                testcss();
+                $("#dg_datalist_id").treegrid({onContextMenu: onContextMenu});
+            },
+            onSave: function (postData) {
+                return true;
+            }
+        };
+
+        //处理树形数据
+        function dealTreeData(jsdata) {
+            for (var i = 0; i < jsdata.length; i++) {
+                var js = jsdata[i];
+                js.iconCls = ((js.ico) && (js.ico != "NULL") && (js.ico.length > 0)) ? js.ico : "icon-folder";
+                if (js.children) {
+                    js.state = "closed";
+                    dealTreeData(js.children);
+                }
+            }
+            return jsdata;
+        }
+
+        function testcss() {
+            var ics = "easyui/themes/icon.css";
+            var ss = undefined;
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                ss = document.styleSheets[i];
+                var href = ss.href;
+                if (href.substr(href.length - ics.length, ics.length) == ics)
+                    break;
+            }
+            if (!ss) return;
+            var rus = ss.cssRules || ss.rules;
+            var icons = [];
+            for (var i = 0; i < rus.length; i++) {
+                var s = rus[i].selectorText;
+                s = s.substr(1, s.length - 1);
+                icons.push({id: s, text: s});
+            }
+
+            $("#ico_id").combobox({
+                data: icons,
+                valueField: 'id',
+                textField: 'text',
+                formatter: function (row) {
+                    return "<span class=" + row.text + " style='width:50px'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</span>";
+                }
+            });
+        }
+
+
+        //////////////cos
+
+        function loadMenuCosTree(menuid) {
+            if ($isEmpty(menuid))
+                menuid = -1;
+            var url = _serUrl + "/web/common/getCoTreeMenu.co?menuid=" + menuid;
+            $ajaxjsonget(url, function (jsdata) {
+                $("#cotreeid").tree("loadData", jsdata);
+                $("#menu_info_w").window("open");
+            }, function (msg) {
+                alert("获取菜单CO错误:" + msg);
+            });
+        }
+
+        function onCoTreeSelect(node) {
+            if (!node) return;
+            if (node.method)
+                $("#methodid").html(node.method);
+            else
+                $("#methodid").html("");
+            if (node.auth != undefined)
+                $("#authid").html(node.auth);
+            else
+                $("#authid").html("");
+            if (node.note)
+                $("#noteid").html(node.note);
+            else
+                $("#noteid").html("");
+        }
+
+        function setCOs() {
+            var node = $("#dg_datalist_id").treegrid("getSelected");
+            loadMenuCosTree(node.menuid);
+        }
+
+        function onContextMenu(e, row) {
+            if (row) {
+                e.preventDefault();
+                $(this).treegrid('select', row.menuid);
+                $('#popmm').menu('show', {
+                    left: e.pageX,
+                    top: e.pageY
+                });
+            }
+        }
+
+        function dosavemenucos() {
+            var node = $("#dg_datalist_id").treegrid("getSelected");
+            if (!node) {
+                alert("没有选择菜单!");
+                return;
+            }
+            var jsondata = {};
+            jsondata.cos = getCheckedCos();
+            jsondata.menuid = node.menuid;
+            var url = _serUrl + "/web/menu/saveMenuCo.co";
+            $ajaxjsonpost(url, JSON.stringify(jsondata), function (jsondata) {
+                $('#menu_info_w').window('close');
+                alert("已经保存！");
+            }, function () {
+                alert("保存错误！");
+            });
+        }
+
+        function getCheckedCos() {
+            var nodes = $("#cotreeid").tree("getChecked");
+            var cos = [];
+            for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+                if (node.name) {
+                    cos.push({name: node.name});
+                }
+            }
+            return cos;
+        }
+
+        //复制 粘贴COS
+        var copyedMenuCos = undefined;
+
+        function onmenutreemenushow() {
+            var item = $('#popmm').menu('findItem', '粘贴CO权限');
+            if (copyedMenuCos == undefined)
+                $('#popmm').menu('disableItem', item.target);
+            else
+                $('#popmm').menu('enableItem', item.target);
+        }
+
+        function copyMCos() {
+            var node = $("#dg_datalist_id").treegrid("getSelected");
+            if (!node) {
+                $.messager.alert('错误', '没选定的数据!', 'error');
+                return;
+            }
+            var menuid = node.menuid;
+            if ($isEmpty(menuid)) {
+                $.messager.alert('错误', '没选定的数据!', 'error');
+                return;
+            }
+            var url = _serUrl + "/web/common/getCosByMenu.co?menuid=" + menuid;
+            $ajaxjsonget(url, function (jsdata) {
+                copyedMenuCos = jsdata;
+                $.messager.alert('提示', '已复制【' + jsdata.length + '】条CO!');
+            }, function (msg) {
+                alert("获取菜单CO错误:" + msg);
+            });
+        }
+
+        function pastMCos() {
+            if (copyedMenuCos == undefined) {
+                $.messager.alert('错误', '请先复制菜单CO!', 'error');
+                return;
+            }
+            var node = $("#dg_datalist_id").treegrid("getSelected");
+            if (!node) {
+                $.messager.alert('错误', '没选定的数据!', 'error');
+                return;
+            }
+            var menuid = node.menuid;
+            if ($isEmpty(menuid)) {
+                $.messager.alert('错误', '没选定的数据!', 'error');
+                return;
+            }
+            $.messager.confirm('确认', '粘贴后将会覆盖菜单【' + node.menuname + '】CO权限，确认继续?', function (r) {
+                if (r) {
+                    var postdata = {mueuid: menuid, conames: copyedMenuCos};
+                    var url = _serUrl + "/web/menu/saveMenuCos.co";
+                    $ajaxjsonpost(url, JSON.stringify(postdata), function (jsondata) {
+                        copyedMenuCos = undefined;
+                        $.messager.alert('提示', '完成粘贴!');
+                    }, function (msg) {
+                        $.messager.alert('错误', '粘贴数据错误:' + msg, 'error');
+                    });
+                }
+            });
+        }
+
+        function onClickRpIdpath() {
+            var node = $("#dg_datalist_id").treegrid("getSelected");
+            if (!node) {
+                $.messager.alert('错误', '没选定的数据!', 'error');
+                return;
+            }
+            var url = _serUrl + "/web/menu/getRepairIdpath.co?menuid=" + node.menuid;
+            $ajaxjsonget(url, function (jsdata) {
+                mainline.setFieldValue("menuidpath", jsdata.menuidpath);
+                mainline.setDataChanged(true);
+            }, function (err) {
+                $.messager.alert('错误', '粘贴数据错误:' + msg, 'error');
+            });
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <tr>
+        <td cjoptions="fdname:'menucode'">编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'menucode',required:true" style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'menuname'">名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'menuname',required:true" style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'sortindex'">序号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sortindex'" style="height:20px;width:100px"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'flag'">标志</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'flag'" style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'menutag'">tag</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'menutag'" style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'clas'">类别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'clas',comidx:'dic58'"
+                   data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'state'">可用</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'state',comidx:'dic2'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'isedit'">编辑</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isedit',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'issubmit'">审批</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'issubmit',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'isview'">浏览</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isview',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'isupdate'">变更</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isupdate',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'language1'">中文</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language1'" style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'language2'">英文</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language2'" style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'language3'">繁体</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'language3'" style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'ico'">图标</td>
+        <td><input id="ico_id" class="easyui-textbox" cjoptions="fdname:'ico'"
+                   style="height:20px;width:100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'issystem'">系统内置</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'issystem',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'showtype'">显示类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'showtype',comidx:'dic622'"
+                   data-options="editable:false"
+                   style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'note'">备注</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'note'" style="height:20px;width:290px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'weburl'">weburl</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'weburl'" style="height:20px;width:290px"/></td>
+        <td cjoptions="fdname:'menuidpath'">IDPath</td>
+        <td colspan="3"><input class="easyui-textbox"
+                               data-options="required:true,buttonText:'修复',onClickButton:onClickRpIdpath,editable:false"
+                               cjoptions="fdname:'menuidpath'" style="height:20px;width:290px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width:100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width:100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width:100px"/></td>
+    </tr>
+</table>
+
+<div id="menu_info_w" class="easyui-window" title="CO权限"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:450px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div class="easyui-layout" data-options="fit:true,border:false">
+                <div data-options="region:'west',split:true" style="width:40%;">
+                    <ul id="cotreeid" class="easyui-tree"
+                        data-options="animate:true,lines:true,checkbox:true,cascadeCheck:true,onSelect: onCoTreeSelect,
+                                onContextMenu: function(e,node){
+                                  e.preventDefault();
+                                  $(this).tree('select',node.target);
+                                  $('#cotreemm').menu('show',{
+                                     left: e.pageX,
+                                     top: e.pageY
+                                  });
+                                }">
+                    </ul>
+                </div>
+                <div data-options="region:'center'" style="padding:5px;background:#eee;">
+                    <table class="coinfotb">
+                        <tr>
+                            <td style="width: 50px">method:</td>
+                            <td id="methodid"></td>
+                        </tr>
+                        <tr>
+                            <td>auth:</td>
+                            <td id="authid"></td>
+                        </tr>
+                        <tr>
+                            <td>note:</td>
+                            <td id="noteid"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false"
+             style="text-align:right;padding: 5px;height: auto;background-color: #EBF2FF">
+            <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="dosavemenucos()"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#menu_info_w').window('close')"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="popmm" class="easyui-menu" data-options="onShow:onmenutreemenushow" style="width:120px;">
+    <div onclick="setCOs()" data-options="iconCls:'icon-add'">配置CO权限</div>
+    <div class="menu-sep"></div>
+    <div onclick="copyMCos()" data-options="iconCls:'icon-copy'">复制CO权限</div>
+    <div onclick="pastMCos()" data-options="iconCls:'icon-paste'">粘贴CO权限</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ct">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic923 = {index: 'dic923',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"平时加班","dictvalue":"1"},{"language1":"休息日加班","dictvalue":"2"},{"language1":"法定假日加班","dictvalue":"3"},{"language1":"特殊加班日","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic923.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic923; } if (comUrl_dic923.type == 'combobox') { if (comUrl_dic923.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic923.valueField]) { rst = rst + jsondata[i][comUrl_dic923.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic923.valueField]) return jsondata[i][comUrl_dic923.textField]; } } } if (comUrl_dic923.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic923.editor= {type: 'combobox', options: {valueField:comUrl_dic923.valueField, textField:comUrl_dic923.textField, data: comUrl_dic923.jsondata}}; var comUrl_dic928 = {index: 'dic928',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"调休","dictvalue":"1"},{"language1":"计算加班费","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic928.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic928; } if (comUrl_dic928.type == 'combobox') { if (comUrl_dic928.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic928.valueField]) { rst = rst + jsondata[i][comUrl_dic928.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic928.valueField]) return jsondata[i][comUrl_dic928.textField]; } } } if (comUrl_dic928.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic928.editor= {type: 'combobox', options: {valueField:comUrl_dic928.valueField, textField:comUrl_dic928.textField, data: comUrl_dic928.jsondata}}; var comUrls = [ { index: "dic923", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=923", valueField: 'dictvalue', textField: 'language1' }, { index: "dic928", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=928", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+
+        comUrl_dic923.formator = function (value, row) {
+            var jsondata = comUrl_dic923.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic923;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field:'orgname',title:'部门',width:120},
+                {field:'cardnumber',title:'卡号',width:80},
+                {field: 'employee_code', title: '工号', width: 100},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field:'sp_name',title:'职位',width:120},
+                {field:'lv_num',title:'职级',width:64},
+                {field:'ctr_name',title:'用餐餐厅',width:120},
+               // {field:'mc_name',title:'餐类',width:64},
+               // {field:'price',title:'餐标',width:64},
+                {field:'znum',title:'早餐次数',width:64},
+                {field:'zaosub',title:'早餐补贴',width:64, formatter:floatnumformator},
+                {field:'twunum',title:'中餐次数',width:64},
+                {field:'twusub',title:'中餐补贴',width:64},
+                {field:'twannum',title:'晚餐次数',width:64},
+                {field:'twansub',title:'晚餐补贴',width:64},
+                {field:'ynum',title:'夜宵次数',width:64},
+                {field:'ysub',title:'夜宵补贴',width:64},
+                {field:'ttcompay',title:'公司支付金额',width:80},
+                {field:'ttpay',title:'个人支付金额',width:80},
+                {field:'ttsub',title:'补贴金额',width:80},
+                {field:'totalprice',title:'支付餐厅金额',width:80},
+                {field: 'remark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var relOptionsDY = {
+            data: [{id: '>=', value: '大于等于'}]
+        };
+        var relOptionsXY = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field: 'begintime', title: '结算开始', notnull: true, relOptions: relOptionsDY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field: 'endtime', title: '结算截止', notnull: true, relOptions: relOptionsXY, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100},
+            {field:'cardnumber',title:'卡号',width:80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field:'sp_name',title:'职位',width:120},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'mc_name',title:'餐类',width:64},
+            {field:'ctr_name',title:'用餐餐厅',width:150}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrct/costrecord/costSummaryEx3.co",
+            extButtons: [//扩展按钮
+                {
+                    text: '统计计算',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        addbt();
+                    }
+                }
+            ]
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+			var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+        function floatnumformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return 0;
+            return value;
+        }
+        function addbt() {
+            $('#pw_matcals_id').window('open');
+        }
+        function dosync() {
+            var bgdt = $("#calbgdate").datebox('getValue');
+            var eddt = $("#caleddate").datebox('getValue');
+            // var code = $("#calcode").textbox('getValue');
+            bgdt = $date4str(bgdt).format("yyyy-MM-dd");
+            eddt = $date4str(eddt).format("yyyy-MM-dd");
+            var url = _serUrl + "/web/hrct/costrecord/docountrecords.co?bgdate=" + bgdt + "&eddate=" + eddt;
+            /* if((code!=null)&&(code.length>0)&&(code!="")){
+             var url = url + "&code=" + code;
+             }*/
+            $ajaxjsonget(url, function (jsdata) {
+                alert(jsdata.rst);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div style="display: none"> 
+   <div id="pw_matcals_id" class="easyui-window" title="选择日期范围" data-options="iconCls:'icon-save',closed:true,modal:true,collapsible:false" style="width: 200px;height: 150px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center',border:false" style="padding:5px;"> 
+      <label for="calbgdate">开始日期</label> 
+      <input id="calbgdate" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str" style="width: 100px;height: 20px"> 
+      <br> 
+      <label for="caleddate">截止日期</label> 
+      <input id="caleddate" type="text" class="easyui-datebox" data-options="required:true,editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str" style="width: 100px;height: 20px"> 
+      <br> 
+      <!-- <label for="calcode">工号</label>
+                 <input id="calcode" type="text" class="easyui-textbox" data-options=""
+                        style="width: 100px;height: 20px;margin-top: 5px"> </input>--> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;height: 40px;padding:5px 0 0;"> 
+      <a class="easyui-linkbutton" onclick="dosync()" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+      <a class="easyui-linkbutton" onclick="$('#pw_matcals_id').window('close')" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+     </div> 
+    </div> 
+   </div> 
+  </div>  
+ </body>
+</html>

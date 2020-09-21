@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_access">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1201",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1201",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'access_special_num', title: '授权单号', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'access_card_number', title: '卡号', width: 64},
+            {field: 'access_card_seq', title: '卡序列号', width: 64},
+            {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            //{field:'orgcode',title:'机构编码',width:100},
+            {field: 'extorgname', title: '部门', width: 200},
+            {field: 'hwc_namezl', title: '职类', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'access_list_code', title: '开通门禁编码', width: 64},
+            //{field:'access_list_model',title:'门禁型号',width:80},
+            {field: 'access_list_name', title: '开通门禁名称', width: 200},
+            {field: 'deploy_area', title: '开通门禁区域', width: 80},
+            {field: 'aextorgname', title: '设备部门', width: 200},
+            //{field:'access_place',title:'门禁位置',width:80},
+            {field: 'change_reason', title: '申请开通原因', width: 300},
+            {field: 'begin_date', title: '授权开始时间', width: 130},
+            {field: 'end_date', title: '授权结束时间', width: 130},
+            {field: 'access_status', title: '授权状态', width: 64, formatter: comUrl_dic1201.formator},
+            {field: 'stat', title: '状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remarks', title: '备注', width: 300},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 130},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 130}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.access.entity.Hr_access_special",
+            JPAIdField: "access_special_id",
+            allowAtt: true,
+            allowWF: true,
+            datainfo_pw_title: "门禁特殊授权",
+            allow_expt_list: true,
+            windowWidth: '900px',
+            windowHeight: '350px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            allow_void: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+
+            },
+            onSave: function (jsondata) {
+                if(mainline.getFieldValue('access_card_seq')==''){
+                    $.messager.alert('错误', "卡序列号必须录入!", 'error');
+                    return false;
+                }
+                return true;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'end_date') {
+                    var timebg = mainline.getFieldValue("begin_date");
+                    var timeed = mainline.getFieldValue("end_date");
+                    if ($isEmpty(timebg)) {
+                        mainline.setFieldValue("end_date", "");
+                        $.messager.alert('错误', "请先选择授权开始日期！", 'error');
+                        return;
+                    } else {
+                        if (((new Date()).fromStr(timebg)) >= ( (new Date()).fromStr(timeed))) {
+                            mainline.setFieldValue("end_date", "");
+                            $.messager.alert('错误', "截止时间必须大于开始时间", 'error');
+                            return;
+                        }
+                    }
+                }
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+        //查询员工信息
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var orgid = mainline.getFieldValue("orgid");
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid;
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co" + orgp;
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("employee_code", row.employee_code);//设置界面值
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("sex", row.sex);
+                        mainline.setFieldValue("hiredday", row.hiredday);
+                        mainline.setFieldValue("hwc_namezl", row.hwc_namezl);
+                        mainline.setFieldValue("lv_id", row.lv_id);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.orgcode);
+                        mainline.setFieldValue("extorgname", row.orgname);
+                        mainline.setFieldValue("ospid", row.ospid);
+                        mainline.setFieldValue("ospcode", row.ospcode);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                        var url1 = _serUrl + "/web/hr/Access/findCardNo.co?employeecode=" + row.employee_code;
+                        $ajaxjsonget(url1, function (jsdata) {
+                            mainline.setFieldValue('access_card_number', jsdata.card_number);
+                            mainline.setFieldValue('access_card_seq',jsdata.card_sn);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            /*if (!select_employee_pw) {
+             select_employee_pw = new TSearchForm(wo);
+             } else
+             select_employee_pw.extendOptions({
+             coURL: url
+             });
+             select_employee_pw.show();*/
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url,
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+
+        }
+
+        //查询可用门禁
+        var select_accesslist_pw = undefined;
+        function onFindAccess() {
+            var url = _serUrl + "/web/hr/Access/findUsefulAccess.co";
+            var wo = {
+                id: "select_accesslist_pw",
+                coURL: url,
+                //JPAClass: "com.hr.access.entity.Hr_access_list",  //对应后台JPAClass名
+                orderStr: " access_list_code asc ",
+                idField: 'access_list_id',
+                multiRow: false,
+                autoFind: true,//是否自动查询
+                extParms: [
+                    //{parmname: 'access_stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'access_list_code', title: '门禁编码', width: 100},
+                    {field: 'access_list_name', title: '门禁名称', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("access_list_id", row.access_list_id);//设置界面值
+                        mainline.setFieldValue("access_list_code", row.access_list_code);
+                        mainline.setFieldValue("access_list_model", row.access_list_model);
+                        mainline.setFieldValue("access_list_name", row.access_list_name);
+                        mainline.setFieldValue("deploy_area", row.deploy_area);
+                        mainline.setFieldValue("access_place", row.deploy_area);
+                        mainline.setFieldValue("aorgid", row.orgid);
+                        mainline.setFieldValue("aorgcode", row.orgcode);
+                        mainline.setFieldValue("aextorgname", row.extorgname);
+                    }
+                }
+            };
+            if (!select_accesslist_pw) {
+                select_accesslist_pw = new TSearchForm(wo);
+            }
+            select_accesslist_pw.show();
+        }
+
+        //Excel导入功能
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Access/ImpSpecialExcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'access_special_num'">授权单号2</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_special_num',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',buttonIcon:'icon-search',onClickButton:onFindemployee,editable:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',readonly:true,comidx:'dic81'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',formatter:$dateformattostrrYYYY_MM_DD,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_card_number'">卡号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_card_number',readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'extorgname'">部门</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'extorgname',readonly:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'access_list_code'">开通门禁编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_code',buttonIcon:'icon-search',onClickButton:onFindAccess,editable:false,crequired:true"" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'access_list_name'">开通门禁名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_list_name',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'deploy_area'">开通门禁区域</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'deploy_area',crequired:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'begin_date'">授权开始时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'begin_date',formatter:$dateformattostrrYYYY_MM_DD,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'end_date'">授权结束时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'end_date',formatter:$dateformattostrrYYYY_MM_DD,crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'access_card_seq'">卡序列号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'access_card_seq',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'aextorgname'">设备部门</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'aextorgname',readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'access_status'">授权状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',comidx:'dic1201',crequired:true,fdname:'access_status'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'change_reason'">申请开通原因</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'change_reason',crequired:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stat'">状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks'" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',formatter:$dateformattostr,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

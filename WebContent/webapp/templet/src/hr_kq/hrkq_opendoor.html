@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../jshr/hr.js"></script>
+    <title>远程开门</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1405",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1405",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'access_list_code', title: '设备编号', width: 64},
+            {field: 'access_list_model', title: '设备型号', width: 80},
+            {field: 'access_list_name', title: '设备名称', width: 120},
+            {field: 'orgcode', title: '机构编码', width: 64},
+            {field: 'extorgname', title: '机构全称', width: 200},
+            {field: 'deploy_area', title: '门禁区域', width: 100},
+            {field: 'access_stat', title: '门禁状态', width: 100, formatter: comUrl_dic1405.formator},
+            {field: 'remarks', title: '备注', width: 300},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', width: 130},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', width: 130}
+        ];
+
+        function doopen() {
+            if (open_door("192.168.1.252", 4001, 1, 1, 2)) {
+                alert("开门成功");
+            }
+        }
+
+        function $OnCorsairReady() {
+            $("#doorlist").datagrid({columns: [listGridColumns]});
+
+
+
+        }
+
+    </script>
+</head>
+<body>
+<div style="display:none">
+    <object id="MyActiveX" name="MyActiveX" classid="CLSID:249EA5AE-99A9-402E-BA19-150BD231782C"
+            codebase="ClockOCX/ICCOClockX.ocx#version=1,0,0,0">
+    </object>
+</div>
+<div onclick="doopen()">测试开门</div>
+<div>
+    <table id="doorlist" class="easyui-datagrid" style="width:100%;min-height: 500px"
+           data-options="singleSelect:true">
+    </table>
+</div>
+</body>
+</html>

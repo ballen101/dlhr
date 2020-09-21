@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <title>黑名单解封报表</title>
+    <script type="text/javascript">
+        var comUrls = [
+            {
+                index: "dic81",
+                type: "combobox",
+                url: _serUrl + "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: _serUrl + "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: _serUrl + "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+
+        var listGridColumns = function () {
+            return [
+                {field: 'bdcode', title: '解封编码', width: 100},
+                {field: 'delappdate', title: '申请日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'deldate', title: '生效日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'blackdellreason', title: '解封原因', width: 120},
+                {field: 'ljcode', title: '离职编码', width: 100},
+                {field: 'orgname', title: '部门', width: 150},
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'sex', title: '性别', width: 50, formatter: $C.grid.comFormaters['dic81']},
+                {field: 'id_number', title: '身份证号', width: 100},
+                {field: 'employee_name', title: '姓名', width: 100},
+                {field: 'hiredday', title: '入职日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljdate', title: '离职日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljtype1', title: '离职类别', width: 64, formatter: $C.grid.comFormaters['dic782']},
+                {field: 'ljreason', title: '离职原因', width: 64, formatter: $C.grid.comFormaters['dic1049']},
+                {field: 'sp_name', title: '职位', width: 64},
+                {field: 'hg_name', title: '职等', width: 64},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'remark', title: '备注', width: 150},
+                {field: 'creator', title: '制单人', width: 100},
+                {field: 'createtime', title: '制单时间', width: 150},
+                {field: 'updator', title: '更新人', width: 100},
+                {field: 'updatetime', title: '更新时间', width: 150}
+            ];
+        };
+
+        var prtOptions = {
+            idField: "bdid",
+            fitColumns: false,
+            findExtParms: listGridColumns(),
+            gdListColumns: listGridColumns,
+            comUrls: comUrls,
+            coURL: _serUrl + "/web/hr/permrpt1/findblackdelrpt.co"
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

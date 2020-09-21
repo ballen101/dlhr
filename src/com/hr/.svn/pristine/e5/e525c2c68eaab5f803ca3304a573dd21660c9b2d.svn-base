@@ -1,0 +1,210 @@
+package com.hr.timer;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimerTask;
+
+import com.corsair.cjpa.CJPABase;
+import com.corsair.cjpa.CJPALineData;
+import com.corsair.dbpool.util.Logsw;
+import com.corsair.dbpool.util.Systemdate;
+import com.corsair.server.generic.Shworg;
+import com.hr.attd.entity.Hrkq_bckqrst;
+import com.hr.attd.entity.Hrkq_calc;
+import com.hr.msg.entity.Hr_kq_day_report;
+import com.hr.msg.entity.Hr_kq_depart_day_report;
+import com.hr.util.DateUtil;
+import com.hr.util.HRUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public class TaskCalcDepartDayReport  extends TimerTask {
+	/*
+	 * 查询有效部门组织
+	 */
+	private List<Shworg> FindOrg() throws Exception{
+		List<Shworg>orgList=new ArrayList<Shworg>();
+		String sqlstr = "select code,extorgname,idpath from shworg where usable=1";
+		Hr_kq_day_report report=new Hr_kq_day_report();
+		List<HashMap<String, String>> reportList = report.pool.openSql2List(sqlstr);
+		for(HashMap<String, String>entity :reportList)
+		{
+			Shworg org=new Shworg();
+			org.code.setValue(entity.get("code"));
+			org.extorgname.setValue(entity.get("extorgname"));
+			org.idpath.setValue(entity.get("idpath"));
+			orgList.add(org);
+		}
+		return orgList;
+	}
+
+	/*
+	 *保存结果
+	 */
+	private void CalcReport(List<Shworg>orgList,String dqdate) throws Exception{
+		CJPALineData<Hr_kq_depart_day_report> saveReportList = new CJPALineData<Hr_kq_depart_day_report>(Hr_kq_depart_day_report.class);
+		for(Shworg org : orgList ){
+			Logsw.dblog(org.extorgname.getValue());
+			Hr_kq_depart_day_report saveReport= new Hr_kq_depart_day_report();
+			String reportOrgSql="select a.employee_code,a.empstatid,a.orgname,noclock,emnature,hiredday,t.cq,t2.qj,t3.cc,t4.tx from hr_employee a"+
+					" LEFT JOIN (select  b.empno, '1' as cq from  hrkq_swcdlst b  WHERE  DATE_FORMAT(b.skdate,'%Y-%m-%d')='"+dqdate+"' GROUP BY b.empno) as t on t.empno=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as qj from  hrkq_holidayapp b  WHERE  (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeed>='"+dqdate+"') or (DATE_FORMAT(b.timebg,'%Y-%m-%d')<='"+dqdate+"' and b.timeedtrue>='"+dqdate+"') and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t2 on t2.employee_code=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as cc from  hrkq_business_trip b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t3 on t3.employee_code=a.employee_code"+
+					" LEFT JOIN (select  b.employee_code, '1' as tx from  hrkq_wkoff b  WHERE  DATE_FORMAT(b.begin_date,'%Y-%m-%d')<='"+dqdate+"' and b.end_date>='"+dqdate+"' and (b.stat='9' or b.stat='2')  GROUP BY b.employee_code) as t4 on t4.employee_code=a.employee_code"+
+					" where a.idpath like '"+org.idpath.getValue()+"%' and a.sp_name<>'项目实习生' and a.empstatid<>'12'  and a.empstatid<>'13' and a.empstatid<>'0' and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.hiredday<='"+dqdate+"'";
+			Hr_kq_depart_day_report report=new Hr_kq_depart_day_report();
+			List<HashMap<String, String>> reportList = report.pool.openSql2List(reportOrgSql);
+			int zz=reportList.size();
+			int cc=0;
+			int tx=0;
+			int qj=0;
+			int mdk=0;
+			int cq=0;
+			int tcwdk=0;//脱产无打卡
+			int ftcwdk=0;//非脱产无打卡
+			int rzdtwdk=0;//当天入职无打卡
+			for(HashMap<String, String>entity :reportList)
+			{
+				String scc="";
+				String stx="";
+				String sqj="";
+				String scq="";
+				if(entity.get("cc")!=null){
+					scc=entity.get("cc");
+				}
+				if(entity.get("tx")!=null){
+					stx=entity.get("tx");
+				}
+				if(entity.get("qj")!=null){
+					sqj=entity.get("qj");
+				}
+				if(entity.get("cq")!=null){
+					scq=entity.get("cq");
+				}
+				if(scc.equals("1")){
+					cc++;
+				}else if(stx.equals("1")){
+					tx++;
+				}else if(scq.equals("1")){
+					cq++;
+				}else if(sqj.equals("1")){
+					qj++;
+				}else{
+					//缺勤
+					if(entity.get("emnature").equals("脱产") && entity.get("noclock").equals("2")){
+						tcwdk++;
+					}else if(entity.get("emnature").equals("非脱产")&& entity.get("noclock").equals("2")){
+						ftcwdk++;
+					}
+					//统计当天入职无打卡
+					//System.out.print(entity.get("hiredday"));
+					String hiredday=Systemdate.getStrDateyyyy_mm_dd(Systemdate.getDateByyyyy_mm_dd(entity.get("hiredday")));
+					if(hiredday.equals(dqdate))
+					{
+						rzdtwdk++;
+					}
+				}
+				if(entity.get("noclock").equals("1")){
+					mdk++;
+					cq++;
+				}
+			}
+			String ljSql="select count(1) as lj from hr_employee a  where a.idpath like '"+org.idpath.getValue()+"%'  and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.ljdate='"+dqdate+"'";
+			List<HashMap<String, String>> ljlist = report.pool.openSql2List(ljSql);
+			HashMap<String, String>entity=ljlist.get(0);
+			String dzmSql="select count(1) as dzm from hr_employee a  where a.idpath like '"+org.idpath.getValue()+"%'  and   a.idpath NOT LIKE '1,253,7987,%' and a.idpath not LIKE '1,8761,8762,8772,%' and a.empstatid='0' and a.hiredday<='"+dqdate+"'";
+			List<HashMap<String, String>> dzmlist = report.pool.openSql2List(dzmSql);
+			HashMap<String, String>dzmentity=dzmlist.get(0);
+			saveReport.lj.setValue(Integer.valueOf(entity.get("lj")));
+			saveReport.dzm.setValue(Integer.valueOf(dzmentity.get("dzm")));
+			saveReport.orgcode.setValue(org.code.getValue());
+			saveReport.orgname.setValue(org.extorgname.getValue());
+			saveReport.cc.setValue(cc);
+			saveReport.tx.setValue(tx);
+			saveReport.qj.setValue(qj);
+			saveReport.mdk.setValue(mdk);
+			saveReport.cq.setValue(cq);
+			saveReport.tcwdk.setValue(tcwdk);
+			saveReport.ftcwdk.setValue(ftcwdk);
+			saveReport.rzdtwdk.setValue(rzdtwdk);
+			saveReport.zz.setValue(zz);
+			saveReport.date.setValue(dqdate);
+			saveReport.wdk.setValue(tcwdk+ftcwdk+rzdtwdk);
+			if(zz>0){
+				int dzm=Integer.valueOf(dzmentity.get("dzm")) ;
+				double sum=cq+cc+tx;
+				sum=sum/(zz+dzm)*100;
+				BigDecimal bg = new BigDecimal(sum);
+				sum = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				if(sum>100){
+					saveReport.cqdcl.setValue("100%");
+
+				}else{
+					saveReport.cqdcl.setValue(sum+"%");
+				}
+			}else{
+				saveReport.cqdcl.setValue("0%");
+			}
+			if(zz>0){
+				int dzm=Integer.valueOf(dzmentity.get("dzm")) ;
+				double sum=cq+cc+tx;
+				sum=sum/(zz)*100;
+				BigDecimal bg = new BigDecimal(sum);
+				sum = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				if(sum>100){
+					saveReport.cqdcl2.setValue("100%");
+
+				}else{
+					saveReport.cqdcl2.setValue(sum+"%");
+				}
+			}else{
+				saveReport.cqdcl2.setValue("0%");
+			}
+			saveReportList.add(saveReport);
+			if(saveReportList.size()==100){
+				//每1000条记录保存一次
+				saveReportList.saveBatchSimple();
+				saveReportList.clear();
+			}
+		}
+		if(saveReportList.size()>0){
+			saveReportList.saveBatchSimple();
+		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		System.out.print("TaskCalcDepartDayReport");
+		try {
+			if(HRUtil.RunCalcKqDepartFlag){
+				HRUtil.RunCalcKqDepartFlag=false;
+				try{
+
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date());
+					int minute=calendar.get(Calendar.MINUTE);
+					int hour=calendar.get(Calendar.HOUR_OF_DAY);
+					if(hour==1 && minute==15){
+						Logsw.dblog("部门考勤运算开始");
+						CalcReport(FindOrg(),DateUtil.getYerDate());
+						Logsw.dblog("部门考勤运算结束");
+					}
+
+				}catch(Exception e){
+					Logsw.dblog("部门考勤运算结束:"+e.toString());
+				}finally {
+					HRUtil.RunCalcKqDepartFlag=true;
+				}
+			}	
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

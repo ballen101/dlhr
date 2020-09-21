@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>M类层级设置</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1512",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1512",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            }
+
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'employee_code', title: '工号', width: 60},
+            {field: 'employee_name', title: '姓名', width: 60},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'orgname', title: '部门', width: 300},
+            {field: 'sp_name', title: '职位', width: 120},
+            {field: 'hwc_namezl', title: '职类', width: 64},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'mdname', title: '高技模块', width: 64},
+            {field: 'advtch_subsidy', title: '津贴标准', width: 64},
+            {field: 'isadvtch', title: '高技人才', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'empstatid', title: '人事状态', width: 60, formatter: comUrl_cbxintype.formator},
+            {field: 'hiredday', title: '入职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+        frmOptions = {
+            findUrl: _serUrl + "/web/hr/employee/findEmployeeAdvtech.co",
+            JPAClass: "com.hr.perm.entity.Hr_employee",
+            JPAIdField: "er_id",
+            allowAtt: true,
+            allowWF: false,
+            datainfo_line_title: "高技人才信息",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '750px',
+            windowHeight: '250px',
+            autoFind: true,
+            allow_copy: false,
+            allow_new: false,
+            allow_del: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+            },
+            beforeSave: function () {
+            },
+            onSave: function (postData, andSubmit) {
+                return true;
+            },
+            onFind: function (parms) {
+                parms.parms.push({parmname: 'empstatid', reloper: '>', parmvalue: '0'});
+                parms.parms.push({parmname: 'empstatid', reloper: '<', parmvalue: '10'});
+                //parms.parms.push({parmname: 'hwc_namezl', reloper: '=', parmvalue: 'M类'});
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == "advtch_subsidy") {
+                    var subsidy = parseInt(mainline.getFieldValue("advtch_subsidy"));
+                    if (subsidy > 0) {
+                        mainline.setFieldValue("isadvtch", 1);
+                    } else {
+                        mainline.setFieldValue("isadvtch", 2);
+                    }
+                }
+            },
+            afterFindDetail: function (jsondata) {
+
+            },
+            extButtons: [//扩展按钮
+
+            ]
+        };
+
+        function doclear() {
+            mainline.setFieldValue("atmid", undefined);
+            mainline.setFieldValue("mdname", undefined);
+            mainline.setDataChanged(true);
+        }
+
+        var select_advtechmode_pw = undefined;
+        function onFindadvtechmode() {
+            var wo = {
+                id: "select_advtechmode_pw",
+                JPAClass: "com.hr.perm.entity.Hr_employee_advtechmode",  //对应后台JPAClass名
+                orderStr: " atmid asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ver_id',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'mdcode', title: '编码', width: 100},
+                    {field: 'mdname', title: '高技模块名称', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('atmid', row.atmid);
+                        mainline.setFieldValue('mdname', row.mdname);
+                    }
+                }
+            };
+            if (!select_advtechmode_pw) {
+                select_advtechmode_pw = new TSearchForm(wo);
+            }
+            select_advtechmode_pw.show();
+        }
+
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,editable:false,readonly:true"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'sex',crequired:true,readonly:true,comidx:'dic81',editable:false"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                               style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true,crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'mdname'">高技模块</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'mdname',buttonIcon:'icon-search',onClickButton:onFindadvtechmode,editable:false" style="height:20px;width: 100px"/>
+            <a class="easyui-linkbutton" onclick="doclear()">清除模块</a>
+        </td>
+        <td cjoptions="fdname:'advtch_subsidy'">津贴标准</td>
+        <td><input cjoptions="easyui_class:'easyui-numberbox',fdname:'advtch_subsidy',min:0,precision:2" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'isadvtch'">属于高技人才</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isadvtch',crequired:true,editable:false,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'empstatid'">人事状态</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-textbox',fdname:'empstatid',crequired:true,readonly:true,comidx:'cbxintype',editable:false"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td colspan=""><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false,editable:false"
+                style="height:20px;width: 100%"/></td>
+        </td>
+        <td cjoptions="fdname:'ljdate'">离职日期</td>
+        <td colspan=""><input class="easyui-datetimebox"
+                              cjoptions="easyui_class:'easyui-datetimebox',fdname:'ljdate',formatter:$dateformattostrrYYYY_MM_DD,readonly:true"
+                              style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

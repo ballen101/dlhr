@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LoginParms>
+	<!---需要登录时 不能为空的字段，字符串类型-->
+  <TableName>shwuser</TableName>
+  <UserFd>username</UserFd>
+  <PasswordFD>userpass</PasswordFD>
+ 
+  <StatuFd>actived</StatuFd>   <!--允许为空-->
+  
+  <!--  状态值 -->
+  <StatuVlues>
+  	<!--  允许通过验证的状态 -->
+    <AllowValue>1</AllowValue>
+    <!--  不允许通过验证的状态及提示信息列表 -->
+    <NotAllowValue>
+      <Value>2</Value>
+      <ErrMsg>用户已经禁用！</ErrMsg>
+    </NotAllowValue>
+  </StatuVlues>
+  <!--  允许登录的最低版本号 0 不限制版本 -->
+  <LowestVer>0</LowestVer>
+</LoginParms>

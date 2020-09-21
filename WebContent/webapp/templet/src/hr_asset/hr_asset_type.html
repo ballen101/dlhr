@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_asset">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'asset_type_code',title:'资产类型编码',width:120},
+            {field:'asset_type_name',title:'资产类型',width:150},
+            {field:'effective_flag',title:'生效标识',formatter: comUrl_dic5.formator,width:64},
+            {field:'effective_date',title:'生效日期',width:130, formator: $fieldDateFormatorYYYY_MM_DD},
+            {field:'invalidation_date',title:'失效日期',width:130, formator: $fieldDateFormatorYYYY_MM_DD},
+            {field:'stat',title:'表单状态',width:64, formatter: comUrl_dic227.formator},
+            {field:'remarks',title:'备注',width:300},
+            {field:'creator',title:'创建人',width:64},
+            {field:'createtime',title:'创建时间',width:130},
+            {field:'updator',title:'修改人',width:64},
+            {field:'updatetime',title:'修改时间',width:130}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.asset.entity.Hr_asset_type",
+            JPAIdField: "asset_type_id",
+            allowAtt: false,
+            allowWF: true,
+            datainfo_pw_title: "资产类型",
+            allow_expt_list: true,
+            windowWidth: '850px',
+            windowHeight: '400px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            autoFind: true,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+                jsondata.actived = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname=='effective_flag'){
+                    var edatetime = $date4str(new Date());
+                    if (parseInt(newValue)==1){
+                        mainline.setFieldValue("effective_date",edatetime);
+                        mainline.setFieldValue("invalidation_date",'');
+                    }else{
+                        var edate = mainline.getFieldValue("effective_date");
+                        if (!$isEmpty(edate)){
+                            mainline.setFieldValue("invalidation_date",edatetime);
+                        }
+                    }
+                }
+            }
+        };
+        //Excel导入
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/Asset/ImpTypeExcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'asset_type_code'">资产类型编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'asset_type_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'asset_type_name'">资产类型</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',crequired:true,fdname:'asset_type_name'" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'effective_flag'">状态标识</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'effective_flag',comidx:'dic5',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'effective_date'">生效日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'effective_date',editable:false,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'invalidation_date'">失效日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'invalidation_date',editable:false,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stat'">表单状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remarks'">备注</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remarks'" style="height:20px;width:100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">创建日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">修改人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">修改日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

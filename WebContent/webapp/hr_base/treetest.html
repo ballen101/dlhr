@@ -1,0 +1,45 @@
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.jOrgChart.js"></script>
+    <title>机构树</title>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $("#org").jOrgChart();
+        });
+    </script>
+</head>
+<body>
+<ul id="org" style="display:none">
+    <li>
+        Food
+        <ul>
+            <li>Beer</li>
+            <li>Vegetables
+                <ul>
+                    <li>Pumpkin</li>
+                    <li><a href="http://tquila.com" target="_blank">Aubergine</a></li>
+                </ul>
+            </li>
+            <li>Bread</li>
+            <li>Chocolate
+                <ul>
+                    <li>Topdeck</li>
+                    <li>Reese's Cups</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>

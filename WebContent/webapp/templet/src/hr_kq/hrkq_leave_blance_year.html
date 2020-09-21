@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1019",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1019",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'lbname', title: '标题', width: 64},
+            {field: 'sccode', title: '年度', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'njsp_name', title: '职位', width: 80},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hiredday', title: '入职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'wkym', title: '工龄', width: 64},
+            {field: 'orgname', title: '机构', width: 200},
+            {field: 'alllbtime', title: '总调休时间(H)', width: 120},
+            {field: 'usedlbtime', title: '已经调休时间(H)', width: 120},
+            {field: 'valdate', title: '有效期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'extended', title: '是否延期', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 200}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_leave_blance",
+            JPAIdField: "lbid",
+            allowAtt: true,
+            allowWF: false,
+            allow_void: true,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            allow_new: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    iconCls: 'icon-task',
+                    text: '创建年假',
+                    handler: function () {
+                        docreateYearLeaveInfo();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后
+                $("#year").numberbox('setValue', (new Date()).getFullYear());
+                $("#orgtext").textbox("setValue", "");
+            },
+            onNew: function (jsondata) {
+                jsondata.stype = 1;
+            },
+            onFind: function (parms) {
+                parms.parms.push({parmname: 'stype', reloper: '=', parmvalue: '1'});
+            },
+            onAddLine: function (append) {//点击添加明细行
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            onDel: function (jsondata) {//返回false 將不執行操作
+                var usedlbtime = parseFloat(jsondata.usedlbtime);
+                if (usedlbtime != 0) {
+                    alert("已经有调休信息的年假不允许删除");
+                    return false;
+                } else
+                    return true;
+            },
+            beforeSave: function () {
+                var mdata = mainline.getMainData();
+                var stype = parseInt(mdata.stype);
+                if (stype != 1) {
+                    alert("只能修改年假");
+                    throw new Error("数据检查失败，终止保存!");
+                }
+                var alllbtime = parseFloat(mdata.alllbtime);
+                var usedlbtime = parseFloat(mdata.usedlbtime);
+                if (alllbtime < usedlbtime) {
+                    alert("修改后的总调休时间不能小于已调休时间");
+                    throw new Error("数据检查失败，终止保存!");
+                }
+            }
+        };
+
+
+        var selectedorg = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        selectedorg = rows[0];
+                        $("#orgtext").textbox("setValue", selectedorg.extorgname);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function docreateYearLeaveInfo() {
+            $("#createyearblcpw").window("open");
+        }
+
+        function docreate() {
+            if (selectedorg == undefined) {
+                $.messager.alert('错误', '选择机构', "error");
+                return;
+            }
+            var y = $("#year").numberbox("getValue");
+            if ($isEmpty(y)) {
+                $.messager.alert('错误', '输入年份', "error");
+                return;
+            }
+            var url = _serUrl + "/web/hrkq/leaveblc/createYearLeaveInfo.co?year=" + y + "&orgid=" + selectedorg.orgid;
+            $ajaxjsonget(url, function (jsondata) {
+                $("#createyearblcpw").window("close");
+                $.messager.alert('提示', '创建完成', "info");
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, "error");
+            });
+        }
+    </script>
+
+    <style type="text/css">
+        #createyearblcpw table td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'lbname'">标题</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lbname',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stype'">类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stype',crequired:true,readonly:true,comidx:'dic1019'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sccode'">年度</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sccode',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'alllbtime'">总调休时间(H)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'alllbtime',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usedlbtime'">已经调休时间(H)</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usedlbtime',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'valdate'">到期时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'valdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'extended'">是否延期</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'extended',comidx:'dic5',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100%"/></td>
+    </tr>
+</table>
+
+<div id="createyearblcpw" class="easyui-window" title="创建年假" data-options="iconCls:'icon-save',closed:true,modal:true,minimizable:false,collapsible:false"
+     style="width: 400px;height: 200px;padding:5px;">
+    <table>
+        <tr>
+            <td>机构范围</td>
+            <td>
+                <input id="orgtext" class="easyui-textbox"
+                       data-options="buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                       style="height: 20px;width:300px">
+            </td>
+        </tr>
+        <tr>
+            <td>调休年度</td>
+            <td>
+                <input id="year" type="text" class="easyui-numberbox" style="height: 20px"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"> 建议错开系统高峰期执行，预计执行时间为1小时左右</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 2px 10px 2px 10px;">
+                <a class="easyui-linkbutton" onclick="docreate();" data-options="iconCls:'icon-ok'"
+                   style="width:80px">确定</a>
+                <a class="easyui-linkbutton" onclick=" $('#createyearblcpw').window('close');" data-options="iconCls:'icon-cancel'"
+                   style="width:80px">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic714",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=714",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            [
+                {field: 'empaccode', rowspan: 2, title: '编码', width: 100},
+                {field: 'employee_code', rowspan: 2, title: '工号', width: 80},
+                {field: 'employee_name', rowspan: 2, title: '姓名', width: 100},
+                {field: 'sex', title: '性别', rowspan: 2, width: 64, formatter: comUrl_dic81.formator},
+                {title: "变更前", colspan: 13},
+                {title: "变更后", colspan: 13},
+                {field: 'orgname', rowspan: 2, title: '机构', width: 150},
+                {field: 'stat', rowspan: 2, title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+                {field: 'remark', rowspan: 2, title: '备注', width: 64},
+                {field: 'creator', rowspan: 2, title: '创建人', width: 64},
+                {field: 'createtime', rowspan: 2, title: '创建时间', width: 64},
+                {field: 'updator', rowspan: 2, title: '更新人', width: 64},
+                {field: 'updatetime', rowspan: 2, title: '更新时间', width: 64}],
+            [
+                {field: 'oldaddress', title: '住址', width: 150},
+                {field: 'oldtelphone', title: '联系电话', width: 100},
+                {field: 'oldemail', title: '邮箱/微信', width: 100},
+                {field: 'oldcellphone', title: '紧急联系电话', width: 100},
+                {field: 'oldurgencycontact', title: '紧急联系人', width: 100},
+                {field: 'oldurmail', title: '紧急联系邮箱', width: 150},
+                {field: 'oddegree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+                {field: 'oldmajor', title: '专业', width: 100},
+                {field: 'oldmarried', title: '婚姻状况', width: 80, formatter: comUrl_dic714.formator},
+                {field: 'oldregisteraddress', title: '户籍住址', width: 150},
+                {field: 'oldsign_org', title: '发证机关', width: 100},
+                {field: 'oldsign_date', title: '签发日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'oldexpired_date', title: '到期日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+
+                {field: 'newaddress', title: '住址', width: 150},
+                {field: 'newtelphone', title: '联系电话', width: 100},
+                {field: 'newemail', title: '邮箱/微信', width: 100},
+                {field: 'newcellphone', title: '紧急联系电话', width: 100},
+                {field: 'newurgencycontact', title: '紧急联系人', width: 100},
+                {field: 'newurmail', title: '紧急联系邮箱', width: 100},
+                {field: 'newdegree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+                {field: 'newmajor', title: '专业', width: 100},
+                {field: 'newmarried', title: '婚姻状况', width: 80, formatter: comUrl_dic714.formator},
+                {field: 'newregisteraddress', title: '户籍住址', width: 150},
+                {field: 'newsign_org', title: '发证机关', width: 100},
+                {field: 'newsign_date', title: '签发日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'newexpired_date', title: '到期日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+            ]
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_empaddr_chg",
+            JPAIdField: "empacid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '900px',//窗体宽度  htMLPop有效
+            windowHeight: '500px',//窗体高度 htMLPop有效
+            datainfo_line_title: "变更",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            onCreate: function () {//创建对象前  mainline不可用
+            },
+            OnReady: function () {   //都准备好后
+                var odfds = eval($urlparms.oldfields);
+                var nwfds = eval($urlparms.newfields);
+                if ($isEmpty(odfds) || $isEmpty(nwfds)) {
+                    odfds = ['oldaddress',
+                        'oldtelphone',
+                        'oldemail',
+                        'oldcellphone',
+                        'oldurgencycontact',
+                        'oldurmail',
+                        'oddegree',
+                        'oldmajor',
+                        'oldmarried',
+                        'oldregisteraddress',
+                        'oldsign_org',
+                        'oldsign_date',
+                        'oldexpired_date'];
+                    nwfds = [
+                        'newaddress',
+                        'newtelphone',
+                        'newemail',
+                        'newcellphone',
+                        'newurgencycontact',
+                        'newurmail',
+                        'newdegree',
+                        'newmajor',
+                        'newmarried',
+                        'newregisteraddress',
+                        'newsign_org',
+                        'newsign_date',
+                        'newexpired_date'
+                    ];
+                }
+                setallhide();
+                for (var i = 0; i < odfds.length; i++) {
+                    mainline.setFieldShow(odfds[i]);
+                }
+                for (var i = 0; i < nwfds.length; i++) {
+                    mainline.setFieldShow(nwfds[i]);
+                }
+            },
+            onNew: function (jsondata) {
+
+            },
+            beforeSave: function () {
+                var oldaddress = mainline.getFieldValue("oldaddress");
+                var oldtelphone = mainline.getFieldValue("oldtelphone");
+                var oldemail = mainline.getFieldValue("oldemail");
+                var oldcellphone = mainline.getFieldValue("oldcellphone");
+                var oldurgencycontact = mainline.getFieldValue("oldurgencycontact");
+                var oldurmail = mainline.getFieldValue("oldurmail");
+                var newaddress = mainline.getFieldValue("newaddress");
+                var newtelphone = mainline.getFieldValue("newtelphone");
+                var newemail = mainline.getFieldValue("newemail");
+                var newcellphone = mainline.getFieldValue("newcellphone");
+                var newurgencycontact = mainline.getFieldValue("newurgencycontact");
+                var newurmail = mainline.getFieldValue("newurmail");
+
+                var odfds = eval($urlparms.oldfields);
+                var nwfds = eval($urlparms.newfields);
+                if (odfds && nwfds) {
+                    if (odfds.length != nwfds.length) {
+                        alert("参数错误");
+                        throw "参数错误";
+                    }
+                    var allsame = true;
+                    for (var i = 0; i < odfds.length; i++) {
+                        if (mainline.getFieldValue(odfds[i]) != mainline.getFieldValue(nwfds[i])) {
+                            allsame = false;
+                        }
+                        if ($isEmpty(mainline.getFieldValue(nwfds[i]))) {
+                            //alert("变更后信息不允许为空");
+                            //throw "变更后信息不允许为空";
+                        }
+                        if (nwfds[i] == "newcellphone") {
+                            if (mainline.getFieldValue(nwfds[i]).length != 11) {
+                                alert("手机号码不是11位");
+                                throw "手机号码不是11位";
+                            }
+                        }
+                    }
+                    if (allsame) {
+                        alert("信息没有变更");
+                        throw "信息没有变更";
+                    }
+                }
+                /* if ($isEmpty(newaddress) && $isEmpty(newtelphone) && $isEmpty(newemail) && $isEmpty(newcellphone) && $isEmpty(newurgencycontact) && $isEmpty(newurmail)) {
+                 alert("所有变更后的信息为空");
+                 throw "所有变更后的信息为空";
+                 }
+
+                 if ((oldaddress == newaddress) && (oldtelphone == newtelphone) && (oldemail == newemail) && (oldcellphone == newcellphone) && (oldurgencycontact == newurgencycontact) && (oldurmail == newurmail)) {
+                 alert("信息没有变更");
+                 throw "信息没有变更";
+                 }*/
+            },
+            onFind: function (parms) {
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+
+        var select_employee_pw1 = undefined;
+        function onFindemployee(employee_code) {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co?spcetype=" + mainline.getspcetype();//查询权限范围内员工
+            var wo = {
+                id: "select_employee_pw1",
+                coURL: url,
+                orderStr: " er_id asc ",
+                multiRow: false,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500},//不作为查询条件
+                    {field: 'sp_name', title: '职位', width: 80},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('sex', row.sex);
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue("idpath", row.idpath);
+
+                        mainline.setFieldValue('oldaddress', row.address);
+                        mainline.setFieldValue('oldtelphone', row.telphone);
+                        mainline.setFieldValue('oldemail', row.email);
+                        mainline.setFieldValue('oldcellphone', row.cellphone);
+                        mainline.setFieldValue('oldurgencycontact', row.urgencycontact);
+                        mainline.setFieldValue("oldurmail", row.urmail);
+                        mainline.setFieldValue('oddegree', row.degree);
+                        mainline.setFieldValue('oldmajor', row.major);
+                        mainline.setFieldValue('oldmarried', row.married);
+                        mainline.setFieldValue('oldregisteraddress', row.registeraddress);
+                        mainline.setFieldValue('oldsign_org', row.sign_org);
+                        mainline.setFieldValue("oldsign_date", row.sign_date);
+                        mainline.setFieldValue("oldexpired_date", row.expired_date);
+
+                        mainline.setFieldValue('newaddress', row.address);
+                        mainline.setFieldValue('newtelphone', row.telphone);
+                        mainline.setFieldValue('newemail', row.email);
+                        mainline.setFieldValue('newcellphone', row.cellphone);
+                        mainline.setFieldValue('newurgencycontact', row.urgencycontact);
+                        mainline.setFieldValue("newurmail", row.urmail);
+                        mainline.setFieldValue('newdegree', row.degree);
+                        mainline.setFieldValue('newmajor', row.major);
+                        mainline.setFieldValue('newmarried', row.married);
+                        mainline.setFieldValue('newregisteraddress', row.registeraddress);
+                        mainline.setFieldValue('newsign_org', row.sign_org);
+                        mainline.setFieldValue("newsign_date", row.sign_date);
+                        mainline.setFieldValue("newexpired_date", row.expired_date);
+
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+
+                    }
+                }
+            };
+            if (!select_employee_pw1) {
+                select_employee_pw1 = new TSearchForm(wo);
+            }
+            if (employee_code) {
+                select_employee_pw1.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw1.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw1.show();
+        }
+
+        function setallhide() {
+            mainline.setFieldHide('newaddress');
+            mainline.setFieldHide('newtelphone');
+            mainline.setFieldHide('newemail');
+            mainline.setFieldHide('newcellphone');
+            mainline.setFieldHide('newurgencycontact');
+            mainline.setFieldHide("newurmail");
+            mainline.setFieldHide('newdegree');
+            mainline.setFieldHide('newmajor');
+            mainline.setFieldHide('newmarried');
+            mainline.setFieldHide('newregisteraddress');
+            mainline.setFieldHide('newsign_org');
+            mainline.setFieldHide("newsign_date");
+            mainline.setFieldHide("newexpired_date");
+
+            mainline.setFieldHide("oldaddress");
+            mainline.setFieldHide("oldtelphone");
+            mainline.setFieldHide("oldemail");
+            mainline.setFieldHide("oldcellphone");
+            mainline.setFieldHide("oldurgencycontact");
+            mainline.setFieldHide("oldurmail");
+            mainline.setFieldHide("oddegree");
+            mainline.setFieldHide("oldmajor");
+            mainline.setFieldHide("oldmarried");
+            mainline.setFieldHide("oldregisteraddress");
+            mainline.setFieldHide("oldsign_org");
+            mainline.setFieldHide("oldsign_date");
+            mainline.setFieldHide("oldexpired_date");
+
+        }
+
+    </script>
+    <style type="text/css">
+        body table td {
+            padding: 1px 2px 1px 2px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'empaccode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'empaccode',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',readonly:true,comidx:'dic81'," style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <div style="display: none">
+        <tr style="font-weight: 700; background-color: #D3D3D3">
+            <td colspan="10">变更前</td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'oldaddress'">住址</td>
+            <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldaddress',readonly:true" style="height:20px;width: 100%"/></td>
+            <td cjoptions="fdname:'oldtelphone'">联系电话</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldtelphone',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldemail'">邮箱/微信</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldemail',readonly:true" style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'oldurgencycontact'">紧急联系人</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldurgencycontact',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldcellphone'">紧急联系电话</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldcellphone',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldurmail'">紧急联系邮箱</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldurmail',readonly:true" style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'oddegree'">学历</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oddegree',comidx:'dic84',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldmajor'">专业</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldmajor',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldmarried'">婚姻状况</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldmarried',comidx:'dic714',readonly:true" style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'oldsign_org'">发证机关</td>
+            <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldsign_org',readonly:true" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldsign_date'">签发日期</td>
+            <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'oldsign_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+            <td cjoptions="fdname:'oldexpired_date'">到期日期</td>
+            <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'oldexpired_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+        </tr>
+        <tr>
+            <td cjoptions="fdname:'oldregisteraddress'">户籍住址</td>
+            <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'oldregisteraddress',readonly:true" style="height:20px;width: 100%"/></td>
+        </tr>
+    </div>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">变更后</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newaddress'">住址</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newaddress'" style="height:20px;width: 100%"/></td>
+        <td cjoptions="fdname:'newtelphone'">联系电话</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newtelphone'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newemail'">邮箱/微信</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newemail'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newurgencycontact'">紧急联系人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newurgencycontact'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newcellphone'">紧急联系电话</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newcellphone'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newurmail'">紧急联系邮箱</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newurmail'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newdegree'">学历</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newdegree',comidx:'dic84'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newmajor'">专业</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newmajor'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newmarried'">婚姻状况</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newmarried',comidx:'dic714'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newsign_org'">发证机关</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'newsign_org'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newsign_date'">签发日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'newsign_date',formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'newexpired_date'">到期日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'newexpired_date',formatter:$dateformattostrrYYYY_MM_DD" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'newregisteraddress'">身份证地址</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'newregisteraddress'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">其他信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 350px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 100px"/></td>
+    </tr>
+
+</table>
+</body>
+</html>

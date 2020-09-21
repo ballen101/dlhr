@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <title>个人信息</title>
+    <script type="text/javascript">
+        //获取员工照片信息
+        function showpicWindow() {
+            var url = _serUrl + "/web/hr/Portals/getimageid.co";
+            $ajaxjsonget(url, function (jsdata) {
+                var pfid = jsdata.avatar_id;
+                if ((pfid) && (pfid.length > 0)) {
+                    var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                    $("#show_img").attr("src", url);
+                    $("#showiv_pw").window({title: jsdata.employee_name});
+                    $("#showiv_pw").window("open");
+                }
+            }, function (err) {
+                alert(JSON.stringify(err));
+            }, false);
+        }
+    </script>
+    <style type="text/css">
+        #body table td {
+            padding: 2px 5px 2px 5px;
+            margin: 2px;
+            border: 0px;
+        }
+
+        .spec {
+            height: 5px;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .bunderdiv {
+            background-color: white;
+            background: none;
+            border: none;
+            border-bottom: 3px solid #95B8E7;
+        }
+
+    </style>
+</head>
+<body style="margin: 0 auto">
+<div class="panel-header panel-header-noborder bunderdiv" style="">
+    <div class="panel-title panel-with-icon">我的信息</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+<table style="width: 100%">
+    <tr>
+        <td width="500px" style="border-right:1px solid #95B8E7 ">
+            <table border="0" style="">
+                <tr>
+                    <td rowspan="5" style="text-align: left">
+                        <div style="width: 100px;height: 120px;background-color: #3d3d3d">
+                            <img id="img_avatar_id" cjoptions="fdname:'avatar_id'" width="100%" height="100%"
+                                 style="line-height: 100%;text-align: center"
+                                 onclick="showpicWindow()"
+                                 src="../img/timg.jpg">
+                        </div>
+                    </td>
+                    <td cjoptions="fdname:'employee_name'">姓名:</td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'employee_code'">工号:</td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'orgname'">部门:</td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'sp_name'">职位:</td>
+                </tr>
+                <tr>
+                    <td cjoptions="fdname:'hiredday'">入职日期:</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table id="noticetable_id" border="0" style="width: 100%">
+                <tr style="font-weight: 700; background-color: #D3D3D3">
+                    <td>通知</td>
+                </tr>
+                <tr>
+                    <td>试用期转正提醒</td>
+                </tr>
+                <tr>
+                    <td>延长试用期通知</td>
+                </tr>
+                <tr>
+                    <td>考察期转正提醒</td>
+                </tr>
+                <tr>
+                    <td>延长考察期通知</td>
+                </tr>
+                <tr>
+                    <td>考勤异常查询</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<div class="panel-header panel-header-noborder bunderdiv" style="">
+    <div class="panel-title panel-with-icon">我的信息维护</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+<div style="padding: 10px">
+    <a href="#" class="easyui-linkbutton" data-options="" style="width: 150px;">个人联系信息维护</a>
+    <a href="#" class="easyui-linkbutton" data-options="" style="width: 150px;">紧急联系人信息维护</a>
+</div>
+<div class="spec"></div>
+
+<div class="panel-header panel-header-noborder bunderdiv" style="">
+    <div class="panel-title panel-with-icon">关联关系申报</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+
+<div style="padding: 10px">
+    <a href="#" class="easyui-linkbutton" data-options="" style="width: 150px;">内部关联关系申报</a>
+    <a href="#" class="easyui-linkbutton" data-options="" style="width: 150px;">客户/供应商关联关系申报</a>
+</div>
+
+<div class="spec"></div>
+
+<div class="panel-header panel-header-noborder bunderdiv" style="">
+    <div class="panel-title panel-with-icon">我要申请</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+
+<table id="apply_table_id" border="0" style="margin-left: 10px">
+    <tr>
+        <td>
+            <div style="margin-left:30px;">入职转正申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">调动转正申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">调动申请</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="margin-left:30px;">请假申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">加班申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">值班申请（适用于M类经理级及以上）</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="margin-left:30px;">出差申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">调休申请</div>
+        </td>
+        <td>
+            <div style="margin-left:30px;">补签申请</div>
+        </td>
+    </tr>
+</table>
+<div class="spec"></div>
+<div id="workflow_panel_id" class="easyui-panel" title="流程跟踪" style="width:100% ;height:auto;padding:0px;">
+    <table id="workflow_table_id" border="0" style="">
+        <tr>
+            <table class="easyui-datagrid" style="width:100%;min-height: 100px"
+                   data-options="url:'',fitColumns:true,singleSelect:true,border:false">
+                <thead>
+                <tr>
+                    <th data-options="field:'title',width:50">流程主题</th>
+                    <th data-options="field:'node',width:50">当前环节</th>
+                    <th data-options="field:'name',width:50,align:'right'">待办人</th>
+                    <th data-options="field:'date',width:50,align:'right'">接收时间</th>
+                    <th data-options="field:'remark',width:50,align:'right'">备注</th>
+                </tr>
+                </thead>
+            </table>
+        </tr>
+    </table>
+</div>
+<div class="spec"></div>
+<div id="workflowinfo_panel_id" class="easyui-panel" title="流程信息" style="width:100% ;height:auto;padding:00px;">
+    <table id="workflowinfo_table_id" border="0" style=" margin-left: 10px">
+        <td>
+            <div style="margin-left:30px;">我发起的流程</div>
+        </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-left:30px;">待处理的流程</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-left:30px;">待到达的流程</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-left:30px;">已完成的流程</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="margin-left:30px;">通知我的流程</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="spec"></div>
+<div id="address_panel_id" class="easyui-panel" title="通讯录" style="width:100% ;height:auto;padding:0px;">
+    <table id="address_table_id" border="0" style="">
+        <tr>
+            <table class="easyui-datagrid" style="width:100%;min-height:300px"
+                   data-options="url:'',fitColumns:true,singleSelect:true,border:false">
+                <thead>
+                <tr>
+                    <th data-options="field:'employee_code',width:50">工号</th>
+                    <th data-options="field:'employee_name',width:50">姓名</th>
+                    <th data-options="field:'orgname',width:50,align:'right'">部门</th>
+                    <th data-options="field:'english_name',width:50,align:'right'">英文名</th>
+                    <th data-options="field:'sp_name',width:50,align:'right'">职位</th>
+                    <th data-options="field:'lv_num',width:50,align:'right'">职级</th>
+                    <th data-options="field:'parttime',width:50,align:'right'">兼职</th>
+                    <th data-options="field:'cellphone1',width:50,align:'right'">电信固话</th>
+                    <th data-options="field:'cellphone2',width:50,align:'right'">电信内线</th>
+                    <th data-options="field:'cellphone3',width:50,align:'right'">移动固话</th>
+                    <th data-options="field:'cellphone4',width:50,align:'right'">移动内线</th>
+                    <th data-options="field:'cellphone5',width:50,align:'right'">移动电话</th>
+                    <th data-options="field:'cellphone6',width:50,align:'right'">189号码</th>
+                    <th data-options="field:'cellphone7',width:50,align:'right'">189短号</th>
+                    <th data-options="field:'remark',width:50,align:'right'">备注</th>
+                </tr>
+                </thead>
+            </table>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

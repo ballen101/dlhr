@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <title>个人信息</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic705",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=705",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic745",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=745",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1183",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1183",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1204",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1204",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }, {
+                index: "dic1117",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1117",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1120",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1120",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1133",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1133",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1141",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1141",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1146",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1146",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        //获取员工照片信息
+        function showpicWindow(pfid) {
+            var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+            $("#show_img").attr("src", url);
+            $("#showiv_pw").window({title: curemp.employee_name});
+            $("#showiv_pw").window("open");
+        }
+        var syzztx_message_ht = undefined;
+        //页面准备好之后触发事件
+        function $OnCorsairReady() {
+            loadEmpInfo();
+            getwfinfo();
+            loadNotice();
+
+            syzztx_message_ht = getAttparm("PORTAL_SYZZTX_MESSAGE");
+            PORTAL_SYZZYQ_MESSAGE = getAttparm("PORTAL_SYZZYQ_MESSAGE");
+            PORTAL_KCZZTX_MESSAGE = getAttparm("PORTAL_KCZZTX_MESSAGE");
+            PORTAL_KCZZYQ_MESSAGE1 = getAttparm("PORTAL_KCZZYQ_MESSAGE1");
+            PORTAL_KCZZYQ_MESSAGE2 = getAttparm("PORTAL_KCZZYQ_MESSAGE2");
+
+            $(".menus_ui li").click(function () {
+                var url = $(this).attr("url");
+                if ($isEmpty(url)) {
+                    alert("没有设置路径");
+                    return;
+                }
+                if (!window.top.PerDeskClick) {
+                    alert("首页链接不能调用");
+                    return;
+                }
+                window.top.PerDeskClick($(this).html(), url, 1, 0, 0);
+            });
+        }
+
+
+        //获取通知
+        var jsnotice = undefined; //isorgmanger
+        function loadNotice() {
+            var url = _serUrl + "/web/hr/Portalsm/getEmpInfoNotice.co";
+            $ajaxjsonget(url, function (jsdata) {
+                jsdata.isorgmanger = parseInt(jsdata.isorgmanger);
+                jsdata.isomorerom = parseInt(jsdata.isomorerom);
+                jsdata.syzztxnum = parseInt(jsdata.syzztxnum);
+                jsdata.syzzyxnum = parseInt(jsdata.syzzyxnum);
+                jsdata.kczztxnum = parseInt(jsdata.kczztxnum);
+                jsdata.kczzyqnum = parseInt(jsdata.kczzyqnum);
+                jsdata.glgxsbtx = parseInt(jsdata.glgxsbtx);
+                jsnotice = jsdata;
+                //console.error(JSON.stringify(jsnotice));
+                if (jsnotice.syzztxnum != 0) {
+                    $("#entry_try").html("试用期转正提醒(<span class='noticetd' onclick='syzztxclick()'>" + jsnotice.syzztxnum + "</span>)");
+                    if (jsdata.isorgmanger == 1) {
+                        loadsyzztx_orgm_table();
+                    }
+                }
+                if (jsdata.syzzyxnum != 0) {
+                    $("#entry_try_delay").html("延长试用期通知(<span class='noticetd' onclick='syycclick()'>" + jsnotice.syzzyxnum + "</span>)");
+                    if (jsdata.isomorerom == 1)
+                        loadsyzzyq_orgm_table();
+                }
+
+
+                if (jsnotice.kczztxnum != 0) {
+                    $("#tran_try").html("考察期转正提醒(<span class='noticetd' onclick='kczztxclick()'>" + jsnotice.kczztxnum + "</span>)");
+                    loadkczztx_orgm_table();
+                }
+
+                if (jsnotice.kczzyqnum != 0) {
+                    $("#tran_try_delay").html("延长考察期通知(<span class='noticetd' onclick='kczzyqclick()'>" + jsnotice.kczzyqnum + "</span>)");
+                    loadkczzyq_orgm_table();
+                }
+
+                if (jsnotice.glgxsbtx != 0) {
+                    $("#glgxnotice").html("关联关系申报提醒(<span class='noticetd' onclick='glgxnoticeclick()'>" + jsnotice.glgxsbtx + "</span>)");
+                    loadglgx_table();
+                }
+
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        ///试用转正提醒
+        function syzztxclick() {
+            if (jsnotice.isorgmanger == 1) {
+                $("#syzztx_orgm_pw").window("open");
+            } else {
+                loadsyzztx_per_message(1);
+            }
+        }
+
+        function onglgxnotice_pw_pwclose() {
+            $('#glgxnotice_pw').window('close');
+            var url = "hr_base/hrrl_declare_nb.html";
+            window.top.PerDeskClick("关联关系申报", url, 1, 0, 0);
+        }
+
+        function gosyzzjm() {
+            $('#tztxps_pw').window('close');
+            if ((messageboxtype == 1) || (messageboxtype == 2)) {
+                var url = "hr_perm/hr_entry_prob.html";
+                window.top.PerDeskClick("入职转正", url, 0, 0, 0);
+            }
+            if ((messageboxtype == 3) || (messageboxtype == 4)) {
+                var url = "hr_perm/Hr_transfer_prob.html";
+                window.top.PerDeskClick("考察转正", url, 0, 0, 0);
+            }
+        }
+
+        function loadsyzztx_orgm_table() {
+            var url = _serUrl + "/web/hr/Portalsm/getSyzztxlist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#syzztx_orgm_table").datagrid({columns: syzztx_orgm_table_columns, data: jsdata});
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        function onsyzztx_orgm_pwOK() {
+            $('#syzztx_orgm_pw').window('close');
+            var url = "hr_perm/hr_entry_prob.html";
+            window.top.PerDeskClick("入职转正", url, 0, 0, 0);
+        }
+
+        function onsyzztx_orgm_pwclose() {
+            $('#syzztx_orgm_pw').window('close');
+            if (jsnotice.isorgmanger == 1) { //部门管理员如果有待转正提醒，弹出自己的
+                var dts = $("#syzztx_orgm_table").datagrid("getRows");
+                for (var i = 0; i < dts.length; i++) {
+                    if (dts[i].employee_code == curemp.employee_code) {
+                        loadsyzztx_per_message(1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function getDateStr(v) {
+            var dt = $date4str(v);
+            return $dateformattostrrYYYY_MM_DD(dt);
+
+        }
+
+        var messageboxtype = undefined;
+        //tp 1 试用转正通知 2 试用转正延长 3 考察转正通知 4考察转正延长
+        function loadsyzztx_per_message(tp) {
+            $("#txtxmessage").html("");
+            messageboxtype = tp;
+            if ((tp == 1) || (tp == 2)) {
+                var url = _serUrl + "/web/hr/Portalsm/getSyzztxinfo.co";
+            } else if ((tp == 3) || (tp == 4)) {
+                var url = _serUrl + "/web/hr/Portalsm/getkcyxinfo.co";
+            } else {
+                alert("tp类型错误");
+                return;
+            }
+            $ajaxjsonget(url, function (jsdata) {
+                jsdata = jsdata[0];
+                if (tp == 1) {
+                    var ht = syzztx_message_ht;
+                    ht = ht.replace(new RegExp("{{employee_name}}", "g"), jsdata.employee_name);
+                    ht = ht.replace(new RegExp("{{orgname}}", "g"), jsdata.orgname);
+                    ht = ht.replace(new RegExp("{{sp_name}}", "g"), jsdata.sp_name);
+                    ht = ht.replace(new RegExp("{{promotionday}}", "g"), getDateStr(jsdata.promotionday));
+                    ht = ht.replace(new RegExp("{{entrydate}}", "g"), getDateStr(jsdata.entrydate));
+                    ht = ht.replace(new RegExp("{{probation}}", "g"), jsdata.probation);
+                    $("#txtxmessage").html(ht);
+                }
+                if (tp == 2) {
+                    var ht = PORTAL_SYZZYQ_MESSAGE;
+                    ht = ht.replace(new RegExp("{{employee_name}}", "g"), jsdata.employee_name);
+                    ht = ht.replace(new RegExp("{{orgname}}", "g"), jsdata.orgname);
+                    ht = ht.replace(new RegExp("{{sp_name}}", "g"), jsdata.sp_name);
+                    ht = ht.replace(new RegExp("{{promotionday}}", "g"), getDateStr(jsdata.promotionday));
+                    ht = ht.replace(new RegExp("{{delaypromotionday}}", "g"), getDateStr(jsdata.delaypromotionday));
+                    ht = ht.replace(new RegExp("{{delayprobation}}", "g"), jsdata.delayprobation);
+                    $("#txtxmessage").html(ht);
+                }
+
+                if (tp == 3) {
+                    var ht = PORTAL_KCZZTX_MESSAGE;
+                    ht = ht.replace(new RegExp("{{employee_name}}", "g"), jsdata.employee_name);
+                    ht = ht.replace(new RegExp("{{orgname}}", "g"), jsdata.orgname);
+                    ht = ht.replace(new RegExp("{{sp_name}}", "g"), jsdata.sp_name);
+                    ht = ht.replace(new RegExp("{{probationdate}}", "g"), getDateStr(jsdata.probationdate));
+                    ht = ht.replace(new RegExp("{{probation}}", "g"), jsdata.probation);
+                    ht = ht.replace(new RegExp("{{tranfcmpdate}}", "g"), getDateStr(jsdata.tranfcmpdate));
+                    $("#txtxmessage").html(ht);
+                }
+
+                if (tp == 4) {
+                    var ht = ((curemp.hwc_namezl == "M类") && (parseFloat(curemp.lv_num) < 4)) ? PORTAL_KCZZYQ_MESSAGE1 : PORTAL_KCZZYQ_MESSAGE2;
+                    ht = ht.replace(new RegExp("{{employee_name}}", "g"), jsdata.employee_name);
+                    ht = ht.replace(new RegExp("{{orgname}}", "g"), jsdata.orgname);
+                    ht = ht.replace(new RegExp("{{sp_name}}", "g"), jsdata.sp_name);
+                    ht = ht.replace(new RegExp("{{probationdate}}", "g"), getDateStr(jsdata.probationdate));
+                    ht = ht.replace(new RegExp("{{delayprobation}}", "g"), jsdata.delayprobation);
+                    ht = ht.replace(new RegExp("{{delaypromotionday}}", "g"), getDateStr(jsdata.delaypromotionday));
+                    $("#txtxmessage").html(ht);
+                }
+
+                $("#tztxps_pw").window("open");
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        //试用转正延期提醒
+        function syycclick() {
+            if (jsnotice.isomorerom == 1) {
+                $("#syzzyc_orgm_pw").window("open");
+            } else {
+                loadsyzztx_per_message(2);
+            }
+        }
+
+        function loadsyzzyq_orgm_table() {
+            var url = _serUrl + "/web/hr/Portalsm/getSyzzyqlist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#syzzyq_orgm_table").datagrid({columns: syzztx_orgm_table_columns, data: jsdata});
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        //考察转正提醒
+        function loadkczztx_orgm_table() {
+            var url = _serUrl + "/web/hr/Portalsm/getkczzlist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#kczztx_orgm_table").datagrid({columns: kczztx_orgm_table_columns, data: jsdata});
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        function kczztxclick() {
+            if (jsnotice.isorgmanger == 1) {
+                $("#kczztx_orgm_pw").window("open");
+            } else {
+                loadsyzztx_per_message(3);
+            }
+        }
+
+        function onkczztx_orgm_pwOK() {
+            $('#kczztx_orgm_pw').window('close');
+            var url = "hr_perm/Hr_transfer_prob.html";
+            window.top.PerDeskClick("考察转正", url, 0, 0, 0);
+        }
+
+        function onkczztx_orgm_pwclose() {
+            $('#kczztx_orgm_pw').window('close');
+            if (jsnotice.isorgmanger == 1) { //部门管理员如果有待转正提醒，弹出自己的
+                var dts = $("#kczztx_orgm_table").datagrid("getRows");
+                for (var i = 0; i < dts.length; i++) {
+                    if (dts[i].employee_code == curemp.employee_code) {
+                        loadsyzztx_per_message(3);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //考察延期
+        function loadkczzyq_orgm_table() {
+            var url = _serUrl + "/web/hr/Portalsm/getkcyclist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#kczzyq_orgm_table").datagrid({columns: kczztx_orgm_table_columns, data: jsdata});
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        function loadglgx_table() {
+            var url = _serUrl + "/web/hr/Portalsm/getGLGXNoticeNotice.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#glgxnotice_pw_table").datagrid({columns: glgxnotice_pw_table_columns, data: jsdata});
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+        //关联关系
+        function glgxnoticeclick() {
+            $("#glgxnotice_pw").window("open");
+        }
+
+        function kczzyqclick() {
+            if (jsnotice.isomorerom == 1) {
+                $("#kczzyq_orgm_pw").window("open");
+            } else {
+                loadsyzztx_per_message(4);
+            }
+        }
+
+        function onkczzyq_orgm_pwclose() {
+            $("#kczzyq_orgm_pw").window("close");
+            if (jsnotice.isomorerom == 1) { //部门管理员如果有待转正提醒，弹出自己的
+                var dts = $("#kczzyq_orgm_table").datagrid("getRows");
+                for (var i = 0; i < dts.length; i++) {
+                    if (dts[i].employee_code == curemp.employee_code) {
+                        loadsyzztx_per_message(4);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+    </script>
+    <script>
+        var curemp = undefined;
+        function loadEmpInfo() {
+            var url = _serUrl + "/web/hr/Portalsm/getEmpInfo.co";
+            $ajaxjsonget(url, function (jsdata) {
+                curemp = jsdata;
+                $("#employee_name").html(jsdata.employee_name);
+                $("#employee_code").html(jsdata.employee_code);
+                $("#sp_name").html(jsdata.sp_name);
+                $("#orgname").html(jsdata.orgname);
+                $("#telphone").html(jsdata.telphone);
+                $("#email").html(jsdata.email);
+                $("#address").html(jsdata.address);
+                $("#urgencycontact").html(jsdata.urgencycontact);
+                $("#urmail").html(jsdata.urmail);
+                $("#cellphone").html(jsdata.cellphone);
+
+                var hiredday = (new Date().fromStr(jsdata.hiredday)).format("yyyy年MM月dd日");
+                $("#hiredday").html(hiredday);
+                showpic(jsdata.avatar_id2);
+            }, function (err) {
+
+                if ((err.errmsg) && (err.errmsg.indexOf("无对应人事资料") < 0)) {
+                    $("#empinfoerrid").html(err.errmsg);
+                }
+                $("#empinfoerrid").css("display", "");
+                $("#empinfoid").css("display", "none");
+            });
+        }
+
+        function showpic(pfid) {
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#img_avatar_id").attr("src", url);
+            } else
+                $("#img_avatar_id").attr("src", "");
+        }
+
+        function nofind() {
+            $("#img_avatar_id").attr("src", "../img/timg.jpg");
+        }
+
+
+        function getwfinfo() {
+            var url = _serUrl + "/web/hr/Portalsm/getMySubmitWFS.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#mysubwfinfo").datagrid("loadData", jsdata);
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+
+        function douploadpic() {
+            var er_id = curemp.er_id;
+            if ((!er_id) || (er_id.length == 0)) {
+                $.messager.alert('错误', "无人事ID！", 'error');
+                return;
+            }
+            $uploadfile(_serUrl + "/web/hr/employee/uploadEmployeePic.co?er_id=" + er_id, null,
+                    function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    },
+                    function (jsdata) {
+                        curemp.avatar_id2 = jsdata.avatar_id;
+                        showpic(jsdata.avatar_id);
+                    });
+        }
+
+        var syzztx_orgm_table_columns = [[
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'degree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+            {field: 'orgname', title: '部门', width: 100},
+            {field: 'sp_name', title: '职位', width: 100},
+            {field: 'hwc_namezl', title: '职类', width: 80},
+            {field: 'hg_name', title: '职等', width: 80},
+            {field: 'lv_num', title: '职级', width: 80},
+            {
+                field: 'entrydate',
+                title: '入职日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'probation', title: '试用期', width: 64, formatter: comUrl_dic705.formator},
+            {
+                field: 'promotionday',
+                title: '待转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'promotiondaytrue',
+                title: '实际转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'wfresult', title: '转正评审结果', formatter: comUrl_dic745.formator},
+            {field: 'delayprobation', title: '延长试用期', width: 80},
+            {
+                field: 'delaypromotionday',
+                title: '延期待转正时间',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'delaypromotiondaytrue',
+                title: '延期实际转正时间',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'delaywfresult', title: '延期转正评审结果', width: 100, formatter: comUrl_dic745.formator},
+            {field: 'delaytimes', title: '延期次数', width: 64},
+            {field: 'trystat', title: '试用期人事状态', width: 100, formatter: comUrl_dic1183.formator},
+            {field: 'remark', title: '备注', width: 120}
+        ]];
+
+        var kczztx_orgm_table_columns = [[
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'emptranfcode', title: '调动编码', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'degree', title: '学历', width: 80, formatter: comUrl_dic84.formator},
+            {field: 'orgname', title: '部门', width: 100},
+            {field: 'ospcode', title: '职位编码', width: 100},
+            {field: 'sp_name', title: '职位名称', width: 100},
+            {field: 'hwc_namezl', title: '职类', width: 80},
+            {field: 'hg_name', title: '职等', width: 80},
+            {field: 'lv_num', title: '职级', width: 80},
+            {
+                field: 'entrydate',
+                title: '入职日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'tranfcmpdate',
+                title: '调动日期',
+                findtype: 'date',
+                width: 150,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'probation', title: '考察期', width: 64, formatter: comUrl_dic705.formator},
+            {
+                field: 'probationdate',
+                title: '待转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'probationdatetrue',
+                title: '实际转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'wfresult', title: '转正评审结果', formatter: comUrl_dic745.formator},
+            {field: 'delayprobation', title: '延长考察期', width: 80},
+            {
+                field: 'delaypromotionday',
+                title: '延期待转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {
+                field: 'delaypromotiondaytrue',
+                title: '延期实际转正日期',
+                findtype: 'date',
+                width: 100,
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'delaywfresult', title: '延期转正评审结果', width: 120, formatter: comUrl_dic745.formator},
+            {field: 'delaytimes', title: '延期次数', width: 64},
+            {field: 'trystat', title: '考察期人事状态', width: 100, formatter: comUrl_dic1204.formator},
+            {field: 'remark', title: '备注', width: 120}
+        ]];
+
+        var glgxnotice_pw_table_columns = [[
+            {field: 'ldcode', title: '申报单号', width: 100},
+            {field: 'dcldate', title: '申报日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'hiredday', title: '入职日期', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'orgname', title: '部门名称', width: 150},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'hwc_namezl', title: '职类', width: 64},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'rlname', title: '关联关系', width: 100},
+            {field: 'rllabel_b', title: '关联人称谓', width: 100},
+            {field: 'rllabel_a', title: '关联人自称', width: 100},
+            {field: 'rltype1', title: '关联关系类型', width: 100, formatter: comUrl_dic1117.formator},
+            {field: 'rltype2', title: '关联关系类别', width: 100, formatter: comUrl_dic1120.formator},
+            {field: 'hrvlevel', title: '关联关系级别', width: 100, formatter: comUrl_dic1133.formator},
+            {field: 'rlext', title: '关联关系说明', width: 150},
+            {field: 'rlmanagetype', title: '管理关系类别', width: 100, formatter: comUrl_dic1146.formator},
+            {field: 'rctrms', title: '管控措施', width: 100, formatter: comUrl_dic1141.formator},
+            {field: 'rccode', title: '管控单编码', width: 100},
+            {field: 'disusetime', title: '失效时间', findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'remark', title: '备注', width: 200},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150, findtype: 'datetime'},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ]];
+
+        function getAttparm(pname) {
+            var rst = undefined;
+            var url = _serUrl + "/web/hrkq/cmn/getAttParm.co?parmcode=" + pname;
+            $ajaxjsonget(url, function (jsdata) {
+                rst = jsdata.value;
+            }, function (err) {
+                alert(JSON.stringify(err));
+            }, false);
+            return rst;
+        }
+
+    </script>
+    <style type="text/css">
+        body table td {
+            padding: 2px 2px 2px 2px;
+            margin: 2px;
+            border: 1px;
+        }
+
+        .spec {
+            height: 0px;
+        }
+
+        body {
+            font-size: 12px;
+        }
+
+        .bunderdiv {
+            background-color: white;
+            background: none;
+            border: none;
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .bunderdiv1 {
+            border-bottom: 2px solid #E0ECFF;
+        }
+
+        .fontct {
+            font-weight: 700;
+        }
+
+        .menus_ui {
+            width: 95%;
+        }
+
+        .menus_ui li {
+            width: 250px;
+            margin-left: 5px;
+            margin-right: 5px;
+            overflow: hidden;
+            float: left;
+            padding: 1px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        .noticetd {
+            text-decoration: underline;
+            color: #4682B4;
+            cursor: pointer
+        }
+
+    </style>
+</head>
+<body style="margin: 0 auto">
+<div id="empinfoerrid" style="padding: 5px;color: red;display: none">
+    登录用户无对应人事资料，部分信息无法展示
+</div>
+<div id="empinfoid">
+    <table style="width: 100%">
+        <tr>
+            <td>
+                <div class="panel-header bunderdiv" style="">
+                    <div class="panel-title panel-with-icon">我的信息</div>
+                    <div class="panel-icon accordion-expand"></div>
+                </div>
+            </td>
+            <td>
+                <div class="panel-header bunderdiv" style="">
+                    <div class="panel-title panel-with-icon">我的通知</div>
+                    <div class="panel-icon accordion-expand"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="border-right:1px solid #95B8E7 ">
+                <table border="0" style="">
+                    <tr>
+                        <td rowspan="6" style="text-align: left">
+                            <div style="width: 100px;height: 120px;background-color: #3d3d3d">
+                                <img id="img_avatar_id" cjoptions="fdname:'avatar_id'" width="100%" height="100%"
+                                     style="line-height: 100%;text-align: center"
+                                     onerror="nofind();"
+                                     onclick="showpicWindow()"
+                                     src="../img/timg.jpg">
+                            </div>
+                        </td>
+                        <td style="text-align: left">姓名:</td>
+                        <td id="employee_name" class="fontct"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">工号:</td>
+                        <td id="employee_code" class="fontct"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">部门:</td>
+                        <td id="orgname" class="fontct"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">职位:</td>
+                        <td id="sp_name" class="fontct"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left">入职日期:</td>
+                        <td id="hiredday" class="fontct"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left">
+                            <a href="###" class="easyui-linkbutton" onclick="douploadpic()" data-options="plain:false">上传相片</a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width:50%">
+                <table id="noticetable_id" border="0" style="width: 100%">
+                    <tr>
+                        <td id="entry_try">试用期转正提醒(0)</td>
+                    </tr>
+                    <tr>
+                        <td id="entry_try_delay" class="">延长试用期通知(0)</td>
+                    </tr>
+                    <tr>
+                        <td id="tran_try" class="">考察期转正提醒(0)</td>
+                    </tr>
+                    <tr>
+                        <td id="tran_try_delay" class="">延长考察期通知(0)</td>
+                    </tr>
+                    <tr>
+                        <td id="glgxnotice" class="">关联关系申报提醒(0)</td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+    <div class="panel-header panel-header-noborder bunderdiv" style="">
+        <div class="panel-title panel-with-icon">流程信息</div>
+        <div class="panel-icon accordion-expand"></div>
+    </div>
+    <iframe src="../common/mywork.html" frameborder='0' style="width:100%;height:auto"></iframe>
+
+    <!---
+        <div class="panel-header panel-header-noborder bunderdiv bunderdiv" style="">
+            <div class="panel-title panel-with-icon">关联关系申报</div>
+            <div class="panel-icon accordion-expand"></div>
+        </div>
+
+        <div style="padding: 5px">
+            <ul class="menus_ui">
+                <li url="hr_base/hrrl_declare_nb.html">内部关联关系申报</li>
+                <li url="hr_base/hrrl_declare_wb.html">客户/供应商关联关系申报</li>
+            </ul>
+            <div style="clear:both"></div>
+            <div style="height: 20px"></div>
+        </div>
+
+        <div class="spec"></div>
+    -->
+    <div class="panel-header panel-header-noborder bunderdiv" style="margin-bottom: 0px">
+        <div class="panel-title panel-with-icon">我要申请</div>
+        <div class="panel-icon accordion-expand" style=""></div>
+    </div>
+    <div style="width: 100%;height: auto;padding:0px">
+        <ul class="menus_ui">
+            <li url="hr_perm/hr_entry_prob.html">入职转正申请</li>
+            <li url="hr_perm/hr_employee_transfer.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">调动申请</li>
+            <li url="hr_kq/hrkq_holidayapp.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">请假申请</li>
+            <li url="hr_kq/hrkq_overtime.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">加班申请</li>
+            <li url="hr_kq/hrkq_onduty.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">值班申请</li>
+            <li url="hr_kq/hrkq_businesstrip.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">出差申请</li>
+            <li url="hr_kq/hrkq_wkoff.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">调休申请</li>
+            <li url="hr_kq/hrkq_resign.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">补签申请</li>
+            <li url="hr_kq/rpt_kqyc.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">考勤异常查询</li>
+            <li url="hr_perm/Hr_transfer_prob.html?edittps=%7B%22isedit%22:true,%22issubmit%22:false,%22isview%22:false,%22isupdate%22:false%7D">调动转正申请</li>
+        </ul>
+        <div style="clear:both"></div>
+    </div>
+    <div class="spec"></div>
+</div>
+<div class="panel-header panel-header-noborder bunderdiv" style="display: none">
+    <div class="panel-title panel-with-icon">流程跟踪</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+<div class="spec"></div>
+<div class="panel-header panel-header-noborder bunderdiv bunderdiv" style="">
+    <div class="panel-title panel-with-icon">信息维护</div>
+    <div class="panel-icon accordion-expand"></div>
+</div>
+<div style="padding: 0px">
+    <ul class="menus_ui">
+        <li url="hr_perm/hr_empaddr_chg.html?oldfields=['oddegree','oldmajor']&newfields=['newdegree','newmajor']">
+            学历/专业
+        </li>
+        <li url="hr_perm/hr_empaddr_chg.html?oldfields=['oldmarried']&newfields=['newmarried']">婚姻情况</li>
+        <li url="hr_perm/hr_empaddr_chg.html?oldfields=['oldaddress','oldtelphone','oldemail']&newfields=['newaddress','newtelphone','newemail']">
+            个人联系信息维护
+        </li>
+        <li url="hr_perm/hr_empaddr_chg.html?oldfields=['oldurgencycontact','oldcellphone','oldurmail']&newfields=['newurgencycontact','newcellphone','newurmail']">
+            紧急联系人信息维护
+        </li>
+        <li url="hr_base/hrrl_declare_nb.html">内部关联关系申报</li>
+        <li url="hr_base/hrrl_declare_wb.html">客户/供应商关联关系申报</li>
+    </ul>
+    <div style="clear:both"></div>
+</div>
+
+<div id="syzztx_orgm_pw" class="easyui-window" title="试用转正提醒" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',split:false,border:false" style="height:50px;">
+            &nbsp;&nbsp;以下新入职员工，入职试用期即将到期。请结合试用期员工的综合表现，即时在HRMS系统开展对该员工的入职转正评审工作。谢谢！
+        </div>
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table class="easyui-datagrid" id="syzztx_orgm_table"
+                   data-options="fitColumns:false,singleSelect:true,striped:false,fit:true">
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <a class="easyui-linkbutton" onclick="onsyzztx_orgm_pwOK();" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="onsyzztx_orgm_pwclose();" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="syzzyc_orgm_pw" class="easyui-window" title="试用转正延长提醒"
+     data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',split:false,border:false" style="height:50px;">
+            &nbsp;&nbsp;以下新入职员工，入职试用期需延长。延期期间可结合员工的综合表现，达标后在HRMS系统开展对该员工的入职转正评审工作谢谢！
+        </div>
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table class="easyui-datagrid" id="syzzyq_orgm_table"
+                   data-options="fitColumns:false,singleSelect:true,striped:false,fit:true">
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <!--     <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+                    style="width:80px">确定</a>-->
+            <a class="easyui-linkbutton" onclick="$('#syzzyc_orgm_pw').window('close');"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="kczztx_orgm_pw" class="easyui-window" title="考察转正提醒" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',split:false,border:false" style="height:50px;">
+            &nbsp;&nbsp;以下考察期员工，考察期即将到期。请结合考察期员工的综合表现，即时在HRMS系统开展对该员工的调动转正评审工作。谢谢！
+        </div>
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table class="easyui-datagrid" id="kczztx_orgm_table"
+                   data-options="fitColumns:false,singleSelect:true,striped:false,fit:true">
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <a class="easyui-linkbutton" onclick="onkczztx_orgm_pwOK();" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="onkczztx_orgm_pwclose();" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<div id="kczzyq_orgm_pw" class="easyui-window" title="考察转正延期提醒"
+     data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',split:false,border:false" style="height:50px;">
+            &nbsp;&nbsp;以下考察期员工，调动考察期需延长。延期期间可结合员工的综合表现，达标后在HRMS系统开展对该员工的考察期转正评审工作谢谢！
+        </div>
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table class="easyui-datagrid" id="kczzyq_orgm_table"
+                   data-options="fitColumns:false,singleSelect:true,striped:false,fit:true">
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <!--     <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+                    style="width:80px">确定</a>-->
+            <a class="easyui-linkbutton" onclick="onkczzyq_orgm_pwclose();" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+<!--消息提示-->
+<div id="tztxps_pw" class="easyui-window" title="提示" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 470px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <div id="txtxmessage"></div>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <a class="easyui-linkbutton" onclick="gosyzzjm()" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#tztxps_pw').window('close');" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="glgxnotice_pw" class="easyui-window" title="关联关系申报提醒"
+     data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 500px;height: 300px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',split:false,border:false" style="height:50px;">
+            &nbsp;&nbsp;以下关联关系，请尽快申报！
+        </div>
+        <div data-options="region:'center',border:false" style="padding:0px;">
+            <table class="easyui-datagrid" id="glgxnotice_pw_table"
+                   data-options="fitColumns:false,singleSelect:true,striped:false,fit:true">
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none;overflow: hidden">
+            <a class="easyui-linkbutton" onclick="onglgxnotice_pw_pwclose();" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#glgxnotice_pw').window('close');"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [];
+    </script>
+    <script type="text/javascript">
+        var parms = $getPageParms();
+        var menutag = parseInt(parms.menutag);//1 高级技术人才统计分析  2高级技术人才趋势分析
+        function blformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v) || (v == undefined))
+                return "0";
+            v = v * 100;
+            return v.toFixed(2) + "%";
+        }
+
+        function intzeroformatter(value, row, index) {
+            var v = parseFloat(value);
+            if (isNaN(v))
+                return 0;
+            else
+                return v;
+        }
+
+        var listGridColumns = function () {
+            return [
+                {field: 'yearmonth', title: '年月', width: 80},
+                {field: 'mdname', title: '高技模块', width: 150},
+                {field: 'zrnum', title: '主任级', width: 80, formatter: intzeroformatter},
+                {field: 'fzrnum', title: '副主任级', width: 80, formatter: intzeroformatter},
+                {field: 'gjnum', title: '高级', width: 100, formatter: intzeroformatter},
+                {field: 'emnum', title: '总人数', width: 100, formatter: intzeroformatter},
+                {field: 'leavnum', title: '离职人数', width: 100, formatter: intzeroformatter},
+                {field: 'leavper', title: '离职率', width: 100, formatter: blformatter}
+            ]
+        };
+
+        var prtOptions = {
+            pagination: false,
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "200px",//
+            gdListColumns: listGridColumns,
+            coURL: _serUrl + "/web/hr/permrpt1/rptadvtech.co",
+            findOptionsFilter: "#findOptions7",
+            beforeInitUI: beforeInitUI,
+            afterInitUI: afterInitUI,
+            onGetFindParms: onGetFindParms,
+            onLoadChartOptions: onLoadChartOptions,
+            onLoadChartData: onLoadChartData
+        };
+
+        function onFindAdvMode() {
+            var url = _serUrl + "/web/hr/permrpt1/getadvtechmodes.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#advmodename").combobox({
+                    valueField: 'atmid',
+                    textField: 'mdname',
+                    data: jsdata
+                });
+            }, function () {
+                $.messager.alert('错误', '错误!', 'error');
+            });
+        }
+
+        function onLoadChartOptions(rows) {
+            if (menutag == 2) {
+                var ticks = [];
+                if ((rows.chartdata) && (rows.chartdata.length > 0)) {
+                    var dts = rows.chartdata[0].data;
+                    for (var i = 0; i < dts.length; i++) {
+                        ticks.push(dts[i][0]);
+                    }
+                }
+                var options = {
+                    yaxis: {
+                        min: 0
+                    },
+                    xaxis: {
+                        mode: "time",
+                        timeformat: "%Y%m",
+                        tickSize: [1, "month"]
+                    },
+                    legend: {
+                        opacity: 1,
+                        backgroundOpacity: 1
+                    }
+                };
+                console.error(JSON.stringify(ticks));
+                if (ticks.length > 0) {
+                    options.xaxis.ticks = ticks;
+                    //  options.max = ticks[ticks.length - 1] + (1000 * 60 * 60 * 2);
+                }
+                return options;
+            }
+        }
+
+        function onLoadChartData(rows) {
+            if (menutag == 2) {
+                console.error(JSON.stringify(rows));
+                return rows.chartdata;
+            }
+        }
+
+        function beforeInitUI() {
+            if (menutag == 2) {
+                return {
+                    allowChart: true,
+                    showChartChoicetor: true
+                };
+            }
+        }
+
+        function afterInitUI() {
+            $parserDatebox2YearMonth($("#yearmonth_begin"));
+            $parserDatebox2YearMonth($("#yearmonth_end"));
+            if (menutag == 1) {
+
+            }
+            if (menutag == 2) {
+                $(".yearmonth_begin_title").html("选择开始年月");
+                $(".yearmonth_end_title").html("选择截止年月");
+                $(".yearmonth_end_title").parent().css("display", "");
+            }
+            onFindAdvMode();
+        }
+
+        function onGetFindParms() {
+            var parms = [];
+            parms.push({parmname: "menutag", reloper: "=", parmvalue: menutag});
+            var advmodename = $("#advmodename").combobox('getText');
+            if (!$isEmpty(advmodename)) {
+                parms.push({parmname: "advmodename", reloper: "=", parmvalue: advmodename});
+            }
+            if (menutag == 1) {
+                var yearmonth_begin = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth_begin)) {
+                    alert("选择年月");
+                    return;
+                }
+                parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth_begin});
+            }
+
+            if (menutag == 2) {
+                var yearmonth_begin = $("#yearmonth_begin").datebox('getValue');
+                if ($isEmpty(yearmonth_begin)) {
+                    alert("选择起始年月");
+                    return;
+                }
+                var yearmonth_end = $("#yearmonth_end").datebox('getValue');
+                if ($isEmpty(yearmonth_end)) {
+                    alert("选择截止年月");
+                    return;
+                }
+                parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth_begin});
+                parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonth_end});
+            }
+            return parms;
+        }
+
+    </script>
+    <script type="text/html" id="findOptions7">
+        <table style="padding: 10px">
+            <tr>
+                <td>高技模块</td>
+                <td>
+                    <input id="advmodename" class="easyui-combobox" style="width:200px;height: 22px">
+                </td>
+            </tr>
+            <tr>
+                <td class="yearmonth_begin_title">
+                    选择年月
+                </td>
+                <td>
+                    <input id="yearmonth_begin" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr style="display: none">
+                <td class="yearmonth_end_title">
+                    选择年月
+                </td>
+                <td>
+                    <input id="yearmonth_end" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+        </table>
+    </script>
+</head>
+<body>
+
+</body>
+</html>

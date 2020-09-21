@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        var els_all, els_readonly, els_lables;
+        var jpainfoJSON;
+        var linedata = undefined;
+
+        $(document).ready(function () {
+            jpainfoJSON = parent.jpainfoJSON;
+        });
+
+        function $OnCorsairReady() {
+            initPage();
+        }
+
+        var jsonbanding = new TJSONBandingFrm();
+        function initPage() {
+            initGrids();
+        }
+
+        function initGrids() {
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic53",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=53",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    $("#shwwftemplinklineconditions").datagrid({
+                        columns: [
+                            [
+                                {
+                                    field: 'parmname', title: '参数名', width: 100, editor: {
+                                    type: 'combobox',
+                                    options: {
+                                        valueField: 'id', textField: 'value',
+                                        data: jpainfoJSON
+                                    }
+                                }, formatter: function (value, row) {
+                                    for (var i = 0; i < jpainfoJSON.length; i++) {
+                                        var r = jpainfoJSON[i];
+                                        if (r.id == value) {
+                                            return r.value;
+                                        }
+                                    }
+                                    return value;
+                                }
+                                },
+                                {
+                                    field: 'reloper', title: '运算关系', width: 100, editor: {
+                                    type: 'combobox',
+                                    options: {
+                                        valueField: 'id', textField: 'value',
+                                        data: [
+                                            {id: 'any', value: 'any'},
+                                            {id: '>', value: '>'},
+                                            {id: '>=', value: '>='},
+                                            {id: '<', value: '<'},
+                                            {id: '<=', value: '<='},
+                                            {id: '<>', value: '<>'},
+                                            {id: '=', value: '='}
+                                        ]
+                                    }
+                                }
+                                },
+                                {field: 'parmvalue', title: '参数值', width: 100, editor: 'text'}
+                            ]
+                        ]
+                    });
+                    initEls();
+                    setTimeout("showDatas();", 1000);
+                }
+            });
+        }
+
+        function initEls() {
+            var els = jsonbanding.getInputArray("body");
+            els_all = els.els_all;
+            els_readonly = els.els_readonly;
+            els_lables = els.els_lables;
+        }
+
+
+        function showDatas() {
+            var pamrs = $getPageParms().parms;
+            if (pamrs) {
+                linedata = JSON.parse(pamrs);
+            } else
+                alert("没有传入节点数据");
+            if (!linedata.shwwftemplinklineconditions)
+                linedata.shwwftemplinklineconditions = [];
+            jsonbanding.fromJsonData(els_all, linedata);
+            //alert(JSON.stringify(linedata));
+            jsonbanding.gridFromJSONdata("body", linedata);
+        }
+
+        function OnOKModalDialog() {
+            //jsonbanding.acceptAllGrid("body", linedata);
+            $("#shwwftemplinklineconditions").datagrid("acceptChanges");
+            linedata = jsonbanding.toJsonData(els_all, linedata, false);
+            //console.error(JSON.stringify(linedata));
+            return linedata;
+        }
+
+        function OnCancelModalDialog() {
+            return undefined;
+        }
+    </script>
+</head>
+<body>
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+    <div data-options="region:'north',border:false" style="padding: 5px;height: auto">
+        <tr>
+            <td>标题</td>
+            <td>
+                <input class="easyui-textbox" cjoptions="fdname:'lltitle'" style="height:20px;width: 200px"/>
+            </td>
+            <td>优先级别(越小越高)</td>
+            <td>
+                <input class="easyui-numberbox" cjoptions="fdname:'idx'" style="height:20px;width: 200px"/>
+            </td>
+        </tr>
+    </div>
+    <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+        <table id="shwwftemplinklineconditions" class="easyui-datagrid" style="height: 100%"
+               data-options="singleSelect:true,border:false,toolbar:'#toolbarLineCondtion',
+                           onClickRow:function(){ $C.grid.accept('shwwftemplinklineconditions');},
+                           onDblClickRow:function(){ $C.grid.edit('shwwftemplinklineconditions');}">
+        </table>
+    </div>
+</div>
+<div id="toolbarLineCondtion" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('shwwftemplinklineconditions', {}, true);">添加条件</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('shwwftemplinklineconditions');">删除</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_access">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }];
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                {field: 'code', title: '工号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 60},
+                {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'orgname', title: '机构', width: 200},
+                {field: 'sp_name', title: '职位', width: 200},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'card_id', title: '卡号', width: 80},
+                {field: 'card_sn', title: '卡序列号', width: 80},
+                {field: 'deploy_area', title: '门禁区域', width: 100},
+                {field: 'clock_id', title: '门禁编号', width: 80},
+                {field: 'access_list_name', title: '门禁名称', width: 100},
+                {field: 'sign_time', title: '通行时间', width: 150}
+            ];
+        };
+
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+
+        var relOptionsDY = {
+            data: [{id: '>=', value: '大于等于'}]
+        };
+
+        var relOptionsXY = {
+            data: [{id: '<=', value: '小于等于'}]
+        };
+
+        var findExtParms = [
+            {field: 'code', title: '工号', relOptions: relOptions},
+            {field: 'clock_id', title: '门禁编号', relOptions: relOptions},
+            {field: 'startDate', title: '开始时间', notnull: true, relOptions: relOptionsDY, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'endDate', title: '结束时间', notnull: true, relOptions: relOptionsXY, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: findExtParms,
+            coURL: _serUrl + "/web/hr/Access/rpt/getDoorLog.co"
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

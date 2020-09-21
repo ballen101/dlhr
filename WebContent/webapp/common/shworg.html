@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line2.html" workpath="webapp/common">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/shwjpaattr.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline2.min.js"></script> 
+  <title>机构设置</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic75 = {index: 'dic75',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"董事会","dictvalue":"1"},{"language1":"总裁办公室","dictvalue":"2"},{"language1":"模块","dictvalue":"3"},{"language1":"制造群","dictvalue":"4"},{"language1":"职能中心","dictvalue":"5"},{"language1":"一级公司","dictvalue":"6"},{"language1":"二级公司","dictvalue":"7"},{"language1":"项目部","dictvalue":"8"},{"language1":"配件厂","dictvalue":"9"},{"language1":"一级部门","dictvalue":"10"},{"language1":"模块部门","dictvalue":"11"},{"language1":"制造群部门","dictvalue":"12"},{"language1":"职能部门","dictvalue":"13"},{"language1":"生产部门","dictvalue":"14"},{"language1":"科室","dictvalue":"15"},{"language1":"车间","dictvalue":"16"},{"language1":"拉线","dictvalue":"17"},{"language1":"班组","dictvalue":"18"},{"language1":"部门","dictvalue":"19"}], formator: function (value, row) { var jsondata = comUrl_dic75.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic75; } if (comUrl_dic75.type == 'combobox') { if (comUrl_dic75.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic75.valueField]) { rst = rst + jsondata[i][comUrl_dic75.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic75.valueField]) return jsondata[i][comUrl_dic75.textField]; } } } if (comUrl_dic75.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic75.editor= {type: 'combobox', options: {valueField:comUrl_dic75.valueField, textField:comUrl_dic75.textField, data: comUrl_dic75.jsondata}}; var comUrl_dic2 = {index: 'dic2',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"可用","dictvalue":"1"},{"language1":"不可用","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic2.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic2; } if (comUrl_dic2.type == 'combobox') { if (comUrl_dic2.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic2.valueField]) { rst = rst + jsondata[i][comUrl_dic2.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic2.valueField]) return jsondata[i][comUrl_dic2.textField]; } } } if (comUrl_dic2.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic2.editor= {type: 'combobox', options: {valueField:comUrl_dic2.valueField, textField:comUrl_dic2.textField, data: comUrl_dic2.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic75", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=75", valueField: 'dictvalue', textField: 'language1' }, { index: "dic2", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=2", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 2; var allowAtt = false; var allowWF = false;</script> 
+  <script type="text/javascript">
+        var orgstyler = function (value, row, index) {
+            if (parseInt(row.usable) != 1) {
+                return 'color:red;';//background-color:#ffee00;
+            }
+        };
+        var listGridColumns = [
+            {field: 'orgname', title: '机构名', width: 150, styler: orgstyler}
+        ];
+        frmOptions = {
+            JPAClass: "com.corsair.server.generic.Shworg",
+            extattrfilter: "#orgexparms",
+            Pagination: false,
+            istree: true,
+            isasyntree: true,
+            JPAIdField: "orgid",
+            treeParentField: "superid",
+            showtreeHeader: false,
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            allow_copy: false,
+            allow_submit: false,
+            allow_expt_list: false,
+            allow_print: false,
+            disableButtonType: _NUBType.hide,
+            findUrl: _serUrl + "/web/user/getOrgsByLged.co?type=gridtree&isall=true",
+            saveUrl: _serUrl + "/web/user/saveOrg.co",
+            delUrl: _serUrl + "/web/user/delOrg.co",
+            findByIDUrl: _serUrl + "/web/common/find.co",
+            extButtons: [
+                {
+                    iconCls: 'icon-add',
+                    text: '查找机构',
+                    handler: function () {
+                        onSelectOrg();
+                    }
+                },
+                {
+                    iconCls: 'icon-exit',
+                    text: '隐藏不可用',
+                    handler: function () {
+                        dohiddisableorg(this);
+                    }
+                }
+            ],
+            onCreate: function () {
+
+            },
+            OnReady: function () {   //都准备好后
+                $("#shworg_finds").datagrid({
+                    columns: [[
+                        {
+                            field: 'forgname',
+                            width: 200,
+                            title: '机构名称'
+                        }
+                    ]]
+                });
+                $("#maindorginfo").css("display", "");
+                //$('#dg_datalist_id').treegrid({onContextMenu: onOrgContextMenu});
+            },
+            onNew: function (jsondata) {
+                jsondata.shworg_finds = [];
+                jsondata.usable = 1;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            afterFindDetail: function (jsdata) {//加载界面数据后执行方法 不能调用 getMainData 方法，否则数据可能被清空
+                if (jsdata)
+                    $("#shworg_finds").datagrid("loadData", jsdata.shworg_finds);
+            },
+            afterSave: function (jsondata) {
+                $('#dg_datalist_id').treegrid("reload", jsondata.orgid);
+            }
+        };
+        var ishideed = false;
+        function dohiddisableorg(obj) {
+            ishideed = !ishideed;
+            var findUrl = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            if (ishideed) {
+                $(obj).find(".l-btn-text").html("取消隐藏");
+                $(obj).find(".l-btn-icon").removeClass("icon-exit").addClass("icon-notexit");
+            } else {
+                $(obj).find(".l-btn-text").html("隐藏不可用");
+                findUrl = findUrl + "&isall=true";
+                $(obj).find(".l-btn-icon").removeClass("icon-notexit").addClass("icon-exit");
+            }
+            mainline.setfindUrl(findUrl);
+            mainline.do_find();
+        }
+
+        function orgfindAction(tp) {
+            if (tp == $C.action.New) {
+                onADDFindIDPOrg();
+                //$C.grid.append('shworg_finds', {orgid: node.id}, true);
+            }
+            if (tp == $C.action.Del) {
+                var row = $('#shworg_finds').datagrid('getSelected');
+                if (row == undefined) {
+                    $.messager.alert('错误', '没选定的查询机构!', 'error');
+                    return;
+                }
+                var idx = $('#shworg_finds').datagrid("getRowIndex", row);
+                $('#shworg_finds').datagrid("deleteRow", idx);
+            }
+        }
+
+        var select_OrgFindIDP_pw = undefined;
+        function onADDFindIDPOrg() {
+            var node = $('#dg_datalist_id').treegrid('getSelected');
+            if (!node) {
+                $.messager.alert('错误', '没选定的机构!', 'error');
+                return;
+            }
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true&isall=true";
+            var wo = {
+                id: "select_OrgFindIDP_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "500px",//
+                height: "300px",//
+                gdListColumns: [
+                    {field: 'extorgname', title: '机构', width: 400, notfind: true},
+                    {field: 'orgname', title: '机构', width: 100, hidden: true}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        if (row.idpath.substr(0, node.idpath.length) == node.idpath) {
+                            $.messager.alert('错误', '不允许选择【当前机构】或【当前机构的子机构】!', 'error');
+                            return;
+                        }
+                        if (!$C.grid.getRowByField('#shworg_finds', row.orgid, "forgid")) {
+                            var data = {
+                                orgid: node.orgid,
+                                forgid: row.orgid,
+                                forgname: row.extorgname,
+                                fcode: row.code,
+                                fidpath: row.idpath
+                            };
+                            $("#shworg_finds").datagrid("appendRow", data);
+                            mainline.setDataChanged(true);
+                        }
+                    }
+                }
+            };
+            if (!select_OrgFindIDP_pw) {
+                select_OrgFindIDP_pw = new TSearchForm(wo);
+            }
+            select_OrgFindIDP_pw.show();
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true&isall=true";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "500px",//
+                height: "300px",//
+                gdListColumns: [
+                    {field: 'extorgname', title: '机构', width: 400, notfind: true},
+                    {field: 'orgname', title: '机构', width: 100, hidden: true}
+                ]
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                coURL: url,
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        doSelectOrg(row.orgid);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+        function doSelectOrg(orgid) {
+            try {
+                $('#dg_datalist_id').treegrid('expandTo', orgid);
+                $('#dg_datalist_id').treegrid('select', orgid);
+            } catch (e) {
+                //alert(e.name + ": " + e.message);
+            }
+        }
+
+        function onOrgContextMenu(e, row) {
+            if (row) {
+                e.preventDefault();
+                $(this).treegrid('select', row.orgid);
+                $('#orgmenu').menu('show', {
+                    left: e.pageX,
+                    top: e.pageY
+                });
+            }
+        }
+        var cur_orgAction = 0;
+        var cur_node = null;
+        var select_OrgAppend2_pw = undefined;
+        //tp 1 并入 2 调整所属父机构 3 更名 4 注销
+        function orgAction(tp) {
+            var node = $('#dg_datalist_id').treegrid('getSelected');
+            if (!node) {
+                $.messager.alert('错误', '没选定的机构!', 'error');
+                return;
+            }
+            cur_node = node;
+            cur_orgAction = tp;
+            if (tp == 1) {
+                $.messager.confirm('警告', '当前机构下所有资料将并入选择的机构，当前机构资料将被清空，是否继续?', function (r) {
+                    if (r) {
+                        $.messager.confirm('提示', '根据系统数据量大小，系统将占有较长时间运算，是否继续？', function (r) {
+                            if (r) {
+                                onSelectOrg2Appendto(node);
+                            }
+                        });
+                    }
+                });
+            }
+            if (tp == 2) {
+                $.messager.confirm('警告', '将当前机构调整至选择机构下，是否继续?', function (r) {
+                    if (r) {
+                        $.messager.confirm('提示', '根据系统数据量大小，系统将占有较长时间运算，是否继续?', function (r) {
+                            if (r) {
+                                onSelectOrg2Appendto(node);
+                            }
+                        });
+                    }
+                });
+            }
+            if (tp == 3) {
+                $.messager.prompt('输入', '请修改机构名称', function (r) {
+                    if (r) {
+                        if (r == node.orgname)
+                            return;
+                        var url = _serUrl + "/web/user/updateOrgName.co";
+                        var data = {
+                            orgid: node.orgid,
+                            orgname: r
+                        };
+                        $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                            node.orgname = jsdata.orgname;
+                            $('#dg_datalist_id').treegrid('update', {
+                                id: node.orgid,
+                                row: node
+                            });
+                        }, function (err) {
+                            alert(err);
+                        });
+                    }
+                });
+                $('.messager-input').val(node.orgname).focus();
+            }
+        }
+
+
+        function onSelectOrg2Appendto(node) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true&isall=true";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "500px",//
+                height: "300px",//
+                gdListColumns: [
+                    {field: 'extorgname', title: '机构', width: 400, notfind: true},
+                    {field: 'orgname', title: '机构', width: 100, hidden: true}
+                ]
+            };
+            if (!select_OrgAppend2_pw) {
+                select_OrgAppend2_pw = new TSearchForm(wo);
+            }
+            select_OrgAppend2_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        var data = {
+                            tp: cur_orgAction,
+                            sorgid: node.orgid,
+                            dorgid: row.orgid
+                        };
+                        var url = _serUrl + "/web/user/putOrg2Org.co";
+                        $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                            if (jsdata.result == "OK") {
+                                if (cur_orgAction == 2) {
+                                    $('#dg_datalist_id').treegrid("remove", cur_node.orgid);
+                                    var parms = {
+                                        parent: row.orgid,
+                                        data: [cur_node]
+                                    };
+                                    $('#dg_datalist_id').treegrid('append', parms);
+                                }
+                                if (cur_orgAction == 1) {
+                                    if (cur_node.children) {
+                                        var ns = JSON.stringify(cur_node.children);
+                                        var nodes = JSON.parse(ns);
+                                        var oids = [];
+                                        for (var i = 0; i < nodes.length; i++) {
+                                            oids.push(nodes[i].orgid);
+                                        }
+                                        for (var i = 0; i < oids.length; i++) {
+                                            $('#dg_datalist_id').treegrid('remove', oids[i]);
+                                        }
+
+                                        var parms = {
+                                            parent: row.orgid,
+                                            data: nodes
+                                        };
+                                        $('#dg_datalist_id').treegrid('append', parms);
+
+
+                                    }
+                                }
+                            }
+                        }, function (err) {
+                            alert(err);
+                        });
+                    }
+                }
+            });
+            select_OrgAppend2_pw.show();
+        }
+
+
+        var findOrg2UserOrg_pw = undefined;
+
+        function findOrg2UserOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=list&extorgname=true&isall=true";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                autoFind: false,//是否自动查询
+                extParms: [],//扩展参数
+                width: "500px",//
+                height: "300px",//
+                gdListColumns: [
+                    {field: 'extorgname', title: '机构', width: 400, notfind: true},
+                    {field: 'orgname', title: '机构', width: 100, hidden: true}
+                ]
+            };
+            if (!findOrg2UserOrg_pw) {
+                findOrg2UserOrg_pw = new TSearchForm(wo);
+            }
+            findOrg2UserOrg_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        if (!$C.grid.getRowByField("#userinfo_orgs", [row.orgid], ["orgid"])) {
+                            var r = {};
+                            r.orgid = row.orgid;
+                            r.extorgname = row.extorgname;
+                            r.isdefault = 2;
+                            r.inheritrole = 1;
+                            $C.grid.append('userinfo_orgs', r, true);
+                        }
+                    }
+                }
+            });
+            findOrg2UserOrg_pw.show();
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div id="toolbarOrgGridFind" style="height:auto"> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="orgfindAction($C.action.New);">添加</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="orgfindAction($C.action.Del);">删除</a> 
+  </div> 
+  <div id="orgmenu" class="easyui-menu" style="width:120px;"> 
+   <div onclick="orgAction(1)" data-options="iconCls:'icon-submit'">
+     并入到机构 
+   </div> 
+   <div class="menu-sep"></div> 
+   <div onclick="orgAction(2)" data-options="iconCls:'icon-redo'">
+     调整所属机构 
+   </div> 
+   <div class="menu-sep"></div> 
+   <div onclick="orgAction(3)" data-options="iconCls:'icon-edit'">
+     更名 
+   </div> 
+   <div class="menu-sep"></div> 
+   <div onclick="orgAction(4)" data-options="iconCls:'icon-remove'">
+     注销 
+   </div> 
+  </div> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;
+     text-align: center;padding-top: 20%;background-color:white;font-size: 12px;display: none">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <div class="easyui-layout" data-options="fit:true,border:false" style="overflow: hidden"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:true" style="width: 100%; padding:5px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_add'">新建</a> 
+     <a id="id_bt_new2" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_add'">新建子节点</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-copy'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-save'">保存</a> 
+     <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-submit'">提交</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ml_find'">查找</a> 
+     <!--    <a id="id_bt_detail" href="javascript:void(0)" class="easyui-linkbutton"
+                   data-options="plain:true,iconCls:'icon-ml_detail'">详情</a>--> 
+     <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-reload'">刷新</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_del'">删除</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_attach'">上传附件</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-print'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-ml_excel'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-filter'">显示列</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'icon-exit'">返回</a> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <div id="main_tabs_id" class="easyui-tabs" data-options="fit:true,border:false,plain:true,tabHeight:23,showHeader:false"> 
+     <div id="main_tab_common_id" title="常规" style="padding: 0px"> 
+      <div id="main_tab_common_layout_id" class="easyui-layout" data-options="fit:true,border:false"> 
+       <div id="main_tab_list_id" data-options="region:'west',border:false,split:true,collapsible:false" style="padding: 0px;height: 100%;width: 300px" title="列表"> 
+        <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,fitColumns:true,remoteSort:false,border:false,singleSelect: true"></table> 
+       </div> 
+       <div data-options="region:'center',border:false" style="padding: 0px"> 
+        <div class="easyui-layout" data-options="fit:true,border:false"> 
+         <div id="main_form_div_id" data-options="region:'center',border:false" style="padding: 0px;height: auto"> 
+          <div id="maindata_id" class="easyui-panel" title="机构详情" data-options="fit:true,border:false"> 
+           <div id="maindorginfo" class="easyui-tabs" data-options="fit:true,border:true" style="padding: 0px;display: none"> 
+            <div title="基本信息" style="padding:5px"> 
+             <table border="0" style="width: auto;height:auto ;padding: 5px"> 
+              <tbody> 
+               <tr> 
+                <td>类型</td> 
+                <td> <input cjoptions="easyui_class:'easyui-textbox',comidx:'dic75',fdname:'orgtype',crequired:true,editable:false" style="height:20px;width: 150px"> </td> 
+                <td>名称</td> 
+                <td><input style="height:20px;width: 150px" cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true"> </td> 
+               </tr> 
+               <tr> 
+                <td>编码</td> 
+                <td><input readonly cjoptions="easyui_class:'easyui-textbox',fdname:'code',readonly:true" style="height:20px;width: 150px"> </td> 
+                <td>可用</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',comidx:'dic2',fdname:'usable',editable:false,crequired:true" style="height:20px;width: 150px"> </td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'manager'">第一负责人</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'manager'" style="height:20px;width: 150px"></td> 
+                <td cjoptions="fdname:'managerpos'">岗位</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'managerpos'" style="height:20px;width: 150px"></td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'vicemanager'">第二负责人</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'vicemanager'" style="height:20px;width: 150px"></td> 
+                <td cjoptions="fdname:'vicemanagerpos'">岗位</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'vicemanagerpos'" style="height:20px;width: 150px"></td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'orgaddr'">邮编</td> 
+                <td colspan="1"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgmail'" style="height:20px;width: 150px"> </td> 
+                <td cjoptions="fdname:'orgidx'">排序</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgidx'" style="height:20px;width: 100px"></td> 
+               </tr> 
+               <tr> 
+                <td style="display: none" cjoptions="fdname:'orgaddr'">机构层级</td> 
+                <td style="display: none" colspan="1"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'orglevel',readonly:true" style="height:20px;width: 150px"> </td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'orgaddr'">地址</td> 
+                <td colspan="3"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgaddr'" style="height:20px;width: 385px"> </td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'creator'">创建人</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px"> </td> 
+                <td cjoptions="fdname:'createtime'">创建时间</td> 
+                <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 120px"></td> 
+               </tr> 
+               <tr> 
+                <td cjoptions="fdname:'updator'">更新人</td> 
+                <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"> </td> 
+                <td cjoptions="fdname:'updatetime'">更新时间</td> 
+                <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 120px"></td> 
+               </tr> 
+               <tr style="display: none"> 
+                <td>机构路径</td> 
+                <td> <input cjoptions="easyui_class:'easyui-textbox',fdname:'idpath',crequired:true,editable:false,buttonText:'修复'" style="height:20px;width: 150px"> </td> 
+               </tr> 
+               <tr> 
+                <td>备注</td> 
+                <td colspan="3"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'note',multiline:true" style="height: 50px;width: 385px"></td> 
+               </tr> 
+              </tbody> 
+             </table> 
+            </div> 
+            <div title="机构介绍" style="padding:5px"> 
+             <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgfrof',multiline:true,fit:true"> 
+            </div> 
+            <div title="机构职责" style="padding:5px"> 
+             <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgduty',multiline:true,fit:true"> 
+            </div> 
+            <div title="跨机构权限" style="padding:0px"> 
+             <table id="shworg_finds" class="easyui-datagrid" cjoptions="fdname:'shworg_finds'" data-options="fit:true,border:false,toolbar:'#toolbarOrgGridFind',
+                    onClickRow:function(){ $C.grid.accept('shworg_finds');},
+                    onDblClickRow:function(){ $C.grid.edit('shworg_finds');}"> 
+             </table> 
+            </div> 
+            <div id="orgexparms" title="机构扩展信息" style="padding:5px"> 
+            </div> 
+           </div> 
+          </div> 
+         </div>  
+        </div> 
+       </div> 
+      </div> 
+     </div>   
+    </div> 
+   </div> 
+  </div> 
+  <div id="common_divs_id"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+    </ul> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:60px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:60px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'icon-selectall'" style="width:60px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'icon-reload'" style="width:60px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'icon-save',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+</style>  
+ </body>
+</html>

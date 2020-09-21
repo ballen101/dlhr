@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>机构职位月结</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'yearmonth', title: '年月', width: 64, formatter: $fieldDateFormatorYYYY_MM},
+            {field: 'orgname', title: '部门', width: 200},
+            {field: 'hwc_namezl', title: '职类', width: 100},
+            {field: 'quota', title: '编制数量', width: 100}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_month_quotaoc",
+            JPAIdField: "mid",
+            allowAtt: true,
+            allowWF: false,
+            datainfo_line_title: "历史机构职类编制",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '570px',
+            windowHeight: '200px',
+            allow_copy: false,
+            allow_new: false,
+            allow_del: false,
+            allow_save: false,
+            allow_expt_list: true,
+            listgrid_multiselect: true,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                $parserDatebox2YearMonth($("#yjmonth"));
+            },
+            onNew: function (jsondata) {
+                //
+            },
+            beforeSave: function () {
+
+            },
+            onSave: function (postData, andSubmit) {
+                return true;
+            },
+            onFind: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            },
+            afterFindDetail: function (jsondata) {
+            },
+            extButtons: [//扩展按钮
+                {
+                    iconCls: 'icon-task',
+                    text: '月结',
+                    handler: function () {
+                        doyuejie();
+                    },
+                    posion: '#id_bt_print'//按钮位置之前，默认
+                }
+            ]
+        };
+
+        function doyuejie() {
+            $("#pw_matsyncs_id").window("open");
+        }
+
+        function doemp_month() {
+            var ym = $("#yjmonth").datebox("getValue");
+            if ((!ym) || (ym.length == 0)) {
+                $.messager.alert('错误', "先选择月度", 'error');
+                return;
+            }
+            var data = {ym: ym};
+            var url = _serUrl + "/web/hr/common/putmonthqtc.co";
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $('#pw_matsyncs_id').window('close')
+                alert("完成月结【" + jsdata.result + "】条数据");
+            }, function (err) {
+                alert(err.errmsg);
+            });
+        }
+    </script>
+    <style type="text/css">
+        #baseinfodiv table td {
+            padding: 2px 5px 2px 5px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+
+</head>
+<body>
+<table id="maindata_id" cellspacing="0" border="0">
+    <tr>
+        <td cjoptions="fdname:'yearmonth'">年月</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yearmonth',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezl'">职类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'quota'">编制数量</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'quota',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构名称</td>
+        <td colspan="5"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 100%"/></td>
+    </tr>
+
+</table>
+
+<div id="pw_matsyncs_id" class="easyui-window" title="选择月份"
+     data-options="iconCls:'icon-save',closed:true,modal:true,collapsible:false"
+     style="width: 200px;height: 150px;padding:5px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <input id="yjmonth" class="easyui-datebox"
+                   data-options="editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str"
+                   style="width: 100px;height: 20px"> </input>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;height: 40px;padding:5px 0 0;">
+            <a class="easyui-linkbutton" onclick="doemp_month()" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" onclick="$('#pw_matsyncs_id').window('close')"
+               data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

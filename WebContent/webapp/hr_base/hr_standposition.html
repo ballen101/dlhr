@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+ <head> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/mainline2.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"硕士及以上","dictvalue":"2"},{"language1":"本科","dictvalue":"3"},{"language1":"大专","dictvalue":"4"},{"language1":"高中","dictvalue":"5"},{"language1":"中专","dictvalue":"6"},{"language1":"中技","dictvalue":"7"},{"language1":"初中","dictvalue":"8"},{"language1":"小学","dictvalue":"9"},{"language1":"无","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrl_dic993 = {index: 'dic993',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"调休","dictvalue":"1"},{"language1":"核算工资","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic993.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic993; } if (comUrl_dic993.type == 'combobox') { if (comUrl_dic993.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic993.valueField]) { rst = rst + jsondata[i][comUrl_dic993.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic993.valueField]) return jsondata[i][comUrl_dic993.textField]; } } } if (comUrl_dic993.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic993.editor= {type: 'combobox', options: {valueField:comUrl_dic993.valueField, textField:comUrl_dic993.textField, data: comUrl_dic993.jsondata}}; var comUrl_dic650 = {index: 'dic650',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"职类","dictvalue":"1"},{"language1":"职群","dictvalue":"2"},{"language1":"职种","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic650.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic650; } if (comUrl_dic650.type == 'combobox') { if (comUrl_dic650.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic650.valueField]) { rst = rst + jsondata[i][comUrl_dic650.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic650.valueField]) return jsondata[i][comUrl_dic650.textField]; } } } if (comUrl_dic650.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic650.editor= {type: 'combobox', options: {valueField:comUrl_dic650.valueField, textField:comUrl_dic650.textField, data: comUrl_dic650.jsondata}}; var comUrl_dic1212 = {index: 'dic1212',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"脱产","dictvalue":"1"},{"language1":"非脱产","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic1212.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1212; } if (comUrl_dic1212.type == 'combobox') { if (comUrl_dic1212.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1212.valueField]) { rst = rst + jsondata[i][comUrl_dic1212.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1212.valueField]) return jsondata[i][comUrl_dic1212.textField]; } } } if (comUrl_dic1212.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1212.editor= {type: 'combobox', options: {valueField:comUrl_dic1212.valueField, textField:comUrl_dic1212.textField, data: comUrl_dic1212.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' }, { index: "dic993", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=993", valueField: 'dictvalue', textField: 'language1' }, { index: "dic650", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=650", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1212", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1212", valueField: 'dictvalue', textField: 'language1' } ]; var formtype = 2; var allowAtt = true; var allowWF = false;</script> 
+  <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'orgname', title: '所属机构', width: 120},
+            {field: 'sp_code', title: '编码', width: 120},
+            {field: 'sp_name', title: '职位', width: 150},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hg_name', title: '职等', width: 120},
+            {field: 'hwc_namezl', title: '职类', width: 120},
+            {field: 'hwc_namezq', title: '职群', width: 100},
+            {field: 'hwc_namezz', title: '职种', width: 100},
+            {field: 'gtitle', title: '职衔', width: 100},
+            {field: 'isoffjob', title: '职位性质', width: 64, formatter: comUrl_dic1212.formator},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isadvtech', title: '高技人才', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'issensitive', title: '敏感岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'iskey', title: '关键岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'ishighrisk', title: '高危岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isneedadtoutwork', title: '离职审计岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isdreamposition', title: '梦职场岗位', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'maxage', title: '最大年龄', width: 64},
+            {field: 'minage', title: '最小年龄', width: 64},
+            {field: 'mindegree', title: '学历要求', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'yhtype', title: '年假方式', width: 64, formatter: comUrl_dic993.formator},
+            {field:'istechsub',title:'技术津贴',width:64, formatter: comUrl_dic5.formator},
+            {field: 'sp_exp', title: '职位说明', width: 200},
+            {field: 'alloworgwsch', title: '参与机构排班', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'isteamward', title: '团队管理奖', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 200},
+            {field: 'creator', title: '制单人', width: 150},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 150, findtype: 'datetime'},
+            {field: 'updator', title: '更新人', width: 150},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+        ];
+
+        function rowstyler(index, row) {
+            if (row)
+                if (parseInt(row.usable) == 2) {
+                    return 'color:#DC143C;';
+                }
+        }
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_standposition",
+            JPAIdField: "sp_id",
+            allowAtt: false,
+            allowWF: false,
+            autoFind: true,
+            datainfo_pw_title: "职位详情",
+            datainfo_attr_title: "职位说明书",
+            htmlTemeType: HtmlTempType.htMLPop,
+            windowWidth: '950px',//窗体宽度  htMLPop有效
+            windowHeight: '450px',//窗体高度 htMLPop有效
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            bttexts: {id_bt_att: "上传职位说明书"},
+            extButtons: [//扩展按钮
+                {
+                    text: '隐藏/显示不可用',
+                    iconCls: 'icon-task',
+                    handler: function () {
+                        hidediusable();
+                    }
+                }
+            ],
+            OnReady: function () {   //都准备好后\
+                $("#dg_datalist_id").datagrid({
+                    rowStyler: rowstyler
+                });
+            },
+            onFind: function (parms) {
+                parms.order = ' hwc_namezl asc,hg_name asc,lv_num asc ';
+            },
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+                jsondata.isadvtech = 2;
+                jsondata.isoffjob = 1;
+                jsondata.issensitive = 2;
+                jsondata.iskey = 2;
+                jsondata.ishighrisk = 2;
+                jsondata.maxage = 0;
+                jsondata.minage = 0;
+                jsondata.mindegree = 7;
+                jsondata.isneedadtoutwork = 2;
+                jsondata.isdreamposition = 2;
+            }
+        };
+        var sch_hrclass_pw = undefined;
+        var sch_hr_grade_pw = undefined;
+        var sch_hr_prolevel_pw = undefined;
+        function onFindHRClass() {
+            var wo = {
+                id: "sch_hrclass_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_wclass",  //对应后台JPAClass名
+                orderStr: " hwc_id asc ",
+                isTree: true,
+                treeField: "hwc_name",
+                multiRow: false,
+                idField: 'hwc_id',
+                pidField: 'pid',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'hwc_name', title: '名称', width: 150},
+                    {field: 'type_id', title: '类型', width: 80, formatter: comUrl_dic650.formator}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        var datas = sch_hrclass_pw.getData();
+                        var zz = rows[0];
+                        if (zz.type_id != 3) {
+                            $.messager.alert('错误', '请选择职种!', 'error');
+                            return;
+                        }
+                        var zq = getParentNodeByNodes(datas, zz);
+                        if (!zq) {
+                            $.messager.alert('错误', '计算职群错误', 'error');
+                            return;
+                        }
+                        var zl = getParentNodeByNodes(datas, zq);
+                        if (!zl) {
+                            $.messager.alert('错误', '计算职类错误', 'error');
+                            return;
+                        }
+
+                        mainline.setFieldValue("hwc_idzz", zz.hwc_id);
+                        mainline.setFieldValue("hw_codezz", zz.hw_code);
+                        mainline.setFieldValue("hwc_namezz", zz.hwc_name);
+
+                        mainline.setFieldValue("hwc_idzq", zq.hwc_id);
+                        mainline.setFieldValue("hw_codezq", zq.hw_code);
+                        mainline.setFieldValue("hwc_namezq", zq.hwc_name);
+
+                        mainline.setFieldValue("hwc_idzl", zl.hwc_id);
+                        mainline.setFieldValue("hw_codezl", zl.hw_code);
+                        mainline.setFieldValue("hwc_namezl", zl.hwc_name);
+                        mainline.setFieldValue("isoffjob", zl.isoffjob);
+
+
+                        mainline.setFieldValue("hg_id", "");
+                        mainline.setFieldValue("hg_code", "");
+                        mainline.setFieldValue("hg_name", "");
+                    }
+                }
+            };
+            if (!sch_hrclass_pw) {
+                sch_hrclass_pw = new TSearchForm(wo);
+            }
+            sch_hrclass_pw.show();
+        }
+
+        var ishide = false;
+        function hidediusable() {
+            ishide = !ishide;
+            var parms = (ishide) ? [{parmname: "usable", reloper: "=", parmvalue: "1"}] : [];
+            mainline.do_find(parms);
+        }
+
+        function getParentNodeByNode(pnode, node) {
+            if (pnode.children) {
+                for (var i = 0; i < pnode.children.length; i++) {
+                    var child = pnode.children[i];
+                    if (child == node)
+                        return pnode;
+                    else {
+                        var pnd = getParentNodeByNode(child, node);
+                        if (pnd) {
+                            return pnd;
+                        }
+                    }
+                }
+            }
+        }
+
+        function getParentNodeByNodes(nodes, node) {
+            for (var i = 0; i < nodes.length; i++) {
+                var nd = nodes[i];
+                var rst = getParentNodeByNode(nd, node);
+                if (rst) return rst;
+            }
+        }
+
+        function onFindhr_grade() {
+            var hwc_id = mainline.getFieldValue("hwc_idzl");
+            if ($isEmpty(hwc_id)) {
+                $.messager.alert('错误', '请先选择职类!', 'error');
+                return;
+            }
+            var url = _serUrl + "/web/hr/orgposition/findGradeList.co?hwc_id=" + hwc_id;
+            var wo = {
+                id: "sch_hr_grade_pw",
+                enableIdpath: false,
+                coURL: url,
+                JPAClass: "com.hr.base.entity.Hr_grade",  //对应后台JPAClass名
+                orderStr: " hg_id asc ",
+                multiRow: false,
+                idField: 'hg_id',
+                autoFind: true,//是否自动查询
+                gdListColumns: [
+                    {field: 'hg_name', title: '职等', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        //alert(rows[0].hg_id);
+                        mainline.setFieldValue("hg_id", rows[0].hg_id);
+                        mainline.setFieldValue("hg_code", rows[0].hg_code);
+                        mainline.setFieldValue("hg_name", rows[0].hg_name);
+                        mainline.setFieldValue("gtitle", rows[0].gtitle);
+
+                        mainline.setFieldValue("lv_id", "");
+                        mainline.setFieldValue("lv_num", "");
+                    }
+                }
+            };
+            if (!sch_hr_grade_pw) {
+                sch_hr_grade_pw = new TSearchForm(wo);
+            } else
+                sch_hr_grade_pw.extendOptions({
+                    coURL: url
+                });
+            sch_hr_grade_pw.show(true);
+        }
+
+        function onFindhr_prolevel() {
+            var hg_id = mainline.getFieldValue("hg_id");
+            if ($isEmpty(hg_id)) {
+                $.messager.alert('错误', '请先选择职等!', 'error');
+                return;
+            }
+            var wo = {
+                id: "sch_hr_prolevel_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_prolevel",  //对应后台JPAClass名
+                orderStr: " lv_id asc ",
+                multiRow: false,
+                idField: 'lv_id',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'hg_id', reloper: '=', parmvalue: hg_id}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'lv_num', title: '职级', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        mainline.setFieldValue("lv_id", rows[0].lv_id);
+                        mainline.setFieldValue("lv_num", rows[0].lv_num);
+                    }
+                }
+            };
+            if (!sch_hr_prolevel_pw) {
+                sch_hr_prolevel_pw = new TSearchForm(wo);
+            } else
+                sch_hr_prolevel_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'hg_id', reloper: '=', parmvalue: hg_id}
+                    ]
+                });
+            sch_hr_prolevel_pw.show(true);
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "500px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.code);
+                        mainline.setFieldValue("orgname", row.extorgname);
+                        mainline.setFieldValue("aidpath", row.idpath);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+    </script> 
+ </head> 
+ <body> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ... 
+  </div> 
+  <style type="text/css">
+    #maindata_id td {
+        padding-left: 5px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style> 
+  <script id="findline" type="text/html">
+    <tr style="height: 20px;padding: 0px" id="{{rowid}}">
+        <td style="width: 30%">
+            <input class="easyui-combobox" fieldname="parmname" style="height: 20px;width: 100%"
+                   data-options="{{parmnameData}},width:120,onSelect:mainline.find_window_selectparmname">
+        </td>
+        <td style="width: 20%">
+            <input class="easyui-combobox" fieldname="reloper" style="height: 20px;width: 100%"
+                   data-options="{{reloperData}},width:60,editable:false">
+        </td>
+        <td style="width: 30%" tdtype="parmvalue">
+            <input class="easyui-textbox" fieldname="parmvalue" data-options="width:120" style="height: 20px;width: 100%">
+        </td>
+        <td style="width: 20%;text-align: center">
+            <a href="#" onclick="mainline.find_window_del_click(this)">删除</a>
+        </td>
+    </tr>
+</script> 
+  <div id="mlp_main_sayout" class="easyui-layout" data-options="fit:true,border:false"> 
+   <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+    <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+     <a id="id_bt_new" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-new-add-line'">新建</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_copy" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-copy-line'">复制</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-search-line'">查找</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_print" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_print_new" href="javascript:void(0)" class="easyui-splitbutton" style="display: none" data-options="menu:'#printmm',plain:true,iconCls:'ico-printer-line'">打印</a> 
+     <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_expt_list" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-file-transfer-line'">导出列表</a> 
+     <span class="button-sep"></span> 
+     <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-filter-line'">显示列</a> 
+     <span id="id_skt_stat" style="display: inline-block;float:right;padding-top: 3px;font-size: 14px"></span> 
+    </div> 
+    <div id="printmm" style="width:100px;"> 
+     <div id="id_bt_print_preview" data-options="iconCls:'ico-printer-line'">
+       打印预览 
+     </div> 
+     <div id="id_bt_print_design" data-options="iconCls:'ico-printer-line'">
+       编辑报表 
+     </div> 
+    </div> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding: 0px"> 
+    <table id="dg_datalist_id" style="height: 100%;width: 100%" data-options="rownumbers:true,remoteSort:false,fit:true,border:false,singleSelect: true"> 
+    </table> 
+   </div> 
+  </div> 
+  <div id="datainfo_window_id" class="easyui-window" data-options="modal:true,title:'详情',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'icon-mylocation'" style="width:100%;height:100%;overflow:hidden"> 
+   <div id="cc" class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'north',split:false,border:true" style="height:40px;border-left: 0px;border-top: 0px;border-right: 0px;overflow: hidden"> 
+     <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden"> 
+      <a id="id_bt_save" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-save-line'">保存</a> 
+      <a id="id_bt_submit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-checkbox-circle-fill'">提交</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_unsubmit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-reply-line'">反审核</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_reload" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'ico-refresh-line'">刷新</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_del" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-delete-line'">删除</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_void" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico_tovoid'">作废</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_att" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-attachment-line'">上传附件</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_prev" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-prev'">上一条</a> 
+      <a id="id_bt_next" href="javascript:void(0)" class="easyui-linkbutton" style="" data-options="plain:true,iconCls:'pagination-next'">下一条</a> 
+      <span class="button-sep"></span> 
+      <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton" style="display: none" data-options="plain:true,iconCls:'ico-logout-circle-r-line'">返回</a> 
+      <span id="wfspanid" style="display: none;margin-left: 20px"> <a id="bt_sumit_id" class="easyui-linkbutton" iconcls="ico-check-fill" style="" data-options="disabled:true,plain:false">提交</a> <a id="bt_reject_id" class="easyui-linkbutton" iconcls="icon-undo" style="" data-options="disabled:true">驳回</a> <a id="bt_break_id" class="easyui-linkbutton" iconcls="icon-no" style="" data-options="disabled:true">中断</a> <a id="bt_refer_id" class="easyui-linkbutton" iconcls="icon-redo" style="" data-options="disabled:true">转办</a> </span> 
+     </div> 
+    </div> 
+    <div data-options="region:'center',border:false" style="padding:0px;overflow-x: hidden;overflow-y: auto"> 
+     <div id="main_form_div_id" data-options="region:'center',border:false"> 
+      <table id="maindata_id" border="0" style=""> 
+       <tbody> 
+        <tr> 
+         <td cjoptions="fdname:'sp_code'">编码</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_code',crequired:true,readonly:true" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'sp_name'">职位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'usable'">有效</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5'" data-options="editable:false" style="height:20px;width: 100px"> </td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'hwc_namezl'">职类</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezl',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'hwc_namezq'">职群</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',crequired:true,readonly:true" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'hwc_namezz'">职种</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',crequired:true,buttonIcon:'icon-search',onClickButton:onFindHRClass,editable:false" style="height:20px;width: 100px"> </td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'hg_name'">职等</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',crequired:true" data-options="buttonIcon:'icon-search',onClickButton:onFindhr_grade,editable:false" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'lv_num'">职级</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,buttonIcon:'icon-search',onClickButton:onFindhr_prolevel,editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'maxage'">最大年龄</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'maxage'" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'minage'">最小年龄</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'minage'" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'isadvtech'">高技人才</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isadvtech',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'isoffjob'">职位性质</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isoffjob',crequired:true,comidx:'dic1212',readonly:false,editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'issensitive'">敏感岗位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'issensitive',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'iskey'">关键岗位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'iskey',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"> </td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'ishighrisk'">高危岗位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ishighrisk',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'mindegree'">学历要求</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mindegree',crequired:true,comidx:'dic84',editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'isneedadtoutwork'">离职审计岗位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isneedadtoutwork',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'isdreamposition'">梦职场岗位</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isdreamposition',crequired:true,comidx:'dic5',editable:false" style="height:20px;width: 100px"> </td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'gtitle'">职衔</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'gtitle',readonly:true" style="height:20px;width: 100px"> </td> 
+         <td cjoptions="fdname:'yhtype'">年假方式</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'yhtype',editable:false,comidx:'dic993'" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'alloworgwsch'">参与机构排班</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'alloworgwsch',editable:false,comidx:'dic5'" style="height:20px;width: 100px"></td> 
+         <td cjoptions="fdname:'istechsub'">技术津贴</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'istechsub',editable:false,comidx:'dic5'" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'orgname'">所属机构</td> 
+         <td colspan="3"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,
+            buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false" style="height:20px;width: 100%"> </td> 
+         <td cjoptions="fdname:'isteamward'">团队管理奖</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'isteamward',editable:false,comidx:'dic5'" style="height:20px;width: 100px"></td> 
+        </tr> 
+        <tr> 
+         <td colspan="8" cjoptions="fdname:'attribute1'">TX系统职务编码名称列表,编码与名称用井号分隔,多个职务之间用竖线分隔(如:5216#MC员|8045#生产工2|)</td> 
+        </tr> 
+        <tr> 
+         <td colspan="8"> <input cjoptions="easyui_class:'easyui-textbox',fdname:'attribute1',multiline:true" style="height:40px;width: 100%"> </td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'sp_exp'">职位说明</td> 
+         <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_exp'" style="height:40px;width: 200px"> </td> 
+         <td cjoptions="fdname:'remark'">备注</td> 
+         <td colspan="2"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark',multiline:true" style="height:40px;width: 200px"></td> 
+        </tr> 
+        <tr> 
+         <td cjoptions="fdname:'creator'">制单人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px"> </td> 
+         <td cjoptions="fdname:'createtime'">制单时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 120px"></td> 
+         <td cjoptions="fdname:'updator'">更新人</td> 
+         <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"> </td> 
+         <td cjoptions="fdname:'updatetime'">更新时间</td> 
+         <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 120px"> </td> 
+        </tr> 
+       </tbody> 
+      </table> 
+     </div> 
+     <div id="detail_main_grid_div"> 
+      <div class="datainfo_title">
+        明细数据 
+      </div> 
+      <div style="width: 100%;height: 300px"> 
+       <table id="detail_main_grid_id" data-options="rownumbers:true,remoteSort:false,fit:true"></table> 
+      </div> 
+     </div> 
+     <div id="dg_att_div"> 
+      <div class="datainfo_title">
+        附件 
+      </div> 
+      <div style="width: 100%;height: 200px"> 
+       <table id="dg_att_id" data-options="rownumbers:true,fitColumns:false,border:false,singleSelect: true,fit:true"></table> 
+       <div id="ContextMenu" class="easyui-menu"> 
+        <div id="id_bt_delatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_del'">
+          删除 
+        </div> 
+        <div id="id_bt_downloadatt" href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-ml_download'">
+          下载 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="main_tab_wf_div" style="width: 100%"> 
+      <div class="datainfo_title" onclick="setWFHideOrShow()">
+        流程 
+      </div>  
+     </div> 
+     <script type="text/javascript">
+                function setWFHideOrShow() {
+                    if ($('#main_tab_wf_id').css('display') == "none") {
+                        $('#main_tab_wf_id').css('display', '');
+                    } else {
+                        $('#main_tab_wf_id').css('display', 'none')
+                    }
+                }
+            </script> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="find_window_id" class="easyui-window" data-options="modal:true,title:'条件',closed:true,border:true,collapsible:false,minimizable:false,iconCls:'ico-search-line'" style="width:400px;height:350px;;overflow: hidden"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false,title:' ',tools:'#toolbar_dg_find_window_parms_id'" style="padding:0px;margin: 0px auto"> 
+     <table id="dg_find_window_parms_id" style="width: 100%;height: auto"> 
+      <thead> 
+       <tr class="datagrid-header" style="height: 20px;padding: 0px;text-align: center "> 
+        <th style="width: 30%">项目</th> 
+        <th style="width: 20%">关系</th> 
+        <th style="width: 30%">项目值</th> 
+        <th style="width: 20%">操作</th> 
+       </tr> 
+      </thead> 
+      <tbody> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-right: 0px;border-bottom: 0px;overflow: hidden"> 
+     <a class="easyui-linkbutton" onclick="mainline.find_window_ok_click();" data-options="iconCls:'ico-check-fill'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick="$('#find_window_id').window('close');" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="toolbar_dg_find_window_parms_id" style="height:auto"> 
+   <a href="#" class="icon-add1" onclick="mainline.find_window_add_click()"></a> 
+  </div> 
+  <div id="common_divs_id" style="display: none"> 
+   <div id="pw_uploadfile" class="easyui-window" title="上传文件" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:400px;height:400px;padding:0px;"> 
+    <iframe frameborder="0" style="width: 100%;height: 95%"></iframe> 
+   </div> 
+   <div id="pw_list_select" class="easyui-window" title="请选择模板" data-options="modal:true,closed:true,collapsible:false,iconCls:'ico-printer-line'" style="width:300px;height:300px;padding:0px;"> 
+    <ul class="corsair_list"> 
+     <li><span>fdsa</span></li> 
+    </ul> 
+    <div id="pw_list_select_toolbar" style="display: none"> 
+     <a id="pw_list_select_toolbar_btnew" href="javascript:void(0)" class="icon-ml_add"></a> 
+    </div> 
+   </div> 
+   <div id="gridcolfilterpw_id" class="easyui-window" title="列设置" data-options="iconCls:'ico-filter-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:400px;height:400px;padding:5px;"> 
+    <div class="easyui-layout" data-options="fit:true"> 
+     <div data-options="region:'center'" style="padding:0px;"> 
+      <table class="easyui-datagrid" data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"></table> 
+     </div> 
+     <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px;overflow: hidden"> 
+      <div data-options="region:'south',border:true" style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px"> 
+       <div style="width: 90%;text-align: left;padding: 5px">
+         选择的列将被隐藏 
+       </div> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'" data-options="iconCls:'icon-ml_upload'" style="width:80px;display: none">上移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'" data-options="iconCls:'icon-ml_download'" style="width:80px;display: none">下移</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_select'" data-options="iconCls:'ico-check-double-fill'" style="width:80px">选择</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'ico-refresh-line'" style="width:80px;">恢复</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:80px;margin-left: 10px">确定</a> 
+       <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+   <div id="exportpw_id" class="easyui-window" title="导出数据" data-options="iconCls:'ico-file-transfer-line',minimizable:false,maximizable:false,closed:true,collapsible:false " style="width:500px;height:400px;padding:0px;"> 
+    <table style="table-layout: fixed;width: 100%;height: 100%;border-collapse: collapse;"> 
+     <tbody> 
+      <tr> 
+       <td style="width: 150px"> 
+        <table class="easyui-datagrid export-fieldlist" data-options="title:'导出的字段',fitColumns:true,fit:true,border:false,checkOnSelect:false,selectOnCheck:false"></table> </td> 
+       <td> 
+        <table class="easyui-datagrid export-schema" data-options="title:'可用方案',fitColumns:false,fit:true,border:false,singleSelect:true,
+                    emptyMsg:'<div style=\'padding: 10px 5px 0px 5px;color: red\'>暂无可用方案，您可选择需要导出的字段，通过【另存为方案】保存！</div>'"></table> </td> 
+      </tr> 
+      <tr style="height: 40px"> 
+       <td colspan="2" style="border-top: 1px solid #95B8E7;text-align: right;padding: 5px"> <a class="easyui-linkbutton" cjoptions="caction:'act_saveas'" data-options="iconCls:'icon-save'" style="width:120px;">另存为方案</a> <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'" style="width:100px;margin-left: 10px">确定导出</a> <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'" style="width:80px">取消</a> </td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+  </div> 
+  <style type="text/css">
+    .corsair_list {
+        list-style-type: none;
+        text-indent: 0;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .corsair_list li {
+        font-size: 10pt;
+        background: linear-gradient(to bottom, #ffffff 0px, #eeeeee 100%) repeat-x scroll 0 0 rgba(0, 0, 0, 0);
+        color: #444;
+        overflow: visible;
+        border: 1px solid #ffffff;
+        height: 25px;
+        line-height: 25px;
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+
+    .corsair_list li span {
+        padding-left: 3px;
+    }
+
+    .corsair_list li:hover {
+        background: none repeat scroll 0 0 #eaf2ff;
+    }
+
+    .datainfo_title {
+        height: 20px;
+        background-color: #E8EEFA;
+        color: #0e2d5f;
+        font-size: 12px;
+        line-height: 20px;
+        font-weight: bold;
+        padding-left: 10px;
+        border-bottom: 1px solid #DDDDDD;
+    }
+</style>  
+ </body>
+</html>

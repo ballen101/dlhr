@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_salary">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1433",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1433",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1437",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1437",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic999",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=999",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var spfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onFindStationOption(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                [
+                    {field:'orgname', rowspan: 2,title:'单位',width:200},
+                    {field:'yearmonth', rowspan: 2,title:'年月',width:100, formatter: $fieldDateFormatorYYYY_MM},
+                    {field:'pos', rowspan: 2,title:'职位',width:100},
+                    {title: '小时工资（含福利津贴）',  colspan: 3, width: 150},
+                    {title: '小时工资（不含福利津贴）',  colspan: 3, width: 150},
+                     {field: 'remark', rowspan: 2, title: '备注', width: 100}
+                ],
+                [ {field:'avgperhour',title:'平均值',width:100, formatter:floatsformator},
+                    {field:'maxperhour',title:'最大值',width:100, formatter:floatsformator},
+                    {field:'minperhour',title:'最小值',width:100, formatter:floatsformator},
+                    {field:'avgnsperhour',title:'平均值',width:100, formatter:floatsformator},
+                    {field:'maxnsperhour',title:'最大值',width:100, formatter:floatsformator},
+                    {field:'minnsperhour',title:'最小值',width:100, formatter:floatsformator}
+                ]
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+
+        var findColums = [
+            {field: 'orgid', title: '机构',notnull: true,  relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field:'spid',title:'职位',notnull: true, relOptions: relOptions, cjoptions: spfdiptions,width:80},
+            {field: 'yearmonth_begin', title: '开始年月',notnull: true,  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'yearmonth_end', title: '截止年月',notnull: true,  relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+           // {field:'includechild',title:'显示子机构',notnull: true,width:80,formatter:comUrl_dic5.formator},
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            allowChart: true,
+            showChartChoicetor: true,
+            gdListColumns: listGridColumns,
+          // findExtParms: findColums,
+            findOptionsFilter: "#findOptions7",
+            coURL: _serUrl + "/web/hr/sareport/getNotMonthSalarysTrend.co",
+            extButtons: [//扩展按钮
+            ],
+            onGetFindParms: onGetFindParms,
+            afterInitUI: afterInitUI,
+            onLoadChartOptions: onLoadChartOptions,
+            onLoadChartData: onLoadChartData
+        };
+
+        function afterInitUI() {
+            $parserDatebox2YearMonth($("#yearmonth_begin"));
+            $parserDatebox2YearMonth($("#yearmonth_end"));
+
+        }
+
+        function onLoadChartOptions(rows) {
+            if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+            var ticks = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                ticks.push([i, row.yearmonth]);
+            }
+            var options = {
+                series: {
+                    lines: {
+                        show: true,
+                        lineWidth: 2.5
+                    }
+                },
+                xaxis: {
+                    ticks: ticks,
+                    tickDecimals: 0,
+                    axisLabel: rows[0].orgname+" "+rows[0].pos+" 小时工资变化趋势图",
+                    axisLabelUseCanvas: false,
+                    axisLabelFontSizePixels: 12,
+                    axisLabelFontFamily: 'Verdana, Arial',
+                    axisLabelPadding: 10,
+                    autoscaleMargin:0.14
+                },
+                yaxis: {
+                    color: "black",
+                    // axisLabel: "金额",
+                    min: 0,
+                    axisLabelUseCanvas: false,
+                    axisLabelFontSizePixels: 12,
+                    axisLabelFontFamily: 'Verdana, Arial',
+                    axisLabelPadding: 3
+                },
+                grid: {
+                    show:true,
+                    hoverable: true,
+                    borderWidth: 1,
+                    aboveData: true,
+                    backgroundColor: {colors: ["#EDF5FF", "#ffffff"]}
+                },
+                colors: ["#004078", "#207800", "#613C00"]
+            };
+            $(function() {
+
+                var d1 = [];
+                for (var i = 0; i < 14; i += 0.5) {
+                    d1.push([i, Math.sin(i)]);
+                }
+
+                var d2 = { "label": "Europe (EU27)","data":[[0, 3], [4, 8], [8, 5], [9, 13]]};
+
+                // A null signifies separate line segments
+                var d3 = [[0, 12], [7, 12], [7, 2.5], [12, 2.5]];
+
+                // 为图添加数据
+                $.plot("#placeholder", [ d1,d2, d3 ],options);
+
+                // 节点提示
+                function showTooltip(x, y, contents) {
+                    $('<div id="tooltip">' + contents + '</div>').css( {
+                        position: 'absolute',
+                        display: 'none',
+                        top: y + 10,
+                        left: x + 10,
+                        border: '1px solid #fdd',
+                        padding: '2px',
+                        'background-color': '#dfeffc',
+                        opacity: 0.80
+                    }).appendTo("body").fadeIn(200);
+                }
+
+                var previousPoint = null;
+                // 绑定提示事件
+                $("#placeholder").bind("plothover", function (event, pos, item) {
+                    if (item) {
+                        if (previousPoint != item.dataIndex) {
+                            previousPoint = item.dataIndex;
+                            $("#tooltip").remove();
+                            var y = item.datapoint[1].toFixed(0);
+
+                            var tip = "展现量：";
+                            showTooltip(item.pageX, item.pageY,y);
+                        }
+                    }
+                    else {
+                        $("#tooltip").remove();
+                        previousPoint = null;
+                    }
+                });
+            });
+            return options;
+        }
+
+        function onLoadChartData(rows) {
+            if (rows.rows) rows = rows.rows;  //兼容分页及合计数据
+            var data1 = [];
+            var data2 = [];
+            var data3 = [];
+            var data4 = [];
+            var data5 = [];
+            var data6 = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                data1.push([i, row.avgperhour]);
+                data2.push([i, row.maxperhour]);
+                data3.push([i, row.minperhour]);
+                data4.push([i, row.avgnsperhour]);
+                data5.push([i, row.maxnsperhour]);
+                data6.push([i, row.minnsperhour]);
+            }
+            var dataset = [
+                {label: "平均值(含福利)", data: data1, color: "#2E8B57"},
+                {label: "最大值(含福利)", data: data2, color: "#9C1525"},
+                {label: "最小值(含福利)", data: data3, color: "#0077FF"},
+                {label: "平均值(不含福利)", data: data4, color: "#7D0096"},
+                {label: "最大值(不含福利)", data: data5, color: "#5C5849"},
+                {label: "最小值(不含福利)", data: data6, color: "#F9C281"}
+            ];
+            return dataset;
+        }
+
+
+        function onGetFindParms() {
+                if (!stedorg) {
+                alert("选择机构");
+                return;
+            }
+          /*  if (!stedsp) {
+                alert("选择职位");
+                return;
+            }*/
+            var yearmonth = $("#yearmonth_begin").datebox('getValue');
+            if ($isEmpty(yearmonth)) {
+                alert("选择开始年月");
+                return;
+            }
+
+            var yearmonthend = $("#yearmonth_end").datebox('getValue');
+            if ($isEmpty(yearmonthend)) {
+                alert("选择截止年月");
+                return;
+            }
+
+            var idzwname = $("#idzwname").textbox('getValue');
+
+            var findtype = $("input[name='findtype']:checked").val();
+            if ($isEmpty(findtype)) {
+                alert("查询方式");
+                return;
+            }
+
+          //  var includechild = document.getElementById("includechild").checked;
+            var parms = [];
+            parms.push({parmname: "orgid", reloper: "=", parmvalue: stedorg.orgid});
+            //parms.push({parmname: "spid", reloper: "=", parmvalue: stedsp.sp_id});
+            parms.push({parmname: "yearmonth_begin", reloper: "=", parmvalue: yearmonth});
+            parms.push({parmname: "yearmonth_end", reloper: "=", parmvalue: yearmonthend});
+           // parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+          //  parms.push({parmname: "empclass", reloper: "=", parmvalue: empclass});
+            parms.push({parmname: "findtype", reloper: "=", parmvalue: findtype});
+            if (!$isEmpty(idzwname))
+                parms.push({parmname: "spname", reloper: "=", parmvalue: idzwname});
+            return parms;
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrsalary/list/impsalarychglgexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+
+        function floatsformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt=0;
+            var ss=value.split(".");
+            var znum=ss[0];
+            var unum=ss[1];
+            unum=parseInt(unum);
+            if(unum>0){
+                dt = value;
+            }else{
+                dt=znum;
+            }
+            return dt;
+        }
+
+        var stedorg = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        stedorg = row;
+                        $("#idorg").textbox('setValue', row.extorgname);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        var stedsp = undefined;
+        var sch_standiptions_pw = undefined;
+        function onFindStationOption(event) {
+            var wo = {
+                id: "sch_standiptions_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_standposition",  //对应后台JPAClass名
+                orderStr: " sp_id asc ",
+                multiRow: false,
+                idField: 'hwc_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'},
+                    {parmname: 'lv_num', reloper: '>=', parmvalue: '6'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        stedsp=row;
+                        $("#idsp").textbox('setValue', row.sp_name);
+
+                    }
+                }
+            };
+            if (!sch_standiptions_pw) {
+                sch_standiptions_pw = new TSearchForm(wo);
+            }
+            sch_standiptions_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script>
+
+    <script type="text/html" id="findOptions7">
+        <table style="padding: 10px">
+            <tr>
+                <td>选择机构</td>
+                <td>
+                    <input id="idorg" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton: onSelectOrg,editable:false"
+                           style="width:200px;height: 22px">
+                </td>
+            </tr>
+            <tr>
+               <!-- <td>选择职位</td>
+                <td>
+                    <input id="idsp" class="easyui-textbox"
+                           data-options="buttonIcon:'icon-search',onClickButton: onFindStationOption,editable:false"
+                           style="width:200px">
+                </td>-->
+                <td>职位</td>
+                <td>
+                    <input id="idzwname" class="easyui-textbox" style="width:150px;height: 22px"><br>
+                    <label><input name="findtype" type="radio" checked="true" value="1"/>精确</label>
+                    <label><input name="findtype" type="radio" value="2"/>模糊明细</label>
+                    <label><input name="findtype" type="radio" value="3"/>模糊汇总</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    开始年月
+                </td>
+                <td>
+                    <input id="yearmonth_begin" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+            <tr >
+                <td >
+                    截止年月
+                </td>
+                <td>
+                    <input id="yearmonth_end" type="text" class="easyui-datebox" style="width:100px;height: 22px"> </input>
+                </td>
+            </tr>
+
+        </table>
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

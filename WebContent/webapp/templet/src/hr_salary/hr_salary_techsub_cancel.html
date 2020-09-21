@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_salary">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic901",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=901",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic702",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=702",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1220",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1220",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1045",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1045",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1234",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1234",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1455",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1455",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+        var relOptions = {
+            data: [{id: 'like', value: '包含'}]
+        };
+        var listGridColumns = [
+            {field:'tsc_code',title:'编码',width:110},
+            {field:'canceldate',title:'中止月份',width:100, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'cancelreason',title:'中止原因',width:100},
+            {field:'employee_code',title:'工号',width:80},
+            {field:'employee_name',title:'姓名',width:80},
+            {field:'orgname',title:'部门',width:150, relOptions: relOptions, cjoptions: orgfdiptions},
+            {field:'sp_name',title:'职位',width:100},
+            {field:'lv_num',title:'职级',width:50},
+            {field:'hiredday',title:'入职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'ntechsub',title:'技术津贴金额',width:80},
+            {field:'applyreason',title:'申请原因',width:100},
+            {field:'subsdate',title:'津贴生效月份',width:100, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'appsys',title:'所属系统',width:100, formatter: comUrl_dic1455.formator},
+            {field: 'stat', title: '状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.salary.entity.Hr_salary_techsub_cancel",
+            JPAIdField: "tsc_id",
+            allowAtt: true,
+            allowWF: true,
+            //  gdLinesName: 'hr_ins_insurancetype_lines',   //行Grid ID对应到json 明细行属性 名
+            gdLinesColumns: gdLinesColumns,
+            datainfo_pw_title: "技术津贴终止",
+            allow_expt_list: true,
+          //   datainfo_line_title: "包含险项",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+               /* {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                },
+                {
+                    text: '一键提交',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        sumbitlist();
+                    }
+                }*/
+            ],
+            onNew: function (jsondata) {
+                jsondata.canceldate = new Date().format("yyyy-MM-dd");
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindljemployee(employee_code);
+                    }
+                }
+            },
+            OnReady: function () {   //都准备好后
+                $parserDatebox2YearMonth(mainline.getField('canceldate'));
+            }
+        };
+
+        var select_ljemployee_pw = undefined;
+        function onFindljemployee(employee_code) {
+           // var url = _serUrl + "/web/hrins/insurance/findtbljemp.co";
+            var url = _serUrl + "/web/hrsalary/command/getCancelTechSubsEmps.co";
+            var wo = {
+                id: "select_ljemployee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500, cjoptions: orgfdiptions}//不作为查询条件
+
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);//设置界面值
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.orgcode);
+                        mainline.setFieldValue("orgname", row.orgname);
+                        mainline.setFieldValue("lv_id", row.lv_id);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("hwc_namezq", row.hwc_namezq);
+                        mainline.setFieldValue("hwc_namezz", row.hwc_namezz);
+                        mainline.setFieldValue("ospid", row.ospid);
+                        mainline.setFieldValue("ospcode", row.ospcode);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue("hiredday", row.hiredday);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue("otechsub", row.otechsub);
+                        mainline.setFieldValue("ntechsub", row.ntechsub);
+                        mainline.setFieldValue("applyreason", row.applyreason);
+                        mainline.setFieldValue("subsdate", row.subsdate);
+                        mainline.setFieldValue("appsys", row.appsys);
+                        mainline.setFieldValue("tsl_id", row.tsl_id);
+                    }
+                }
+            };
+            if (!select_ljemployee_pw) {
+                select_ljemployee_pw = new TSearchForm(wo);
+            }
+            select_ljemployee_pw.extendOptions({
+                coURL: url
+            });
+            if (employee_code) {
+                select_ljemployee_pw.extendOptions({
+                    autoFind: true,
+                    singleAutoReturn: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_ljemployee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_ljemployee_pw.show(true);
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrins/insurance/impinscancellistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        function sumbitlist() {
+            var url = _serUrl + "/web/hrins/insurance/dosumbitcancelinslist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                alert(jsdata.rst);
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+        }
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            //var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var url = _serUrl + "/web/user/getorgs.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.orgname);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'tsc_code'">中止编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'tsc_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'canceldate'">中止月份</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'canceldate',crequired:true,formatter:$dateformattostrrYYYY_MM" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'cancelreason'">中止原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'cancelreason',crequired:true" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,buttonIcon:'icon-search',onClickButton:onFindljemployee" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezq'">职群</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezq',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezz'">职种</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hwc_namezz',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',formatter:$dateformattostrrYYYY_MM_DD,crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ntechsub'">终止津贴金额</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ntechsub',readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'applyreason'">申请原因</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'applyreason',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'subsdate'">生效月份</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'subsdate',crequired:true,formatter:$dateformattostrrYYYY_MM,readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'appsys'">所属系统</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'appsys',comidx:'dic1455',readonly:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

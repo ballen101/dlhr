@@ -1,0 +1,155 @@
+//上传文件
+$uploadfileEx(options);
+var options = {
+    serco: _serUrl + "/web/common/upLoadFile.co?timestamp=" + (new Date()).valueOf(),//服务路径
+    upfhtml: _serUrl + "/webapp/templet/default/uploadfile.html",//上传页面
+    onerr: function (err) {
+        $.messager.alert('错误', err, 'error');
+    },
+    onsucc: function (jsdata) {
+
+    },
+    onstart: function () {
+    },
+    multifile: true,//多选文件
+    acceptfile: undefined//可上传的文件类型  "image/png,image/gif,image/jpeg"
+}
+
+
+//////// grid edit combobox 级联用法
+comUrl_dic663.editor.options.onChange = function (newValue, oldValue) {
+    var indatas = [];
+    var outdatas = [];
+    var dts = comUrl_dic649.editor.options.data;
+    for (var i = 0; i < dts.length; i++) {
+        var dt = dts[i];
+        dt.dictvalue = parseInt(dt.dictvalue);
+        if (dt.dictvalue < 20) {
+            indatas.push(dt);
+        } else {
+            outdatas.push(dt);
+        }
+    }
+}
+comUrl_dic663.editor.options.onChange = function (newValue, oldValue) {
+        var dg = $("#inv_stock_checkline_deals");
+        var row = dg.datagrid('getSelected');
+        var rindex = dg.datagrid('getRowIndex', row);
+        var ed = dg.datagrid('getEditor', {
+            index: rindex,
+            field: 'dealtype'
+        });
+        ed = $(ed.target);
+        if (newValue == 1) {
+            ed.combobox("loadData", indatas);
+        } else if (newValue == 2) {
+            ed.combobox("loadData", outdatas);
+        } else
+            ed.combobox("loadData", comUrl_dic649.editor.options.data);
+}
+
+
+
+$ajaxjsonpost(url, JSON.stringify(json), function (rst) {
+            }, function (err) {
+                alert(JSON.stringify(err));
+            });
+
+var url = _serUrl + "/web/common/getCoTreeMenu.co?menuid=" + menuid;
+  $ajaxjsonget(url, function (jsdata) {
+
+    }, function (err) {
+        alert(JSON.stringify(err));
+    });
+
+
+
+
+
+
+workflow procedure procoption
+流程节点扩展参数
+
+ var procoption = [
+            {
+                "acttion": "submit",//create:创建节点实例  submit:提交 break:中断 refus 驳回 transfer 转办
+                "stage": "before',// before after  提交前触发 提交后触发
+                "funcname": "com.corsair.wf.beforesubmit",//java 无返回值的函数
+                "prams": "dbcon,jpa,wftemp,tempproc,tempprocusers,wf,proc,procusers,fromproc,toproc,touser"//按顺序查找函数 并按定义传递参数 无返回值
+            }
+        ];
+
+
+
+
+var options = {
+    downurl: undefined,
+    infhtm: undefined,//模板路径
+    pw_title: "附件",
+    allowsacn:false,//运行扫描
+    pw_data_options: undefined,//"data-options='modal:true,closed:true'"
+    pw_style: undefined,//"style='width:400px;height:400px;padding:0px;'>"
+    jpaclass: undefined,
+    id: undefined,
+    allowedit: false,
+    attach: undefined,//Shw_attach附件对象
+    onerr: function (err) {
+
+    },
+    onsucc: function () {
+
+    },
+    onclose: function () {
+
+    }
+};
+function $shw_attachinfo(options);
+
+
+TFindDialog(dlgOptions);
+findFields [fielditem];
+//自定义文本框按钮事件
+var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+//自定关联
+ var relOptions = {
+            data: [
+                {id: '=', value: '等于'}
+            ]
+        };
+//查询列
+var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'dqdate', title: '考勤日期', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100}
+        ];
+
+
+findtype:date,datetime;  combobox 无效
+$fieldDateFormatorYYYY_MM_DD 自动按年月日处理
+$fieldDateFormatorYYYY_MM 自动按年月处理
+$fieldDateFormator 自动按年月日时分秒处理
+var dlgOptions={
+                findeditable: findeditable,//下拉框可编辑
+                findFields: _findcolums,//查询的列
+                width:宽    //400
+                height:高   //300
+                onOK: function (parms) {//确定
+                    do_find(parms);
+                    return true;//false 将不关闭查询框
+                },
+                onCancel:function(){
+                    return false;//false 将不关闭查询框
+                }
+
+};
+
+$generateUUID()

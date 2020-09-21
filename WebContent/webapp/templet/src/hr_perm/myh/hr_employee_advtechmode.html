@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+    <title>高技模块</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'mdcode', title: '编码', width: 100},
+            {field: 'mdname', title: '高技模块名称', width: 150},
+            {field: 'usable', title: '可用', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'disabletime', title: '失效时间', width: 150},
+            {field: 'mask', title: '备注', width: 150},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'create_time', title: '制单时间', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'update_time', title: '更新时间', width: 150}
+
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee_advtechmode",
+            JPAIdField: "atmid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '500px',//窗体宽度  htMLPop有效
+            windowHeight: '320px',//窗体高度 htMLPop有效
+            datainfo_line_title: "高技模块详情",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            onCreate: function () {//创建对象前  mainline不可用
+            },
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            },
+            beforeSave: function () {
+
+            },
+            onFind: function (parms) {
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == 'usable') {
+                    var usable = parseInt(mainline.getFieldValue("usable"));
+                    if (usable == 1) {
+                        mainline.setFieldValue("disabletime", undefined);
+                    } else {
+                        mainline.setFieldValue("disabletime", (new Date()).toUIDatestr());
+                    }
+                }
+            }
+        };
+    </script>
+    <style type="text/css">
+        body table td {
+            padding: 1px 2px 1px 2px;
+            margin: 0px;
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'mdcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mdcode',crequired:true,readonly:true" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'mdname'">高技模块名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'mdname',crequired:true" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'usable'">可用</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,editable:false,comidx:'dic5'" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'disabletime'">失效时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'disabletime',formatter:$dateformattostr" style="height:20px;width: 120px"/></td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                               style="height:20px;width: 350px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/>
+    </tr>
+</table>
+</body>
+</html>

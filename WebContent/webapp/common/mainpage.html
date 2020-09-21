@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    function $OnCorsairReady() {
+        setTimeout(getSystemInfo, 500);
+    }
+
+    function getSystemInfo() {
+        $ajaxjsonget(_serUrl + "/web/common/getSystemInfo.co", function (jsondata) {
+            for (var i = 0; i < jsondata.length; i++) {
+                var pp = jsondata[i];
+                var parmname = pp.parmname;
+                if (parmname == "Protal_Top_Options") {
+                    addlayout("north", pp.parmvalue);
+                }
+                if (parmname == "Protal_Center_Options") {
+                    addlayout("center", pp.parmvalue);
+                }
+                if (parmname == "Protal_Left_Options") {
+                    addlayout("west", pp.parmvalue);
+                }
+                if (parmname == "Protal_Buttom_Options") {
+                    addlayout("south", pp.parmvalue);
+                }
+                if (parmname == "Protal_Right_Options") {
+                    addlayout("east", pp.parmvalue);
+                }
+            }
+        }, function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("服务器开小差了哦！");
+        })
+    }
+
+    function addlayout(region, parmvalue) {
+        if ((parmvalue != undefined) && (parmvalue != null) && (parmvalue.length > 0)) {
+            var pOptions = JSON.parse(parmvalue);
+            pOptions.region = region;
+            if (pOptions.tools) {
+                for (var j = 0; j < pOptions.tools.length; j++) {
+                    var tool = pOptions.tools[j];
+                    if (tool.handler) {
+                        tool.handler = eval(tool.handler);
+                    }
+                }
+            }
+            if (pOptions.purl) {
+                pOptions.content = "<iframe scrolling='no' frameborder='0' src='" + pOptions.purl + "' style='width:100%;height:95%;overflow: hidden'></iframe>";
+            }
+            $("#main_page_id").layout("add", pOptions);
+        }
+    }
+
+</script>
+<body style="margin: 0 auto;width: 100%;height: 100%">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div id="main_page_id" class="easyui-layout" data-options="fit:true">
+</div>
+</body>
+</html>

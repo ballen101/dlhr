@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.js"></script>
+    <title>仓库定义</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic421",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=421",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'whcode', title: '仓库编码', width: 100},
+            {field: 'whname', title: '仓库名称', width: 150},
+            {field: 'orgcode', title: '机构编码', width: 120},
+            {field: 'orgname', title: '机构名称', width: 100},
+            {field: 'whtype', title: '仓库分类', width: 100, formatter: comUrl_dic421.formator},
+            {field: 'whaddress', title: '仓库地址', width: 150},
+            {field: 'cname', title: '联系人', width: 80},
+            {field: 'whphone', title: '联系电话', width: 120},
+            {field: 'areaname', title: '区域', width: 50}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.corsair.server.generic.Shwwarehouse",
+            JPAIdField: "whid",
+            windowWidth: '510px',
+            windowHeight: '400px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allowEmptyLine: false,//允许明细行为空保存
+            datainfo_line_title: "仓库信息",
+            allow_copy: false,
+            allow_expt_list: true,
+            autoFind: true,
+            disableButtonType: _NUBType.hide,
+            allowWF: false,
+            allow_del: false,
+            onNew: function (jsondata) {
+                jsondata.locatorctrl = 1;
+                jsondata.usable = 1;
+                jsondata.allowninv = 2;
+            },
+            afterEditGrid: function (filter, index, row, changes) {
+            },
+            onCopy: function (parms) {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+        var gdSotColumns = function () {
+            return [
+                {field: 'code', title: '编码', width: 80},
+                {field: 'orgname', title: '名称', width: 120},
+                {field: 'idpath', title: '路径', width: 80},
+                {field: 'note', title: '备注', width: 64}
+            ];
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'orgname',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'orgname', title: '机构'}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.code);
+                        mainline.setFieldValue("orgname", row.extorgname);
+                        mainline.setFieldValue("idpath", row.idpath);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <tr>
+        <td cjoptions="fdname:'whcode'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'whcode',crequired:true,readonly:true"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'usable'">可用</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',comidx:'dic5'" style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'whname'">仓库名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'whname',crequired:true" style="height:20px;width: 100%"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'whtype'">仓库分类</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'whtype',crequired:true,comidx:'dic421'"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'allowninv'">允许负库存</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'allowninv',comidx:'dic5'"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'whaddress'">仓库地址</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'whaddress'"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">机构</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true"
+                               data-options="buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+                               style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'cname'">联系人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'cname'" style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'whphone'">联系电话</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'whphone'" style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'note'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'note'" style="height:20px;width: 100%"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">创建人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'create_time'">创建时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'create_time',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'update_time'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'update_time',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

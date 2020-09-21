@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title>工作日历</title>
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            $("iframe").css("display", "block");
+            $("#orgoptionw").c_initDictionary();
+            $("#ym1 .calendar-header").html("2016年2月");
+        }
+
+        function formatDay(date) {
+            var r = date.getDate();
+            var d = date.getDay();
+            if ((d == 0) || (d == 6))
+                return r + "<br>休假";
+            else
+                return r + "<br>上班";
+            return r + "<br>上班"
+        }
+
+        function stylerDay(date) {
+            // return 'background-color:#FFFFFF;border: none;';
+        }
+
+        function ckvalidator(date) {
+            var options = $("#ym1").calendar("options");
+            var y = parseInt(options.year);
+            var m = parseInt(options.month);
+            var cy = parseInt(date.getFullYear());
+            var cm = date.getMonth() + 1;
+            //alert(cy + ":" + y);
+            if ((cy == y) && (cm == m))
+                return true;
+            else
+                return false;
+        }
+
+        function onSelectDate(date) {
+            alert(date.getFullYear() + ":" + (date.getMonth() + 1) + ":" + date.getDate());
+        }
+
+    </script>
+    <style type="text/css">
+
+
+    </style>
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north'" style="height:50px;padding: 10px">
+        <input class="easyui-textbox" label="年度:" labelPosition="left" style="width:200px;height:25px">
+        <a href="#" class="easyui-linkbutton" onclick="do_reload();">刷新</a>
+        <a href="#" class="easyui-linkbutton" onclick="do_save();">保存</a>
+    </div>
+    <div data-options="region:'center'">
+        <div id="ym1" class="easyui-calendar" style="width:300px;height:300px;"
+             data-options="year:2016,month:1,firstDay:'1',formatter:formatDay,styler:stylerDay,validator:ckvalidator,onSelect:onSelectDate">
+        </div>
+
+        <div id="ym2" class="easyui-calendar" style="width:300px;height:300px;"
+             data-options="year:2016,month:2,firstDay:'1',formatter:formatDay,styler:stylerDay,validator:ckvalidator,onSelect:onSelectDate">
+        </div>
+    </div>
+</div>
+</body>
+</html>

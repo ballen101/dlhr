@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_base">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic684",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=684",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'ent_code', title: '入职代码', width: 64},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'ID_number', title: '身份证号', width: 64},
+            {field: 'card_number', title: '卡号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'mnemonic_code', title: '助记码', width: 64},
+            {field: 'english_name', title: '英文名', width: 64},
+            {field: 'birthday', title: '出生日期',findtype:'date', width: 64},
+            {field: 'paytype', title: '记薪方式', width: 64},
+            {field: 'sex', title: '性别', width: 64},
+            {field: 'isoffjob', title: '脱产', width: 64},
+            {field: 'swipecard', title: '刷卡', width: 64},
+            {field: 'probation', title: '试用期', width: 64},
+            {field: 'hiredday', title: '聘用日期', width: 64},
+            {field: 'promotionday', title: '转正日期', width: 64},
+            {field: 'degree', title: '学历', width: 64},
+            {field: 'married', title: '婚姻状况', width: 64},
+            {field: 'nativeplace', title: '籍贯', width: 64},
+            {field: 'nation', title: '民族', width: 64},
+            {field: 'Email', title: '邮箱/微信', width: 64},
+            {field: 'shifts', title: '班制', width: 64},
+            {field: 'empstat', title: '人员状态', width: 64, formatter: comUrl_dic684.formator},
+            {field: 'modify', title: '修改史', width: 64},
+            {field: 'ID_signtime', title: '身份证签发日期', width: 64},
+            {field: 'ID_invalidtime', title: '身份证失效日期', width: 64},
+            {field: 'ID_signplace', title: '身份证签发地', width: 64},
+            {field: 'IDtype', title: '身份证类型', width: 64},
+            {field: 'allot_company', title: '分配公司', width: 64},
+            {field: 'allotday', title: '分配日期', width: 64},
+            {field: 'dormtype', title: '宿舍类别', width: 64},
+            {field: 'dormarea', title: '宿舍区域', width: 64},
+            {field: 'room_bed_number', title: '房号床位', width: 64},
+            {field: 'dormpaytype', title: '宿舍扣费类型', width: 64},
+            {field: 'eatpermission', title: '用餐权限', width: 64},
+            {field: 'eatpaytime', title: '用餐扣费类型', width: 64},
+            {field: 'accesscontrol', title: '门禁权限', width: 64},
+            {field: 'attendancearea', title: '考勤区域', width: 64},
+            {field: 'checkwork', title: '考勤识别', width: 64},
+            {field: 'usedname', title: '曾用名', width: 64},
+            {field: 'pldcp', title: '政治面貌', width: 64},
+            {field: 'major', title: '专业', width: 64},
+            {field: 'registertype', title: '户籍类型', width: 64},
+            {field: 'registeraddress', title: '户籍住址', width: 64},
+            {field: 'usedspcode', title: '曾用职位编码', width: 64},
+            {field: 'usedsp_name', title: '曾用职位名称', width: 64},
+            {field: 'health', title: '健康情况', width: 64},
+            {field: 'medicalhistory', title: '过往病史', width: 64},
+            {field: 'bloodtype', title: '血型', width: 64},
+            {field: 'height', title: '身高', width: 64},
+            {field: 'attendancetype', title: '出勤类别', width: 64},
+            {field: 'overtimetype', title: '加班类别', width: 64},
+            {field: 'importway', title: '引进途径', width: 64},
+            {field: 'importor', title: '引进人员', width: 64},
+            {field: 'cellphone', title: '联系电话', width: 64},
+            {field: 'urgencycontact', title: '紧急联系人', width: 64},
+            {field: 'telphone', title: '电话', width: 64},
+            {field: 'transorg_code', title: '输送机构编码', width: 64},
+            {field: 'transorg_name', title: '输送机构名称', width: 64},
+            {field: 'relevance', title: '关联关系', width: 64},
+            {field: 'introducer', title: '介绍人', width: 64},
+            {field: 'guarantor', title: '担保人', width: 64},
+            {field: 'skill', title: '工作技能', width: 64},
+            {field: 'skillfullanguage', title: '熟悉语言种类', width: 64},
+            {field: 'speciality', title: '兴趣特长', width: 64},
+            {field: 'welfare', title: '享受福利', width: 64},
+            {field: 'talentstype', title: '人才类型', width: 64},
+            {field: 'superior', title: '上级领导', width: 64},
+            {field: 'orgcode', title: '部门编码', width: 64},
+            {field: 'orgname', title: '部门名称', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hg_code', title: '职等编码', width: 64},
+            {field: 'hg_name', title: '职等名称', width: 64},
+            {field: 'hw_codezl', title: '职类代码', width: 64},
+            {field: 'hwc_namezl', title: '职类名称', width: 64},
+            {field: 'hw_codezq', title: '职群代码', width: 64},
+            {field: 'hwc_namezq', title: '职群名称', width: 64},
+            {field: 'hw_codezz', title: '职种代码', width: 64},
+            {field: 'hwc_namezz', title: '职种名称', width: 64},
+            {field: 'ospcode', title: '职位编码', width: 64},
+            {field: 'sp_name', title: '职位名称', width: 64},
+            {field: 'sp_level', title: '职位序列', width: 64},
+            {field: 'usable', title: '有效状态', width: 64},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'stat', title: '流程状态', width: 64},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 64},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 64}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_entry",
+            JPAIdField: "ent_id",
+            allowAtt: false,
+            allowWF: false,
+            // gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "入职资料",
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            }
+        };
+
+    </script>
+
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+
+        <td cjoptions="fdname:'ent_code'">入职代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'ent_code',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'employee_code',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'card_number'">卡号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'card_number',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ID_number'">身份证号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'ID_number',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'employee_name',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'mnemonic_code'">助记码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'mnemonic_code'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'english_name'">英文名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'english_name'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'avatar_id'">头像ID</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'avatar_id'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">部门编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'orgcode',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'orgname'">部门名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'orgname',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hw_codezl'">职类代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hw_codezl',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezl'">职类名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezl'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hw_codezz'">职种代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hw_codezz',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezz'">职种名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezz'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hw_codezq'">职群代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hw_codezq',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hwc_namezq'">职群名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezq'" style="height:20px;width: 100px"/></td>
+
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'hg_code'">职等编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hg_code',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hg_name'">职等名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hg_name'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'lv_num',required:true" style="height:20px;width: 100px"/>
+        </td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ospcode'">职位编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'ospcode',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sp_name'">职位名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sp_name'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_level'">职位序列</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sp_level',required:true" style="height:20px;width: 100px"/>
+        </td>
+
+    </tr>
+
+
+    <tr>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sex'" style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'isoffjob'">脱产</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isoffjob'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'swipecard'">刷卡</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'swipecard'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'birthday'">出生日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'birthday',required:true,editable:false"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'probation'">试用期</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'probation',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hiredday'">聘用日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'hiredday',required:true,editable:false"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'promotionday'">转正日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'promotionday',required:true,editable:false"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'paytype'">记薪方式</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'paytype'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'degree',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'married'">婚姻状况</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'married',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'nativeplace'">籍贯</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'nativeplace',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'nation'">民族</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'nation',required:true" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'Email'">邮箱/微信</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'Email',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'shifts'">班制</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'shifts',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'address'">现住址</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'address',required:true" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'empstat'">人员状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'empstat',required:true,comidx:'dic684'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'remark'" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'usable'">有效状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usable'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'modify'">修改史</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'modify',required:true" style="height:20px;width: 100px"/>
+        </td>
+
+
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'ID_signtime'">身份证签发日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'ID_signtime',required:true,editable:false"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ID_invalidtime'">身份证失效日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'ID_invalidtime',required:true,editable:false"
+                   data-options="formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ID_signplace'">身份证签发地</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'ID_signplace',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'IDtype'">身份证类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'IDtype',required:true" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'allot_company'">分配公司</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'allot_company',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'allotday'">分配日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'allotday'"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'stay'">是否住宿</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stay',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'dormtype'">宿舍类别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'dormtype'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'dormarea'">宿舍区域</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'dormarea'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'room_bed_number'">房号床位</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'room_bed_number'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'dormpaytype'">宿舍扣费类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'dormpaytype'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'eatpermission'">用餐权限</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'eatpermission',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'eatpaytime'">用餐扣费类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'eatpaytime',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'accesscontrol'">门禁权限</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'accesscontrol',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'attendancearea'">考勤区域</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'attendancearea',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'checkwork'">考勤识别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'checkwork',required:true"
+                   style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'usedname'">曾用名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usedname'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'pldcp'">政治面貌</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'pldcp',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'major'">专业</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'major',required:true" style="height:20px;width: 100px"/>
+        </td>
+
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'registertype'">户籍类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'registertype',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'registeraddress'">户籍住址</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'registeraddress',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usedspcode'">曾用职位编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usedspcode',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'usedsp_name'">曾用职位名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usedsp_name'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'bloodtype'">血型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'bloodtype',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'height'">身高</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'height',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'health'">健康情况</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'health',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'medicalhistory'">过往病史</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'medicalhistory',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'attendancetype'">出勤类别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'attendancetype',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'overtimetype'">加班类别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'overtimetype',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stat',required:true" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'importway'">引进途径</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'importway',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'importor'">引进人员</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'importor'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'cellphone'">联系电话</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'cellphone',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'urgencycontact'">紧急联系人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'urgencycontact',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'telphone'">电话</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'telphone',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'superior'">上级领导</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'superior',required:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'transorg_code'">输送机构编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'transorg_code',required:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'transorg_name'">输送机构名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'transorg_name',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'relevance'">关联关系</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'relevance'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'introducer'">介绍人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'introducer'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'guarantor'">担保人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'guarantor'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'skill'">工作技能</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'skill'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'skillfullanguage'">熟悉语言种类</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'skillfullanguage'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'speciality'">兴趣特长</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'speciality'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'welfare'">享受福利</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'welfare'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'talentstype'">人才类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'talentstype',required:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+
+    <tr>
+
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">建档人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">建档日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updatetime'">更新日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime'"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+    </tr>
+
+
+</table>
+</body>
+</html>

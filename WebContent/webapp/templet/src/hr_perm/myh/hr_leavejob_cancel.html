@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic782",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=782",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "cbxintype",
+                type: "combobox",
+                url: "web/hr/employee/getepsts.co",
+                valueField: 'statvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'ljccode', title: '撤销编码', width: 64},
+            {field: 'ljcode', title: '离职编码', width: 100},
+            {field: 'ljcdate', title: '撤销日期', findtype:'date',width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'orgname', title: '部门', width: 100},
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'id_number', title: '身份证号', width: 100},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'birthday', title: '出生日期',findtype:'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'registeraddress', title: '户籍住址', width: 200},
+            {field: 'hiredday', title: '入职日期',findtype:'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljdate', title: '离职日期',findtype:'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'worktime', title: '司龄', width: 64},
+            {field: 'ljtype1', title: '离职方式', width: 64, formatter: comUrl_dic779.formator},
+            {field: 'ljcreason', title: '撤销原因', width: 64},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'pempstatid', title: '离职前人事状态', width: 80, formatter: comUrl_cbxintype.formator},
+            {field: 'remark', title: '备注', width: 64},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 150}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_leavejob_cancel",
+            JPAIdField: "ljcid",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '850px',
+            windowHeight: '400px',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allow_expt_list: true,
+            disableButtonType: _NUBType.hide,
+            onCreate: function () {//创建对象前  mainline不可用
+
+            },
+            OnReady: function () {   //都准备好后
+            },
+            onNew: function (jsondata) {
+                jsondata.ljcdate = (new Date()).format("yyyy-MM-dd");
+            },
+            beforeSave: function () {
+
+            },
+            onFind: function (parms) {
+            },
+            afterFindDetail: function () {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+            }
+        };
+
+
+        var select_leavejob_pw = undefined;
+        function onFindLvs() {
+            var url = _serUrl + "/web/hr/leavejob/findLeaves2Cancel.co";
+            var wo = {
+                id: "select_leavejob_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'id_number', title: '身份证', width: 100},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ljid', row.ljid);
+                        mainline.setFieldValue('ljcode', row.ljcode);
+                        mainline.setFieldValue('er_id', row.er_id);
+                        mainline.setFieldValue('employee_code', row.employee_code);
+                        mainline.setFieldValue('id_number', row.id_number);
+                        mainline.setFieldValue('employee_name', row.employee_name);
+                        mainline.setFieldValue('mnemonic_code', row.mnemonic_code);
+                        mainline.setFieldValue('empstatid', row.empstatid);
+                        mainline.setFieldValue('hiredday', row.hiredday);
+                        mainline.setFieldValue('registeraddress', row.registeraddress);
+                        mainline.setFieldValue('sex', row.sex);
+                        mainline.setFieldValue('birthday', row.birthday);
+                        mainline.setFieldValue('degree', row.degree);
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.orgcode);
+                        mainline.setFieldValue('orgname', row.orgname);
+                        mainline.setFieldValue('lv_id', row.lv_id);
+                        mainline.setFieldValue('lv_num', row.lv_num);
+                        mainline.setFieldValue('hg_id', row.hg_id);
+                        mainline.setFieldValue('hg_code', row.hg_code);
+                        mainline.setFieldValue('hg_name', row.hg_name);
+                        mainline.setFieldValue('ospid', row.ospid);
+                        mainline.setFieldValue('ospcode', row.ospcode);
+                        mainline.setFieldValue('sp_name', row.sp_name);
+                        mainline.setFieldValue('ljtype1', row.ljtype1);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        mainline.setFieldValue("ljdate", row.ljdate);
+                        mainline.setFieldValue("worktime", row.worktime);
+                        mainline.setFieldValue("pempstatid",row.pempstatid)
+                    }
+                }
+            };
+            if (!select_leavejob_pw) {
+                select_leavejob_pw = new TSearchForm(wo);
+            }
+            select_leavejob_pw.show();
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ljccode'">撤销编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ljccode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'ljcdate'">撤销日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'ljcdate',crequired:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ljcode'">离职编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ljcode',crequired:true,buttonIcon:'icon-search',onClickButton:onFindLvs,editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',readonly:true,comidx:'dic227',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ljcreason'">撤销原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'ljcreason'" style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'pempstatid'">离职前人事状态</td>
+        <td><input  cjoptions="easyui_class:'easyui-textbox',fdname:'pempstatid',crequired:true,readonly:true,comidx:'cbxintype',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="1"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'id_number'">身份证号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'id_number',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'hg_name',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',crequired:true,readonly:true,comidx:'dic81',editable:false"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'degree',readonly:true,comidx:'dic84',editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'birthday'">出生日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'birthday',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                  style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'registeraddress'">户籍地址</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'registeraddress',readonly:true"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'ljtype1'">离职方式</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ljtype1',crequired:true,comidx:'dic782',readonly:true,editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                   style="height:20px;width: 100px"/></td>
+        </td>
+        <td cjoptions="fdname:'ljdate'">离职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'ljdate',crequired:true,readonly:true,formatter:$dateformattostrrYYYY_MM_DD"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'worktime'">司龄</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'worktime',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+
+</table>
+</body>
+</html>

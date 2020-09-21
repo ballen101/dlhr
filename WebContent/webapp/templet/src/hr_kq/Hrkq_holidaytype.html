@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_kq">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1025",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1025",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'bhtype', title: '假期类型', width: 64, formatter: comUrl_dic1025.formator},
+            {field: 'htname', title: '假期类别', width: 100},
+            {field: 'daymin', title: '最小天数', width: 80},
+            {field: 'daymax', title: '最大天数', width: 80},
+            {field: 'dayymax', title: '年度休假天数限制', width: 120},
+            {field: 'daymmax', title: '月度休假天数限制', width: 120},
+            {field: 'daywmax', title: '周度休假天数限制', width: 120},
+            {field: 'insaray', title: '是否有薪假', width: 80, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 120},
+            {field: 'creator', title: '制单人', width: 80},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 120},
+            {field: 'updator', title: '更新人', width: 80},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 120}
+        ];
+
+        frmOptions = {
+            JPAClass: "com.hr.attd.entity.Hrkq_holidaytype",
+            JPAIdField: "htid",
+            allowAtt: false,
+            allowWF: false,
+            windowWidth: '100%',
+            windowHeight: '100%',
+            htmlTemeType: HtmlTempType.htMLPop,
+            allowEmptyLine: false,//允许明细行为空保存
+            allow_copy: false,
+            allow_expt_list: true,
+            autoFind: false,//准备好页面后自动执行查询  不显示查询条件
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+
+            },
+            onNew: function (jsondata) {
+                jsondata.daymin = 0;
+                jsondata.daymax = 0;
+                jsondata.dayymax = 0;
+                jsondata.daymmax = 0;
+                jsondata.daywmax = 0;
+                jsondata.insaray = 1;
+            },
+            beforeSave: function () {
+
+            },
+            onFind: function (parms) {
+
+            },
+            afterFindDetail: function () {
+
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+            }
+        };
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'bhtype'">假期类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'bhtype',crequired:true,comidx:'dic1025',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'htname'">假期类别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'htname',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td colspan="3">单次请假大于
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'daymin',crequired:true"
+                   style="height:20px;width: 50px"/>小于
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'daymax',crequired:true"
+                   style="height:20px;width: 50px"/>天
+        </td>
+        <td cjoptions="fdname:'insaray'">是否有薪假</td>
+        <td>
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'insaray',crequired:true,comidx:'dic5',editable:false"
+                   style="height:20px;width: 50px"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="8">每年最多
+            <input cjoptions="easyui_class:'easyui-numberbox',fdname:'dayymax',crequired:true"
+                   style="height:20px;width: 50px"/>天；每月最多
+            <input cjoptions="easyui_class:'easyui-numberbox',fdname:'daymmax',crequired:true"
+                   style="height:20px;width: 50px"/>天；每周最多
+            <input cjoptions="easyui_class:'easyui-numberbox',fdname:'daywmax',crequired:true"
+                   style="height:20px;width: 50px"/>天
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3">
+            <input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'"
+                   style="height:20px;width: 310px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input
+                cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr"
+                style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',border:true,split:false" style="padding: 0px;height: auto;overflow: hidden;border-left: 0px;border-top: 0px;border-right: 0px;">
+        <div class="easyui-panel" data-options="border:false" style="width: 100%; padding:5px;overflow: hidden">
+            <a id="id_bt_find" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'ico-search-line'">查找</a>
+            <a id="id_bt_expt" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'ico-file-transfer-line'">导出</a>
+            <a id="id_bt_exptchart" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'ico-file-transfer-line'">导出图表</a>
+            <a id="id_bt_gridcolfilter" href="javascript:void(0)" class="easyui-linkbutton" style=""
+               data-options="plain:true,iconCls:'ico-filter-line'">显示列</a>
+            <span class="button-sep"></span>
+            <a id="id_bt_exit" href="javascript:void(0)" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'ico-logout-circle-r-line'">返回</a>
+        </div>
+    </div>
+
+    <div data-options="region:'center',border:false" style="padding: 0px">
+        <div id="main_tabs_id" class="easyui-tabs" data-options="fit:true,border:false,plain:true,tabHeight:23">
+            <div title="常规" style="padding: 0px">
+                <table id="dg_datalist_id" style="height: 100%;width: 100%"
+                       data-options="rownumbers:true,border:false,singleSelect: true,remoteSort:false"></table>
+            </div>
+            <div id="main_tab_chart_id" title="图表" style="padding: 5px">
+                <div id="chart_layout" class="easyui-layout" data-options="fit:true,border:false">
+                    <div data-options="region:'center',border:false" style="padding: 5px">
+                        <div id="placeholder" style="width: 100%;height: 100%;font-size: 14px;line-height: 1.2em;float: left"></div>
+                    </div>
+                    <div data-options="region:'east',width:'200px',border:false,split:true,title:'选择需要显示的数据'" style="padding: 10px">
+                        <div id="chart_choices" style="height: 100%;width: 100%;float: left;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="common_divs_id" style="display: none">
+    <div id="gridcolfilterpw_id" class="easyui-window" title="列设置"
+         data-options="iconCls:'ico-filter-line',minimizable:false,maximizable:false,closed:true,collapsible:false "
+         style="width:400px;height:400px;padding:5px;">
+        <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'center'" style="padding:0px;">
+                <table class="easyui-datagrid"
+                       data-options="fitColumns:true,fit:true,border:false,checkOnSelect:false,singleSelect:false"/>
+            </div>
+            <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;height: 70px;overflow: hidden">
+                <div data-options="region:'south',border:true"
+                     style="text-align:right;padding: 5px;height: auto;border-left: 0px;border-bottom: 0px;border-right: 0px">
+                    <div style="width: 90%;text-align: left;padding: 5px">选择的列将被隐藏</div>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_moveUp'"
+                       data-options="iconCls:'icon-ml_upload'"
+                       style="width:80px;display: none">上移</a>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_moveDown'"
+                       data-options="iconCls:'icon-ml_download'"
+                       style="width:80px;display: none">下移</a>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_select'"
+                       data-options="iconCls:'ico-check-double-fill'"
+                       style="width:80px">选择</a>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_reset'" data-options="iconCls:'ico-refresh-line'"
+                       style="width:80px;">恢复</a>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'ico-check-fill'"
+                       style="width:80px;margin-left: 10px">确定</a>
+                    <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'ico-cancel'"
+                       style="width:80px">取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

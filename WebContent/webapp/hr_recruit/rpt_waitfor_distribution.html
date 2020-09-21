@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_recruit">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>待分配列表</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+
+        var listGridColumns = function () {
+            return [
+                {field: 'employee_code', title: '工号', width: 60},
+                {field: 'employee_name', title: '姓名', width: 60},
+                {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'orgname', title: '部门', sortable: true, width: 200},
+                {field: 'id_number', title: '身份证号', width: 150},
+                {field: 'hiredday', title: '入职日期', sortable: true, findtype: 'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'telphone', title: '联系电话', width: 100},
+                {field: 'rectcode', title: '招聘人工号', width: 64},
+                {field: 'rectname', title: '招聘人', width: 80},
+                {field: 'guarantor', title: '介绍人工号', width: 64},
+                {field: 'introducer', title: '介绍人', width: 80},
+                {field: 'urgencycontact', title: '紧急联系人', width: 64},
+                {field: 'cellphone', title: '紧急联系电话', width: 64},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'lv_num', title: '职级', width: 64}
+            ]
+        };
+
+        var prtOptions = {
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/recruit/rpt/find_waitfor_disp.co",
+            extButtons: [{ //扩展按钮
+                iconCls: 'icon_arrow_switch',
+                text: '分配',
+                handler: function () {
+                    doselectdispto();
+                },
+                posion: '#id_bt_expt'//按钮位置之前，默认
+            }],
+            afterInitUI: function () {
+                //返回的newOptions 将被合并到prtOptions; 返回undef 不处理
+                $("#dg_datalist_id").datagrid({singleSelect: false});
+            }
+        };
+
+        function doselectdispto() {
+            selectedorg = undefined, selectedosp = undefined;
+            var rows = $("#dg_datalist_id").datagrid("getChecked");
+            if (rows.length == 0) {
+                $.messager.alert('错误', "请选择需要分配的人事资料", 'error');
+                return;
+            }
+            $("#selectdispto_popwin").window('open');
+        }
+
+        function onPopwinOpen() {
+            selectedorg = undefined, selectedosp = undefined;
+            $("#orgname").textbox("setValue", undefined);
+            $("#ospname").textbox("setValue", undefined);
+        }
+
+        //查询部门
+        var selectedorg = undefined, selectedosp = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'orgname',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 150}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        selectedorg = rows[0];
+                        $("#orgname").textbox("setValue", selectedorg.extorgname);
+                        selectedosp = undefined;
+                        $("#ospname").textbox("setValue", undefined);
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        //选择机构职位
+        var select_OrgPosition_pw = undefined;
+        function onFindOrgPosition() {
+            if (!selectedorg) {
+                $.messager.alert('错误', "选择机构", 'error');
+                return;
+            }
+            var orgid = selectedorg.orgid;
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "选择机构", 'error');
+                return;
+            }
+
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/employeetransfer/findOrgPostions.co",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                orderStr: " ospid asc ",
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 200},
+                    {field: 'sp_name', title: '职位', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        selectedosp = rows[0];
+                        $("#ospname").textbox("setValue", selectedosp.sp_name);
+                    }
+                }
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            }
+            select_OrgPosition_pw.extendOptions({
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid},
+                    {parmname: 'lv_num', reloper: '>=', parmvalue: "7"}
+                ]
+            });
+            select_OrgPosition_pw.show(true);
+        }
+
+        function dodisp() {
+            if (!selectedosp) {
+                $.messager.alert('错误', "分配职位不能为空", 'error');
+                return;
+            }
+            var rows = $("#dg_datalist_id").datagrid("getChecked");
+            if (rows.length == 0) {
+                $.messager.alert('错误', "请选择需要分配的人事资料", 'error');
+                return;
+            }
+            $.messager.confirm('确认', '确认将选定的【' + rows.length + '】个人事分配到指定职位？', function (r) {
+                if (r) {
+                    var erids = [];
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        erids.push(row.er_id);
+                    }
+                    var data = {
+                        ospid: selectedosp.ospid,
+                        erids: erids
+                    };
+                    var url = _serUrl + "/web/hr/Recruit/Distribution/batchDisp.co";
+                    $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                        var deletedData = $('#dg_datalist_id').datagrid('getChecked');
+                        for (var i = deletedData.length - 1; i >= 0; i--) {
+                            var rowIndex = $('#dg_datalist_id').datagrid('getRowIndex', deletedData[i]);
+                            $('#dg_datalist_id').datagrid('deleteRow', rowIndex);
+                        }
+                        $('#selectdispto_popwin').window('close');
+                    }, function (err) {
+                        $.messager.alert('错误', err.errmsg, 'error');
+                    });
+                }
+            });
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div id="selectdispto_popwin" class="easyui-window" title="分配去向" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home',onOpen:onPopwinOpen" style="width:350px;height:150px;padding: 0px"> 
+   <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;"> 
+    <div data-options="region:'center',border:false" style="padding:5px;margin: 0px auto"> 
+     <table border="0"> 
+      <tbody> 
+       <tr> 
+        <td>机构</td> 
+        <td> <input id="orgname" class="easyui-textbox" data-options="editable:false,buttonIcon:'icon-search',onClickButton:onSelectOrg" style="height:20px;width: 300px"> </td> 
+       </tr> 
+       <tr> 
+        <td>职位</td> 
+        <td> <input id="ospname" class="easyui-textbox" data-options="editable:false,buttonIcon:'icon-search',onClickButton:onFindOrgPosition" style="height:20px;width: 300px"> </td> 
+       </tr> 
+      </tbody> 
+     </table> 
+    </div> 
+    <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto"> 
+     <a class="easyui-linkbutton" onclick="dodisp()" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" onclick=" $('#selectdispto_popwin').window('close');" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div>  
+ </body>
+</html>

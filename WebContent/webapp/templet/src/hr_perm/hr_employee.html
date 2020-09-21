@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic684",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=684",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic495",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=495",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic702",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=702",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic714",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=714",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'id_number', title: '身份证号', width: 120},
+            {field: 'card_number', title: '卡号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'mnemonic_code', title: '助记码', width: 64},
+            {field: 'english_name', title: '英文名', width: 64},
+            {field: 'regtpye', title: '登记类型', width: 64},
+            {field: 'birthday', title: '出生日期',findtype:'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'probation', title: '试用期', width: 64},
+            {field: 'hiredday', title: '聘用日期',findtype:'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'promotionday', title: '转正日期',findtype:'date', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'married', title: '婚姻状况', width: 60, formatter: comUrl_dic714.formator},
+            {field: 'nativeplace', title: '籍贯', width: 80},
+            {field: 'address', title: '现住址', width: 120},
+            {field: 'nation', title: '民族', width: 50},
+            {field: 'email', title: '邮箱/微信', width: 100},
+            {field: 'empstatid', title: '人员状态', width: 64, formatter: comUrl_dic684.formator},
+            {field: 'modify', title: '修改史', width: 100},
+            {field: 'usedname', title: '曾用名', width: 64},
+            {field: 'pldcp', title: '政治面貌', width: 64, formatter: comUrl_dic495.formator},
+            {field: 'major', title: '专业', width: 100},
+            {field: 'registertype', title: '户籍类型', width: 64, formatter: comUrl_dic702.formator},
+            {field: 'registeraddress', title: '户籍住址', width: 120},
+            {field: 'health', title: '健康情况', width: 64},
+            {field: 'medicalhistory', title: '过往病史', width: 120},
+            {field: 'bloodtype', title: '血型', width: 64},
+            {field: 'height', title: '身高', width: 64},
+            {field: 'importway', title: '引进途径', width: 64},
+            {field: 'importor', title: '引进人员', width: 64},
+            {field: 'cellphone', title: '联系电话', width: 80},
+            {field: 'urgencycontact', title: '紧急联系人', width: 64},
+            {field: 'telphone', title: '电话', width: 80},
+            {field: 'transorg_code', title: '输送机构编码', width: 80},
+            {field: 'transorg_name', title: '输送机构名称', width: 100},
+            {field: 'introducer', title: '介绍人', width: 64},
+            {field: 'guarantor', title: '担保人', width: 64},
+            {field: 'skill', title: '工作技能', width: 80},
+            {field: 'skillfullanguage', title: '熟悉语言种类', width: 80},
+            {field: 'speciality', title: '兴趣特长', width: 64},
+            {field: 'welfare', title: '享受福利', width: 64},
+            {field: 'talentstype', title: '人才类型', width: 64},
+            {field: 'orgcode', title: '部门编码', width: 64},
+            {field: 'orgname', title: '部门名称', width: 80},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'hg_code', title: '职等编码', width: 64},
+            {field: 'hg_name', title: '职等名称', width: 64},
+            {field: 'ospcode', title: '职位编码', width: 64},
+            {field: 'sp_name', title: '职位名称', width: 80},
+            {field: 'usable', title: '有效', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'remark', title: '备注', width: 120},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 64, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee",
+            JPAIdField: "er_id",
+            allowAtt: false,
+            allowWF: false,
+            //  gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "人事资料维护",
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+            },
+            afterFindDetail: function () {
+                var jsdata = mainline.getMainData();
+                showpic(jsdata.avatar_id);
+            }
+        };
+
+        function showpic(pfid) {
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#img_avatar_id").attr("src", url);
+            } else
+                $("#img_avatar_id").attr("src", "");
+        }
+
+        function showpicWindow() {
+            var jsdata = mainline.getMainData();
+            var pfid = jsdata.avatar_id;
+            if ((pfid) && (pfid.length > 0)) {
+                var url = _serUrl + "/web/common/downattfile.co?pfid=" + pfid;
+                $("#show_img").attr("src", url);
+                $("#showiv_pw").window({title: jsdata.employee_name});
+                $("#showiv_pw").window("open");
+            }
+        }
+
+        function douploadpic() {
+            if (mainline.getCanEdit()) {
+                var er_id = mainline.getFieldValue("er_id");
+                if ((!er_id) || (er_id.length == 0)) {
+                    $.messager.alert('错误', "请先保存基础资料！", 'error');
+                    return;
+                }
+                $uploadfile(_serUrl + "/web/hr/employee/uploadEmployeePic.co?er_id=" + er_id, null,
+                        function (err) {
+                            $.messager.alert('错误', err, 'error');
+                        },
+                        function (jsdata) {
+                            mainline.setFieldValue("avatar_id", jsdata.avatar_id);//设置界面值
+                            showpic(jsdata.avatar_id);
+                        });
+            }
+        }
+
+        function DrawImage(ImgD) {
+            var op = $("#showiv_pw").window("options");
+            var w = op.width - 10;
+            var h = op.height - 30;
+            var image = new Image();
+            image.src = ImgD.src;
+            if (image.width > 0 && image.height > 0) {
+                if (image.width / image.height >= w / h) {
+                    if (image.width > w) {
+                        ImgD.width = w;
+                        ImgD.height = (image.height * w) / image.width;
+                    } else {
+                        ImgD.width = image.width;
+                        ImgD.height = image.height;
+                    }
+                } else {
+                    if (image.height > h) {
+                        ImgD.height = h;
+                        ImgD.width = (image.width * h) / image.height;
+                    } else {
+                        ImgD.width = image.width;
+                        ImgD.height = image.height;
+                    }
+                }
+            }
+            if (ImgD.height < h) {
+                var pt = parseInt((h - ImgD.height) / 2);
+                $("#show_img_div").css("padding-top", pt + "px");
+            } else {
+                $("#show_img_div").css("padding-top", "0px");
+            }
+        }
+
+        function onFindOrg() {
+
+        }
+
+        function onFindOrgPosition() {
+
+        }
+    </script>
+
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">基本信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'employee_code',required:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'employee_name',required:true"
+                   style="height:20px;width: 100px"/></td>
+
+        <td cjoptions="fdname:'mnemonic_code'">助记码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'mnemonic_code'"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'english_name'">英文名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'english_name'"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'avatar_id'">相片</td>
+        <td rowspan="5" style="text-align: left">
+            <div style="width: 100px;height: 130px;background-color: #3d3d3d">
+                <img id="img_avatar_id" cjoptions="fdname:'avatar_id'" width="100%" height="100%"
+                     style="line-height: 100%;text-align: center"
+                     onclick="showpicWindow()"
+                     src="../img/logo.png">
+            </div>
+            <div>
+                <a href="#" onclick="douploadpic()">上传图片</a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'orgname',required:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sp_name',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hg_name'">职等</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hg_name',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'lv_num',readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'regtpye'">登记类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'regtpye'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'empstatid'">人事状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'empstatid',readonly:true,comidx:'dic684'"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'degree'">学历</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'degree',comidx:'dic84'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'usedname'">曾用名</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usedname'" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'id_number'">身份证号</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'id_number',required:true"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'married'">婚姻状况</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'married',comidx:'dic714'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'sex',comidx:'dic81'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'talentstype'">人才类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'talentstype'"
+                   style="height:20px;width: 100px"/>
+        <td cjoptions="fdname:'pldcp'">政治面貌</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'pldcp',comidx:'dic495'" data-options="editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'nationality'">国籍</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'nationality'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'nation'">民族</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'nation'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'height'">身高</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'height'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'bloodtype'">血型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'bloodtype'" data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'health'">健康情况</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'health'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'medicalhistory'">过往病史</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'medicalhistory'"
+                               style="height:20px;width: 310px"/></td>
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">联系信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'email'">邮箱</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'email'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'telphone'">电话</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'telphone'" style="height:20px;width: 100px"/>
+        </td>
+
+        <td cjoptions="fdname:'birthday'">出生日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'birthday',required:true"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'nativeplace'">籍贯</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'nativeplace'"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td cjoptions="fdname:'registertype'">户籍类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'registertype',comidx:'dic702'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'registeraddress'">户籍住址</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'registeraddress'"
+                               style="height:20px;width: 300px"/></td>
+
+        </td>
+        <td cjoptions="fdname:'address'">现住址</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'address'"
+                               style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr>
+
+
+    </tr>
+    <tr style="font-weight: 700; background-color: #D3D3D3">
+        <td colspan="10">其它信息</td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'probation'">试用期</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'probation'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'hiredday'">聘用日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'hiredday'"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'promotionday'">转正日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'promotionday'"
+                   data-options="formatter:$dateformattostr,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'importway'">引进途径</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'importway'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'importor'">引进人员</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'importor'" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+
+    <tr>
+
+        <td cjoptions="fdname:'introducer'">介绍人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'introducer'" style="height:20px;width: 100px"/>
+        <td cjoptions="fdname:'guarantor'">担保人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'guarantor'" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'transorg_name'">输送机构</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'transorg_name'"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'skill'">工作技能</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'skill'"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'skillfullanguage'">熟悉语言种类</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'skillfullanguage'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'speciality'">兴趣特长</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'speciality'"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'remark'"
+                               style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+
+</table>
+<div id="showiv_pw" class="easyui-window"
+     data-options="collapsible:false,minimizable:false,maximizable:false,closed:true"
+     style="width:500px;height:450px;padding:0px;overflow: hidden">
+    <div id="show_img_div" class="box" style="background-color: #919191">
+        <img id="show_img" onload="DrawImage(this)" onclick="$('#showiv_pw').window('close');">
+    </div>
+</div>
+</body>
+</html>

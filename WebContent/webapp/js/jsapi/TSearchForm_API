@@ -1,0 +1,49 @@
+//弹出选择框参数
+//TSearchForm
+var sfrmOptions参数 = {
+    coURL:undefined,//服务器CO
+    id: "", //default null
+    width:"400px",//
+    height:"500px",//
+    htmlTempt: '',//html 模板  default "..templet/default/search_grid.html"
+    JPAClass: "com.icefall.icefall.entitys.css.Css_seroutlet",  //对应后台JPAClass名  默认查询需要，自定义可能不需要
+    findColumns:undefined,//不为空时候作为查询条件
+    gdListColumns: null,//显示的数据列  同时作为查询条件
+               //{field: 'employee_code', title: '工号', width: 120},
+               //{field: 'employee_name', title: '姓名', width: 100},
+               //{field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+    isTree: false,
+    isasyntree:false,//异步树
+    idField: '',
+    pidField: '',
+    enableIdpath: true,// serth usidpaht
+    treeField: "",
+    chgidpath: false,
+    multiRow: false,
+    comUrls: [],////列表数据选择框  iswie 需要刷新
+    orderStr: " iact_id desc ",//排序的
+    extParms: [
+        {parmname: '', reloper: '=', parmvalue: ''},
+        {parmname: 'parmname_sqlwhere', reloper: '=', parmvalue: "(frst=4 OR trst=4)"}   //指定为传SQL语句
+    ],//扩展参数
+    autoFind: false,//是否自动查询
+    selfLine: true,
+    singleAutoReturn: false,//返回单行数据自动选择并点击确定
+    notFindAutoReturn: false,//没数据自动返回
+    edittype: TEditType.etFind,///修改后可控制stat主治
+    showTitle: true,//显示参数输入框及查询按钮
+    beforeFind: function (fdparms) {//var fdparms = {url: $C.cos.commonfind, type: "list", edittype: TEditType.etFind, jpaclass: sfrmOptions.JPAClass, parms: parms};
+        return true;  //return false 将不执行查询
+    },
+    onResult: function (rows) {//返回选择的数据
+
+    },
+    onCancel: function () {//取消
+
+    }
+}
+
+TSearchForm:方法
+show(clear);//显示窗体
+getData(); //获取窗体列表数据
+extendOptions(option);创建窗体后，重新修改窗体参数

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title>邮件测试</title>
+    <style>
+        .bt {
+            min-width: 100px;
+            height: 20px;
+            line-height: 20px;
+            background-color: #1b961b;
+            color: #FFFFFF;
+            text-align: center;
+        }
+    </style>
+    <script>
+
+        function send() {
+            var url = _serUrl + "/web/hr/test/testmail.co";
+            var data = {
+                tp: 1,
+                aynemid: $("#aynemid").val()
+            };
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#rst").html(JSON.stringify(jsdata));
+            }, function (err) {
+                alert(err.errmsg);//错误的返回值
+            });
+        }
+
+        function del() {
+            var url = _serUrl + "/web/hr/test/testmail.co";
+            var data = {
+                tp: 2,
+                aynemid: $("#aynemid").val()
+            };
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#rst").html(JSON.stringify(jsdata));
+            }, function (err) {
+                alert(err.errmsg);//错误的返回值
+            });
+        }
+
+        function update(){
+            var url = _serUrl + "/web/hr/test/testmail.co";
+            var data = {
+                tp: 2,
+                aynemid: $("#aynemid").val(),
+                approvalman: $("#approvalman").val(),
+                approvaldate: $("#approvaldate").val()
+            };
+            $ajaxjsonpost(url, JSON.stringify(data), function (jsdata) {
+                $("#rst").html(JSON.stringify(jsdata));
+            }, function (err) {
+                alert(err.errmsg);//错误的返回值
+            });
+        }
+
+    </script>
+</head>
+<body>
+<table style="">
+    <tr>
+        <td>aynemid:</td>
+        <td>
+            <input id="aynemid" type="text"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div onclick="send()" class="bt">发送</div>
+        </td>
+        <td>
+            <div onclick="del()" class="bt">删除</div>
+        </td>
+    </tr>
+    <tr>
+        <td>approvalman:</td>
+        <td>
+            <input id="approvalman" type="text" value="测试用户"/>
+        </td>
+    </tr>
+    <tr>
+        <td>approvaldate:</td>
+        <td>
+            <input id="approvaldate" type="text" value="2016-12-31"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div onclick="update()" class="bt">更新审批人和时间</div>
+        </td>
+    </tr>
+</table>
+<div>
+    返回值：
+</div>
+<div id="rst">
+
+</div>
+</body>
+</html>

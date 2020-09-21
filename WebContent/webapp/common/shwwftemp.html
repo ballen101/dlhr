@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html workpath="webapp/common">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Corsair Workflow temple</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/cwf2.min.js"></script>
+    <script type="text/javascript" src="../js/common/shwwftemp.js"></script>
+    <script type="text/javascript" src="../js/common/icefallWorkFlow.min.js"></script>
+
+    <title></title>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic53",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=53",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic245",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=245",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic474",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=474",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+
+    <script type="text/javascript">
+        //初始化Grid 字段选择数据
+        var buildinparm_data = undefined;
+        var loadedjap = undefined, jpainfoJSON = undefined;
+
+        function onjpachange(newValue, oldValue) {
+            if ((newValue == undefined) || (newValue == null) || (newValue.length == 0))
+                return;
+            if (newValue != loadedjap) {
+                var url = _serUrl + "/web/common/getJPAInfo.co?jpaclass=" + newValue;
+                $ajaxjsonget(url, function (json) {
+                    loadedjap = newValue;
+                    var fields = json.fields;
+                    var data = [];
+                    for (var i = 0; i < fields.length; i++) {
+                        var field = fields[i];
+                        var rw = {id: field.fieldname, value: field.caption};
+                        if (rw.value == "")
+                            rw.value = rw.id;
+                        data.push(rw);
+                    }
+                    jpainfoJSON = data;
+                    initjpaComboGrid(data);
+                }, function (errmsg) {
+                    alert(errmsg);
+                })
+            }
+        }
+
+        function initjpaComboGrid(jpainfo) {
+            $("#shwwftemparmss").datagrid({
+                columns: [
+                    [
+                        {
+                            field: 'rowreloper', title: '行关系', width: 60, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: [
+                                    {id: 'AND', value: 'AND'},
+                                    {id: 'OR', value: 'OR'}
+                                ]
+                            }
+                        }
+                        },
+                        {
+                            field: 'parmname', title: '参数名', width: 120, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: jpainfo
+                            }
+                        }, formatter: function (value, row) {
+                            for (var i = 0; i < jpainfoJSON.length; i++) {
+                                var r = jpainfoJSON[i];
+                                if (r.id == value) {
+                                    return r.value;
+                                }
+                            }
+                            return value;
+                        }
+                        },
+                        {
+                            field: 'reloper', title: '运算关系', width: 60, editor: {
+                            type: 'combobox',
+                            options: {
+                                valueField: 'id', textField: 'value',
+                                data: [
+                                    {id: '>', value: '>'},
+                                    {id: '>=', value: '>='},
+                                    {id: '<', value: '<'},
+                                    {id: '<=', value: '<='},
+                                    {id: '<>', value: '<>'},
+                                    {id: '=', value: '='},
+                                    {id: 'like', value: 'like'}
+                                ]
+                            }
+                        }
+                        },
+                        {field: 'parmvalue', title: '参数值', width: 60, editor: 'text'},
+                        {field: 'note', title: '备注', width: 100, editor: 'text'}
+                    ]
+                ]
+            });
+        }
+
+
+        var pnode = undefined, creteLineIng = false;
+        function wftact(act) {
+            if (act == 1) {
+                var ndata = {
+                    left: 200,
+                    top: 10,
+                    width: 70,
+                    height: 110,
+                    title: "节点名称",
+                    stat: 1,
+                    allowemptyuser: 2,
+                    proctype: 1,
+                    canreject: 1,
+                    canbreak: 1,
+                    canmodify: 2,
+                    isbegin: 2,
+                    isend: 2,
+                    users: [],
+                    shwwftempprocconditions: [],
+                    shwwftempprocusers: []
+                };
+                wf.addNode(ndata);
+            }
+            else if (act == 2) {
+                var anode = wf.getActiveNode();
+                if (anode)
+                    anode.remove();
+                else
+                    alert("选择节点");
+            } else if (act == 3) {
+                if (pnode) {
+                    creteLineIng = true;
+                }
+            } else if (act == 4) {
+                wf.getActiveLine().remove();
+            } else if (act == 5) {
+                wf.autoSortUI();
+            } else if (act == 6) {
+                wf.removeall();
+            }
+        }
+
+        function formatwfdr(val, row) {
+            return "<span class='icon-folder' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span><span>"
+                    + val + "</span>";
+        }
+
+        function formatorwf(val, row) {
+            var stat = row.stat;
+            stat = parseInt(stat);
+            if (stat == 1)
+                return "<span class='icon-text_ab' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span><span>"
+                        + val + "</span>";
+            else
+                return "<span class='ico_disabled' style='height: 100%;width: 20px;display: inline-block;'>&nbsp</span><span>"
+                        + val + "</span>";
+        }
+
+    </script>
+    <style type="text/css">
+        #shwfdr_div .datagrid-header {
+            display: none;
+        }
+
+        #shwftemp_div .datagrid-header {
+            display: none;
+        }
+
+        #wftemgr_id {
+
+        }
+    </style>
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div id="shwfdr_div" data-options="region:'west',border:false,split:true,title:'模板类别'"
+     style="width: 250px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto;padding: 0px">
+    <table id="shwfdr" class="easyui-treegrid" style="width:100%;height:100%"
+           data-options="singleSelect:true,border:false,idField:'wftpid',treeField:'fdrname'">
+        <thead>
+        <tr>
+            <th data-options="field:'fdrname',width:'100%'"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div id="shwftemp_div" data-options="region:'center',border:false,title:'流程模板'">
+    <table id="shwftemp_id" class="easyui-datagrid" style="width:100%;height:100%"
+           data-options="singleSelect:true,border:false,toolbar:'#toolbarWfTem'">
+        <thead>
+        <tr>
+            <th data-options="field:'wftempname',width:'100%',formatter:formatorwf"></th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<div id="toolbarWfTem" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onclick="toolbarAction($C.action.Edit)">编辑</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true"
+       onclick="copyclick()">复制</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="toolbarAction($C.action.New)">添加</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="toolbarAction($C.action.Del)">删除</a>
+</div>
+
+
+<div id="wftempInfoWindow" class="easyui-window" title="流程模板"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:100%;height:100%;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <div id="wftemInfotabmain" class="easyui-tabs" data-options="border:false,fit:true" style="">
+                <div title="常规" style="padding:5px;">
+                    <table id="shwwftempform" border="0" style="width: auto;height: auto">
+                        <tr>
+                            <td>模板名称</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'wftempname'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                            <td>编码</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'code'"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>可用</td>
+                            <td>
+                                <input class="easyui-textbox" cjoptions="fdname:'stat',dicgpid:2"
+                                       style="height:20px;width: 150px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>JPA类名(Java)</td>
+                            <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'clas'"
+                                                   data-options="onChange:onjpachange"
+                                                   style="height: 20px;width: 350px"/></td>
+                        </tr>
+                        <tr>
+                            <td>页面路径</td>
+                            <td colspan="3">
+                                <input class="easyui-textbox" cjoptions="fdname:'formurl'"
+                                       style="height:20px;width: 350px"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" cjoptions="fdname:'mwwfstype'">流程中心显示方式(1:流程+表单;2:流程;3:表单)</td>
+                            <td><input class="easyui-textbox" cjoptions="fdname:'mwwfstype'" style="height:20px;width: 100px"/></td>
+                        </tr>
+                        <tr>
+                            <td>创建时间</td>
+                            <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                                       style="height:20px;width: 150px" readonly="readonly"
+                                       data-options="formatter:$dateformattostr"/></td>
+                            <td>创建人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'creator'"
+                                       style="height:20px;width: 150px"
+                                       data-options=""/></td>
+                        </tr>
+                        <tr>
+                            <td>更新时间</td>
+                            <td><input class="easyui-datetimebox" readonly="readonly"
+                                       cjoptions="fdname:'updatetime'"
+                                       style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                            </td>
+                            <td>更新人</td>
+                            <td><input class="easyui-textbox" readonly="readonly"
+                                       cjoptions="fdname:'updator'"
+                                       style="height:20px;width: 150px"/></td>
+                        </tr>
+                        <tr>
+                            <td>备注</td>
+                            <td colspan="3"><input class="easyui-textbox" data-options="multiline:true"
+                                                   cjoptions="fdname:'note'"
+                                                   style="height: 50px;width: 350px"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div title="启动条件" style="padding:0px;">
+                    <table id="shwwftemparmss" class="easyui-datagrid"
+                           data-options="singleSelect:true,border:false,toolbar:'#toolbarshwwftemparmss',
+                           onClickRow:function(){ $C.grid.accept('shwwftemparmss');},
+                           onDblClickRow:function(){ $C.grid.edit('shwwftemparmss');}">
+                    </table>
+                </div>
+                <div title="流程定义" style="padding:0px;">
+                    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+                        <div data-options="region:'north',split:false,border:false" style="height:auto;">
+                            <a onclick="wftact(1)" class="easyui-linkbutton" style="width:60px">添加节点</a>
+                            <a onclick="wftact(2)" class="easyui-linkbutton" style="width:60px">删除节点</a>
+                            <a onclick="wftact(3)" class="easyui-linkbutton" style="width:60px">创建链接</a>
+                            <a onclick="wftact(4)" class="easyui-linkbutton" style="width:60px">删除连线</a>
+                            <a onclick="wftact(5)" class="easyui-linkbutton" style="width:60px">整理界面</a>
+                        </div>
+                        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+                            <div id="wftemgr_id"
+                                 style="position:relative;overflow:auto;width:100%;height:100%;background-color: #BACFE4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+
+
+<div id="toolbarshwwftemparmss" style="height:auto">
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="$C.grid.append('shwwftemparmss', {}, true);">添加条件</a>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="$C.grid.remove('shwwftemparmss');">删除</a>
+</div>
+
+<script type="text/javascript">
+
+</script>
+
+
+</body>
+</html>

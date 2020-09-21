@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = false;
+        var allowWF = true;
+    </script>
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'tetyb_code', title: '批入编码', width: 100},
+            {field: 'tetybappdate', title: '申请日期', width: 150, findtype:'date',formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'tetybdate', title: '入职日期',findtype:'date', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'remark', title: '备注', width: 200},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 100},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 150},
+            {field: 'updator', title: '更新人', width: 100},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 150}
+        ];
+
+        var curEditorText = undefined;
+        var newsp_nameEditor = {
+            type: 'textbox',
+            options: {
+                icons: [{
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        curEditorText = $(e.data.target);//.textbox('setValue', 'Something added!');
+                        onFindOrgPosition();
+                    }
+                }]
+            }
+        };
+
+        var gdLinesColumns = [
+            {field: 'employee_code', title: '工号', width: 80},
+            {field: 'employee_name', title: '姓名', width: 80},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'id_number', title: '身份证号', width: 100},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'hiredday', title: '入职日期', width: 100, editor: 'datebox', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {
+                field: 'enddatetry',
+                title: '试用到期',
+                width: 100,
+                editor: 'datebox',
+                formatter: $fieldDateFormatorYYYY_MM_DD
+            },
+            {field: 'jxdatetry', title: '见习到期', width: 100, editor: 'datebox', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'orgname', title: '部门', width: 150},
+            {field: 'sp_name', title: '职位', width: 100, editor: newsp_nameEditor},
+            {field: 'hg_name', title: '职等', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'norgname', title: '拟用部门', width: 150},
+            {field: 'nsp_name', title: '拟职位', width: 100},
+            {field: 'exam_title', title: '考试课题', editor: 'text', width: 100},
+            {field: 'exam_time', title: '考试时间', width: 100, editor: 'datebox', formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'exam_score', title: '考试分数', editor: 'text', width: 100},
+            {field:'newstru_name',title:'工资结构',width:100},
+            {field:'newposition_salary',title:'职位工资',width:80},
+            {field:'newbase_salary',title:'基本工资',width:80},
+            {field:'newtech_salary',title:'技能工资',width:80},
+            {field:'newachi_salary',title:'绩效工资',width:80},
+            {field:'newotwage',title:'固定加班工资',width:80},
+            {field:'newtech_allowance',title:'技术津贴',width:80},
+            {field:'newpostsubs',title:'岗位津贴',width:80}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_trainentry_batch",
+            JPAIdField: "tetyb_id",
+            allowAtt: true,
+            allowWF: true,
+            windowWidth: '90%',
+            windowHeight: '90%',
+            gdLinesColumns: gdLinesColumns,
+            gdLinesName: "hr_trainentry_batchlines",
+            datainfo_line_title: "入职详情",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            OnReady: function () {   //都准备好后
+                var tb = mainline.lineToolBar();
+                tb.push("-");
+                tb.push({
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                });
+                tb.push("-");
+                tb.push({
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                });
+                $("#detail_main_grid_id").datagrid({toolbar: tb});
+            },
+            onNew: function (jsondata) {
+                jsondata.tetybappdate = (new Date()).format("yyyy-MM-dd");
+                jsondata.tetybdate = (new Date()).format("yyyy-MM-dd");
+            },
+            onAddLine: function (append) {//点击添加明细行
+                onFindemployee(append);
+            },
+            beforeSave: function () {
+
+            },
+            onFind: function (parms) {
+
+            },
+            afterFindDetail: function () {
+
+            }
+        };
+
+        var select_employee_pw = undefined;
+        function onFindemployee(append) {
+          /*  var tetybdate = mainline.getFieldValue("tetybdate");
+            if (!tetybdate) {
+                $.messager.alert('错误', "请先选择入职日期！", 'error');
+                return;
+            }*/
+
+
+            var url = _serUrl + "/web/hr/trainreg/findSXEmoloyeeList.co?empstatid=1";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: true,
+                idField: 'er_id',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'id_number', title: '身份证', width: 150},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if (!$C.grid.getRowByField("#detail_main_grid_id", row.er_id, "er_id")) {
+                            var ritem = {};
+                            ritem.er_id = row.er_id;
+                            ritem.employee_code = row.employee_code;
+                            ritem.sex = row.sex;
+                            ritem.id_number = row.id_number;
+                            ritem.employee_name = row.employee_name;
+                            ritem.degree = row.degree;
+                            //ritem.hiredday = row.hiredday;
+                            ritem.enddatetry = row.enddatetry;
+                            ritem.jxdatetry = row.jxdatetry;
+                            ritem.orgid = row.orgid;
+                            ritem.orgcode = row.orgcode;
+                            ritem.orgname = row.orgname;
+                            ritem.ospid = row.ospid;
+                            ritem.ospcode = row.ospcode;
+                            ritem.sp_name = row.sp_name;
+                            ritem.norgid = row.norgid;
+                            ritem.norgname = row.norgname;
+                            ritem.nospid = row.nospid;
+                            ritem.nsp_name = row.nsp_name;
+                            ritem.hiredday = row.hiredday;
+                            ritem.hg_name = row.hg_name;
+                            ritem.lv_num = row.lv_num;
+
+                            ritem.newstru_id = row.newstru_id;
+                            ritem.newstru_name = row.newstru_name;
+                            ritem.newposition_salary = row.newposition_salary;
+                            ritem.newbase_salary = row.newbase_salary;
+                            ritem.newtech_salary = row.newtech_salary;
+                            ritem.newachi_salary = row.newachi_salary;
+                            ritem.newotwage = row.newotwage;
+                            ritem.newtech_allowance = row.newtech_allowance;
+                            ritem.newpostsubs = row.newpostsubs;
+                            ritem.newchecklev = row.newchecklev;
+                            ritem.newattendtype = row.newattendtype;
+                            append(ritem);
+                        }
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.show();
+        }
+
+        var select_OrgPosition_pw = undefined;
+        function onFindOrgPosition() {
+            var gdline = $("#detail_main_grid_id");
+            var erow = gdline.datagrid("getSelected");
+            var idx = gdline.datagrid("getRowIndex", erow);
+            var orgid = erow.orgid;
+            if ((!orgid) || (orgid.length == 0)) {
+                $.messager.alert('错误', "没有发现机构", 'error');
+                return;
+            }
+            var wo = {
+                id: "select_OrgPosition_pw",
+                coURL: _serUrl + "/web/hr/employeetransfer/findOrgPostions.co",
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 100},
+                    {field: 'sp_name', title: '职位', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var gdline = $("#detail_main_grid_id");
+                        var erow = gdline.datagrid("getSelected");
+                        var idx = gdline.datagrid("getRowIndex", erow);
+
+                        var row = rows[0];
+                        erow.ospid = row.ospid;
+                        erow.ospcode = row.ospcode;
+                        erow.sp_name = row.sp_name;
+                        erow.hg_name = row.hg_name;
+                        erow.lv_num = row.lv_num;
+                        updateNewRow(gdline, idx, erow, row.sp_name);
+                    }
+                }
+            };
+            if (!select_OrgPosition_pw) {
+                select_OrgPosition_pw = new TSearchForm(wo);
+            } else
+                select_OrgPosition_pw.extendOptions({
+                    extParms: [
+                        {parmname: 'orgid', reloper: '=', parmvalue: orgid}
+                    ]
+                });
+            select_OrgPosition_pw.show();
+        }
+
+        function updateNewRow(gdline, idx, erow, newvaue) {
+            if (curEditorText)
+                curEditorText.textbox("setValue", newvaue);
+            gdline.datagrid("updateRow", {index: idx, row: erow});
+            gdline.datagrid("acceptChanges");
+            gdline.datagrid("beginEdit");
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/train/entry_batch_impexcel.co?timestamp=" + (new Date()).valueOf(), null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        for (var i = 0; i < jsdata.length; i++) {
+                            var row = jsdata[i];
+                            if (!$C.grid.getRowByFields("#detail_main_grid_id", [row.er_id], ["er_id"])) {
+                                $("#detail_main_grid_id").datagrid("appendRow", row);
+                            }
+                        }
+                    });
+        }
+
+    </script>
+    <title></title>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'tetyb_code'">批入编码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'tetyb_code',required:true,readonly:true"
+                   style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'tetybappdate'">申请日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'tetybappdate',required:true"
+                   data-options="formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'tetybdate'">入职日期</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'tetybdate',required:true"
+                   data-options="formatter:$dateformattostrrYYYY_MM_DD,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'stat',readonly:true,comidx:'dic227'"
+                   data-options="editable:false"
+                   style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'remark'"
+                               style="height:20px;width: 300px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

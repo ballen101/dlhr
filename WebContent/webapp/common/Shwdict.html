@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/Shwdict.js"></script>
+    <title></title>
+
+    <script type="text/javascript">
+
+        function initGrids() {
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic518",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=518",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    },
+                    {
+                        index: "dic2",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=2",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    $("#shwdict_grid").treegrid({
+                        columns: [
+                            [
+                                {field: 'dictname', title: '词汇名', width: 180},
+                                {field: 'dictid', title: 'ID', width: 50},
+                                {field: 'dictvalue', title: 'Value', width: 50},
+                                {field: 'dtype', title: '类型', width: 50, formatter: $C.grid.comFormaters['dic518']},
+                                {field: 'usable', title: '可用', width: 50, formatter: $C.grid.comFormaters['dic2']},
+                                {field: 'language1', title: '简体中文', width: 150},
+                                {field: 'language2', title: '繁体中文', width: 150},
+                                {field: 'language3', title: '英语', width: 150}
+                            ]
+                        ]
+                    });
+                }
+            });
+        }
+
+        function onDictPopMenu(e, node) {
+            e.preventDefault();
+            $(this).treegrid('select', node.id);
+            $('#menuDict').menu('show', {
+                left: e.pageX,
+                top: e.pageY
+            });
+        }
+    </script>
+
+</head>
+<body>
+<table id="shwdict_grid" lass="easyui-treegrid"
+       data-options=" border:false,lines: true,idField: 'id',fitColumns: true,fit:true,toolbar:toolbarDict,treeField: 'dictname',onContextMenu:onDictPopMenu">
+</table>
+
+<div id="dictInfoWindow" class="easyui-window" title="字典信息"
+     data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"
+     style="width:500px;height:300px;padding: 0px">
+    <div class="easyui-layout" data-options="fit:true,border:false" style="padding: 0px;">
+        <div data-options="region:'center',border:false" style="padding:0px;margin: 0px auto">
+            <table id="dictform" border="0" style="width: 99%;height: 99%">
+                <tr>
+                    <td>编码</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'dictcode'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>可用</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'usable',dicgpid:2"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>名称</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'dictname'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>词汇值</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'dictvalue'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>简体中文</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language1'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>繁体中文</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language2'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>英语</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'language3'"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                    <td>节点类别</td>
+                    <td>
+                        <input class="easyui-textbox" cjoptions="fdname:'dtype',dicgpid:518" readonly="readonly"
+                               style="height:20px;width: 150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>创建时间</td>
+                    <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime'"
+                               style="height:20px;width: 150px" readonly="readonly"
+                               data-options="formatter:$dateformattostr"/></td>
+                    <td>创建人</td>
+                    <td><input class="easyui-textbox" readonly="readonly"
+                               cjoptions="fdname:'creator'"
+                               style="height:20px;width: 150px"
+                               data-options=""/></td>
+                </tr>
+                <tr>
+                    <td>更新时间</td>
+                    <td><input class="easyui-datetimebox" readonly="readonly"
+                               cjoptions="fdname:'updatetime'"
+                               style="height:20px;width: 150px" data-options="formatter:$dateformattostr"/>
+                    </td>
+                    <td>更新人</td>
+                    <td><input class="easyui-textbox" readonly="readonly"
+                               cjoptions="fdname:'updator'"
+                               style="height:20px;width: 150px"/></td>
+                </tr>
+                <tr>
+                    <td>备注</td>
+                    <td colspan="3">
+                        <input class="easyui-textbox" cjoptions="fdname:'note'"
+                               style="height:20px;width: 250px"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-options="region:'south',border:false" style="text-align:right;padding: 5px;height: auto">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+
+    <div id="toolbarDict" style="height:auto">
+        <a id="bt1" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+           onclick="toolbarAction(1)">新建分类</a>
+        <a id="bt2" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+           onclick="toolbarAction(2)">新建词汇组</a>
+        <a id="btnewch" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+           onclick="toolbarAction(3)">新建词汇值</a>
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="toolbarAction(4)">删除</a>
+    </div>
+</div>
+
+<div id="menuDict" class="easyui-menu" style="width:120px;">
+    <div onclick="toolbarAction(1)" data-options="iconCls:'icon-add'">新建分类</div>
+    <div onclick="toolbarAction(2)" data-options="iconCls:'icon-add'">新建词汇组</div>
+    <div onclick="toolbarAction(3)" data-options="iconCls:'icon-edit'">新建词汇值</div>
+    <div class="menu-sep"></div>
+    <div onclick="toolbarAction(4)" data-options="iconCls:'icon-remove'">删除</div>
+</div>
+
+</body>
+</html>

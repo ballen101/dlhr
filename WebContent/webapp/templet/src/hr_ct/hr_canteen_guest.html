@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_ct">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <script type="text/javascript" src="../js/common/cpopinfo2.js"></script>
+
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1099",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1099",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1101",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1101",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1104",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1104",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1107",
+                type: "combobox",
+                multiple: true,
+                url: "/web/dict/getdictvalues.co?dicid=1107",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1180",
+                type: "combobox",
+                multiple: true,
+                url: "/web/dict/getdictvalues.co?dicid=1180",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1412",
+                type: "combobox",
+                multiple: true,
+                url: "/web/dict/getdictvalues.co?dicid=1412",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 1;
+        var allowAtt = true;
+        var allowWF = true;
+    </script>
+
+
+    <script type="text/javascript">
+        comUrl_dic1107.formator = function (value, row) {
+            var jsondata = comUrl_dic1107.jsondata;
+            if (value == 'get_com_data') {
+                return jsondata;
+            }
+            if (value == 'get_com_url') {
+                return comUrl_dic1107;
+            }
+            var arv = eval("[" + value + "]");
+            var rv = "";
+            for (var i = 0; i < arv.length; i++) {
+                for (var j = 0; j < jsondata.length; j++) {
+                    if (arv[i] == jsondata[j]["dictvalue"]) {
+                        rv = rv + jsondata[j]["language1"] + ",";
+                        break;
+                    }
+                }
+            }
+            if (rv.length > 0) rv = rv.substring(0, rv.length - 1);
+            if (rv.length > 0) return rv;
+            else return value;
+        };
+
+
+        var listGridColumns = [
+            {field: 'employee_code', title: '申请人工号', width: 100},
+            {field: 'employee_name', title: '申请人姓名', width: 100},
+            {field: 'orgname', title: '部门', width: 120},
+            {field: 'sp_name', title: '职位', width: 100},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'apply_date', title: '申请日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+            {field: 'hiredday', title: '入职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'telphone', title: '联系电话', width: 100},
+            {field: 'guesttype', title: '客餐类型', width: 64, formatter: comUrl_dic1180.formator},
+            {field: 'persontype', title: '就餐人员', width: 64, formatter: comUrl_dic1412.formator},
+            {field: 'ctr_name', title: '申请用餐餐厅', width: 100},
+            {field: 'bgday', title: '就餐起始', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'edday', title: '就餐截止', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'iseat', title: '是否用餐', width: 64, formatter: comUrl_dic5.formator},
+            {field: 'reasons', title: '未用餐原因说明', width: 150},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'stat', title: '流程状态', width: 64, formatter: comUrl_dic227.formator},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间', findtype: 'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [
+            {field: 'num', title: '用餐人数', width: 100},
+            {field: 'mc_name', title: '餐类', width: 100},
+            {field: 'mealstand', title: '餐标', width: 100},
+            {field: 'mealbg_date', title: '用餐开始时间', width: 130},
+            {field: 'mealed_date', title: '用餐截止时间', width: 130}
+        ];
+
+        frmOptions = {
+            //findUrl: _serUrl + "/web/hrct/canteen/findguestlist.co",
+            JPAClass: "com.hr.canteen.entity.Hr_canteen_guest",
+            JPAIdField: "ctg_id",
+            allowAtt: true,
+            allowWF: true,
+            gdLinesName: 'hr_canteen_guest_lines',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "客餐申请",
+            allow_expt_list: true,
+            gdLinesColumns: gdLinesColumns,
+            datainfo_line_title: "用餐人信息",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            allowEmptyLine: false,
+            allow_void: true,//作废
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata) {
+                jsondata.standard_type = 1;
+                jsondata.guesttype = 1;
+                jsondata.usable = 1;
+                jsondata.class_type = [1];
+                jsondata.apply_date = new Date().format("yyyy-MM-dd");
+            },
+            onFind: function (parms) {
+                //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+                // parms.parms.push(p);
+            },
+            onAddLine: function (append) {//点击添加明细行
+                showOptionInfo($C.action.New);
+            },
+            onSave: function (jsondata) {
+                var jpadata = jsondata.jpadata;
+                if (!checkdata(jpadata)) {
+                    return false;
+                }
+                return true;
+            },
+            onLineGridDBClickRow: function (row) {
+                showOptionInfo($C.action.Edit, row);
+                return false; //false 将不调用edit方法
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+
+                if (fdname == 'employee_code') {
+                    var employee_code = (mainline.getField("employee_code")).textbox("getValue");
+                    if (!$isEmpty(employee_code)) {
+                        onFindemployee(employee_code);
+                    }
+                }
+            }
+        };
+        function onAddLineData() {
+            showOptionInfo($C.action.New);
+        }
+        var select_employee_pw = undefined;
+        function onFindemployee(employee_code) {
+            var orgid = mainline.getFieldValue("orgid");
+            var orgp = ((!orgid) || (orgid.length == 0)) ? "" : "?orgid=" + orgid;
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co" + orgp;
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                singleAutoReturn: true,
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);//设置界面值
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        var orgid = undefined;
+                        if ($isEmpty(row.uorgid)) {
+                            orgid = row.orgid;
+                            mainline.setFieldValue("orgid", row.orgid);
+                            mainline.setFieldValue("orgcode", row.orgcode);
+                            mainline.setFieldValue("orgname", row.orgname);
+                            mainline.setFieldValue("idpath", row.idpath);
+                        } else {
+                            orgid = row.uorgid;
+                            mainline.setFieldValue("orgid", row.uorgid);
+                            mainline.setFieldValue("orgcode", row.uorgcode);
+                            mainline.setFieldValue("orgname", row.uorgname);
+                            mainline.setFieldValue("idpath", row.uidpath);
+                        }
+                        mainline.setFieldValue("lv_id", row.lv_id);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("ospid", row.ospid);
+                        mainline.setFieldValue("ospcode", row.ospcode);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue("hiredday", row.hiredday);
+                        mainline.setFieldValue("sex", row.sex);
+                        mainline.setFieldValue("telphone", row.telphone);
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.extendOptions({
+                coURL: url
+            });
+            if (employee_code) {
+                select_employee_pw.extendOptions({
+                    autoFind: true,
+                    extParms: [{parmname: 'employee_code', reloper: '=', parmvalue: employee_code}]
+                });
+            } else {
+                select_employee_pw.extendOptions({
+                    autoFind: false,
+                    extParms: []
+                });
+            }
+            select_employee_pw.show(true);
+        }
+
+        var select_Org_pw = undefined;
+        function onSelectOrg() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('orgid', row.orgid);
+                        mainline.setFieldValue('orgcode', row.code);
+                        mainline.setFieldValue('orgname', row.extorgname);
+                        //mainline.setFieldValue('idpath', row.idpath);
+
+                        var url = _serUrl + "/web/hr/employee/findOrgHrlev.co?orgid=" + row.orgid;
+                        $ajaxjsonget(url, function (jsdata) {
+                            mainline.setFieldValue('orghrlev', jsdata.hrlev);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.show();
+        }
+
+        var select_mealroom_pw = undefined;
+        function onFindMealRoom() {
+            var url = _serUrl + "/web/hrct/canteen/findctroomlist.co";
+            var wo = {
+                id: "select_mealroom_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room",  //对应后台JPAClass名
+                orderStr: " ctr_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctr_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'ctr_name', title: '餐厅', width: 120},
+                    {field: 'address', title: '地点', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ctr_id', row.ctr_id);
+                        mainline.setFieldValue('ctr_code', row.ctr_code);
+                        mainline.setFieldValue('ctr_name', row.ctr_name);
+                    }
+                }
+            };
+            if (!select_mealroom_pw) {
+                select_mealroom_pw = new TSearchForm(wo);
+            }
+            select_mealroom_pw.show();
+        }
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm");
+        }
+
+        var select_mealclass_pw = undefined;
+        function onFindMealClass() {
+            var url = _serUrl + "/web/hrct/canteen/findmealsystemlist.co";
+            gttype = mainline.getFieldValue("guesttype");
+            gttype = parseInt(gttype);
+            var expt = [];
+            if (gttype == 2) {
+                expt = [{parmname: 'mealbegin', reloper: '<', parmvalue: '20:00'},
+                    {parmname: 'mealbegin', reloper: '>=', parmvalue: '10:00'},
+                    {parmname: 'ctms_name', reloper: 'like', parmvalue: '贵宾餐'}, {parmname: 'stat', reloper: '=', parmvalue: '9'}];
+            }
+            if (gttype == 1) {
+                expt = [{parmname: 'stat', reloper: '=', parmvalue: '9'}, {parmname: 'ctms_name', reloper: 'not like', parmvalue: '%贵宾餐%'}];
+            }
+
+            var wo = {
+                id: "select_mealclass_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_mealsystem",  //对应后台JPAClass名
+                orderStr: " mc_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctms_id',
+                //  pidField: 'superid',
+                // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: expt,//扩展参数
+                gdListColumns: [
+                    {field: 'ctms_name', title: '餐制名', width: 120},
+                    {field: 'mc_name', title: '餐类', width: 60},
+                    {field: 'price', title: '餐标', width: 60},
+                    {field: 'mealbegin', title: '开始时间', width: 80},
+                    {field: 'mealend', title: '结束时间', width: 80}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+
+                        if (OptionInfoWindow) {
+                            OptionInfoWindow.setFieldValue('ctmc_id', row.ctms_id);
+                            OptionInfoWindow.setFieldValue('classtype', row.classtype);
+                            OptionInfoWindow.setFieldValue('mc_id', row.mc_id);
+                            OptionInfoWindow.setFieldValue('mc_name', row.mc_name);
+                            OptionInfoWindow.setFieldValue('mealstand', row.price);
+                            OptionInfoWindow.setFieldValue('mealbg_date', row.mealbegin);
+                            OptionInfoWindow.setFieldValue('mealed_date', row.mealend);
+                        }
+
+                        //mainline.setFieldValue('ctr_code', row.ctr_code);
+                        //mainline.setFieldValue('ctr_name', row.ctr_name);
+                    }
+                }
+            };
+            if (!select_mealclass_pw) {
+                select_mealclass_pw = new TSearchForm(wo);
+            } else {
+                select_mealclass_pw.extendOptions({
+                    extParms: expt
+                });
+            }
+            select_mealclass_pw.show(true);
+        }
+
+
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                jsondata = {
+                    num: 1,
+                    sex: 1,
+                    // classtype: 1,
+                    mealbg_date: '00:00',
+                    mealed_date: '00:00'
+                };
+                isnew = true;
+            } else {
+                var row = data;
+                if (tp == $C.action.Del) {//删除
+                    return;
+                }
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = row;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#guestlinepw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+
+                },
+                onOK: function (isnew, jsondata) {
+                    if (isnew) {
+                        mainline.addLineData(undefined, jsondata);
+                    } else {
+                        mainline.updateLineData(undefined, jsondata);
+                    }
+                    return true;
+                },
+                onValueChange: function (fdname, newValue, oldValue) {
+                    if (fdname == "classtype") {
+                        var ctype = OptionInfoWindow.getFieldValue("classtype");
+                        ctype = parseInt(ctype);
+                        if (isNaN(ctype))return;
+                        if (ctype == 1) {
+                            OptionInfoWindow.setFieldValue("mealstand", 1.5);
+                        } else if (ctype == 2) {
+                            OptionInfoWindow.setFieldValue("mealstand", 5.8);
+                        } else if (ctype == 3) {
+                            OptionInfoWindow.setFieldValue("mealstand", 7.8);
+                        } else if (ctype == 4) {
+                            OptionInfoWindow.setFieldValue("mealstand", 5);
+                        }
+                        if (ctype == 2) {
+                            OptionInfoWindow.setFieldValue("mealstand", 35);
+                        } else if (ctype == 3) {
+                            OptionInfoWindow.setFieldValue("mealstand", 35);
+                        }
+                    }
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            OptionInfoWindow.extendOptions({
+                isNew: isnew,
+                jsonData: jsondata
+            });
+            OptionInfoWindow.show();
+        }
+
+        function checkdata(data) {
+            // var data = mainline.getMainData();
+            var begin_date = data.bgday;
+            var end_date = data.edday;
+            if ((!begin_date) || (begin_date.length == 0) || (!end_date) || (end_date.length == 0)) {
+                alert("人员【" + data.employee_name + "】客餐时间不允许为空");
+                return false;
+            }
+            begin_date = $date4str(begin_date);
+            end_date = $date4str(end_date);
+            var othours = end_date.getTime() - begin_date.getTime();
+            if (othours < 0) {
+                alert("人员【" + data.employee_name + "】客餐申请时段，就餐起始大于就餐截止");
+                return false;
+            }
+            return true;
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ctg_code'">编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctg_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">申请人工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',buttonIcon:'icon-search',onClickButton:onFindemployee,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">姓名</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',formatter:$dateformattostrrYYYY_MM_DD,readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true" style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true,crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'sex'">性别</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sex',readonly:true,comidx:'dic81',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'telphone'">联系电话</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'telphone',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'apply_date'">申请日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'apply_date',formatter:$dateformattostrrYYYY_MM_DD,editable:false,crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ctr_name'">申请用餐餐厅</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctr_name',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindMealRoom" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'bgday'">就餐起始</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'bgday',formatter:$dateformattostrrYYYY_MM_DD,editable:false,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'edday'">就餐截止</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'edday',formatter:$dateformattostrrYYYY_MM_DD,editable:false,crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'persontype'">就餐人员</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'persontype',editable:false,comidx:'dic1412',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'guesttype'">客餐类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'guesttype',editable:false,comidx:'dic1180',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">申请原因</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        </td>
+    </tr>
+    <tr>
+
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+
+<div id="guestlinepw" class="easyui-window" title="用餐人信息" data-options="iconCls:'icon-save',closed:true,modal:true"
+     style="width: 450px;height: 250px;padding:0px;">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'center',border:false" style="padding:5px;">
+            <table>
+                <tr>
+                    <td cjoptions="fdname:'num'">用餐人数</td>
+                    <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'num',crequired:true"
+                               style="height:20px;width: 80px"/></td>
+                    <td cjoptions="fdname:'mc_name'">餐类</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'mc_name',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindMealClass"
+                            style="height:20px;width: 80px"/></td>
+                    <td cjoptions="fdname:'mealstand'">餐标</td>
+                    <td><input
+                            cjoptions="easyui_class:'easyui-textbox',fdname:'mealstand',readonly:true,crequired:true"
+                            style="height:20px;width: 80px"/></td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        用餐开始时间从
+                        <input cjoptions="easyui_class:'easyui-timespinner',fdname:'mealbg_date',crequired:true"
+                               style="height:20px;width: 80px"/>到
+                        <input cjoptions="easyui_class:'easyui-timespinner',fdname:'mealed_date',crequired:true"
+                               style="height:20px;width: 80px"/>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div data-options="region:'south',border:true"
+             style="text-align:right;padding:5px;border-bottom: none;border-left: none;border-right: none">
+            <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'"
+               style="width:80px">确定</a>
+            <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'"
+               style="width:80px">取消</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_base">
+ <head lang="en"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cpopinfo.js"></script> 
+  <script type="text/javascript" src="../js/common/easyui-extend-rcm.js"></script> 
+  <title></title> 
+  <script type="text/javascript">
+        function $OnCorsairReady() {
+            $("iframe").css("display", "block");
+            initGrids();
+            $("#orgoptionw").c_initDictionary();
+            //getorgs();
+        }
+
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic905",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=905",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic901",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=901",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1399",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1399",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+
+        function rowstyler(index, row) {
+            if (row) {
+                if (parseInt(row.usable) == 2) {
+                    return 'color:#DC143C;';
+                }
+            }
+        }
+
+        function initGrids() {
+            //var url=
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=tree";
+            $C.grid.initComFormaters({
+                comUrls: [
+                    {
+                        index: "dic5",
+                        type: "combobox",
+                        url: _serUrl + "/web/dict/getdictvalues.co?dicid=5",
+                        valueField: 'dictvalue',
+                        textField: 'language1'
+                    }
+                ], onOK: function () {
+                    $("#orgopgrid").datagrid({
+                        rowStyler: rowstyler,
+                        idField: 'ospid',
+                        treeField: 'sp_name',
+                        columns: [[
+                            {field: 'sp_name', title: '职位', width: 100},
+                            {field: 'ospcode', title: '编码', width: 64},
+                            {field: 'hwc_namezl', title: '职类', width: 64},
+                            {field: 'hg_name', title: '职等', width: 64},
+                            {field: 'lv_num', title: '职级', width: 64},
+                            {field: 'sp_code', title: '标准职位编码', width: 64},
+                            {field: 'pname', title: '上级职位', width: 100},
+                            {field: 'usable', title: '有效', width: 64, formatter: $C.grid.comFormaters['dic5']},
+                            {field: 'sp_exp', title: '说明', width: 64}
+                        ]]
+                    });
+                    $("#hr_orgpositionkpis").datagrid({
+                        columns: [[
+                            {field: 'kpiname', title: '名称', width: 100, editor: 'text'},
+                            {field: 'kpiaim', title: '目的', width: 120, editor: 'text'},
+                            {field: 'kpidefin', title: '定义', width: 100, editor: 'text'},
+                            {field: 'calcfmt', title: '计算公式', width: 100, editor: 'text'},
+                            {field: 'specnote', title: '特殊说明', width: 100, editor: 'text'},
+                            {field: 'examorg', title: '考核部门', width: 100, editor: 'text'}
+                        ]]
+                    });
+                    var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+                    $("#orggrid").treegrid({
+                        url: url,
+                        onClickRow: function (row) {
+                            findOrgOptions(row);
+                        }
+                    });
+                }
+            });
+        }
+
+        function getorgs() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            $ajaxjsonget(url, function (jsondata) {
+                        jsondata[0].state = "";
+                        jsondata[0].iconCls = "application_home";
+                        setchildsnodeclose(jsondata[0]);
+                        $("#orggrid").treegrid({
+                            data: jsondata,
+                            onClickRow: function (row) {
+                                findOrgOptions(row);
+                            }
+                        });
+                    },
+                    function (err) {
+                        $.messager.alert('错误', JSON.stringify(err), 'error');
+                    }
+            );
+            function setchildsnodeclose(node) {
+                if (node.children != undefined) {
+                    for (var i = 0; i < node.children.length; i++) {
+                        var chdnode = node.children[i];
+                        if (chdnode.children != undefined) {
+                            chdnode.state = "closed";
+                            setchildsnodeclose(chdnode);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        function findOrgOptions(row) {
+            var urlp = _serUrl + "/web/hr/orgposition/findop.co?orgid=" + row.orgid;
+            $ajaxjsonget(urlp, function (jsdata) {
+                $("#orgopgrid").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', JSON.stringify(err), 'error');
+            });
+        }
+
+
+    </script> 
+  <script type="text/javascript">
+
+        var sch_standiptions_pw = undefined;
+        function onFindStationOption() {
+            var wo = {
+                id: "sch_standiptions_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_standposition",  //对应后台JPAClass名
+                coURL: _serUrl + "/web/hr/orgposition/findStationOption.co",
+                orderStr: " sp_id asc ",
+                multiRow: false,
+                idField: 'hwc_id',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'sp_name', title: '职位', width: 120},
+                    {field: 'hwc_namezl', title: '职类', width: 64},
+                    {field: 'hg_name', title: '职等', width: 64},
+                    {field: 'lv_num', title: '职级', width: 64},
+                    {field:'hwc_namezq',title:'职群',width:64},
+                    {field:'hwc_namezz',title:'职种',width:64}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        OptionInfoWindow.setFieldValue("sp_id", rows[0].sp_id);
+                        OptionInfoWindow.setFieldValue("sp_code", rows[0].sp_code);
+                        OptionInfoWindow.setFieldValue("sp_name", rows[0].sp_name);
+
+                        OptionInfoWindow.setFieldValue("hwc_idzz", rows[0].hwc_idzz);
+                        OptionInfoWindow.setFieldValue("hw_codezz", rows[0].hw_codezz);
+                        OptionInfoWindow.setFieldValue("hwc_namezz", rows[0].hwc_namezz);
+
+                        OptionInfoWindow.setFieldValue("hwc_idzq", rows[0].hwc_idzq);
+                        OptionInfoWindow.setFieldValue("hw_codezq", rows[0].hw_codezq);
+                        OptionInfoWindow.setFieldValue("hwc_namezq", rows[0].hwc_namezq);
+
+                        OptionInfoWindow.setFieldValue("hwc_idzl", rows[0].hwc_idzl);
+                        OptionInfoWindow.setFieldValue("hw_codezl", rows[0].hw_codezl);
+                        OptionInfoWindow.setFieldValue("hwc_namezl", rows[0].hwc_namezl);
+                        OptionInfoWindow.setFieldValue("gtitle", rows[0].gtitle);
+
+
+                        OptionInfoWindow.setFieldValue("lv_id", rows[0].lv_id);
+                        OptionInfoWindow.setFieldValue("lv_num", rows[0].lv_num);
+                        OptionInfoWindow.setFieldValue("hg_id", rows[0].hg_id);
+                        OptionInfoWindow.setFieldValue("hg_code", rows[0].hg_code);
+                        OptionInfoWindow.setFieldValue("hg_name", rows[0].hg_name);
+                        OptionInfoWindow.setFieldValue("isadvtech", rows[0].isadvtech);
+                        OptionInfoWindow.setFieldValue("isoffjob", rows[0].isoffjob);
+                        OptionInfoWindow.setFieldValue("issensitive", rows[0].issensitive);
+                        OptionInfoWindow.setFieldValue("iskey", rows[0].iskey);
+                        OptionInfoWindow.setFieldValue("ishighrisk", rows[0].ishighrisk);
+                        OptionInfoWindow.setFieldValue("isneedadtoutwork", rows[0].isneedadtoutwork);
+                        OptionInfoWindow.setFieldValue("isdreamposition", rows[0].isdreamposition);
+                        OptionInfoWindow.setFieldValue("maxage", rows[0].maxage);
+                        OptionInfoWindow.setFieldValue("minage", rows[0].minage);
+                        OptionInfoWindow.setFieldValue("mindegree", rows[0].mindegree);
+                    }
+                }
+            };
+            if (!sch_standiptions_pw) {
+                sch_standiptions_pw = new TSearchForm(wo);
+            }
+            sch_standiptions_pw.show();
+        }
+
+
+        //选择上级职位
+        var sch_p_pw = undefined;
+        function selectPrePotion() {
+            var org = $('#orggrid').treegrid('getSelected');
+            if (!org) {
+                $.messager.alert('错误', '没选定的机构!', 'error');
+                return;
+            }
+
+
+            var wo = {
+                id: "sch_p_pw",
+                enableIdpath: false,
+                JPAClass: "com.hr.base.entity.Hr_orgposition",  //对应后台JPAClass名
+                multiRow: false,
+                idField: 'ospid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'orgname', title: '机构', width: 120},
+                    {field: 'sp_name', title: '职位', width: 120}
+                ],
+                onResult: function (rows) {
+                    if (rows[0]) {
+                        OptionInfoWindow.setFieldValue("pid", rows[0].ospid);
+                        OptionInfoWindow.setFieldValue("pname", rows[0].sp_name);
+                    }
+                }
+            };
+            if (!sch_p_pw) {
+                sch_p_pw = new TSearchForm(wo);
+            }
+            var url = _serUrl + "/web/hr/orgposition/findSuperOrgPosiotions.co?orgid=" + org.orgid;
+            sch_p_pw.extendOptions({coURL: url});
+            sch_p_pw.show(true);
+        }
+
+        function onOpDBClick() {
+            showOptionInfo($C.action.Edit);
+        }
+
+
+        function setDefaultOptions() {
+            var org = $('#orggrid').treegrid('getSelected');
+            if (!org) {
+                $.messager.alert('错误', '没选定的机构!', 'error');
+                return;
+            }
+
+            var url = _serUrl + "/web/hr/orgposition/setDefaultOptions.co?orgid=" + org.orgid;
+            $.messager.confirm('提示', '确认载入默认职位?', function (r) {
+                if (r) {
+                    $ajaxjsonpost(url, JSON.stringify(), function (jsondata) {
+                        if (jsondata.updatenum > 0) {
+                            $.messager.alert('提示', '载入默认职位【' + jsondata.updatenum + '】个', 'info');
+                            findOrgOptions(org);
+                        }
+                    }, function (err) {
+                        alert("确认载入默认职位错误!");
+                    });
+                }
+            });
+        }
+
+
+        var jpajsondat = undefined;
+        var OptionInfoWindow = undefined;
+        function showOptionInfo(tp, data) {
+            var isnew = false;
+            var jsondata = undefined;
+            if (tp == $C.action.New) {//新建
+                var org = $('#orggrid').treegrid('getSelected');
+                if (!org) {
+                    $.messager.alert('错误', '没选定的机构!', 'error');
+                    return;
+                }
+                isnew = true;
+                jsondata = {orgid: org.orgid, orgcode: org.code, orgname: org.orgname, idpath: org.idpath};//可加入初始化数据
+                jsondata.hr_orgpositionkpis = [];
+            } else {
+                var option = $('#orgopgrid').datagrid('getSelected');
+                if (!option) {
+                    $.messager.alert('错误', '请选择职位', 'error');
+                    return;
+                }
+                if (tp == $C.action.Del) {//删除
+                    //delete from server
+                    var url = _serUrl + "/web/hr/orgposition/delop.co?ospid=" + option.ospid;
+                    $.messager.confirm('提示', '确认删除?', function (r) {
+                        if (r) {
+                            $ajaxjsonpost(url, JSON.stringify(), function (jsondata) {
+                                //alert(JSON.stringify(jsondata));
+                                if (jsondata.result == "OK")
+                                    $('#orgopgrid').datagrid("remove", option.ospid);
+                            }, function (err) {
+                                alert("删除职位错误!");
+                            });
+                        }
+                    });
+                    return;
+                }
+
+                if (tp == $C.action.Edit) {//编辑
+                    isnew = false;
+                    jsondata = option;
+                }
+            }
+
+            // alert(JSON.stringify(jsondata));
+            jpajsondat = jsondata;
+            var options = {
+                windowfilter: '#orgoptionw',
+                isNew: isnew,
+                jsonData: jsondata,
+                onShow: function (jsondata) {
+                    $C.grid.clearData("hr_orgpositionkpis");
+                    if ((jsondata.ospid) && (jsondata.ospid.length > 0)) {
+                        var url = _serUrl + "/web/hr/orgposition/findorgOptionKPIs.co?ospid=" + jsondata.ospid;
+                        $ajaxjsonget(url, function (jsondata) {
+                            $("#hr_orgpositionkpis").datagrid("loadData", jsondata);
+                        }, function () {
+                            $.messager.alert('错误', '获取查询机构列表错误!', 'error');
+                        });
+                    }
+                    var url = _serUrl + "/web/user/getExtOrgName.co?orgid=" + jsondata.orgid;
+                    $ajaxjsonget(url, function (jsdata) {
+                        if (OptionInfoWindow)
+                            OptionInfoWindow.setFieldValue("orgname", jsdata.extorgname);
+                    }, function (err) {
+                        alert(JSON.stringify(err));
+                    });
+                },
+                onOK: function (isnew, jsondata) {
+                    //do save
+                    if (!check100(jsondata)) return false;
+                    if (isnew) {
+                        jsondata = {isnew: true, jsondata: jsondata};
+                    } else {
+                        jsondata = {isnew: false, jsondata: jsondata};
+                    }
+                    jsondata.jsondata.children = [];//不上传子机构数据
+                    //console.error(JSON.stringify(jsondata));
+                    $C.grid.accept("#hr_orgpositionkpis");
+                    jsondata.jsondata.hr_orgpositionkpis = $("#hr_orgpositionkpis").datagrid("getData").rows;
+                    var url = _serUrl + "/web/hr/orgposition/saveOrgOption.co";
+                    $ajaxjsonpost(url, JSON.stringify(jsondata), function (jsondata) {
+                        var org = $('#orggrid').treegrid('getSelected');
+                        findOrgOptions(org);
+                    }, function (err) {
+                        $.messager.alert('错误', '保存错误:' + err.errmsg, 'error');
+                    });
+                    return true;
+                }
+            };
+            if (!OptionInfoWindow)
+                OptionInfoWindow = new CPopInfoWindow(options);
+            else
+                OptionInfoWindow.extendOptions({
+                    isNew: isnew,
+                    jsonData: jsondata
+                });
+            OptionInfoWindow.show();
+        }
+
+        function check100(jsondata) {
+            //console.error(JSON.stringify(jsondata));
+            var keyrespper1 = parseFloat(jsondata.keyrespper1);
+            var keyrespper2 = parseFloat(jsondata.keyrespper2);
+            var keyrespper3 = parseFloat(jsondata.keyrespper3);
+            var keyrespper4 = parseFloat(jsondata.keyrespper4);
+            var keyrespper5 = parseFloat(jsondata.keyrespper5);
+            var keyrespper6 = parseFloat(jsondata.keyrespper6);
+            var keyrespper7 = parseFloat(jsondata.keyrespper7);
+            var keyrespper8 = parseFloat(jsondata.keyrespper8);
+
+            if (isNaN(keyrespper1) || (keyrespper1 == undefined) || (keyrespper1 == 0)) keyrespper1 = 0;
+            if (isNaN(keyrespper2) || (keyrespper2 == undefined) || (keyrespper2 == 0)) keyrespper2 = 0;
+            if (isNaN(keyrespper3) || (keyrespper3 == undefined) || (keyrespper3 == 0)) keyrespper3 = 0;
+            if (isNaN(keyrespper4) || (keyrespper4 == undefined) || (keyrespper4 == 0)) keyrespper4 = 0;
+            if (isNaN(keyrespper5) || (keyrespper5 == undefined) || (keyrespper5 == 0)) keyrespper5 = 0;
+            if (isNaN(keyrespper6) || (keyrespper6 == undefined) || (keyrespper6 == 0)) keyrespper6 = 0;
+            if (isNaN(keyrespper7) || (keyrespper7 == undefined) || (keyrespper7 == 0)) keyrespper7 = 0;
+            if (isNaN(keyrespper8) || (keyrespper8 == undefined) || (keyrespper8 == 0)) keyrespper8 = 0;
+
+            var ka = keyrespper1 + keyrespper2 + keyrespper3 + keyrespper4 + keyrespper5 + keyrespper6 + keyrespper7 + keyrespper8;
+            if (ka != 100) {
+                $.messager.alert('错误', '所有【关键职责 绩效】之和必须为100，当前为：' + ka, 'error');
+                return false;
+            }
+            return true;
+        }
+
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/orgposition/impexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        function expexcelmodle() {
+            var url = _serUrl + "/ExcelModels/Hr_orgposition/excelmodel/机构职位导入模板.xlsx";
+            window.open(url);
+        }
+
+    </script> 
+  <style type="text/css">
+        .textbox-readonly {
+            background-color: #E8EEFA;
+        }
+
+        .validatebox-readonly {
+            background-color: #E8EEFA;
+        }
+    </style> 
+ </head> 
+ <body> 
+  <div id="loading" style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ... 
+  </div> 
+  <div class="easyui-layout" data-options="fit:true"> 
+   <div data-options="region:'west',border:false,split:true,collapsible:false" style="width: 280px;height: 100%;overflow-y: auto;overflow-x: hidden;margin: 0 auto"> 
+    <table id="orggrid" class="easyui-treegrid" data-options="border:false,lines: true,idField: 'orgid',rownumbers: true,fitColumns: true,treeField: 'orgname',fit:true"> 
+     <thead> 
+      <tr> 
+       <th data-options="field:'orgname',hide:true" width="100%"></th> 
+      </tr> 
+     </thead> 
+    </table> 
+   </div> 
+   <div data-options="region:'center',title:'职位'" style="padding:0px"> 
+    <table id="orgopgrid" class="easyui-datagrid" data-options="border:false,idField: 'ospid',rownumbers: true,fitColumns: true,treeField: 'sp_name',toolbar:'#toolbarOrgOptionGrid',singleSelect:true,onDblClickRow:onOpDBClick"> 
+    </table> 
+   </div> 
+  </div> 
+  <div id="orgoptionw" class="easyui-window" title="职位详情" data-options="iconCls:'icon-save',closed:true,modal:true" style="width: 800px;height: 500px;padding:0px;"> 
+   <div class="easyui-layout" data-options="fit:true"> 
+    <div data-options="region:'center',border:false" style="padding:0px;"> 
+     <div class="easyui-tabs" data-options="fit:true"> 
+      <div title="基础信息" style="padding:20px;display:none;"> 
+       <table border="0" style="width: 100%;height: 100%"> 
+        <tbody> 
+         <tr> 
+          <td cjoptions="fdname:'orgname'">机构</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'orgname',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'ospcode'">职位编码</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'ospcode',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'sp_name'">职位名称</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'sp_name',required:true" data-options="buttonIcon:'icon-search',onClickButton:onFindStationOption,editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'pname'">上级职位</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'pname'" data-options="buttonIcon:'icon-search',onClickButton:selectPrePotion,editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'hwc_namezl'">职类</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezl',readonly:true,required:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'usable'">有效</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'usable',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'hwc_namezq'">职群</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezq',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'hwc_namezz'">职种</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'hwc_namezz',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'hg_name'">职等</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'hg_name',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'lv_num'">职级</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'lv_num',required:true,readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'gtitle'">职衔</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'gtitle',readonly:true" style="height:20px;width: 150px"> </td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'sp_exp'">职位说明</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'sp_exp'" style="height:20px;width: 540px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'isoffjob'">脱产</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'isoffjob',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'isadvtech'">科技岗位</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'isadvtech',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'issensitive'">敏感岗位</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'issensitive',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'iskey'">关键岗位</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'iskey',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'ishighrisk'">高危岗位</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'ishighrisk',required:true,dicgpid:5" data-options="editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'pay_way'">计薪方式</td> 
+          <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'pay_way',dicgpid:901,editable:false" data-options="editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'atdtype'">出勤类别</td> 
+          <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'atdtype',dicgpid:1399,editable:false" data-options="editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'eovertype'">加班类别</td> 
+          <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'eovertype',editable:false,dicgpid:1394" data-options="editable:false" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'remark'">备注</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'remark'" style="height:20px;width: 100%"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'creator'">创建人</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'createtime'">创建时间</td> 
+          <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true" data-options="formatter:$dateformattostr,readonly:true" style="height:20px;width: 150px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'updator'">更新人</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" data-options="readonly:true" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'updatetime'">更新时间</td> 
+          <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true" data-options="formatter:$dateformattostr,readonly:true" style="height:20px;width: 150px"></td> 
+         </tr> 
+        </tbody> 
+       </table> 
+      </div> 
+      <div title="关键职责" data-options="" style="overflow:auto;padding:20px;display:none;"> 
+       <table border="0" style="width: 100%;height: 100%"> 
+        <tbody> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp1'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp1',required:true" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper1'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper1',required:true" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp2'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp2',required:true" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper2'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper2',required:true" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp3'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp3',required:true" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper3'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper3',required:true" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp4'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp4'" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper4'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper4',required:false" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp5'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp5'" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper5'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper5',required:false" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp6'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp6'" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper6'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper6',required:false" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp7'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp7'" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper7'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper7',required:false" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'keyresp8'">关键职责</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'keyresp8'" style="height:20px;width: 200px"></td> 
+          <td cjoptions="fdname:'keyrespper8'">比重(%)</td> 
+          <td><input class="easyui-numberbox" cjoptions="fdname:'keyrespper8',required:false" data-options="min:0,max:100,precision:2" style="height:20px;width: 100px"></td> 
+         </tr> 
+        </tbody> 
+       </table> 
+      </div> 
+      <div title="任职资格" data-options="" style="padding:20px;display:none;"> 
+       <table border="0" style="width: 100%;height: 100%"> 
+        <tbody> 
+         <tr> 
+          <td cjoptions="fdname:'mindegree'">学历</td> 
+          <td><input class="easyui-textbox" cjoptions="dicgpid:84,fdname:'mindegree'" data-options="editable:false" style="height:20px;width: 150px"></td> 
+          <td cjoptions="fdname:'maxage'">年龄</td> 
+          <td><input class="easyui-textbox" cjoptions="fdname:'maxage'" style="height:20px;width: 50px"> 到 <input class="easyui-textbox" cjoptions="fdname:'minage'" style="height:20px;width: 50px"> </td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'profnal'">专业要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'profnal'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'langreq'">语言能力</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'langreq'" data-options="multiline:true,prompt:'需要掌握的语言能力'" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'offsoft'">办公软件要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'offsoft'" data-options="multiline:true,prompt:'需要掌握的办公软件及熟练程度'" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'proknoge'">专业知识</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'proknoge'" data-options="multiline:true,prompt:'请列出职位所需的学科知识、技术知识以及掌握知识的深度'" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'skillreq'">技能要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'skillreq'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'qualification'">资格证书</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'qualification'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'postreq'">经验要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'postreq'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'workpost'">工作经验</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'workpost'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'indtryexper'">行业经验</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'indtryexper'" data-options="multiline:true,prompt:'请列出任职者对哪些业务需要了解以及对行业的了解程度'" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'companyexper'">本企业经验</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'companyexper'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'coreqreq'">能力素质要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'coreqreq'" data-options="multiline:true,prompt:'结合新宝的企业使命、企业愿景、企业文化、核心价值观、管理理念等方面的要求对员工的核心能力素质的要求。'" style="height:50px;width: 400px"></td> 
+         </tr> 
+         <tr> 
+          <td cjoptions="fdname:'otherreq'">其它要求</td> 
+          <td colspan="3"><input class="easyui-textbox" cjoptions="fdname:'otherreq'" data-options="multiline:true" style="height:50px;width: 400px"></td> 
+         </tr> 
+        </tbody> 
+       </table> 
+      </div> 
+      <div title="职位KPI" data-options="" style="overflow:auto;padding:0px;display:none;"> 
+       <table id="hr_orgpositionkpis" class="easyui-datagrid" cjoptions="" data-options="fit:true,border:false,toolbar:'#toolbarhr_orgpositionkpigrid',singleSelect: true,
+                    onClickRow:function(){ $C.grid.accept('hr_orgpositionkpis');},
+                    onDblClickRow:function(){ $C.grid.edit('hr_orgpositionkpis');}"> 
+       </table> 
+      </div> 
+     </div> 
+    </div> 
+    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;"> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_ok'" data-options="iconCls:'icon-ok'" style="width:80px">确定</a> 
+     <a class="easyui-linkbutton" cjoptions="caction:'act_cancel'" data-options="iconCls:'icon-cancel'" style="width:80px">取消</a> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="toolbarOrgOptionGrid" style="height:auto"> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="showOptionInfo($C.action.New);">新建</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-edit',plain:true" onclick="showOptionInfo($C.action.Edit);">编辑</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="showOptionInfo($C.action.Del);">删除</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-ml_detail',plain:true" onclick="setDefaultOptions();">默认</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-importexcel',plain:true" onclick="impexcel();">导入Excel</a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-exportexcel',plain:true" onclick="expexcelmodle();">导出导入模板</a> 
+  </div> 
+  <div id="toolbarhr_orgpositionkpigrid" style="height:auto"> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="$C.grid.append('hr_orgpositionkpis', {}, true);"></a> 
+   <a class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="$C.grid.remove('hr_orgpositionkpis');"></a> 
+  </div>  
+ </body>
+</html>

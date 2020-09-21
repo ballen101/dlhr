@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html template="" workpath="webapp/common">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <title>出差代理设置</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [];
+    </script>
+
+    <script type="text/javascript">
+        function formatAction(value, row, index) {
+            var dlr = row.auserid;
+            var rst = null;
+            if ((dlr == undefined) || (dlr == null) || (dlr.length == 0)) {
+                rst = '<a href="#" class="easyui-linkbutton" onclick="addagent(' + index + ',this)">选择代理人</a>';
+            } else {
+                rst = '<a href="#" class="easyui-linkbutton" onclick="removeagent(' + index + ',this)">移除代理人</a>';
+            }
+            return rst;
+        }
+
+        function addagent(index, obj) {
+            var row = $("#shwuser_wf_agent").datagrid("getRows")[index];
+            if (!pw_SearchOrgUser) {
+                pw_SearchOrgUser = new TSearchForm(pw_SearchOrgUser_options);
+            }
+            pw_SearchOrgUser.TSearchForm({
+                onResult: function (rows) {
+                    var user = rows[0];
+                    if (user) {
+                        if (parseInt(user.goout) == 1) {
+                            $.messager.alert('错误', '选择的代理人也在出差中', 'error');
+                            return;
+                        }
+                        row.auserid = user.userid;
+                        row.ausername = user.username;
+                        row.adisplayname = user.displayname;
+                        $("#shwuser_wf_agent").datagrid("refreshRow", index);
+                        //  $("#shwuser_wf_agent").datagrid("updateRow", {
+                        //      index: index,
+                        //      row: row
+                        //  });
+                    }
+                }
+            });
+            pw_SearchOrgUser.show();
+        }
+
+        function removeagent(index, obj) {
+            var row = $("#shwuser_wf_agent").datagrid("getRows")[index];
+            row.auserid = undefined;
+            row.ausername = undefined;
+            row.adisplayname = undefined;
+            $("#shwuser_wf_agent").datagrid("refreshRow", index);
+        }
+
+        function removeagentall() {
+            var rows = $("#shwuser_wf_agent").datagrid("getRows");
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                row.auserid = undefined;
+                row.ausername = undefined;
+                row.adisplayname = undefined;
+            }
+            $("#shwuser_wf_agent").datagrid("loadData", rows);
+        }
+
+        $(document).ready(function () {
+            setTimeout("loadagents()", 500);
+            if ((!window.parent) || (!window.parent.pw_setuserwfagent)) {
+                $("#td_save_id").css("display", "");
+            }
+        });
+
+        function loadagents() {
+            var url = _serUrl + "/web/user/getuserOutWorkinf.co";
+            $ajaxjsonget(url, function (jsdata) {
+                document.getElementById("goout").checked = (parseInt(jsdata.goout) == 1);
+                $("#gooutstarttime").datebox("setValue", jsdata.gooutstarttime);
+                $("#gooutendtime").datebox("setValue", jsdata.gooutendtime);
+            }, function (err) {
+                $.messager.alert('错误', '载入数据错误', 'error');
+            });
+
+            var url = _serUrl + "/web/user/getwfagents.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#shwuser_wf_agent").datagrid("loadData", jsdata);
+            }, function (err) {
+                $.messager.alert('错误', '载入数据错误', 'error');
+            });
+        }
+
+        function setallagent(clear) {
+            if (!pw_SearchOrgUser) {
+                pw_SearchOrgUser = new TSearchForm(pw_SearchOrgUser_options);
+            }
+            pw_SearchOrgUser.TSearchForm({
+                onResult: function (rows) {
+                    var user = rows[0];
+                    if (user) {
+                        if (parseInt(user.goout) == 1) {
+                            $.messager.alert('错误', '选择的代理人也在出差中', 'error');
+                            return;
+                        }
+                        var wfs = $("#shwuser_wf_agent").datagrid("getRows");
+                        for (var i = 0; i < wfs.length; i++) {
+                            var wf = wfs[i];
+                            wf.auserid = user.userid;
+                            wf.ausername = user.username;
+                            wf.adisplayname = user.displayname;
+                        }
+                        $("#shwuser_wf_agent").datagrid("loadData", wfs);
+                    }
+                }
+            });
+            pw_SearchOrgUser.show();
+        }
+
+        var pw_SearchOrgUser = undefined;
+        var pw_SearchOrgUser_options = {
+            width: "400px",
+            height: "300px",
+            id: "pw_SearchOrgUser",
+            enableIdpath: true,
+            coURL: _serUrl + "/web/user/findOrgUserByLogined.co",
+            gdListColumns: [
+                {field: 'orgname', title: '机构', width: 80, notfind: true},
+                {field: 'username', title: '用户名', width: 80},
+                {field: 'displayname', title: '姓名', width: 80}
+            ]
+        };
+
+        function OnOKModalDialog() {
+            var agent = [];
+            var rows = $("#shwuser_wf_agent").datagrid("getRows");
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row.auserid != undefined) {
+                    agent.push(row);
+                }
+            }
+            var pdata = {
+                goout: document.getElementById("goout").checked,
+                gooutstarttime: $("#gooutstarttime").datebox("getValue"),
+                gooutendtime: $("#gooutendtime").datebox("getValue"),
+                agent: agent
+            };
+            var url = _serUrl + "/web/user/savewfagents.co";
+            $ajaxjsonpost(url, JSON.stringify(pdata), function () {
+                if (window.parent && window.parent.pw_setuserwfagent)
+                    window.parent.pw_setuserwfagent.close();
+            }, function (err) {
+                $.messager.alert('错误', '设置错误:' + JSON.stringify(err), 'error');
+            });
+        }
+
+        function OnCancelModalDialog() {
+            return undefined;
+        }
+
+    </script>
+</head>
+<body>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',border:false" style="height:70px;padding: 5px;overflow: hidden">
+        <table>
+            <tr>
+                <td>是否代理：</td>
+                <td>
+                    <input id="goout" style="line-height: 20px;padding-top:  5px;" type="checkbox" value="1"/>
+                </td>
+                <td>
+                    <a href="#" class="easyui-linkbutton" data-options="" onclick="setallagent(true)" style="height: 25px">设置代理人</a>(将所有流程设置为同一代理人)
+                </td>
+                <td>
+                    <a href="#" class="easyui-linkbutton" data-options="" onclick="removeagentall()" style="height: 25px">移除代理人</a>
+                </td>
+                <td rowspan="2" id="td_save_id" style="display: none">
+                    <a href="#" class="easyui-linkbutton" data-options="" onclick="OnOKModalDialog()" style="height: 50px;width: 100px;margin-left: 10px">保存</a>
+                </td>
+            </tr>
+            <tr>
+                <td>代理时间：</td>
+                <td colspan="3">
+                    从</span><input id="gooutstarttime" class="easyui-datebox" style="width: 100px;height: 20px"/>
+                    到</span><input id="gooutendtime" class="easyui-datebox" style="width: 100px;height: 20px"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div data-options="region:'center',border:false,title:'流程代理'" style="padding:0px;overflow: hidden">
+        <table id="shwuser_wf_agent" class="easyui-datagrid" border="false"
+               data-options="rownumbers:true,fit:true,singleSelect:true">
+            <thead>
+            <tr>
+                <th data-options="field:'wftempname',width:300">模板名</th>
+                <th data-options="field:'adisplayname',width:100">代理人</th>
+                <th data-options="field:'action',width:100,formatter:formatAction">选择代理</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

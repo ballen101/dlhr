@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html template="" workpath="webapp/common">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <title>流程审批中心</title> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cwf2.min.js"></script> 
+  <script type="text/javascript" src="../js/common/icefallWorkFlow.min.js"></script> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic262 = {index: 'dic262',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"提交","dictvalue":"1"},{"language1":"驳回","dictvalue":"2"},{"language1":"中断","dictvalue":"3"},{"language1":"转办","dictvalue":"4"},{"language1":"完成","dictvalue":"5"},{"language1":"起草","dictvalue":"6"}], formator: function (value, row) { var jsondata = comUrl_dic262.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic262; } if (comUrl_dic262.type == 'combobox') { if (comUrl_dic262.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic262.valueField]) { rst = rst + jsondata[i][comUrl_dic262.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic262.valueField]) return jsondata[i][comUrl_dic262.textField]; } } } if (comUrl_dic262.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic262.editor= {type: 'combobox', options: {valueField:comUrl_dic262.valueField, textField:comUrl_dic262.textField, data: comUrl_dic262.jsondata}}; var comUrls = [ { index: "dic262", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=262", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var SHOW_ALL = 1, SHOW_WF = 2, SHOW_FORM = 3;//1 都显示 2 只显示流程 3 只显示表单（因为表单里面可能已经有流程了）
+        var wf_submit_option = true; //提交需要输入审批意见
+        var wf = undefined, _wfdata = undefined, _wfinfo = undefined;
+        var _showtype = undefined;  //1:都显示 2:只显示流程 3只显示表单
+        var _parms = undefined;
+
+        $(document).ready(function () {
+            initparms();
+            if (_showtype == SHOW_WF) {
+                $("#main_tabs_id").children("div:eq(1)").remove();
+            }
+            if (_showtype == SHOW_FORM) {
+                $("#main_tabs_id").children("div:eq(0)").remove();
+            }
+        });
+
+
+        var proclogflds = [
+            [
+                {field: 'displayname', title: '处理用户', width: 100},
+                {field: 'opinion', title: '意见', width: 200},
+                {field: 'actiontype', title: '处理类型', width: 50, formatter: comUrl_dic262.formator},
+                {field: 'arivetime', title: '到达时间', width: 150},
+                {field: 'actiontime', title: '处理时间', width: 150}
+            ]
+        ];
+
+        function $OnCorsairReady() {
+            if (_showtype == 3) {  //无需显示流程
+                loadwfdata(loadFormUrlEx);
+            } else {//不是只显示表单
+                $("#wfproclog").datagrid({
+                    columns: proclogflds
+                });
+                getAHWF();
+                initwf();
+                initselects();
+            }
+        }
+        var _utoken = undefined;
+        function initparms() {
+            _parms = $getPageParms();
+            _showtype = parseInt(_parms.showtype);
+            _showtype = (isNaN(_showtype)) ? 1 : _showtype;
+            _utoken = _parms.utoken;
+            _sc = _parms.sc;
+            if ((_showtype != 1) && (_showtype != 2) & (_showtype != 3)) {
+                var em = "【showtype】参数不允许为【" + _showtype + "】";
+                alert(em);
+                throw em;
+            }
+            if (_sc == "xtbg") {
+                if (browinfo.browser == "IE") {
+                    alert("当前登录为IE浏览器，为了确保审批速度，请使用360极速浏览器并切换极速模式进行单据审批");
+                }
+            }
+        }
+
+        function loadwfdata(callback) {
+            var wfid = _parms.wfid;
+            var url = _serUrl + "/web/wf/findWfInfo.co?wfid=" + wfid;
+            if (_utoken)
+                url = url + "&utoken=" + _utoken;
+            $ajaxjsonget(url, function (jsdata) {
+                _wfinfo = jsdata;
+                _wfdata = _wfinfo.wfinfo;
+                $("#wfname_id").html(_wfdata.wfname);
+                $("#wfsubject_id").html(_wfdata.wfname);
+                callback(jsdata);
+            }, function (msg) {
+                $.messager.alert('错误', '载入流程错误:' + msg.errmsg, 'error');
+                return;
+            });
+        }
+
+        function initwf() {
+            var wfid = _parms.wfid;
+            if (wfid) {
+                wf = new WFEdit(wfoptions());
+                //var url = $C.cos.commonfind + "?type=byid&enableIdpath=false&jpaclass=com.corsair.server.wordflow.Shwwf&id=" + wfid;
+                loadwfdata(showwf);
+            } else {
+                alert("缺少wfid参数");
+            }
+        }
+
+        function showwf(jsondata) {
+            if (!_wfdata.wfid) {
+                //$.messager.alert('错误', '流程失效，可能已被中断', 'error');
+                return;
+            }
+            var wfdata = _wfdata;
+            var userInActiveNode = parseInt(jsondata.userInActiveNode);
+            //setAllbtDisable("disable");
+            //判断当前用户是否在节点里面  包括代理
+            wf.loadFromWf(wfdata);
+            //根据流程数据  刷新当前页面字段是否可编辑
+            setTimeout(function () {
+                dosetUI(wfdata, userInActiveNode)
+            }, 500);
+        }
+
+        function dosetUI(wfdata, userInActiveNode) {
+            setActiveNode(wfdata);
+            setBtsByActiveNodes(userInActiveNode);
+            showwfproclog(wfdata);
+            if (_showtype != 2) {//需要显示表单
+                $("#main_tabs_id").tabs("select", 1);
+                loadFormUrl(wfdata);
+            } else {
+                $("#main_tabs_id").tabs("hideHeader");
+                $("#main_tabs_id").tabs("close", 1);
+            }
+            if (_ahwf == 1) {
+                $("#main_tab_wf_id", window.parent.document).css("display", "none");
+            }
+        }
+        var _ahwf = undefined;
+        function getAHWF() {
+            $ajaxjsonget(_serUrl + "/web/common/getSystemInfo.co?parmname=AutoHideBillWorkflowForm", function (jsondata) {
+                // alert(JSON.stringify(jsondata));
+                if (jsondata.length > 0) {
+                    _ahwf = parseInt(jsondata[0].parmvalue);
+                }
+            }, function (err) {
+                alert(err.errmsg)
+            }, false);
+        }
+
+        function showwfproclog(wfdata) {
+            var url = _serUrl + "/web/wf/getWFLog.co?wfid=" + wfdata.wfid;
+            $ajaxjsonget(url, function (jsdata) {
+                $('#wfproclog').datagrid({
+                    data: jsdata
+                });
+            }, function (err) {
+                alert(err.errmsg)
+            });
+        }
+
+        function getActiveNodeData(wfdata) {
+            for (var i = 0; i < wfdata.shwwfprocs.length; i++) {
+                var nodedata = wfdata.shwwfprocs[i];
+                if (parseInt(nodedata.stat) == 2) {
+                    return nodedata;
+                }
+            }
+        }
+
+        var curNode = undefined;
+        function setActiveNode(wfdata) {
+            var nodedata = getActiveNodeData(wfdata);
+            if (nodedata) {
+                var node = wf.findNodeByWfID(nodedata.procid);
+                curNode = node;
+                wf.setActiveNode(node);
+            }
+        }
+
+        function setBtsByActiveNodes(userInActiveNode) {
+            if (userInActiveNode == 1) {
+                if (_showtype == SHOW_WF) {
+                    $("#wfspanid", window.parent.document).css("display", "");
+                }
+                setAllbtDisable("enable");
+                if (curNode) {
+                    var nodes = curNode.getPerNodes();//获取所有前置节点
+                    //已经审批过的前置节点 只有开始节点 的 不允许驳回
+                    var okflag = false;
+                    var hasbgok = false;
+                    for (var i = 0; i < nodes.length; i++) {
+                        var node = nodes[i];
+                        var ndata = node.getData();
+                        var stat = parseInt(ndata.stat);
+                        var isbegin = parseInt(ndata.isbegin);
+                        if ((stat == 3) && (isbegin != 1)) {//有审批完的非开始节点 不设置
+                            okflag = true;
+                        }
+                        if ((stat == 3) && (isbegin == 1)) {//有审批完的开始节点
+                            hasbgok = true;
+                        }
+                        //console.error(JSON.stringify(node.getData()));
+                    }
+                    if (okflag) return;//有审批完的非开始节点
+                    if (hasbgok) {//只有审批完成的开始节点
+                        $('#bt_reject_id').linkbutton("disable");
+                        var ml = window.parent.mainline;
+                        if (ml && ml.setwfbt) {
+                            ml.setwfbt("#bt_reject_id", "disable");
+                        }
+                    }
+                }
+            }
+        }
+
+        function setAllbtDisable(value) {
+            $('#bt_sumit_id').linkbutton(value);
+            $('#bt_reject_id').linkbutton(value);
+            $('#bt_break_id').linkbutton(value);
+            $('#bt_refer_id').linkbutton(value);
+            var ml = window.parent.mainline;
+            //alert(ml.setwfbt);
+            if (ml && ml.setwfbt) {
+                ml.setwfbt("#bt_sumit_id", value);
+                ml.setwfbt("#bt_reject_id", value);
+                ml.setwfbt("#bt_break_id", value);
+                ml.setwfbt("#bt_refer_id", value);
+            }
+        }
+
+        var selectUserTree = undefined;
+        function initselects() {
+            var poptions = {
+                url: "selectOrgUser.html",
+                title: "选择用户",
+                woptions: "modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'",
+                style: "width:300px;height:200px;padding: 0px",
+                chtch: false
+            };
+            selectUserTree = new $showModalDialog(poptions);
+        }
+
+
+        var dlgbtts = [
+            {text: '确定', iconCls: 'icon-ok'},
+            {
+                text: '取消', handler: function () {
+                $("#pw_select_wf").dialog("close");
+            }
+            }
+        ];
+
+        var dlgstuserbtts = [
+            {text: '添加', iconCls: 'icon-user'},
+            {text: '确定', iconCls: 'icon-ok'},
+            {
+                text: '取消', handler: function () {
+                $("#pw_select_user").dialog("close");
+            }
+            }
+        ];
+
+        function getNodes(hn, cbdata) {
+            var nd = hn.getData();
+            if (parseInt(nd.stat) == 2)
+                return;
+            if (parseInt(nd.stat) == 3) {
+                if ($isEmpty(nd.procname)) {
+                    var nd = {procid: nd.procid, procname: "名称空"};
+                    putNode2CbdataNotRep(cbdata, nd);
+                } else {
+                    var nd = {procid: nd.procid, procname: nd.procname};
+                    putNode2CbdataNotRep(cbdata, nd);
+                }
+            }
+            var nns = hn.getNextNodes();
+            for (var i = 0; i < nns.length; i++) {
+                getNodes(nns[i], cbdata);
+            }
+        }
+
+        function putNode2CbdataNotRep(cbdata, nd) {
+            for (var i = 0; i < cbdata.length; i++) {
+                if (cbdata[i].procid == nd.procid)
+                    return;
+            }
+            cbdata.push(nd);
+        }
+
+        //users 选定的用户id数组
+        function dosubmit(jpaclass, id, r, users) {
+            var ml = window.parent.mainline;
+            //alert(ml);
+            var procid = getActiveNodeData(_wfdata).procid;
+            if ((ml) && (!ml.BeforeSubmitWfNode(getActiveNodeData(_wfdata))))
+                return;
+            //alert(ml.getDataChanged());
+            if (ml && ml.getDataChanged()) {
+                if (!ml.dosave(false, false, true)) {//保存后自动创建流程，点击保存按钮，同步
+                    //同步保存;返回false，表示保存失败；
+                    return;
+                } else {
+                    ml.setDataChanged(false);
+                }
+            }
+            if (_showtype == SHOW_FORM) {
+                var sfml = document.getElementById('wfformif').contentWindow.mainline;
+                if ((sfml) && (!sfml.BeforeSubmitWfNode(getActiveNodeData(_wfdata))))
+                    return;
+                if (sfml && sfml.getDataChanged()) {
+                    if (!sfml.dosave(false, false, true)) {//保存后自动创建流程，点击保存按钮，同步
+                        //同步保存;返回false，表示保存失败；
+                        return;
+                    } else {
+                        sfml.setDataChanged(false);
+                    }
+                }
+            }
+
+            var submitParms = {jpaclass: jpaclass, jpaid: id, aoption: r, procid: procid};
+            if (users)
+                submitParms.userids = users;
+            $ajaxjsonpost($C.cos.commonsubmitWF, JSON.stringify(submitParms), function (jpadata) {
+                //刷新主界面显示
+                if (jpadata.type == "procuser") {
+                    //显示用户选择列表 选择后重新提交
+                    $('#pw_select_user_list').datalist({
+                        valueField: "userid",
+                        textField: "displayname",
+                        data: jpadata.users,
+                        singleSelect: false,
+                        checkbox: true
+                    });
+                    dlgstuserbtts[0].handler = function () {
+                        onFindUserAddWFlist();
+                    };
+                    dlgstuserbtts[1].handler = function () {
+                        var rows = $('#pw_select_user_list').datalist("getChecked");
+                        if ((!rows) || (rows.length <= 0)) {
+                            alert("没有选择数据");
+                            return;
+                        }
+                        var uids = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            uids.push(row.userid);
+                        }
+                        dosubmit(jpaclass, id, r, uids.join(","));
+                        $("#pw_select_user").dialog("close");
+                    };
+                    $("#pw_select_user").dialog({buttons: dlgstuserbtts});
+                    $("#pw_select_user").dialog("open");
+                } else {
+                    if (ml) {
+                        ml.findDetail(id);
+                    }
+                    if (_showtype == 3) {
+                        location.reload();
+                    }
+                }
+            }, function (msg) {
+                $.messager.alert('错误', '提交流程错误:' + msg.errmsg, 'error');
+            });
+        }
+
+        function btaction(act) {
+            if (window.parent) {
+                var ml = window.parent.mainline;
+                if (ml)
+                    var id = ml.getid();
+                // var frmOptions = window.parent.frmOptions;
+            }
+            var jpaclass = _wfdata.clas;
+            var id = _wfdata.ojcectid;
+            if (act == 1) {//提交
+                if (wf_submit_option) {
+                    $.messager.prompt('输入', '输入您的审批意见:', function (r) {
+                        if (r) {
+                            dosubmit(jpaclass, id, r);
+                        }
+                    });
+                    $('.messager-input').val('同意').focus();
+                } else {
+                    $.messager.confirm('提示', '确定提交?', function (r) {
+                        var ap = "默认同意";
+                        dosubmit(jpaclass, id, ap);
+                    });
+                }
+
+            }
+            if (act == 2) {
+                var cbdata = [];
+                var fprocid = getActiveNodeData(_wfdata).procid;
+                var hn = wf.getHeadNode();
+                getNodes(hn, cbdata);
+                $("#cbx_reject_procs").combobox({data: cbdata});
+                dlgbtts[0].handler = function () {
+                    var tprocid = $("#cbx_reject_procs").combobox("getValue");
+                    if ((tprocid == null) || (tprocid == undefined) || (tprocid.length == 0)) {
+                        $.messager.alert('错误', '驳回错误:请选择驳回节点', 'error');
+                        return;
+                    }
+                    var aoption = $("#ipt_reject_ops").textbox("getValue");
+                    var submitParms = {
+                        jpaclass: jpaclass,
+                        jpaid: id,
+                        aoption: aoption,
+                        fprocid: fprocid,
+                        tprocid: tprocid
+                    };
+                    //alert(JSON.stringify(submitParms));
+                    $ajaxjsonpost($C.cos.commonrejectWF, JSON.stringify(submitParms), function (jpadata) {
+                        //刷新主界面显示
+                        if (ml)
+                            ml.findDetail(id);
+                        if (_showtype == 3)
+                            location.reload();
+                    }, function (msg) {
+                        $.messager.alert('错误', '驳回流程错误:' + msg.errmsg, 'error');
+                    });
+                };
+                $("#pw_select_wf").dialog({buttons: dlgbtts});
+                $("#pw_select_wf").dialog("open");
+            }
+            if (act == 3) {
+                $.messager.confirm('确认', '确认中断该流程?', function (r) {
+                    if (r) {
+                        var submitParms = {jpaclass: jpaclass, jpaid: id};
+                        $ajaxjsonpost($C.cos.commonbreakWF, JSON.stringify(submitParms), function (jpadata) {
+                            //刷新主界面显示
+                            if (ml)
+                                ml.findDetail(id);
+                            if (_showtype == 3)
+                                location.reload();
+                        }, function (msg) {
+                            $.messager.alert('错误', '中断流程错误:' + msg.errmsg, 'error');
+                        });
+                    }
+                });
+            }
+            if (act == 4) {
+                $.messager.prompt('输入', '输入您的转办意见:', function (r) {
+                    if (r) {
+                        onFinduser(function (row) {
+                            var submitParms = {
+                                jpaclass: jpaclass,
+                                jpaid: id,
+                                aoption: r,
+                                tuserid: row.userid
+                            };
+                            $ajaxjsonpost($C.cos.commontransferWF, JSON.stringify(submitParms), function (jpadata) {
+                                //刷新主界面显示
+                                if (ml)
+                                    ml.findDetail(id);
+                                if (_showtype == 3)
+                                    location.reload();
+                            }, function (msg) {
+                                $.messager.alert('错误', '转办流程错误:' + msg.errmsg, 'error');
+                            });
+                            return true;
+                        });
+                    }
+                });
+            }
+        }
+
+        var select_user_pw = undefined;
+        function onFinduser(onresult) {
+            var url = _serUrl + "/web/user/findOrgUser.co";
+            var wo = {
+                id: "select_user_pw",
+                coURL: url,
+                multiRow: false,
+                idField: 'userid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'username', title: '登录名', width: 100},
+                    {field: 'displayname', title: '姓名', width: 100},
+                    {field: 'extorgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ]
+            };
+            if (!select_user_pw) {
+                select_user_pw = new TSearchForm(wo);
+            }
+            select_user_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        onresult(row);
+                    }
+                }
+            });
+            select_user_pw.show(true);
+        }
+        var wfoptions = function () {
+            return {
+                el: document.getElementById("wftemgr_id"),
+                icourl: '../js/easyui/themes/icons/user.png',
+                initBENodes: false,
+                activeOnClick: false
+            };
+        };
+
+
+        function loadFormUrlEx(jsondata) {
+            loadFormUrl(jsondata.wfinfo);
+        }
+
+        function loadFormUrl(wfdata) {
+            var nodedata = getActiveNodeData(wfdata);
+            var url = undefined;
+            if (nodedata)
+                url = nodedata.formurl;
+            if ((url == undefined) || (url == null) || (url.length == 0)) {
+                url = wfdata.formurl;
+            }
+            if ((url == undefined) || (url == null) || (url.length == 0)) {
+                alert("无表单URL");
+                return;
+            }
+            var edittps = {issubmit: true};
+            url = _serUrl + "/webapp/" + url + "?edittps=" + JSON.stringify(edittps) + "&id=" + wfdata.ojcectid + "&wfform=true";
+            $("#wfformif").attr("src", url);
+            // setTimeout(function () {
+            //
+            // }, 500);
+        }
+
+        var select_user_pw = undefined;
+
+        function onFindUserAddWFlist() {
+            var wo = {
+                id: "select_user_pw",
+                coURL: _serUrl + "/web/user/findOrgUser.co",
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'username', title: '用户名', width: 80},
+                    {field: 'displayname', title: '姓名', width: 80},
+                    {field: 'extorgname', title: '机构', width: 200, notfind: true}
+                ],
+                onResult: function (rows) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = {userid: rows[i].userid, displayname: rows[i].displayname};
+                        $('#pw_select_user_list').datalist('appendRow', row);
+                        var idx = $('#pw_select_user_list').datalist("getRowIndex", row);
+                        $('#pw_select_user_list').datalist('checkRow', idx);
+                    }
+                }
+            };
+            if (!select_user_pw) {
+                select_user_pw = new TSearchForm(wo);
+            }
+            select_user_pw.show();
+        }
+    </script> 
+ </head> 
+ <body> 
+  <div id="cc1" class="easyui-layout" data-options="fit:true"> 
+   <div data-options="region:'north',border:false" style="height:25px;padding: 7px;overflow: hidden"> 
+    <span>流程名称：</span> 
+    <span id="wfname_id" style="color: #006FD4;font-weight: 700">流程名1</span> 
+    <span>流程主题：</span> 
+    <span id="wfsubject_id" style="color: #006FD4;font-weight: 700">流程主题1</span> 
+   </div> 
+   <div data-options="region:'center',border:false" style="padding:0px;overflow: hidden"> 
+    <div id="main_tabs_id" class="easyui-tabs" data-options="fit:true,plain:true,border:false,tabHeight:20"> 
+     <div title="流程信息" style="padding:0px;"> 
+      <div class="easyui-layout" data-options="fit:true,border:false"> 
+       <div data-options="region:'south',title:'流程记录',border:false,split:true" style="height:200px;"> 
+        <table id="wfproclog" class="easyui-datagrid" style="width:100%;height:100%" data-options="fitColumns:false,singleSelect:true,border:false"> 
+        </table> 
+       </div> 
+       <div data-options="region:'east',border:false" style="width:100px;padding: 5px;"> 
+        <a id="bt_sumit_id" onclick="btaction(1);" class="easyui-linkbutton" iconcls="icon-ok" style="margin-top:5px;width:100%;height:30px" data-options="disabled:true">提交</a> 
+        <a id="bt_reject_id" onclick="btaction(2);" class="easyui-linkbutton" iconcls="icon-undo" style="margin-top:5px;width:100%;height:30px" data-options="disabled:true">驳回</a> 
+        <a id="bt_break_id" onclick="btaction(3);" class="easyui-linkbutton" iconcls="icon-no" style="margin-top:5px;width:100%;height:30px" data-options="disabled:true">中断</a> 
+        <a id="bt_refer_id" onclick="btaction(4);" class="easyui-linkbutton" iconcls="icon-redo" style="margin-top:5px;width:100%;height:30px" data-options="disabled:true">转办</a> 
+       </div> 
+       <div data-options="region:'center',border:false" style="padding:0px;overflow: hidden"> 
+        <div id="wftemgr_id" style="position:relative;overflow:auto;width:100%;height:100%;background-color: #BACFE4"> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div title="流程表单" style="padding:10px;"> 
+      <iframe id="wfformif" scrolling="no" frameborder="0" style="width:100%;height:100%;overflow: hidden"></iframe> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <div id="aaaaaa"> 
+   <div id="pw_select_wf" class="easyui-dialog" title="驳回...." style="width:300px;height:150px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <table style="width: 100%;height: 100%"> 
+     <tbody> 
+      <tr> 
+       <td>驳回到节点</td> 
+       <td><input id="cbx_reject_procs" class="easyui-combobox" style="width:180px;height:25px" data-options="valueField:'procid',textField:'procname'"></td> 
+      </tr> 
+      <tr> 
+       <td>您的意见</td> 
+       <td><input id="ipt_reject_ops" class="easyui-textbox" style="width:180px;height:25px"></td> 
+      </tr> 
+     </tbody> 
+    </table> 
+   </div> 
+   <div id="pw_select_user" class="easyui-dialog" title="选择下一节点审批人" style="width:300px;height:200px;padding:10px" data-options="modal:true,closed:true,border:false,collapsible:false,minimizable:false,iconCls:'application_home'"> 
+    <div id="pw_select_user_list" style="width:100%;height:100%"></div> 
+   </div> 
+  </div>  
+ </body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html workpath="webapp/common">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <title>流程维护</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrls = [ { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }];</script> 
+  <script type="text/javascript">
+        function $OnCorsairReady() {
+            setTimeout("loadiact()", 500);
+        }
+
+        function loadiact() {
+            var url = _serUrl + "/web/system/getdblist.co";
+            $ajaxjsonget(url, function (jsdata) {
+                $("#database").combobox("loadData", jsdata);
+            }, function (msg) {
+                alert(msg);
+            });
+            initgrid();
+        }
+
+        function initgrid() {
+            var gfds = [
+                {field: 'wfid', title: '流程ID', width: 80},
+                {field: 'wfname', title: '流程名称', width: 150},
+                {field: 'clas', title: '窗体类名', width: 200},
+                {field: 'formurl', title: '窗体路径', width: 150},
+                {field: 'ojcectid', title: '对象ID', width: 64},
+                {field: 'isexistobj', title: '对象存在', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'creator', title: '制单人', width: 100},
+                {field: 'createtime', title: '制单时间', width: 150},
+                {field: 'updator', title: '更新人', width: 64},
+                {field: 'updatetime', title: '更新时间', findtype: 'datetime', width: 150}
+            ];
+            $("#wfinfo").datagrid({columns: [gfds]});
+        }
+
+        function doreflash() {
+            var poolname = $("#database").combobox("getValue");
+            if (poolname == null) {
+                alert("数据库连接池不能为空！");
+                return;
+            }
+            var url = _serUrl + "/web/wf/getManageWFList.co?poolname=" + poolname;
+            $ajaxjsonget(url, function (jsdata) {
+                $("#wfinfo").datagrid("loadData", jsdata);
+            }, function () {
+                alert("提交数据错误");
+            });
+        }
+
+    </script> 
+ </head> 
+ <body style="margin: 0 auto;font-size: 12px"> 
+  <div style="height: 30px;padding: 10px;background-color: #abafb8"> 
+   <input id="database" class="easyui-combobox" style="width:300px;" data-options="valueField:'poolname',textField:'poolname',label:'数据库连接池:'"> 
+   <a id="btn" href="#" class="easyui-linkbutton" onclick="doreflash()" data-options="iconCls:'icon-search'">刷新</a> 
+  </div> 
+  <div> 
+   <table id="wfinfo" style="height: 500px;width: 100%"></table> 
+  </div>  
+ </body>
+</html>

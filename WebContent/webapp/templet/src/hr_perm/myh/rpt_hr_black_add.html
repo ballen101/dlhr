@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title>黑名单加封报表</title>
+
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1082",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1082",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic779",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=779",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1071",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1071",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1074",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1074",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+
+        var listGridColumns = function () {
+            return [
+                {field: 'bacode', title: '加封编码', width: 100},
+                {field: 'addappdate', title: '加封申请日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'adddate', title: '加封生效日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'blackreason', title: '加封原因', width: 120, formatter: comUrl_dic1082.formator},
+                {field: 'addtype', title: '加封类型', width: 120, formatter: comUrl_dic1071.formator},
+                {field: 'addtype1', title: '加封类别', width: 120, formatter: comUrl_dic1074.formator},
+                {field: 'ljcode', title: '离职编码', width: 100},
+                {field: 'ljreason', title: '离职原因', width: 120, formatter: comUrl_dic1049.formator},
+                {field: 'orgcode', title: '部门编码', width: 80},
+                {field: 'orgname', title: '部门名称', width: 150},
+                {field: 'employee_code', title: '工号', width: 64},
+                {field: 'sex', title: '性别', width: 64, formatter: comUrl_dic81.formator},
+                {field: 'id_number', title: '身份证号', width: 64},
+                {field: 'employee_name', title: '姓名', width: 64},
+                {field: 'hiredday', title: '入职日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljdate', title: '离职日期', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljtype1', title: '离职方式', width: 64, formatter: comUrl_dic779.formator},
+                {field: 'sp_name', title: '职位', width: 100},
+                {field: 'hg_name', title: '职等', width: 64},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'remark', title: '备注', width: 120},
+                {field: 'creator', title: '制单人', width: 100},
+                {field: 'createtime', title: '制单时间', width: 150},
+                {field: 'updator', title: '更新人', width: 100},
+                {field: 'updatetime', title: '更新时间', width: 150}
+            ];
+        };
+        var prtOptions = {
+            idField: "baid",
+            fitColumns: false,
+            findExtParms: listGridColumns(),
+            gdListColumns: listGridColumns,
+            coURL: _serUrl + "/web/hr/permrpt1/findblackaddrpt.co"
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

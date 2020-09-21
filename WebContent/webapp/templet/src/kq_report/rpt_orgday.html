@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html workpath="webapp/kq_report">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [ ];</script> 
+  <script type="text/javascript">
+	   var stedorg = undefined;
+        //buttonIcon: 'icon-search', onClickButton: onSelectOrg
+   
+        var listGridColumns = function () {
+            return [
+            {field: 'orgname', title: '机构名', notfind: true, width: 200},
+          {field: 'date', title: '日期', notfind: true, width: 80,formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'numzz', title: '在职人数', notfind: true, width: 80},
+            {field: 'numcq', title: '实际出勤人数', notfind: true, width: 100},
+            {field: 'numcc', title: '出差人数', notfind: true, width: 80},
+            {field: 'numtx', title: '调休人数', notfind: true, width: 80},
+            {field: 'numqj', title: '请假人数', notfind: true, width: 80},
+            {field: 'nummdk', title: '免打卡人数', notfind: true, width: 80},
+            {field: 'numrzdtwdk', title: '新入职未打卡人数', notfind: true, width: 150},
+			{field: 'numlj', title: '当天离职人数', notfind: true, width: 150},
+			{field: 'numdzm', title: '招募待分配人数', notfind: true, width: 150},
+            {field: 'numtcwdk', title: '脱产未打卡人数', notfind: true, width: 150},
+            {field: 'numftcwdk', title: '非脱产未打卡人数', notfind: true, width: 150},
+            {field: 'cqdcl', title: '出勤达成率（含待分配人数）', notfind: true, width: 150},
+			 {field: 'cqdcl2', title: '出勤达成率（不含待分配人数）', notfind: true, width: 150}
+           
+            ]
+        };
+   var relOptions = {
+       data: [{id: '=', value: '等于'},{id: '>', value: '大于'}]
+   };
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+			coURL: _serUrl + "/web/hrkq/report/findorgkqdayreport.co",
+			fitColumns: false,
+			findwidth: "400px",//
+			findheight: "200px",//
+			findOptionsFilter: "#findOptions7",
+			onGetFindParms: onGetFindParms
+            
+        };
+		function afterInitUI() {
+		  
+		    //$parserDatebox2YearMonth($("#yearmonth_begin"));
+		   // $parserDatebox2YearMonth($("#yearmonth_end"));
+			}
+    function onGetFindParms() {
+            var parms = [];
+			   //var zj = $('#zj').textbox('getValue');
+			  // var comboxzj=$('#comboxzj').combobox('getValue');
+	
+			if (!stedorg) {
+			    alert("选择机构");
+			    return;
+			}
+			var dqdatebegin = $("#dqdatebegin").datebox('getValue');
+			if ($isEmpty(dqdatebegin)) {
+			    alert("选择开始日期");
+			    return;
+			}
+			var dqdateend = $("#dqdateend").datebox('getValue');
+			if ($isEmpty(dqdateend)) {
+			    alert("选择结束日期");
+			    return;
+			}
+			
+			
+			var includechild = document.getElementById("includechild").checked;
+			parms.push({parmname: "orgcode", reloper: "=", parmvalue: stedorg.code});
+			parms.push({parmname: "dqdatebegin", reloper: "=", parmvalue: dqdatebegin});
+			parms.push({parmname: "dqdateend", reloper: "=", parmvalue: dqdateend});
+			parms.push({parmname: "includechild", reloper: "=", parmvalue: includechild});
+			// if( !$isEmpty(zj)){
+			// 	parms.push({parmname: "zj", reloper: comboxzj, parmvalue: zj});
+			// }
+			return parms;
+			}
+
+   var select_Org_pw = undefined;
+   function onFindOrg() {
+       stedorg = undefined;
+       var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+       var wo = {
+           id: "select_Org_pw",
+           coURL: url,
+           orderStr: " orgid asc ",
+           multiRow: false,
+           isTree: true,
+           idField: 'orgid',
+           pidField: 'superid',
+           treeField: 'code',
+           width: "400px",//
+           height: "400px",//
+           showTitle: false,
+           extParms: [
+               {parmname: 'stat', reloper: '=', parmvalue: '1'}
+           ],//扩展参数
+           gdListColumns: [
+               {field: 'code', title: '编码', width: 120},
+               {field: 'orgname', title: '机构', width: 100}
+           ],
+           onResult: function (rows) {
+               if (rows.length > 0) {
+                   var row = rows[0];
+                   stedorg = row;
+                   $("#idorg").textbox("setValue", row.orgname);
+               }
+           }
+       };
+       if (!select_Org_pw) {
+           select_Org_pw = new TSearchForm(wo);
+       }
+       select_Org_pw.show();
+   }
+
+    </script> 
+	<script type="text/html" id="findOptions7">
+	    <table style="padding: 10px">
+	        <tr>
+	            <td>选择机构</td>
+	            <td>
+	                <input id="idorg" class="easyui-textbox"
+	                       data-options="buttonIcon:'icon-search',onClickButton: onFindOrg,editable:false"
+	                       style="width:200px;height: 22px">
+	            </td>
+				
+	        </tr>
+	
+	        <tr>
+	            <td>
+	                考勤开始日期
+	            </td>
+	            <td>
+	                <input id="dqdatebegin" type="text" class="easyui-datebox"  style="width:100px;height: 22px"> </input>
+	            </td>
+	        </tr>
+	       <tr>
+	           <td>
+	               考勤结束日期
+	           </td>
+	           <td>
+	               <input id="dqdateend" type="text" class="easyui-datebox"  style="width:100px;height: 22px"> </input>
+	           </td>
+	       </tr>
+		 <!--  <tr>
+		       <td>
+		           职级
+		       </td>
+			     <td>  <select class="easyui-combobox" name="comboxzj" id="comboxzj"
+		         								data-options="editable:false,panelHeight:'auto'" style="width: 80px;">
+		         	    				<option value="=">等于</option>
+		         	    				<option value=">">大于</option>
+		         	    				<option value="<">小于</option>
+										<option value=">=">大于等于</option>
+										<option value="<=">小于等于</option>
+		         </select>		           
+				 <input id="zj" type="text" class="easyui-numberbox"  style="width:100px;height: 22px"> </input></td>
+
+			 
+			   
+		   </tr> -->
+	        <tr>
+	            <td>
+	                显示子机构
+	            </td>
+	            <td>
+	                <input id="includechild" type="checkbox" >
+	            </td>
+	        </tr>
+	    </table>
+	</script>
+ </head> 
+ <body>  
+ </body>
+</html>

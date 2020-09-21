@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_kq">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <title>Title</title>
+
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            setTimeout(function () {
+                $("#year").numberbox('setValue', (new Date()).getFullYear());
+            }, 300);
+        }
+
+        function docreate() {
+            if (selectedorg == undefined) {
+                $.messager.alert('错误', '选择机构', "error");
+                return;
+            }
+            var y = $("#year").numberbox("getValue");
+            if ($isEmpty(y)) {
+                $.messager.alert('错误', '输入年份', "error");
+                return;
+            }
+            var url = _serUrl + "/web/hrkq/leaveblc/createYearLeaveInfo.co?year=" + y + "&orgid=" + selectedorg.orgid;
+            $ajaxjsonget(url, function (jsondata) {
+                $.messager.alert('提示', '创建完成', "info");
+            }, function (err) {
+                $.messager.alert('错误', err.errmsg, "error");
+            });
+        }
+
+
+        var selectedorg = undefined;
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        selectedorg = rows[0];
+                        $("#orgtext").textbox("setValue", selectedorg.extorgname);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+    </script>
+
+</head>
+<body style="color: #000000;font-size: 12px;">
+机构范围：<input id="orgtext" class="easyui-textbox"
+            data-options="buttonIcon:'icon-search',onClickButton:onSelectOrg,editable:false"
+            style="height: 20px;width:300px">
+调休年度：<input id="year" type="text" class="easyui-numberbox" style="height: 20px"/>
+<div style="height: 20px"></div>
+建议错开系统高峰期执行，预计执行时间为1小时左右
+<div style="height: 20px"></div>
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add2',onClick:docreate" style="width: 120px">创建</a>
+
+</body>
+</html>

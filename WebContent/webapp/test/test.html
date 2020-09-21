@@ -1,0 +1,54 @@
+<html class="panel-fit">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title></title>
+    <script type='text/javascript'>
+
+
+        $(document).ready(function () {
+            f2(function (jsdata) {
+                alert(jsdata);
+            });
+        });
+
+        function f2(func) {
+            func("fdsafdsa");
+        }
+
+    </script>
+</head>
+<body>
+<div onclick="$ReadIDCardInfo(1)">身份证</div>
+<div onclick="$TakePhoto(2)">拍照</div>
+<div onclick="$ScanPhoto(3)">扫描</div>
+
+
+<div onclick="getv()">get</div>
+<div onclick="setv()">set</div>
+
+
+<input id="ddd" class="easyui-combobox" name="language[]" style="width:300px;" data-options="
+                    data:jsondata,
+                    valueField:'dictvalue',
+                    textField:'language1',
+                    multiple:true,
+                    panelHeight:'auto',
+                    label: 'Language:',
+                    labelPosition: 'top'
+                    ">
+
+
+<input id="aaaa" class="easyui-textbox" style="width:300px">
+<span style='font-size: 16px'>尊敬的</span>
+
+</body>
+</html>

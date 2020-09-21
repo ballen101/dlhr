@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ICEFALL CSM FLATFORM</title>
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        $.parser.auto = false;
+        $(document).ready(function () {
+            $.parser.onComplete = function () {
+                initOrgUsers();
+            }
+            $.parser.parse();
+        });
+
+        function initOrgUsers() {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=orgusrtree";
+            $ajaxjsonget(url, function (data) {
+                $C.tree.setTree1OpendOtherClosed(data);
+                setNodesIco(data);
+                $("#cc").tree("loadData", data);
+                function setNodesIco(nodes) {
+                    for (var i = 0; i < nodes.length; i++) {
+                        var node = nodes[i];
+                        if (node.tp == "usr")
+                            node.iconCls = "icon-user";
+                        if (node.children) {
+                            setNodesIco(node.children);
+                        }
+                    }
+                }
+            }, function (err) {
+                alert(err);
+            });
+        }
+
+        function OnOKModalDialog() {
+            var v = $("#cc").tree("getSelected");
+            if ((v == null) || (v == undefined)) {
+                $.messager.alert('错误', '没有选择的数据', 'error');
+                return;
+            }
+            return v;
+        }
+
+        function OnCancelModalDialog() {
+            return undefined;
+        }
+    </script>
+</head>
+<body style="height: 100%">
+<div class="easyui-panel" data-options="fit:true,border:false">
+    <ul id="cc" class="easyui-tree" data-options="animate:true,lines:true"></ul>
+</div>
+</body>
+</html>

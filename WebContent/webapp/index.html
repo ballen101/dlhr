@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="./js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./js/css/corsair.css">
+    <script type="text/javascript" src="./js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="./js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="./js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="./js/cjquery.min.js"></script>
+    <script type="text/javascript" src="./js/icefall.min.js"></script>
+    <script type="text/javascript" src="./js/index.min.js"></script>
+    <script type="text/javascript">
+        function chgcolor(idx) {
+            $("#topimg").attr("src", "./img/indextop" + idx + ".png");
+            if (idx == 1) {
+                var bkc = "#269EEA";
+                curthname = "default";
+            }
+            if (idx == 2) {
+                var bkc = "#B37DF9";
+                curthname = "metro-red";
+            }
+            if (idx == 3) {
+                var bkc = "#5BA25F";
+                curthname = "metro-green";
+            }
+            if (idx == 4) {
+                var bkc = "#D3A915";
+                curthname = "metro-orange";
+            }
+            localStorage.setItem("bkcolor", idx);
+
+            $("#userinfo").parent().css("background", bkc);
+            if (setEaysuiTheme)
+                setEaysuiTheme();
+        }
+
+        function downactx() {
+            var furl = _serUrl + "/downloads/HRMSActx.exe";
+            window.open(furl);
+        }
+
+        var _allw = 0, _dvw = 0, _curlft = 0;
+        var scollintv = undefined;
+
+        function initscolltext() {
+            _allw = $("#userinfo").parent().width();
+            _dvw = $("#userinfo").width();
+            _curlft = _allw;
+            scollintv = setInterval("setusinfo()", 100);//1000为1秒钟
+            $("#userinfo").mouseover(function () {
+                clearInterval(scollintv);
+            }).mouseout(function () {
+                scollintv = setInterval("setusinfo()", 100);//1000为1秒钟
+            });
+            var idx = parseInt(localStorage.getItem("bkcolor"));
+            if ((idx == 1) || (idx == 2) || (idx == 3) || (idx == 4))
+                chgcolor(idx);
+        }
+
+        function setusinfo() {
+            $("#userinfo").css("left", _curlft);
+            _curlft = _curlft - 5;
+            if (_curlft < (-1 * _dvw))
+                _curlft = _allw;
+        }
+
+    </script>
+
+    <style type="text/css">
+        .corsair_user_div {
+            position: absolute;
+            right: 30px;
+            top: 0;
+        }
+
+        .corsair_user_div a {
+            color: #ffffff;
+        }
+
+        .corsair_user_div a:hover {
+            color: #b22222;
+        }
+
+        .div_collor {
+            position: absolute;
+            right: 20px;
+            height: auto;
+            bottom: 0px
+        }
+
+        .div_collor img {
+            cursor: pointer;
+        }
+
+        .corsair_user_div .link {
+            padding-left: 2px;
+            padding-right: 2px;
+            border-right: 2px solid #000000;
+        }
+
+        .corsair_user_div .linknoborder {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .application_home_ico {
+            background: url('./js/css/icons/application_home.png') no-repeat left center;
+        }
+
+        .exit_ico {
+            background: url('./js/css/icons/exit.png') no-repeat left center;
+        }
+
+        .help_ico {
+            background: url('./js/easyui/themes/icons/help.png') no-repeat left center;
+        }
+
+        .corsair_user_info a {
+            color: red;
+            font-weight: 700;
+        }
+
+        #main_tabs_id .m-btn-downarrow {
+            width: 0px;
+            height: 0px;
+        }
+
+        #main_menu_id .tree-node {
+            margin-top: 3px;
+        }
+
+        .txtlinked {
+            color: #1b961b;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+
+
+</head>
+<body class="easyui-layout">
+<div id="loading"
+     style="position: absolute;z-index: 1000;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;padding-top: 20%;background-color:white;font-size: 12px">
+    界面加载中... ...
+</div>
+<div id="title_div" data-options="region:'north',border:false"
+     style="height:auto;padding:0px;margin: 0 auto;overflow: hidden">
+    <img id="topimg" src="./img/indextop1.png"
+         style="width: 100%;height: auto;border: 0;margin: 0 ;padding:0; vertical-align: bottom;"/>
+
+    <div class="corsair_user_div">
+        <img src="./img/idxlgbk.png" style="width:220px;height: auto;"/>
+
+        <div style="position: absolute;right: 15px;top: 5px">
+            <a id="HomeUrl" class="link" style="color: black" target="_blank"
+               href="http://www.baidu.com">主页</a>
+            <a class="link" style="color: black" onclick="dologinout();" href="#">退出</a>
+            <a style="color: black" class="link" target="_blank"
+               href="http://192.168.119.119:2222/Login">报障登记</a>
+            <a id="HelpURL" style="color: black" class="link" target="_blank"
+               href="http://www.baidu.com">帮助</a>
+            <a id="downatx" style="color: black" class="linknoborder" target="_blank"
+               onclick="downactx()"
+               href="#">控件</a>
+        </div>
+    </div>
+
+    <div class="div_collor">
+        <img onclick="chgcolor(1)" src="./img/color1.png" style="width:20px;height: auto;"/>
+        <img onclick="chgcolor(2)" src="./img/color2.png" style="width:20px;height: auto;"/>
+        <img onclick="chgcolor(3)" src="./img/color3.png" style="width:20px;height: auto;"/>
+        <img onclick="chgcolor(4)" src="./img/color4.png" style="width:20px;height: auto;"/>
+    </div>
+
+    <span id="mailinfo" style="display: none">您有<a href="#" onclick="test();">(0)</a>封未读邮件.</span>
+</div>
+<div id="menudiv" data-options="region:'west',split:true,title:'导航栏'"
+     style="width:200px;padding: 0px;margin: 0px;">
+    <div id="main_menu_id" class="easyui-accordion" data-options="fit:true,border:false"
+         style=''></div>
+</div>
+<div data-options="region:'center'" style="margin: 0 auto">
+    <div id="main_tabs_id" class="easyui-tabs" data-options="tools:'#tab-tools',fit:true,border:false"
+         style="padding: 0px">
+        <div id="tab0" title="主页" data-options="href:'',iconCls:'application_home'"
+             style="padding:0px;overflow: hidden">
+            <iframe id="tabiframe0" scrolling='no' frameborder='0'
+                    style='width:100%;height:100%;overflow: hidden'></iframe>
+        </div>
+    </div>
+    <div id="tab-tools">
+        <a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-reload'"
+           onclick="reloadCurLabPage();"></a>
+        <a class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"
+           onclick="maintablecloseall()"></a>
+    </div>
+</div>
+<div data-options="region:'south',border:false"
+     style="height:25px;text-align: center;background:#269EEA;padding:2px;overflow: hidden">
+    <div id="userinfo" style="line-height: 20px;position: absolute;height: 25px;left: -100px;">
+        <img src="./img/lh.gif" style="height: 100%;vertical-align:middle"/>
+        尊敬的(<span id="username"></span>)同仁,欢迎登陆HRMS人力资源管理系统！
+        <span id="workinfo">您有<a id="wfcounts" href="#" onclick="toMywork();">（0）</a>项待办事项.</span>
+    </div>
+    <div style="display: none" id="copyrightinfo"> Copyright info</div>
+    <div id="usmeginfo" style="display: none;float: right">
+        您有<a id="usmeginfonum" href="#" style="color: red;font-weight: 700" onclick="doshowuswindow();">(0)</a>条未读消息
+    </div>
+</div>
+
+<div id="tabs_menu_div_id">
+</div>
+
+<div id="popmm" class="easyui-menu" style="width:120px;">
+    <div onclick="append2faststart()" data-options="iconCls:'icon-add'">添加到快捷启动</div>
+    <div onclick="showpopwin()" data-options="iconCls:'icon-add2'">新窗口打开</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+TCreport
+        var prtOptions = {
+            htmlTempt: "",
+            allowChart: false,
+            allow_colfilter:true,//允许设置列
+            gdListColumns: [[
+                {field: 'sdate', title: '销售日期', width: 100, sortable: true, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'cust_name', title: '客户名称', sortable: true, width: 80},
+                {field: 'ctype', title: '客户类型', width: 64, sortable: true, formatter: comUrl_dic1386.formator},
+                {field: 'item_name', title: '产品', sortable: true, width: 100, total_title: "合计"},
+                {field: 'sum_weight', title: '总重量(公斤)', sortable: true, width: 100, total_type: $Aggregation.agSUM, formatter: rmbformator},
+                {field: 'sum_volume', title: '总方数', sortable: true, total_type: $Aggregation.agSUM, width: 100},
+                {field: 'tran_fee', title: '总运费', sortable: true, total_type: $Aggregation.agSUM, width: 100, formatter: rmbformator},
+                {field: 'itemamt', title: '总货款', sortable: true, total_type: $Aggregation.agSUM, width: 100, formatter: rmbformator},
+                {field: 'allamt', title: '总金额', sortable: true, total_type: $Aggregation.agSUM, width: 100, formatter: rmbformator},
+                {field: 'recedamt', title: '已收款', sortable: true, total_type: $Aggregation.agSUM, width: 100, formatter: rmbformator},
+                {field: 'iact_name', title: '会计月度', sortable: true, width: 80}
+            ]],
+            comUrls: [],//兼容旧模式
+            coURL: "",
+            findExtParms: [{field: 'employee_code', title: '工号', width: 64}],
+            fitColumns: true,
+            findOptionsFilter:"",//查找自定义查询条件的filter
+            findwidth:"400px",//
+            findheight:"500px",//
+            showChartChoicetor:false,//显示选择框
+            pagination:true,//是否分页
+            showFooter:false,//显示合计行
+            idField: "",
+            treeField: "",
+            pageList:[30, 50, 100, 300],
+            extButtons:[{ //扩展按钮
+                  iconCls:'icon-add',
+                  text:'新建',
+                  handler:function(){alert('new')},
+                  posion:'#id_bt_exit'//按钮位置之前，默认
+                }],
+            beforeInitUI:function(){
+               //返回的newOptions 将被合并到prtOptions; 返回undef 不处理
+            },
+            afterInitUI:function(){
+                //返回的newOptions 将被合并到prtOptions; 返回undef 不处理
+            },
+            afterLoadModel:function(){
+                //加载完模板，没有渲染
+            },
+            afterInitUI:function(){
+                //返回的newOptions 将被合并到prtOptions;
+            },
+            onFind: function (parms) {
+               parms.order = ' hg_id asc ';
+            },
+            onGetFindParms:function(){// 获取自定义查询条件 设置findOptionsFilter后才有效
+               return [{parmname:"",reloper:">=",parmvalue:""}];
+            },
+            beforeLoadData:function(jsdata){
+            },
+            afterInitGrid:function(){
+            },
+            afterLoadData: function (jsdata) {//载入数据后
+            },
+            onExport:function(){//返回值作为导出数据的列，没有返回值用默认gdListColumns
+            },
+            onLoadChartOptions:function(jsdata){
+             var defaultoptions = {
+                        lines: {
+                            show: true
+                        },
+                        points: {
+                            show: true
+                        },
+                        xaxis: {
+                            tickDecimals: 0,
+                            tickSize: 1
+                        }
+                    };
+              //返回值 将替换 defaultoptions，作为显示选项
+            }
+
+            onLoadChartData:function(jsdata){
+             //返回用于制图表表的数据
+            },
+            afterShowChart:function(){
+                //完成图表显示后的事件
+            }
+
+        };
+
+//自定关联
+ var relOptions = {
+            data: [
+                {id: '=', value: '等于'}
+            ]
+        };
+//查询列
+var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true,notfind:true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'dqdate', title: '考勤日期', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM_DD, width: 100}
+        ];
+
+findtype:date,datetime;  combobox 无效
+$fieldDateFormatorYYYY_MM_DD 自动按年月日处理
+$fieldDateFormatorYYYY_MM 自动按年月处理
+$fieldDateFormator 自动按年月日时分秒处理
+
+方法：
+  getData();//最后一次返回的服务器数据

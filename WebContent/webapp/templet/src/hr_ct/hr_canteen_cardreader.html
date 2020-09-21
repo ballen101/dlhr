@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_ct">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>读卡</title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic764",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=764",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic771",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=771",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field:'ctcr_code',title:'卡机编号',width:100},
+            {field:'ctcr_name',title:'名称',width:120},
+            {field:'brand',title:'品牌',width:100},
+            {field:'model',title:'型号',width:100},
+            {field:'buydate',title:'购置日期',width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'ctr_name',title:'配置餐厅',width:120},
+            {field:'area',title:'配置区域',width:100},
+            {field:'numbers',title:'配置数量',width:64},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [];
+
+        frmOptions = {
+            findUrl: _serUrl + "/web/hrct/canteen/findcardreaderlist.co",
+            JPAClass: "com.hr.canteen.entity.Hr_canteen_cardreader",
+            JPAIdField: "ctcr_id",
+            allowAtt: true,
+            allowWF: true,
+            allow_void:true,//作废
+            //  gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "卡机配置登记",
+            allow_expt_list: true,
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+               // jsondata.signyears = 3;
+              // var ed = gap(jsondata.sign_date,3);
+             //   jsondata.end_date = ed;
+            },
+            onFind: function (parms) {
+              //  var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+               // parms.parms.push(p);
+            }
+        };
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hrct/canteen/impcardreaderlistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+        var select_CTRoom_pw = undefined;
+        function onFindCTRoom() {
+           // var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var url= _serUrl + "/web/hrct/canteen/findctroomlist.co";
+            var wo = {
+                id: "select_version_pw",
+                coURL: url,
+                JPAClass: "com.hr.canteen.entity.Hr_canteen_room",  //对应后台JPAClass名
+                orderStr: " ctr_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ctr_id',
+              //  pidField: 'superid',
+               // treeField: 'code',
+                autoFind: true,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'},
+                    {parmname: 'usable', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'ctr_name', title: '餐厅名称', width: 120},
+                    {field: 'address', title: '地点', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('ctr_id', row.ctr_id);
+                        mainline.setFieldValue('ctr_code', row.ctr_code);
+                        mainline.setFieldValue('ctr_name', row.ctr_name);
+                        mainline.setFieldValue('area', row.address);
+                    }
+                }
+            };
+            if (!select_CTRoom_pw) {
+                select_CTRoom_pw = new TSearchForm(wo);
+            }
+            select_CTRoom_pw.show(true);
+        }
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'ctcr_code'">卡机编号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctcr_code',crequired:true,readonly:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ctcr_name'">名称</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctcr_name',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'brand'">品牌</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'brand',crequired:true" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'model'">型号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'model',crequired:true" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'buydate'">购置日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datebox',fdname:'buydate',editable:false,formatter:$dateformattostrrYYYY_MM_DD,parser:$date4str" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'ctr_name'">配置餐厅</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'ctr_name',crequired:true,editable:false,buttonIcon:'icon-search',onClickButton:onFindCTRoom" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'area'">配置区域</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'area'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'numbers'">配置数量</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'numbers'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'usable'">是否有效</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'usable',crequired:true,comidx:'dic5'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sync_sn'">关联卡机号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sync_sn'" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

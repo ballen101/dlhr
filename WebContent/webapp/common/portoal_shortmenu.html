@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+
+    <script type="text/javascript">
+        function $OnCorsairReady() {
+            loadShortCutMenu();
+        }
+        function loadShortCutMenu() {
+            var url = _serUrl + "/web/user/loadUserShortCut.co";
+            $ajaxjsonget(url, function (jsdata) {
+                //console.error(JSON.stringify(jsdata));
+                if (jsdata.length > 0) {
+                    $("#id_short_menus").html("");
+                    var hml = "";
+                    for (var i = 0; i < jsdata.length; i++) {
+                        var men = jsdata[i];
+                        var icoc = ((men.ico) && (men.ico != "NULL") && (men.ico.length > 0)) ? men.ico : "icon-star";
+                        var ht = $("#shoetitem_id").html();
+                        ht = ht.replace(new RegExp("{{menuid}}", "g"), men.id);
+                        ht = ht.replace(new RegExp("{{tp}}", "g"), men.tp);
+                        ht = ht.replace(new RegExp("{{menuname}}", "g"), men.text);
+                        ht = ht.replace(new RegExp("{{menuico}}", "g"), icoc);
+                        hml = hml + ht;
+                    }
+                    $("#id_short_menus").html(hml);
+                }
+                $.parser.parse("#id_short_menus");
+                if (is_editing_shortMenus)
+                    doEditShortMenus();
+            }, function (err) {
+                $.messager.alert('错误', '获取快捷菜单错误!', 'error');
+            });
+        }
+        var is_editing_shortMenus = false;
+        function onShortCutClick(id, tp) {
+            if (is_editing_shortMenus) {
+                var jsdata = {id: id, tp: tp};
+                var url = _serUrl + "/web/user/deluserShortCut.co";
+                $ajaxjsonpost(url, JSON.stringify(jsdata), function (rst) {
+                    loadShortCutMenu();
+                }, function (err) {
+                });
+            } else {
+                this.top.OnShortMenuClick(id);
+            }
+        }
+
+        function doEditShortMenus() {
+            is_editing_shortMenus = !is_editing_shortMenus;
+            $(".mshortcutdelico").remove();
+            if (is_editing_shortMenus) {
+                $(".mshortcutbt").append(" <span class='mshortcutdelico icon-no'></span>");
+                $("#id_short_menus_tt_edit").attr("class", "icon-undo");
+            } else {
+                $("#id_short_menus_tt_edit").attr("class", "icon-edit");
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        .mshortcutdelico {
+            height: 18px;
+            overflow: hidden;
+            width: 16px;
+            position: absolute;
+            right: 1px;
+            top: 1px;
+            vertical-align: top;
+        }
+
+        .mshortcutbt {
+            position: relative;
+            float: left;
+            width: 80px;
+            height: 45px;
+            margin: 5px
+        }
+    </style>
+
+</head>
+<body style="font-size: 12px;margin: 0px auto;height: 100%">
+<div class="easyui-panel" title="快捷菜单"
+     data-options="iconCls:'icon-shortcut', border:false,fit:true,tools:'#doEditShortMenus_menu'">
+    <div id="id_short_menus" style="height:auto;padding: 5px">
+        <div id="shortmenu_none_id" style="width: 100%;height: auto;line-height: 50px;text-align: center;display: none">
+            您还没有快捷菜单，请从左边菜单栏添加
+        </div>
+    </div>
+</div>
+
+<div id="doEditShortMenus_menu">
+    <a href="#" class="icon-edit" onclick="doEditShortMenus()"></a>
+</div>
+<script id="shoetitem_id" type="text/html">
+    <a href="#" class="easyui-linkbutton mshortcutbt" onclick="onShortCutClick({{menuid}},{{tp}})"
+       data-options="iconCls:'{{menuico}}',size:'normal',iconAlign:'top'">{{menuname}}</a>
+</script>
+</body>
+
+</html>

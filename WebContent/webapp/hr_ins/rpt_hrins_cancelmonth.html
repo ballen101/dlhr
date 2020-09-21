@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ins">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding2.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title></title> 
+  <script type="text/javascript" style="cserver_js"> var comUrl_dic81 = {index: 'dic81',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"女","dictvalue":"1"},{"language1":"男","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic81.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic81; } if (comUrl_dic81.type == 'combobox') { if (comUrl_dic81.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic81.valueField]) { rst = rst + jsondata[i][comUrl_dic81.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic81.valueField]) return jsondata[i][comUrl_dic81.textField]; } } } if (comUrl_dic81.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic81.editor= {type: 'combobox', options: {valueField:comUrl_dic81.valueField, textField:comUrl_dic81.textField, data: comUrl_dic81.jsondata}}; var comUrl_dic84 = {index: 'dic84',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"硕士及以上","dictvalue":"2"},{"language1":"本科","dictvalue":"3"},{"language1":"大专","dictvalue":"4"},{"language1":"高中","dictvalue":"5"},{"language1":"中专","dictvalue":"6"},{"language1":"中技","dictvalue":"7"},{"language1":"初中","dictvalue":"8"},{"language1":"小学","dictvalue":"9"},{"language1":"无","dictvalue":"10"}], formator: function (value, row) { var jsondata = comUrl_dic84.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic84; } if (comUrl_dic84.type == 'combobox') { if (comUrl_dic84.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic84.valueField]) { rst = rst + jsondata[i][comUrl_dic84.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic84.valueField]) return jsondata[i][comUrl_dic84.textField]; } } } if (comUrl_dic84.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic84.editor= {type: 'combobox', options: {valueField:comUrl_dic84.valueField, textField:comUrl_dic84.textField, data: comUrl_dic84.jsondata}}; var comUrl_dic702 = {index: 'dic702',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"本市农村户","dictvalue":"1"},{"language1":"外市农村户","dictvalue":"3"},{"language1":"外市城镇户","dictvalue":"4"}], formator: function (value, row) { var jsondata = comUrl_dic702.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic702; } if (comUrl_dic702.type == 'combobox') { if (comUrl_dic702.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic702.valueField]) { rst = rst + jsondata[i][comUrl_dic702.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic702.valueField]) return jsondata[i][comUrl_dic702.textField]; } } } if (comUrl_dic702.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic702.editor= {type: 'combobox', options: {valueField:comUrl_dic702.valueField, textField:comUrl_dic702.textField, data: comUrl_dic702.jsondata}}; var comUrl_dic5 = {index: 'dic5',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"是","dictvalue":"1"},{"language1":"否","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic5.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic5; } if (comUrl_dic5.type == 'combobox') { if (comUrl_dic5.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic5.valueField]) { rst = rst + jsondata[i][comUrl_dic5.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic5.valueField]) return jsondata[i][comUrl_dic5.textField]; } } } if (comUrl_dic5.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic5.editor= {type: 'combobox', options: {valueField:comUrl_dic5.valueField, textField:comUrl_dic5.textField, data: comUrl_dic5.jsondata}}; var comUrl_dic1220 = {index: 'dic1220',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"全险","dictvalue":"1"},{"language1":"单项保险","dictvalue":"2"}], formator: function (value, row) { var jsondata = comUrl_dic1220.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1220; } if (comUrl_dic1220.type == 'combobox') { if (comUrl_dic1220.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1220.valueField]) { rst = rst + jsondata[i][comUrl_dic1220.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1220.valueField]) return jsondata[i][comUrl_dic1220.textField]; } } } if (comUrl_dic1220.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1220.editor= {type: 'combobox', options: {valueField:comUrl_dic1220.valueField, textField:comUrl_dic1220.textField, data: comUrl_dic1220.jsondata}}; var comUrl_dic1045 = {index: 'dic1045',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"主动离职","dictvalue":"1"},{"language1":"被动离职","dictvalue":"2"},{"language1":"协商离职","dictvalue":"3"}], formator: function (value, row) { var jsondata = comUrl_dic1045.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1045; } if (comUrl_dic1045.type == 'combobox') { if (comUrl_dic1045.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1045.valueField]) { rst = rst + jsondata[i][comUrl_dic1045.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1045.valueField]) return jsondata[i][comUrl_dic1045.textField]; } } } if (comUrl_dic1045.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1045.editor= {type: 'combobox', options: {valueField:comUrl_dic1045.valueField, textField:comUrl_dic1045.textField, data: comUrl_dic1045.jsondata}}; var comUrl_dic1049 = {index: 'dic1049',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"无故连续旷工三天或请假到期后三天未续假未打卡（没有考勤记录）","dictvalue":"1"},{"language1":"终止劳动关系时不履行解除手续；或解除手续没有办理完毕而离开单位","dictvalue":"2"},{"language1":"个人原因提出","dictvalue":"3"},{"language1":"不适应本职工作岗位 ","dictvalue":"4"},{"language1":"薪资福利达不到要求","dictvalue":"5"},{"language1":"合同期满员工不再续签","dictvalue":"6"},{"language1":"不能胜任工作，经调岗或培训仍不能胜任工作","dictvalue":"7"},{"language1":"违反国家法律法规 ","dictvalue":"8"},{"language1":"严重违反公司规章制度 ","dictvalue":"9"},{"language1":"提供虚假信息和伪造证件 ","dictvalue":"10"},{"language1":"合同期满公司终止劳动合同","dictvalue":"11"},{"language1":"优化性裁员","dictvalue":"12"},{"language1":"结构性裁员","dictvalue":"13"},{"language1":"经济性裁员","dictvalue":"14"},{"language1":"正常退休","dictvalue":"15"},{"language1":"因病提前退休","dictvalue":"16"},{"language1":"特殊工种退休","dictvalue":"17"},{"language1":"正常补偿范围内协商离职而取得经济补偿","dictvalue":"18"},{"language1":"恶意协商离职超出正常离职补偿范围索要并取得经济补偿","dictvalue":"19"},{"language1":"协商离职，离职人员未要求经济补偿或经协商后同意不要求补偿","dictvalue":"20"},{"language1":"其它","dictvalue":"21"},{"language1":"一类","dictvalue":"22"},{"language1":"二类","dictvalue":"23"},{"language1":"死亡","dictvalue":"24"},{"language1":"精神行为异常或态度恶劣","dictvalue":"25"}], formator: function (value, row) { var jsondata = comUrl_dic1049.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1049; } if (comUrl_dic1049.type == 'combobox') { if (comUrl_dic1049.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1049.valueField]) { rst = rst + jsondata[i][comUrl_dic1049.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1049.valueField]) return jsondata[i][comUrl_dic1049.textField]; } } } if (comUrl_dic1049.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1049.editor= {type: 'combobox', options: {valueField:comUrl_dic1049.valueField, textField:comUrl_dic1049.textField, data: comUrl_dic1049.jsondata}}; var comUrl_dic1234 = {index: 'dic1234',type: 'combobox',multiple: false,valueField: 'dictvalue',textField: 'language1',jsondata:[{"language1":"普通员工","dictvalue":"1"},{"language1":"科技人员","dictvalue":"2"},{"language1":"固定工","dictvalue":"3"},{"language1":"合同工","dictvalue":"4"},{"language1":"临时工","dictvalue":"5"}], formator: function (value, row) { var jsondata = comUrl_dic1234.jsondata; if (value == 'get_com_data') { return jsondata; } if (value == 'get_com_url') { return comUrl_dic1234; } if (comUrl_dic1234.type == 'combobox') { if (comUrl_dic1234.multiple) { if((!value)||(value.length==0)) return value; var vs = value.split(','); var rst = ''; for (var j = 0; j < vs.length; j++) { var v = vs[j]; if ((v) && (v.length > 0)) { for (var i = 0; i < jsondata.length; i++) { if (v == jsondata[i][comUrl_dic1234.valueField]) { rst = rst + jsondata[i][comUrl_dic1234.textField] + ','; break; } } } } if (rst.length > 0) rst= rst.substring(0, rst.length - 1); return rst; } else { for (var i = 0; i < jsondata.length; i++) { if (value == jsondata[i][comUrl_dic1234.valueField]) return jsondata[i][comUrl_dic1234.textField]; } } } if (comUrl_dic1234.type == 'combotree') { var txt = $getTreeTextById(jsondata, value); if (txt == undefined) txt = value; return txt; } return value; } }; comUrl_dic1234.editor= {type: 'combobox', options: {valueField:comUrl_dic1234.valueField, textField:comUrl_dic1234.textField, data: comUrl_dic1234.jsondata}}; var comUrls = [ { index: "dic81", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=81", valueField: 'dictvalue', textField: 'language1' }, { index: "dic84", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=84", valueField: 'dictvalue', textField: 'language1' }, { index: "dic702", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=702", valueField: 'dictvalue', textField: 'language1' }, { index: "dic5", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=5", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1220", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1220", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1045", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1045", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1049", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1049", valueField: 'dictvalue', textField: 'language1' }, { index: "dic1234", type: "combobox", url: "/web/dict/getdictvalues.co?dicid=1234", valueField: 'dictvalue', textField: 'language1' } ];</script> 
+  <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field:'buyins_code',title:'购保编号',width:100},
+                {field:'insurance_number',title:'参保号',width:100},
+                {field:'buydday',title:'购保日期',width:80, formatter: $fieldDateFormatorYYYY_MM},
+                {field:'ins_type',title:'保险类型',width:64, formatter: comUrl_dic1220.formator},
+                {field:'insname',title:'保险名称',width:100},
+                {field:'reg_type',title:'参保性质',width:80, formatter: comUrl_dic1234.formator},
+                {field:'tselfpay',title:'个人缴费金额',width:80},
+                {field:'tcompay',title:'单位缴费金额',width:80},
+                {field:'payment',title:'缴费总金额',width:80},
+                {field:'employee_code',title:'工号',width:80},
+                {field:'employee_name',title:'姓名',width:80},
+                {field:'sex',title:'性别',width:64, formatter: comUrl_dic81.formator},
+                {field:'degree',title:'学历',width:80, formatter: comUrl_dic84.formator},
+                {field:'orgcode',title:'机构编码',width:100},
+                {field:'orgname',title:'机构',width:250},
+                {field:'sp_name',title:'职位',width:100},
+                {field:'lv_num',title:'职级',width:64},
+                {field:'nativeplace',title:'籍贯',width:64},
+                {field:'registertype',title:'户籍类型',width:80, formatter: comUrl_dic702.formator},
+                {field:'birthday',title:'出生日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'age',title:'年龄',width:64},
+                {field:'id_number',title:'身份证号',width:140},
+                {field:'hiredday',title:'入职日期',width:80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'telphone',title:'联系电话',width:100},
+                {field:'torgname',title:'输送机构',width:100},
+                {field:'sorgname',title:'派遣机构',width:100},
+                {field:'ljdate',title:'离职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'ljtype2',title:'离职类型',width:80, formatter: comUrl_dic1045.formator},
+                {field:'ljreason',title:'离职原因',width:150, formatter: comUrl_dic1049.formator},
+                {field:'canceldate',title:'退保日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field:'cancelreason',title:'退保原因',width:150},
+                {field: 'tremark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '部门编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'employee_code', title: '工号',  width: 100},
+            {field:'employee_name',title:'姓名',width:80},
+            {field: 'canceldate', title: '退保月份', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field:'insbuy_code',title:'购保编号',width:100},
+            {field:'insurance_number',title:'参保号',width:100},
+            {field:'buydday',title:'购保日期',width:80, formatter: $fieldDateFormatorYYYY_MM},
+            {field:'ins_type',title:'保险类型',width:64, formatter: comUrl_dic1220.formator},
+            {field:'insname',title:'保险名称',width:100},
+            {field:'tselfpay',title:'个人缴费金额',width:80},
+            {field:'tcompay',title:'单位缴费金额',width:80},
+            {field:'payment',title:'缴费总金额',width:80},
+            {field:'sex',title:'性别',width:64, formatter: comUrl_dic81.formator},
+            {field:'degree',title:'学历',width:80, formatter: comUrl_dic84.formator},
+            {field:'sp_name',title:'职位',width:100},
+            {field:'lv_num',title:'职级',width:64},
+            {field:'nativeplace',title:'籍贯',width:64},
+            {field:'registertype',title:'户籍类型',width:80, formatter: comUrl_dic702.formator},
+            {field:'birthday',title:'出生日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'age',title:'年龄',width:64},
+            {field:'id_number',title:'身份证号',width:140},
+            {field:'hiredday',title:'入职日期',width:80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'telphone',title:'联系电话',width:100},
+            {field:'torgname',title:'输送机构',width:100},
+            {field:'sorgname',title:'派遣机构',width:100},
+            {field:'ljdate',title:'离职日期',width:100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'ljtype2',title:'离职类型',width:80, formatter: comUrl_dic1045.formator},
+            {field:'ljreason',title:'离职原因',width:150, formatter: comUrl_dic1049.formator},
+            {field:'cancelreason',title:'退保原因',width:150}
+        ];
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrins/insurance/findcancelinsmonth.co"
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '部门', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

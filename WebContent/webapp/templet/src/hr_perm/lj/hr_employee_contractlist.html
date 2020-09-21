@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line_pop.html" workpath="webapp/hr_perm">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic758",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=758",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic764",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=764",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic771",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=771",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = true;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var listGridColumns = [
+            {field: 'con_number', title: '合同编号', width: 120},
+            {field: 'contract_name', title: '合同名称', width: 120},
+            {field: 'employee_code', title: '工号', width: 100},
+            {field: 'employee_name', title: '姓名', width: 100},
+            {field: 'orgname', title: '部门', width: 120},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'sp_name', title: '职位', width: 64},
+            {field: 'hiredday', title: '入职日期',findtype:'date', width: 64},
+            {field: 'contract_type', title: '合同类型', width: 64, formatter: comUrl_dic758.formator},
+            {field: 'contractstat', title: '合同状态', width: 64, formatter: comUrl_dic764.formator},
+            {field: 'sign_date', title: '签订日期',findtype:'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'deadline_type', title: '期限类型', width: 64, formatter: comUrl_dic771.formator},
+            {field: 'end_date', title: '截止日期',findtype:'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'signyears',title:'签订年限',width:64},
+            {field: 'renew_date', title: '续约日期',findtype:'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field:'version',title:'版本号',width:64},
+            {field: 'sign_number', title: '签订次数', width: 64},
+            {field: 'is_remind', title: '是否预警', width: 50, formatter: comUrl_dic5.formator},
+            {field: 'usable', title: '是否可用', width: 50, formatter: comUrl_dic5.formator},
+            {field: 'signreason', title: '签订原因', width: 120},
+            {field: 'remark', title: '备注', width: 100},
+            {field: 'creator', title: '制单人', width: 64},
+            {field: 'createtime', title: '制单时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'updator', title: '更新人', width: 64},
+            {field: 'updatetime', title: '更新时间',findtype:'datetime', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD}
+        ];
+
+        var gdLinesColumns = [];
+
+        frmOptions = {
+            JPAClass: "com.hr.perm.entity.Hr_employee_contract",
+            JPAIdField: "con_id",
+            allowAtt: true,
+            allowWF: false,
+            //  gdLinesName: 'hr_wgroups',   //行Grid ID对应到json 明细行属性 名
+            datainfo_pw_title: "合同资料维护",
+            allow_expt_list: true,
+            // datainfo_line_title: "包含职组",
+            htmlTemeType: HtmlTempType.htMLPop,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            extButtons: [//扩展按钮
+                {
+                    text: '导入Excel',
+                    iconCls: 'icon-importexcel',
+                    handler: function () {
+                        impexcel();
+                    }
+                },
+                {
+                    text: '导出导入模板',
+                    iconCls: 'icon-exportexcel',
+                    handler: function () {
+                        mainline.exportExcelModel();
+                    }
+                }
+            ],
+            onNew: function (jsondata) {
+                jsondata.usable = 1;
+                jsondata.is_remind = 1;
+                jsondata.ispermanent = 1;//是否正式员工。1、正式合同；2、实习生合同
+                jsondata.contract_type = 1;
+                jsondata.contractstat = 1;
+                jsondata.deadline_type = 1;
+                jsondata.sign_date = new Date().format("yyyy-MM-dd");
+            },
+            onFind: function (parms) {
+                var p={parmname: 'ispermanent',  reloper: '=', parmvalue: 1};
+                parms.parms.push(p);
+            },
+            onSave: function (postData) {
+                var data = postData.jpadata;
+                if (!checkdate(data)){
+                    return false;
+                }
+                return true;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if ((fdname == "signyears") || (fdname == "sign_date")|| (fdname == "deadline_type")) {
+                    var qx = mainline.getFieldValue("signyears");
+                    var dt = mainline.getFieldValue("sign_date");
+                    var dltype = mainline.getFieldValue("deadline_type");
+                    dltype = parseInt(dltype);
+                    if(dltype==1){
+                        mainline.setReadOnly("end_date", false);
+                        if (qx && dt) {//两个都不为空
+                            var qx = parseInt(qx);
+                            if (isNaN(qx) || (qx == undefined) || (qx == 0)) alert("签订年限不能为空！");
+                            //  dt = (new Date()).fromStr(dt);
+                            dt = gap(dt,qx);
+                            mainline.setFieldValue("end_date", dt);
+                        } else {
+                            mainline.setFieldValue("end_date", "");
+                            //  $.messager.alert('错误', '签订年限和签订日期不能为空!', 'error');
+                        }
+                    }else {
+                        mainline.setReadOnly("end_date", true);
+                        mainline.setFieldValue("end_date", undefined);
+                    }
+
+                }
+            }
+        };
+
+        function checkdate(data) {
+            var begin_date = data.sign_date;
+            var end_date = data.end_date;
+            var deadlinetype = parseInt(data.deadline_type);
+            if(deadlinetype==1){
+                if ((!begin_date) || (begin_date.length == 0) || (!end_date) || (end_date.length == 0)) {
+                    alert("合同签订时间与截止时间不允许为空");
+                    return ;
+                }
+                begin_date = $date4str(begin_date);
+                end_date = $date4str(end_date);
+                if ((!begin_date) || (!end_date)) {
+                    alert("合同签订时间与截止时间格式错误");
+                    return ;
+                }
+
+                var signyears = (end_date.getTime() - begin_date.getTime()) / (1000 * 60 * 60 *24);
+
+                if (signyears <= 0) {
+                    alert("合同的截止时间必须大于开始时间");
+                    return ;
+                }
+            }
+            return true;
+        }
+
+        var select_employee_pw = undefined;
+        function onFindemployee() {
+            var url = _serUrl + "/web/hr/employee/findEmoloyeeList.co";
+            var wo = {
+                id: "select_employee_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                idField: 'orgid',
+                autoFind: false,//是否自动查询
+                gdListColumns: [
+                    {field: 'employee_code', title: '工号', width: 120},
+                    {field: 'employee_name', title: '姓名', width: 100},
+                    {field: 'orgname', title: '机构', width: 500, notfind: true}//不作为查询条件
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue("er_id", row.er_id);//设置界面值
+                        mainline.setFieldValue("employee_code", row.employee_code);
+                        mainline.setFieldValue("employee_name", row.employee_name);
+                        mainline.setFieldValue("orgid", row.orgid);
+                        mainline.setFieldValue("orgcode", row.orgcode);
+                        mainline.setFieldValue("orgname", row.orgname);
+                        mainline.setFieldValue("lv_id", row.lv_id);
+                        mainline.setFieldValue("lv_num", row.lv_num);
+                        mainline.setFieldValue("ospid", row.ospid);
+                        mainline.setFieldValue("ospcode", row.ospcode);
+                        mainline.setFieldValue("sp_name", row.sp_name);
+                        mainline.setFieldValue("hiredday", row.hiredday);
+                        mainline.setFieldValue("idpath", row.idpath);
+                        var worktime = calcWorktime();
+                        // alert(worktime);
+                        if (worktime >= 10)
+                            $.messager.alert('提示', '您可以签订无固定期限合同!', 'info');
+
+                        var ccurl = _serUrl + "/web/hr/employeecontract/countContracts.co?er_id=" + row.er_id;//员工签订的所有合同
+                        $ajaxjsonget(ccurl, function (jsondata) {
+                            var connumber = jsondata.length;
+                            if (connumber > 1) {
+                                //jsondata = jsondata[0];
+                                $.messager.alert('提示', '您可以签订无固定期限合同!', 'info');
+                            }
+                            mainline.setFieldValue('sign_number', connumber + 1);
+                        }, function (err) {
+                            alert(JSON.stringify(err));
+                        });
+                    }
+                }
+            };
+            if (!select_employee_pw) {
+                select_employee_pw = new TSearchForm(wo);
+            }
+            select_employee_pw.show();
+        }
+
+        function calcWorktime() {
+            var signdate = (new Date()).fromStr(mainline.getFieldValue("sign_date"));
+            var hiredday = (new Date()).fromStr(mainline.getFieldValue("hiredday"));
+            if (signdate < hiredday) {
+                $.messager.alert('错误', '日期错误!', 'error');
+                mainline.setFieldValue("signdate", "");
+                return;
+            }
+            var ms = (signdate.getFullYear() * 12 + signdate.getMonth()) - (hiredday.getFullYear() * 12 + hiredday.getMonth());
+            var y = Math.floor(ms / 12);
+            var m = ms % 12;
+            //alert(y + "-" + m);
+            var cd = signdate.getDate() - hiredday.getDate();
+            //alert("cd:" + cd);
+            if (cd > 0) {
+                if (cd >= 15) {
+                    m = m + 1;
+                }
+                if (m > 12) {
+                    y = y + 1;
+                    m = m - 12;
+                }
+            }
+            if (cd < 0) {
+                if (cd < -15) {
+                    m = m - 1;
+                }
+                if (m < 0) {
+                    y = y - 1;
+                    m = 0;
+                }
+                if (y < 0)
+                    y = 0;
+            }
+            return y;
+        }
+        function gap(date,n) {
+            var now = new Date(date);
+            var y = now.getFullYear();
+            if (isNaN(n) || (n == undefined) || (n == 0)){
+                return "";
+            }else{
+                y = y + n;
+                now.setFullYear(y);
+                now.setDate(now.getDate()-1);
+                return now.format("yyyy-MM-dd");
+            }
+        }
+
+        function ondltypeselect(row) {
+            if (mainline.isloadingdata()) return;
+
+            var dltype = mainline.getFieldValue("deadline_type");
+            dltype = parseInt(dltype);
+            if (dltype == 1) {
+                mainline.setReadOnly("end_date", false);
+                var signdate = mainline.getFieldValue("sign_date");
+                var years=parseInt(mainline.getFieldValue("signyears"));
+                var enddate = gap(signdate,years);
+                mainline.setFieldValue("end_date", enddate);
+            } else {
+                mainline.setReadOnly("end_date", true);
+                mainline.setFieldValue("end_date", undefined);
+            }
+        }
+        
+        function onChangeSignDate(newValue,oldValue) {
+            if (mainline.isloadingdata()) return;
+
+            var dltype = mainline.getFieldValue("deadline_type");
+            dltype = parseInt(dltype);
+            if (dltype == 1) {
+                var years=parseInt(mainline.getFieldValue("signyears"));
+                var enddate = gap(newValue,years);
+                mainline.setFieldValue("end_date", enddate);
+            }
+        }
+
+        var select_version_pw = undefined;
+        function onFindVersion() {
+           // var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_version_pw",
+               // coURL: url,
+                JPAClass: "com.hr.perm.entity.Hr_contract_version",  //对应后台JPAClass名
+                orderStr: " ver_id asc ",
+                multiRow: false,
+                isTree: false,
+                idField: 'ver_id',
+              //  pidField: 'superid',
+               // treeField: 'code',
+                autoFind: false,//是否自动查询
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '9'}
+                ],//扩展参数
+                gdListColumns: [
+                    {field: 'version_describe', title: '版本描述', width: 120},
+                    {field: 'version', title: '版本号', width: 100}
+                ],
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        mainline.setFieldValue('version', row.version);
+                    }
+                }
+            };
+            if (!select_version_pw) {
+                select_version_pw = new TSearchForm(wo);
+            }
+            select_version_pw.show();
+        }
+
+        function impexcel() {
+            $uploadfile(_serUrl + "/web/hr/employeecontract/impcontractlistexcel.co", null,
+                    function (err) {
+                        $.messager.alert('错误', err, 'error');
+                    },
+                    function (jsdata) {
+                        alert("成功导入" + jsdata.rst + "条数据");
+                    });
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="">
+    <tr>
+        <td cjoptions="fdname:'con_number'">合同编号</td>
+        <td><input  cjoptions="easyui_class:'easyui-textbox',fdname:'con_number',crequired:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_name'">选择员工</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_name',crequired:true,buttonIcon:'icon-search',onClickButton:onFindemployee,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'employee_code'">工号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'employee_code',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'hiredday'">入职日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'hiredday',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'orgcode'">部门编码</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgcode',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'orgname'">部门</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'orgname',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sp_name'">职位</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sp_name',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'lv_num'">职级</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'lv_num',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'contract_name'">合同名称</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'contract_name',crequired:true"
+                               style="height:20px;width: 300px"/></td>
+        <td cjoptions="fdname:'contract_type'">合同类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'contract_type',comidx:'dic758',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'contractstat'">合同状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'contractstat',crequired:true,readonly:true,comidx:'dic764'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'signyears'">签订年限</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'signyears'" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sign_date'">签订日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'sign_date',formatter:$dateformattostrrYYYY_MM_DD,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'deadline_type'">期限类型</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'deadline_type',comidx:'dic771',onSelect:ondltypeselect,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'end_date'">截止日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'end_date',formatter:$dateformattostrrYYYY_MM_DD,editable:false" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+
+        <td cjoptions="fdname:'renew_date'">续约日期</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'renew_date',readonly:true,formatter:$dateformattostrrYYYY_MM_DD,editable:false" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'version'">版本号</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'version',buttonIcon:'icon-search',onClickButton:onFindVersion,editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'is_remind'">是否预警</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'is_remind',comidx:'dic5',editable:false"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'sign_number'">签订次数</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'sign_number'" style="height:20px;width: 100px"/></td>
+
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input cjoptions="easyui_class:'easyui-textbox',fdname:'remark'" style="height:20px;width: 300px"/>
+        </td>
+        <td cjoptions="fdname:'stat'">流程状态</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'stat',crequired:true,readonly:true,comidx:'dic227'"
+                   style="height:20px;width: 100px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'creator',crequired:true,readonly:true"
+                   style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'createtime',crequired:true,readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input cjoptions="easyui_class:'easyui-textbox',fdname:'updator',readonly:true" style="height:20px;width: 100px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input cjoptions="easyui_class:'easyui-datetimebox',fdname:'updatetime',readonly:true,formatter:$dateformattostr" style="height:20px;width: 100px"/></td>
+    </tr>
+</table>
+</body>
+</html>

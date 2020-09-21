@@ -1,0 +1,315 @@
+//frmOptions参数
+var bttexts = {
+    id_bt_new: '新建',
+    id_bt_copy: '复制',
+    id_bt_save: '保存',
+    id_bt_submit: '提交',
+    id_bt_unsubmit:'反审核'
+    id_bt_find: '查找',
+    id_bt_reload: '刷新',
+    id_bt_del: '删除',
+    id_bt_void:'作废',
+    id_bt_att: '上传附件',
+    id_bt_print: '打印',
+    id_bt_print_new: '打印',
+    id_bt_print_preview: '打印预览',
+    id_bt_print_design: '编辑报表',
+    id_bt_expt: '导出',
+    id_bt_expt_list:'导出列表',
+    id_bt_prev:'上一条',
+    id_bt_next:'下一条',
+    id_bt_exit: '返回',
+    id_bt_colfilter:'列设置'
+}
+var HtmlTempType = {
+     htML: 1,
+     htMLTree: 2,
+     htMLPop: 3
+     };
+
+var frmOptions = {
+    htmlTempt: '',   //html 模板  default "..templet/default/main_line.html"
+    htmlTemeType: HtmlTempType.htMLPop,
+    disableButtonType:_NUBType.disable,
+    datainfo_pw_title: "单据详情",
+    datainfo_line_title: "明细数据",  //v3取消
+    datainfo_attr_title: "附件",
+    datainfo_wf_title: "流程",
+    JPAClass: "com.icefall.icefall.entitys.css.Css_consumer",  //对应后台JPAClass名
+    JPAIdField: "",
+    allowAtt: true, //允许附件  default true
+    attImgThb: false,//如果附件是图片，是否自动生成缩略图
+    allowWF: true,  //允许流程   default true
+    allowNavigator:false,//弹出窗口上 出现 上一页 下一页的按钮
+    frmType: TFrmType.ftMainLine,//是否主从表 default TFrmType.ftMainLine
+    Pagination: true,//分页
+    istree: false,//树
+    isasyntree:false,//异步树
+    treeParentField: "",
+    treeListWidth: 300,
+    showtreeHeader: true,
+    allowEmptyLine: true,//允许明细行为空保存   //v3取消
+    allowFindPW: true,//允许弹出查询窗口
+    autoFind:false,//准备好页面后自动执行查询  不显示查询条件
+    findeditable:false,//查询窗口combox date 是否可编辑
+    showFooter:false,//显示合计行
+    gdListColumns: function () {//列表字段
+    {field:'',title:'',notfind:true}
+    },
+    gdLinesName: 'css_fix_lines',   //行Grid ID对应到json 明细行属性 名        //v3 取消
+    gdLinesColumns: [[                                                         //v3 取消
+          {field: 'cust_name', title: '客户名', total_title: "合计", width: 100},
+          {field: 'saildate', title: '销售日期', width: 150, formatter: $fieldDateFormatorYYYY_MM_DD, precision: $Precision.piDay},
+          {field: 'tran_fee', rowspan: 2, title: '运费', sortable: true, width: 100, total_type: $Aggregation.agSUM, ect_type: $ECType.ectNumber, formatter: rmbformator},
+          {field: 'amt', title: '充值金额', width: 64, total_type: $Aggregation.agSUM},
+          {field: 'employee_code', title: '工号', width: 64,required:true},
+          {field: 'employee_name', title: '姓名', width: 64}
+          ]],//行Grid字段
+    lineHeight:  '300px',  //行grid高度  defwwwault 200  v3取消
+    windowWidth:'100%',//窗体宽度  htMLPop有效
+    windowHeight:'100%',//窗体高度 htMLPop有效
+    wfWindowHeight:'500px',//流程窗口高度
+    findUrl: "",//查询服务  default   _serUrl + "/web/common/find.co"
+    findByIDUrl:"",
+    saveUrl: "",//保存服务  default
+    delUrl: "",  //删除服务 default
+    voidUrl:"", //作废URL
+    printurl: _serUrl + "/web/hr/recruit/printcard.co",//打印URL
+    allow_new: true,
+    allow_del: true,
+    allow_void:false,//作废
+    allow_copy: true,
+    allow_save: true,
+    allow_submit: true,
+    allow_unsubmit:false,
+    allow_expt: false,
+    allow_expt_list:false,
+    allow_exit: false,
+    allow_reload: false,
+    allow_print: true,
+    printversion:1,//打印版本 1 excel模板 2 fastreport websocket server
+    printurl: localStorage.getItem(_contextPath + ".UserWebsocketUrl"),
+    BeforePrint: function (printdata) {
+            var rows = printdata.tables[0].rows;
+            if (rows.length <= 0) {
+                $.messager.alert('错误', '没加载到数据！', 'error');
+                return;
+            }
+            var cresign = rows[0].cresign;
+            printdata.parms = [  //传给打印控件的参数
+                {
+                    parmname: "displayname",
+                    parmvalue: $C.UserInfo.displayname()
+                },
+                {
+                    parmname: "signjpg",
+                    parmvalue: cresign
+                }
+            ];
+            return true;//返回false不给打印
+    },
+    allow_colfilter:true,//允许设置列
+    newaftersave:false,//保存后新建
+    newaftersubmit:false,//提交后新建
+    bttexts: undefined,
+    listgrid_multiselect:false,//列表数据可多选
+    allowcheckexportfields:true,//导出列表时候允许选择列（表头分行的搞不定）
+    extButtons:[{ //扩展按钮
+      iconCls:'icon-add',
+      text:'新建',
+      handler:function(){alert('new')},
+      posion:'#id_bt_new'//按钮位置之前，
+    }],
+    extLineButtons:[],//扩展明细行按钮     //v3 取消
+    disableLineButtons:false,//隐藏扩展按钮
+    pageList:[30, 50, 100, 300],
+    detailGrids: [                         //v3新增
+                    {
+                        grdid: "shwwxappparms_id",
+                        allowEmptyLine: false,
+                        lineTitle: "微信参数",
+                        lineHeight: "300px",
+                        lineProperty: 'shwwxappparms',
+                        options: "rownumbers:true,remoteSort:false,fit:true",
+                        onDBClick: function (index, row) {
+                            dopromt(row);
+                            return false; //false 将不调用edit方法
+                        },
+                        onBeginEdit: function (index, row) {  //开始编辑
+                            alert('onBeginEdit');
+                        },
+                        onAfterEdit: function (index, row, changes) {
+                            alert(JSON.stringify(changes));
+                        },
+                        onSetToolbar: function (grdid, toolbar) {
+                            return toolbar;
+                            return [
+                                {
+                                    text: '载入默认',
+                                    iconCls: 'icon-importexcel',
+                                    handler: function () {
+                                        getshwwxappparmdefault();
+                                    }
+                                }
+                            ];     //如果定义了本方法需要返回才能设置
+                        },
+                        extToolBar: [],
+                        lineColumns: columns_shwwxappparms
+                    },
+                    {
+                        grdid: "shwwxapptags_id",
+                        allowEmptyLine: true,
+                        lineTitle: "微信tag",
+                        lineProperty: 'shwwxapptags',
+                        options: "rownumbers:true,remoteSort:false,fit:true",
+                        lineColumns: columns_shwwxapptags,
+                        extToolBar: [
+                            {
+                                text: '同步tag和菜单到微信',
+                                iconCls: 'icon-importexcel',
+                                handler: function () {
+                                    alert("开发中....");
+                                }
+                            }
+                        ],
+                        onAfterEdit: function (index, row, changes) {
+                            alert(JSON.stringify(changes));
+                        },
+                        onRemoveLine: function (row) {  //return false 不删除
+                            alert("onRemoveLine");
+                            return true;
+                        },
+                        onAfterClear: function () {
+                            alert("onAfterClear");
+                        },
+                        onLineAppend: function () {  //返回值将被添加 返回false undefi不添加
+                            return {usable: 1};
+                        }
+                    }
+                ],
+    //gdCbxUrls: [],//初始化GridCombobox editor and formator
+    onCreate:function(){//创建对象前
+    },
+    OnReady: function () {   //都准备好后
+
+    },
+    onAddLine: function (append) {//点击添加明细行 v3取消
+        var rowdata = {source: 1};
+        append(rowdata);
+    },
+    onRemoveLine: function (rowdata) {//点击删除行   v3 取消
+        return true;//return false 将不删除
+    },
+    onSetButtonts: function () { // 设置按钮 Disnable enable 时候 回调函数
+    },
+    onNew: function (jsondata) {
+
+    },
+    onDel:function(jsondata){//返回false 將不執行操作
+      return true;
+    },
+    beforeSave:function(){
+    },
+    onSave: function (jsondata) {
+        return true;
+    },
+    afterSave:function(jsondata){
+    },
+    onLineGridDBClickRow: function (row) {     //v3   取消
+        return true; //false 将不调用edit方法
+    },
+    afterInGridLineEdit: function (row) {//变为编辑状态   //v3  取消
+
+    },
+    afterEditGrid: function (filter, index, row, changes) {
+
+    },
+    afterClearGrid:function(filter){//清空明细行数据后
+    },
+    onEditChanged: function (fdname, newValue, oldValue,newRowValue, ele) {
+
+    },
+    onExit: function () {
+
+    },
+    onCopy: function (parms) {
+                parms.clearfields = "stockoutocode";
+     },
+    onFind: function (parms) {
+        parms.order = ' hg_id asc ';
+    },
+    onLoadData: function (jsdata) {//从服务器上获取数据后
+
+    },
+    afterShowListData: function (jsdata) {//显示完数据后
+
+    },
+    onLoadDetailData:function(jsondata){//从服务器上获取明细数据后
+
+     },
+    onInitInputComboboxDict: function (cjoptions, jsondata) {//jsondata 从服务器端返回的combobox 数据
+
+    },
+    beforeSubmit: function (parms) {//提交前
+        // var allparms = {url: $C.cos.commoncreateWF, parms: parms};
+
+    },
+    beforeSubmitWfNode: function (proc) {
+        return true;  //false将取消提交
+    },
+    afterCreateWF:function(jpadata){ //提交流程后  jpadata 实体数据 可查询stat看是否完成流程
+    },
+    onGetCanEdit: function (stat, edittps) {
+
+    },
+    onSetReadOnly: function () {//加载界面数据后设置组件只读
+
+    },
+    afterFindDetail: function (jsdata) {//加载界面数据后执行方法
+        //不能调用 getMainData 方法，否则数据可能被清空
+    },
+    afterShowDetail:function(jsdata){
+    },
+    beforeCopy:function(jsondata){
+      //返回false  undefind  不执行默认方法
+    },
+    onSetGridDefaultToolbar:function(lineToolBar){// 设置行GRID Toolbar 事件    v3取消
+      //返回False undfind 不修改    否则   将返回值作为新的 toolbar
+    },
+    onExport:function(parms){
+    }
+}
+
+setReadOnly(fdname, readonly);//设置某个字段 是否只读
+reSetInputReadOnly();//重新设置界面只读
+getCanEdit(); //可编辑
+appendLineGrid(options);//gridID title columns    //v3取消
+findDetail(jpaid);//载入明细数据
+showDetail();//显示明细数据
+caneditlinedata();//明细数据可编辑
+setJson2Inputs();//填充界面input数据
+setJson2Grids();//填充界面Grid数据
+clearGridViewData();//删除明细数据
+isnew();//新建状态
+isloadingdata();//正在加载数据
+getMainData();//获取界面JSON数据对象
+lineToolBar();//明细表按钮栏
+getid();//当前数据ID
+getInput(fdname);//获取输入框
+getEditType();//获取编辑类型
+getFieldValue(fdname);//获取界面值
+setFieldValue(fdname,value);//设置界面值
+getDataChanged();//界面数据是否改变
+setDataChanged(value);//设置数据改变状态
+menutag();//获取menutag
+exportExcelModel();//导出导入模板
+buttons();//返回按钮集合对象
+getSelectedLine(filter);//获取选定的明细行  filter==undefined 时候 默认 #detail_main_grid_id;
+removeSelectLine(filter);//删除选定明细行  filter==undefined 时候 默认 #detail_main_grid_id;
+addLineData(filter,row);//添加明细行  filter==undefined 时候 默认 #detail_main_grid_id;
+updateLineData(filter,row);//修改明细行  filter==undefined 时候 默认 #detail_main_grid_id;
+setfindUrl(url);//重新设置查询URL
+do_find(parms);//查询列表
+doPrintNew(mdfname,isnew, jpaids, tp);//新打印 mdfname 模板名称 isnew:设计时，是否新建 jpaids [1,3]  tp://1 打印 2 预览 3 设计
+
+#detail_main_grid_id//行数据ID  //v3取消

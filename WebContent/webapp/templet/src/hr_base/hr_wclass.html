@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html template="webapp/templet/default/main_line2.html" workpath="webapp/hr_base">
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js">
+    </script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic650",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=650",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+        var formtype = 2;
+        var allowAtt = false;
+        var allowWF = false;
+    </script>
+
+    <script type="text/javascript">
+        var gdSotColumns = undefined;
+        var listGridColumns = [
+            {field: 'hwc_name', title: '名称', width: 150}
+        ];
+        frmOptions = {
+            JPAClass: "com.hr.base.entity.Hr_wclass",
+            JPAIdField: "hwc_id",
+            Pagination: false,
+            istree: true,
+            treeParentField: "pid",
+            showtreeHeader: false,
+            allow_copy: false,
+            disableButtonType: _NUBType.hide,
+            onNew: function (jsondata, idx) {
+                var node = $("#dg_datalist_id").treegrid('getSelected');
+                if ((!node) && (idx == 1)) {
+                    jsondata.pid = 0;
+                }
+                jsondata.usable = 1;
+            },
+            onEditChanged: function (fdname, newValue, oldValue) {
+                if (fdname == "type_id") {
+                    var nv = parseInt(newValue);
+                    if (nv == 1) {
+                        // var sn = $("#dg_datalist_id").treegrid("getSelected");
+                        // if ((!mainline.isnew()) && ((!sn.children) || (sn.children.length == 0)))//没有使用过的可以修改编码
+                        //     mainline.setReadOnly("hw_code", false);
+                        // else
+                        //     mainline.setReadOnly("hw_code", true);
+                        mainline.setReadOnly("hw_code", false);
+                        mainline.setReadOnly("isoffjob", false);
+                    } else {
+                        mainline.setReadOnly("hw_code", true);
+                        mainline.setReadOnly("isoffjob", true);
+                        mainline.setFieldValue("isoffjob", "");
+                    }
+                }
+            },
+            onSave: function (jsondata) {
+                return checkSave(jsondata);
+            },
+            onFind: function (parms) {
+                //parms.enableidpath = false;
+                parms.order = " hwc_id asc";
+            },
+            afterFindDetail: function () {//加载界面数据后执行方法
+                aftershow();
+            }
+        };
+
+        function checkSave(jsondata) {
+            var jpadata = jsondata.jpadata;
+            var nv = parseInt(jpadata.type_id);
+            var pnode = (jpadata.pid) ? $("#dg_datalist_id").treegrid("find", jpadata.pid) : undefined;
+            if (nv == 1) {//职类
+                if ((pnode) && ( parseInt(pnode.type_id) != 1)) {
+                    $.messager.alert('错误', '职类的上级只能为空或其它职类!', 'error');
+                    return false;
+                }
+                if ((jpadata.hw_code == null) || (jpadata.hw_code == undefined) || (jpadata.hw_code.length == 0)) {
+                    $.messager.alert('错误', '职类必须录入编码!', 'error');
+                    return false;
+                }
+            } else if (nv == 2) {//职群
+                if ((!pnode) || ( parseInt(pnode.type_id) != 1)) {
+                    $.messager.alert('错误', '职群必须有上级职类!', 'error');
+                    return false;
+                }
+            } else if (nv == 3) {
+                if ((!pnode) || ( parseInt(pnode.type_id) != 2)) {
+                    $.messager.alert('错误', '职种必须有上级职群!', 'error');
+                    return false;
+                }
+            } else {
+                $.messager.alert('错误', '类型错误!', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function findnode(id) {
+            return
+        }
+
+
+        function aftershow() {
+            var newValue = mainline.getFieldValue("type_id");
+            var nv = parseInt(newValue);
+            if (nv == 1) {
+                var sn = $("#dg_datalist_id").treegrid("getSelected");
+                if ((!sn.children) || (sn.children.length == 0))//没有使用过的可以修改编码
+                    mainline.setReadOnly("hw_code", false);
+                mainline.setReadOnly("isoffjob", false);
+            } else {
+                mainline.setReadOnly("hw_code", true);
+                mainline.setReadOnly("isoffjob", true);
+                mainline.setFieldValue("isoffjob", "");
+            }
+            mainline.setDataChanged(false);
+        }
+
+    </script>
+</head>
+<body>
+<table id="maindata_id" border="0" style="width: auto;height:auto">
+    <tr>
+        <td cjoptions="fdname:'hw_code'">代码</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hw_code',required:true,readonly:true"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'hwc_name'">名称</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'hwc_name',required:true" style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'usable'">有效</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'usable',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'type_id'">类型</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'type_id',required:true,comidx:'dic650'"
+                   data-options="editable:false"
+                   style="height:20px;width: 120px"/>
+        </td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'isoffjob'">脱产</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'isoffjob',comidx:'dic5'" data-options="editable:false"
+                   style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'remark'">备注</td>
+        <td colspan="3"><input class="easyui-textbox" data-options="multiline:true" cjoptions="fdname:'remark'"
+                               style="height:40px;width: 300px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'creator'">制单人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'creator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'createtime'">制单时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'createtime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+    <tr>
+        <td cjoptions="fdname:'updator'">更新人</td>
+        <td><input class="easyui-textbox" cjoptions="fdname:'updator',readonly:true" style="height:20px;width: 120px"/>
+        </td>
+        <td cjoptions="fdname:'updatetime'">更新时间</td>
+        <td><input class="easyui-datetimebox" cjoptions="fdname:'updatetime',readonly:true"
+                   data-options="formatter:$dateformattostr"
+                   style="height:20px;width: 120px"/></td>
+    </tr>
+</table>
+</body>
+</html>

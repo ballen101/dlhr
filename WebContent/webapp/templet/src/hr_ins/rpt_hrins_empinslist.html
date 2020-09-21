@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_ins">
+<head lang="zh">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css">
+    <link rel="stylesheet" type="text/css" href="../style/custom.css">
+
+
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+
+    <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../js/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script>
+    <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script>
+
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/creport.js"></script>
+    <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script>
+    <title></title>
+    <script type="text/javascript" style="cserver_js">
+        var comUrls = [
+            {
+                index: "dic923",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=923",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic928",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=928",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic5",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=5",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic81",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=81",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic84",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=84",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1220",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1220",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1045",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1045",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1049",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1049",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic702",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=702",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic1255",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=1255",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic684",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=684",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <script type="text/javascript">
+        var orgfdiptions = {
+            easyui_class: 'easyui-textbox', editable: false, icons: [
+                {
+                    iconCls: 'icon-search',
+                    handler: function (e) {
+                        onSelectOrg(e);
+                        //$(e.data.target).textbox('setValue', 'Something added!');
+                    }
+                }
+            ]
+        };
+
+        var listGridColumns = function () {
+            return [
+                {field: 'orgname', title: '单位', width: 300},
+                {field: 'employee_code', title: '工号', width: 80},
+                {field: 'employee_name', title: '姓名', width: 80},
+                {field: 'sp_name', title: '职位', width: 80},
+                {field: 'lv_num', title: '职级', width: 64},
+                {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+                {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+                {field: 'hiredday', title: '入职日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'insurancestat', title: '社保状态', width: 80, formatter: comUrl_dic1255.formator},
+                {field: 'buydate', title: '购保时间', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'buyins_code', title: '购保编码', width: 120},
+                {field: 'insurance_number', title: '参保号', width: 100},
+                {field: 'ins_type', title: '保险类型', width: 64, formatter: comUrl_dic1220.formator},
+                {field: 'insname', title: '购买险种', width: 100},
+                {field: 'lselfpay', title: '个人缴费', width: 100},
+                {field: 'lcompay', title: '单位缴费', width: 100},
+                {field: 'lpayment', title: '合计金额', width: 64},
+                {field: 'ljdate2', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'ljtype2', title: '离职类型', width: 80, formatter: comUrl_dic1045.formator},
+                {field: 'ljreason', title: '离职原因', width: 150, formatter: comUrl_dic1049.formator},
+                {field: 'canceldate', title: '退保日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'cancelreason', title: '退保原因', width: 150},
+                {field: 'telphone', title: '联系电话', width: 100},
+                {field: 'sptype', title: '职位性质', width: 64},
+                {field: 'pay_way', title: '计薪方式', width: 64},
+                {field: 'nativeplace', title: '籍贯', width: 64},
+                {field: 'registertype', title: '户籍类型', width: 80, formatter: comUrl_dic702.formator},
+                {field: 'id_number', title: '身份证号', width: 140},
+                {field: 'sign_org', title: '发证机关', width: 100},
+                {field: 'sign_date', title: '签发日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'expired_date', title: '失效日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'birthday', title: '出生日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                {field: 'isnew', title: '是否新增', width: 64, formatter: comUrl_dic5.formator},
+                {field: 'torgname', title: '输送机构', width: 64},
+                {field: 'sorgname', title: '派遣机构', width: 64},
+                {field: 'tremark', title: '备注', width: 100}
+            ]
+        };
+        var relOptions = {
+            data: [{id: '=', value: '等于'}]
+        };
+        var findColums = [
+            {field: 'orgcode', title: '机构编码', notnull: true, relOptions: relOptions, cjoptions: orgfdiptions, width: 100},
+            {field: 'monthdate', title: '月份', notnull: true, relOptions: relOptions, formatter: $fieldDateFormatorYYYY_MM, width: 100},
+            {field: 'beginday', title: '开始日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'endday', title: '截止日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ins_type', title: '保险类型', width: 64, formatter: comUrl_dic1220.formator},
+            {field: 'employee_code', title: '工号', width: 64},
+            {field: 'employee_name', title: '姓名', width: 64},
+            {field: 'sp_name', title: '职位', width: 80},
+            {field: 'sptype', title: '职位性质', width: 64},
+            {field: 'lv_num', title: '职级', width: 64},
+            {field: 'degree', title: '学历', width: 64, formatter: comUrl_dic84.formator},
+            {field: 'sex', title: '性别', width: 50, formatter: comUrl_dic81.formator},
+            {field: 'hiredday', title: '入职日期', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'insurance_number', title: '参保号', width: 100},
+            {field: 'buydate', title: '购保时间', width: 80, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'insname', title: '购买险种', width: 100},
+            {field: 'ljdate2', title: '离职日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'ljtype2', title: '离职类型', width: 80, formatter: comUrl_dic1045.formator},
+            {field: 'canceldate', title: '退保日期', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+            {field: 'pay_way', title: '计薪方式', width: 64},
+            {field: 'nativeplace', title: '籍贯', width: 64},
+            {field: 'registertype', title: '户籍类型', width: 80, formatter: comUrl_dic702.formator},
+            {field: 'insurancestat', title: '社保状态', width: 64, formatter: comUrl_dic1255.formator}
+        ];
+
+
+        var prtOptions = {
+            htmlTempt: "",
+            gdListColumns: listGridColumns,
+            findExtParms: findColums,
+            coURL: _serUrl + "/web/hrins/insurance/findemployeeinslistex.co"
+        };
+
+        var select_Org_pw = undefined;
+        function onSelectOrg(event) {
+            var url = _serUrl + "/web/user/getOrgsByLged.co?type=gridtree";
+            var wo = {
+                id: "select_Org_pw",
+                coURL: url,
+                orderStr: " orgid asc ",
+                multiRow: false,
+                isTree: true,
+                idField: 'orgid',
+                pidField: 'superid',
+                treeField: 'code',
+                showTitle: false,
+                extParms: [
+                    {parmname: 'stat', reloper: '=', parmvalue: '1'}
+                ],//扩展参数
+                width: "500px",//
+                height: "400px",//
+                gdListColumns: [
+                    {field: 'code', title: '编码', width: 120},
+                    {field: 'orgname', title: '机构', width: 100}
+                ]
+
+            };
+            if (!select_Org_pw) {
+                select_Org_pw = new TSearchForm(wo);
+            }
+            select_Org_pw.extendOptions({
+                onResult: function (rows) {
+                    if (rows.length > 0) {
+                        var row = rows[0];
+                        $(event.data.target).textbox('setValue', row.code);
+                    }
+                }
+            });
+            select_Org_pw.show();
+        }
+
+        function jbtimeformator(value, row, index) {
+            if ((!value) || (value.length == 0))
+                return value;
+            var dt = (new Date()).fromStr(value);
+            return dt.format("yyyy-MM-dd hh:mm:ss");
+        }
+    </script>
+</head>
+<body>
+
+
+</body>
+</html>

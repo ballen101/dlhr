@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_perm">
+ <head lang="zh"> 
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css"> 
+  <link rel="stylesheet" type="text/css" href="../js/css/corsair.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/jquery.jOrgChart.css"> 
+  <link rel="stylesheet" type="text/css" href="../style/custom.css"> 
+  <script type="text/javascript" src="../js/easyui/jquery.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script> 
+  <script type="text/javascript" src="../js/easyui/easyloader.js"></script> 
+  <!--[if lte IE 8]>
+    <script language="javascript" type="text/javascript" src="../js/flot/excanvas.min.js"></script>
+    <![endif]--> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.pie.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.axislabels.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.stack.js"></script> 
+  <script type="text/javascript" src="../js/flot/jshashtable-2.1.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.numberformatter-1.2.3.min.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.time.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.symbol.js"></script> 
+  <script type="text/javascript" src="../js/flot/jquery.flot.resize.js"></script> 
+  <script type="text/javascript" src="../js/cjquery.min.js"></script> 
+  <script type="text/javascript" src="../js/icefall.min.js"></script> 
+  <script type="text/javascript" src="../js/common/jsonbanding.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script> 
+  <script type="text/javascript" src="../js/common/creport.js"></script> 
+  <script type="text/javascript" src="../js/otherjs/html2canvas.min.js"></script> 
+  <title>试用转正调薪报表</title> 
+  <script type="text/javascript" style="cserver_js"> var comUrls = [];</script> 
+  <script type="text/javascript">
+        var listGridColumns = function () {
+            return [
+                [
+                    {field: 'pbtcode', title: '转正编码', rowspan: 2, width: 100},
+                    {field: 'employee_code', title: '工号', rowspan: 2, width: 80},
+                    {field: 'employee_name', title: '姓名', rowspan: 2, width: 80},
+                    {field: 'orgname', title: '部门', rowspan: 2, width: 200},
+                    {field: 'sp_name', title: '职位', rowspan: 2, width: 80},
+                    {field: 'lv_num', title: '职级', rowspan: 2, width: 50},
+                    {field: 'hiredday', title: '入职日期', rowspan: 2, findtype: 'date', width: 100, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'pbtdate', title: '转正日期', rowspan: 2, findtype: 'date', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {title: '转正前薪资结构', colspan: 5},
+                    {title: '转正后薪资结构', colspan: 5},
+                    {field: 'pbtsarylev', title: '调整额度',rowspan: 2, width: 80},
+                    {field: 'salarydate', title: '入职定薪生效日期', rowspan: 2, findtype: 'date', width: 120, formatter: $fieldDateFormatorYYYY_MM_DD},
+                    {field: 'remark', title: '备注', rowspan: 2, width: 100}
+                ],
+                [
+                    {field: 'oldposition_salary', title: '职位工资', width: 80},
+                    {field: 'oldbase_salary', title: '基本工资', width: 80},
+                    {field: 'oldtech_salary', title: '技能工资', width: 80},
+                    {field: 'oldachi_salary', title: '绩效工资', width: 80},
+                    {field: 'oldtech_allowance', title: '技术津贴', width: 80},
+
+                    {field: 'newposition_salary', title: '职位工资', width: 80},
+                    {field: 'newbase_salary', title: '基本工资', width: 80},
+                    {field: 'newtech_salary', title: '技能工资', width: 80},
+                    {field: 'newachi_salary', title: '绩效工资', width: 80},
+                    {field: 'newtech_allowance', title: '技术津贴', width: 80}
+                ]
+            ]
+        };
+
+
+        var prtOptions = {
+            htmlTempt: "",
+            findwidth: "400px",//
+            findheight: "400px",//
+            gdListColumns: listGridColumns,
+            findExtParms: listGridColumns(),
+            coURL: _serUrl + "/web/hr/permrpt3/empentryprob_list.co?tp=2"
+        };
+    </script> 
+ </head> 
+ <body>  
+ </body>
+</html>

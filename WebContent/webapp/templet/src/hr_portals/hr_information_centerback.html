@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html workpath="webapp/hr_portals">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="../js/css/corsair.css">
+    <script type="text/javascript" src="../js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="../js/cjquery.min.js"></script>
+    <script type="text/javascript" src="../js/icefall.min.js"></script>
+    <script type="text/javascript" src="../js/common/jsonbanding2.js"></script>
+    <script type="text/javascript" src="../js/common/cSearchDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/cFindDlg.min.js"></script>
+    <script type="text/javascript" src="../js/common/mainline2.min.js"></script>
+    <title>消息中心</title>
+    <script type="text/javascript">
+        var comUrls = [
+            {
+                index: "dic227",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=227",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            },
+            {
+                index: "dic9",
+                type: "combobox",
+                url: "/web/dict/getdictvalues.co?dicid=9",
+                valueField: 'dictvalue',
+                textField: 'language1'
+            }
+        ];
+    </script>
+    <style type="text/css">
+        #body table td {
+            padding: 2px 5px 2px 5px;
+            margin: 2px;
+            border: 0px;
+        }
+
+        .spec {
+            height: 5px;
+        }
+
+        body {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body style="margin: 0 auto">
+    <div id="count_panel_id" class="easyui-panel" title="我的统计" style="width:100%;">
+        <table id="count_table_id" border="0" style="">
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">员工结构</div></td>
+                <td colspan="8"><div style="margin-left:30px;">职类结构</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">学历结构</div></td>
+                <td colspan="8"><div style="margin-left:30px;">年龄结构</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">性别结构</div></td>
+            </tr>
+        </table>
+    </div>
+    <div id="employee_panel_id" class="easyui-panel" title="员工信息查询" style="width:100%;">
+        <table id="employee_table_id" border="0" style="">
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">员工基本信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">工作经历信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">家庭成员信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">关联关系信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">员工合同信息</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">教育经历信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">培训经历信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">在职培训信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">激励信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">调动信息</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">兼职信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">绩效信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">离职信息</div></td>
+                <td colspan="8"><div style="margin-left:30px;">黑名单信息</div></td>
+            </tr>
+        </table>
+    </div>
+    <div id="synthesize_panel_id" class="easyui-panel" title="综合信息查询" style="width:100%;">
+        <table id="synthesize_table_id" border="0" style="">
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">入职查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">调动查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">批量调动查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">入职转正查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">批量转正查询</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">调动转正查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">激励记录查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">借调查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">兼职查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">离职查询</div></td>
+            </tr>
+            <tr>
+                <td colspan="8"><div style="margin-left:30px;">批量离职查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">加封黑名单查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">解封黑名单查询</div></td>
+                <td colspan="8"><div style="margin-left:30px;">关联关系查询（内部）</div></td>
+                <td colspan="8"><div style="margin-left:30px;">关联关系查询（客户/供应商）</div></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
